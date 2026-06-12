@@ -6,7 +6,7 @@
     <title>The Synergy Cell Simulator - Live Cloud</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -41,7 +41,7 @@
         .tech-title { font-family: 'Courier Prime', monospace; font-size: 13px; color: var(--neon-blue); letter-spacing: 1px; }
         .device-badge { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; font-size: 11px; color: #94a3b8; border: 1px solid var(--border); text-transform: uppercase; }
 
-        /* Setup / Config */
+        /* Setup Layers */
         .setup-group { margin-bottom: 15px; }
         label { display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; font-weight: bold; }
         input, select { width: 100%; padding: 12px; background: #090d16; border: 1px solid var(--border); border-radius: 8px; color: white; font-family: inherit; }
@@ -54,15 +54,23 @@
         .action-btn { width: 100%; background: linear-gradient(90deg, #0284c7, #a855f7); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
         .action-btn:hover { filter: brightness(1.2); }
 
-        /* Dashboard */
+        /* Dashboard Metrics */
         .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .metric-card { background: #090d16; border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; }
+        .metric-card { background: #090d16; border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; position: relative; }
         .metric-label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 2px; text-transform: uppercase; }
         .metric-val { font-size: 18px; font-weight: bold; font-family: 'Courier Prime', monospace; }
         .bar-container { background: #1e293b; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden; }
         .bar-fill { height: 100%; transition: width 0.4s ease; width: 100%; }
+        .inline-edit-budget { background: transparent; border: none; border-bottom: 1px dashed var(--neon-blue); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-align: center; width: 80px; padding: 0; cursor: pointer; }
 
-        /* Sandbox Workspace */
+        /* Suggestions Panel */
+        .suggestions-box { background: rgba(56, 189, 248, 0.03); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: 8px; padding: 10px; margin-bottom: 15px; }
+        .suggestions-title { font-size: 11px; font-weight: bold; color: var(--neon-blue); text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+        .suggestions-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .sug-tag { background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 4px 8px; border-radius: 20px; font-size: 11px; color: #cbd5e1; cursor: pointer; transition: 0.2s; }
+        .sug-tag:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); }
+
+        /* Interactive Action Panel */
         .workspace-title { font-size: 12px; font-family: 'Courier Prime', monospace; color: var(--neon-purple); margin-bottom: 10px; text-transform: uppercase;}
         .interactive-panel { background: rgba(255,255,255,0.01); border: 1px dashed var(--border); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
         .impact-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
@@ -70,33 +78,47 @@
         .imp-btn.positive.selected { border-color: var(--neon-green); color: var(--neon-green); background: rgba(74,222,128,0.05); }
         .imp-btn.negative.selected { border-color: var(--neon-red); color: var(--neon-red); background: rgba(248,113,113,0.05); }
 
-        /* History Log Table */
-        .log-section { flex: 1; min-height: 150px; display: flex; flex-direction: column; }
-        .log-table-wrapper { background: #090d16; border: 1px solid var(--border); border-radius: 8px; flex: 1; overflow-y: auto; padding: 10px; }
-        .log-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; }
-        .log-item:last-child { border-bottom: none; }
-        .log-name { font-weight: 500; }
-        .log-meta { font-family: 'Courier Prime', monospace; font-size: 11px; }
-
-        .flash-effect { animation: flash 0.5s ease-out; }
-        @keyframes flash { 0% { border-color: var(--neon-purple); } 100% { border-color: var(--border); } }
+        /* Modernized Log List Cards */
+        .log-section { flex: 1; min-height: 180px; display: flex; flex-direction: column; }
+        .log-table-wrapper { display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; padding-right: 5px; }
+        
+        .log-card { background: #0f172a; border: 1px solid var(--border); padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; }
+        .log-card:hover { border-color: rgba(255,255,255,0.15); }
+        .log-card-left { display: flex; align-items: center; gap: 12px; }
+        .log-avatar { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--neon-purple); color: var(--neon-purple); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .log-details { display: flex; flex-direction: column; gap: 2px; }
+        .log-card-name { font-weight: 600; font-size: 13px; color: var(--text-light); }
+        .log-card-meta { font-size: 11px; color: #64748b; }
+        
+        .log-card-right { display: flex; align-items: center; gap: 15px; }
+        .log-card-cost { font-family: 'Courier Prime', monospace; font-weight: bold; font-size: 14px; }
+        .impact-badge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .impact-badge.pos { background: rgba(74, 222, 128, 0.1); color: var(--neon-green); border: 1px solid rgba(74, 222, 128, 0.2); }
+        .impact-badge.neg { background: rgba(248, 113, 113, 0.1); color: var(--neon-red); border: 1px solid rgba(248, 113, 113, 0.2); }
+        
+        .log-actions { display: flex; gap: 6px; margin-left: 5px; border-left: 1px solid var(--border); padding-left: 10px; }
+        .action-icon-btn { background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 12px; padding: 4px; transition: 0.2s; }
+        .action-icon-btn:hover { color: white; }
+        .action-icon-btn.delete-btn:hover { color: var(--neon-red); }
     </style>
 </head>
 <body>
 
     <div class="simulation-info-bar">
-        <div><i class="fa-solid fa-cloud" style="color: var(--neon-green);"></i> <strong>FIREBASE LIVE CELL:</strong> Connected to English Meetings</div>
-        <div style="font-family: 'Courier Prime', monospace; color: var(--neon-gold);" id="room-display">[SESSION NOT STARTED]</div>
+        <div><i class="fa-solid fa-cloud" style="color: var(--neon-green);"></i> <strong>LIVE CELL:</strong> English Meetings Session</div>
+        <div style="font-family: 'Courier Prime', monospace; color: var(--neon-purple);" id="room-display">[SESSION NOT STARTED]</div>
     </div>
 
     <div class="simulation-container">
         
+        <!-- CLIENT ALPHA -->
         <div id="device-p1" class="device-screen">
             <div class="device-header">
-                <span class="tech-title">// CELL CONTROLLER - ALPHA</span>
-                <span class="device-badge" id="badge-p1-name">Victor</span>
+                <span class="tech-title">// PLAYER 1 CONTROLLER</span>
+                <span class="device-badge" id="badge-p1-name">Waiting...</span>
             </div>
 
+            <!-- SETUP LAYER -->
             <div id="p1-setup">
                 <div class="setup-group">
                     <label>Choose Simulation Universe:</label>
@@ -107,78 +129,90 @@
                 </div>
                 <div class="setup-group">
                     <label>Your Name:</label>
-                    <input type="text" id="input-p1-name" value="Victor">
+                    <input type="text" id="input-p1-name" placeholder="Type your name...">
                 </div>
                 <div class="setup-group">
-                    <label>Unique Session Room ID (Share this with partner):</label>
-                    <input type="text" id="input-room-id" value="class-room-1" style="font-family:'Courier Prime'; color:var(--neon-gold);">
-                </div>
-                <div class="setup-group">
-                    <label>Initial Capital / Budget ($):</label>
-                    <input type="number" id="input-budget" value="3000">
+                    <label>Session Room ID (Share this with your partner):</label>
+                    <input type="text" id="input-room-id" value="room-1" style="font-family:'Courier Prime'; color:var(--neon-purple);">
                 </div>
                 <button class="action-btn" style="margin-top:10px;" onclick="window.initSandbox()">Launch Shared Cell ➔</button>
             </div>
 
+            <!-- LIVE GAME LAYER -->
             <div id="p1-game" style="display:none; flex-direction: column; flex: 1;">
                 <div class="dashboard-grid" id="p1-dash"></div>
                 
-                <div class="workspace-title">// Action Desk (Add Items After Debating)</div>
+                <!-- Suggestions -->
+                <div class="suggestions-box">
+                    <div class="suggestions-title"><i class="fa-regular fa-lightbulb"></i> Idea Starters (Click to use):</div>
+                    <div class="suggestions-tags" id="p1-suggestions"></div>
+                </div>
+
+                <div class="workspace-title" id="p1-desk-title">// Action Desk</div>
                 <div class="interactive-panel">
                     <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
-                        <input type="text" id="p1-item-name" placeholder="e.g., Luxury Hotel Room / Cloud Servers">
+                        <input type="text" id="p1-item-name" placeholder="e.g., Luxury Hotel / Marketing Ads">
                         <input type="number" id="p1-item-cost" placeholder="$ Cost">
                     </div>
                     <div class="impact-selector">
                         <div class="imp-btn positive" id="p1-imp-pos" onclick="window.selectImpact(1, 'pos')">👍 Recovers Energy</div>
                         <div class="imp-btn negative selected" id="p1-imp-neg" onclick="window.selectImpact(1, 'neg')">👎 Drains Energy</div>
                     </div>
-                    <button class="action-btn" style="padding:8px; font-size:11px;" onclick="window.submitLog(1)">Commit Decision to Cloud</button>
+                    <button class="action-btn" id="p1-submit-btn" style="padding:10px; font-size:12px;" onclick="window.submitLog(1)">Send Decision ➔</button>
                 </div>
 
                 <div class="log-section">
-                    <div class="workspace-title">// Shared Project Log (Roteiro / Backlog)</div>
+                    <div class="workspace-title">// Shared Decision Log</div>
                     <div class="log-table-wrapper" id="p1-log-table"></div>
                 </div>
             </div>
         </div>
 
+        <!-- CLIENT BRAVO -->
         <div id="device-p2" class="device-screen">
             <div class="device-header">
-                <span class="tech-title">// CELL CONTROLLER - BRAVO</span>
-                <span class="device-badge" id="badge-p2-name">Pedro</span>
+                <span class="tech-title">// PLAYER 2 CONTROLLER</span>
+                <span class="device-badge" id="badge-p2-name">Waiting...</span>
             </div>
 
+            <!-- SETUP LAYER -->
             <div id="p2-setup">
                 <div class="setup-group">
                     <label>Your Name:</label>
-                    <input type="text" id="input-p2-name" value="Pedro">
+                    <input type="text" id="input-p2-name" placeholder="Type your name...">
                 </div>
                 <div class="setup-group">
                     <label>Enter Partner's Room ID to Join:</label>
-                    <input type="text" id="input-p2-room-id" value="class-room-1" style="font-family:'Courier Prime'; color:var(--neon-gold);">
+                    <input type="text" id="input-p2-room-id" value="room-1" style="font-family:'Courier Prime'; color:var(--neon-purple);">
                 </div>
                 <button class="action-btn" style="margin-top:10px; background:linear-gradient(90deg, #a855f7, #0284c7);" onclick="window.joinSandbox()">Join Shared Cell ➔</button>
             </div>
 
+            <!-- LIVE GAME LAYER -->
             <div id="p2-game" style="display:none; flex-direction: column; flex: 1;">
                 <div class="dashboard-grid" id="p2-dash"></div>
                 
-                <div class="workspace-title">// Action Desk (Add Items After Debating)</div>
+                <!-- Suggestions -->
+                <div class="suggestions-box">
+                    <div class="suggestions-title"><i class="fa-regular fa-lightbulb"></i> Idea Starters (Click to use):</div>
+                    <div class="suggestions-tags" id="p2-suggestions"></div>
+                </div>
+
+                <div class="workspace-title" id="p2-desk-title">// Action Desk</div>
                 <div class="interactive-panel">
                     <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
-                        <input type="text" id="p2-item-name" placeholder="e.g., Local Street Food / Marketing Ads">
+                        <input type="text" id="p2-item-name" placeholder="e.g., Local Street Food / Servers Pack">
                         <input type="number" id="p2-item-cost" placeholder="$ Cost">
                     </div>
                     <div class="impact-selector">
                         <div class="imp-btn positive" id="p2-imp-pos" onclick="window.selectImpact(2, 'pos')">👍 Recovers Energy</div>
                         <div class="imp-btn negative selected" id="p2-imp-neg" onclick="window.selectImpact(2, 'neg')">👎 Drains Energy</div>
                     </div>
-                    <button class="action-btn" style="padding:8px; font-size:11px;" onclick="window.submitLog(2)">Commit Decision to Cloud</button>
+                    <button class="action-btn" id="p2-submit-btn" style="padding:10px; font-size:12px;" onclick="window.submitLog(2)">Send Decision ➔</button>
                 </div>
 
                 <div class="log-section">
-                    <div class="workspace-title">// Shared Project Log (Roteiro / Backlog)</div>
+                    <div class="workspace-title">// Shared Decision Log</div>
                     <div class="log-table-wrapper" id="p2-log-table"></div>
                 </div>
             </div>
@@ -186,11 +220,11 @@
 
     </div>
 
+    <!-- FIREBASE MODULE INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-        // OFFICIAL CONFIGURATION SUBMITTED BY THE USER
         const firebaseConfig = {
             apiKey: "AIzaSyCuqzhyaH6cSNvqxwPh74tHoWaRE5KHleE",
             authDomain: "english-meetings-f08e4.firebaseapp.com",
@@ -204,11 +238,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ENGINE LOCAL MIRROR
+        // ENGINE LOCAL STATE
         let localEngineState = {
             currentMode: "EXPEDITIONS",
-            player1Name: "Victor",
-            player2Name: "Pedro",
+            player1Name: "Player 1",
+            player2Name: "Player 2",
             initialBudget: 3000,
             remainingCash: 3000,
             vitalityScore: 100,
@@ -218,20 +252,23 @@
             p2SelectedImpact: 'neg'
         };
 
-        let currentRoomId = "class-room-1";
+        let currentRoomId = "room-1";
+        let editingIndex = null; // Tracks if we are editing an existing item
 
         const modeConfigs = {
             "EXPEDITIONS": {
-                bar1Label: "💰 Cash Remaining", bar2Label: "🔋 Team Energy", bar3Label: "📸 Memories",
-                posText: "👍 Recovers Energy", negText: "👎 Drains Energy"
+                bar1Label: "💰 Budget Remaining", bar2Label: "🔋 Team Energy", bar3Label: "📸 Memories",
+                posText: "👍 Recovers Energy", negText: "👎 Drains Energy",
+                suggestions: ["Luxury Hotel", "Street Food", "Flight Tickets", "Tour Guide", "Souvenirs", "Museum Pass", "Train Ticket", "Local Restaurant", "Emergency Taxi"]
             },
             "VENTURES": {
-                bar1Label: "💳 Funding Left", bar2Label: "🤯 Team Burnout", bar3Label: "📈 Users Traction",
-                posText: "👍 Reduces Team Stress", negText: "👎 Increases Burnout"
+                bar1Label: "💳 Funding Left", bar2Label: "🤯 Team Burnout", bar3Label: "📈 Active Users",
+                posText: "👍 Reduces Stress", negText: "👎 Increases Burnout",
+                suggestions: ["Cloud Servers", "Marketing Ads", "Office Rent", "Graphic Designer", "Coffee Machine", "Legal Advice", "Software License", "Team Dinner", "Consultant"]
             }
         };
 
-        // EXPOSE FUNCTIONS TO WINDOW FOR HTML INLINE CLICK ATTRIBUTES
+        // EXPOSE FUNCTIONS TO WINDOW
         window.setMode = function(mode) {
             localEngineState.currentMode = mode;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
@@ -253,12 +290,14 @@
             }
         };
 
-        // INITIALIZE AS OWNER (ALPHA)
+        window.applySuggestion = function(playerNum, text) {
+            document.getElementById(`p${playerNum}-item-name`).value = text;
+        };
+
+        // SETUP INITIAL ROOM AS PLAYER 1
         window.initSandbox = function() {
-            currentRoomId = document.getElementById('input-room-id').value.trim() || "class-room-1";
-            localEngineState.player1Name = document.getElementById('input-p1-name').value.trim() || "Victor";
-            localEngineState.initialBudget = parseFloat(document.getElementById('input-budget').value) || 3000;
-            localEngineState.remainingCash = localEngineState.initialBudget;
+            currentRoomId = document.getElementById('input-room-id').value.trim() || "room-1";
+            localEngineState.player1Name = document.getElementById('input-p1-name').value.trim() || "Player 1";
             localEngineState.historyLog = ["EMPTY_ROOM"]; 
 
             set(ref(db, 'rooms/' + currentRoomId), localEngineState).then(() => {
@@ -268,10 +307,10 @@
             });
         };
 
-        // JOIN AS CLIENT (BRAVO)
+        // JOIN ROOM AS PLAYER 2
         window.joinSandbox = function() {
-            currentRoomId = document.getElementById('input-p2-room-id').value.trim() || "class-room-1";
-            localEngineState.player2Name = document.getElementById('input-p2-name').value.trim() || "Pedro";
+            currentRoomId = document.getElementById('input-p2-room-id').value.trim() || "room-1";
+            localEngineState.player2Name = document.getElementById('input-p2-name').value.trim() || "Player 2";
 
             update(ref(db, 'rooms/' + currentRoomId), {
                 player2Name: localEngineState.player2Name
@@ -282,8 +321,9 @@
             });
         };
 
+        // LISTEN TO REALTIME CLOUD CHANGES
         function listenToCloud() {
-            document.getElementById('room-display').innerText = `[ACTIVE ROOM: ${currentRoomId.toUpperCase()}]`;
+            document.getElementById('room-display').innerText = `[ACTIVE SESSION ROOM: ${currentRoomId.toUpperCase()}]`;
             
             onValue(ref(db, 'rooms/' + currentRoomId), (snapshot) => {
                 const data = snapshot.val();
@@ -294,6 +334,7 @@
                     localEngineState.historyLog = [];
                 }
 
+                // Update text options based on mode
                 const config = modeConfigs[localEngineState.currentMode];
                 document.querySelectorAll('.positive').forEach(el => el.innerText = config.posText);
                 document.querySelectorAll('.negative').forEach(el => el.innerText = config.negText);
@@ -301,21 +342,41 @@
                 document.getElementById('badge-p1-name').innerText = localEngineState.player1Name;
                 document.getElementById('badge-p2-name').innerText = localEngineState.player2Name;
 
-                if(document.getElementById('p1-setup').style.display !== 'none' && localEngineState.player1Name !== "Victor") {
+                // Sync UI layers
+                if(document.getElementById('p1-setup').style.display !== 'none' && data.player1Name !== "Player 1") {
                     document.getElementById('p1-setup').style.display = 'none';
                     document.getElementById('p1-game').style.display = 'flex';
                 }
-                if(document.getElementById('p2-setup').style.display !== 'none' && localEngineState.player2Name !== "Pedro") {
+                if(document.getElementById('p2-setup').style.display !== 'none' && data.player2Name !== "Player 2") {
                     document.getElementById('p2-setup').style.display = 'none';
                     document.getElementById('p2-game').style.display = 'flex';
                 }
 
+                renderSuggestions(1);
+                renderSuggestions(2);
                 renderDashboard('p1-dash');
                 renderDashboard('p2-dash');
-                renderTables();
+                renderLogCards();
             });
         }
 
+        function renderSuggestions(playerNum) {
+            const list = modeConfigs[localEngineState.currentMode].suggestions;
+            const container = document.getElementById(`p${playerNum}-suggestions`);
+            container.innerHTML = list.map(item => `
+                <span class="sug-tag" onclick="window.applySuggestion(${playerNum}, '${item}')">${item}</span>
+            `).join('');
+        }
+
+        // CHANGE STARTING BUDGET LIVE ON GAME SCREEN
+        window.changeInitialBudget = function(val) {
+            let num = parseFloat(val) || 3000;
+            update(ref(db, 'rooms/' + currentRoomId), {
+                initialBudget: num
+            }).then(() => recalcMetricsFromLog(localEngineState.historyLog));
+        };
+
+        // SUBMIT AND SEND DECISION TO CLOUD
         window.submitLog = function(playerNum) {
             const nameInput = document.getElementById(`p${playerNum}-item-name`);
             const costInput = document.getElementById(`p${playerNum}-item-cost`);
@@ -324,38 +385,87 @@
             const itemCost = parseFloat(costInput.value) || 0;
             const impactType = playerNum === 1 ? localEngineState.p1SelectedImpact : localEngineState.p2SelectedImpact;
 
-            if(!itemName) return alert("Please type a description first!");
-
-            let nextCash = Math.max(0, localEngineState.remainingCash - itemCost);
-            let nextVitality = localEngineState.vitalityScore;
-            let nextSuccess = localEngineState.successCounter;
-
-            if(localEngineState.currentMode === "EXPEDITIONS") {
-                nextVitality = impactType === 'pos' ? Math.min(100, nextVitality + 15) : Math.max(0, nextVitality - 20);
-                nextSuccess += 1;
-            } else {
-                nextVitality = impactType === 'pos' ? Math.min(100, nextVitality + 20) : Math.max(0, nextVitality - 25);
-                nextSuccess += Math.floor(Math.random() * 200) + 50;
-            }
+            if(!itemName) return alert("Please write a description first!");
 
             let currentLog = localEngineState.historyLog || [];
-            currentLog.unshift({
-                author: playerNum === 1 ? localEngineState.player1Name : localEngineState.player2Name,
-                name: itemName,
-                cost: itemCost,
-                impact: impactType
+
+            if (editingIndex !== null) {
+                // We are updating an existing card
+                currentLog[editingIndex] = {
+                    author: currentLog[editingIndex].author, // Keep original creator
+                    name: itemName,
+                    cost: itemCost,
+                    impact: impactType
+                };
+                editingIndex = null;
+                document.getElementById('p1-submit-btn').innerText = "Send Decision ➔";
+                document.getElementById('p2-submit-btn').innerText = "Send Decision ➔";
+                document.getElementById('p1-desk-title').innerText = "// Action Desk";
+                document.getElementById('p2-desk-title').innerText = "// Action Desk";
+            } else {
+                // Creating a brand new card
+                currentLog.unshift({
+                    author: playerNum === 1 ? localEngineState.player1Name : localEngineState.player2Name,
+                    name: itemName,
+                    cost: itemCost,
+                    impact: impactType
+                });
+            }
+
+            nameInput.value = "";
+            costInput.value = "";
+            recalcMetricsFromLog(currentLog);
+        };
+
+        // EDIT A DECISION CARD
+        window.startEditCard = function(index) {
+            editingIndex = index;
+            const item = localEngineState.historyLog[index];
+            
+            // Populate inputs on both control dashboards for ease of access
+            [1, 2].forEach(pNum => {
+                document.getElementById(`p${pNum}-item-name`).value = item.name;
+                document.getElementById(`p${pNum}-item-cost`).value = item.cost;
+                window.selectImpact(pNum, item.impact);
+                document.getElementById(`p${pNum}-submit-btn`).innerText = "Save Edit Changes 💾";
+                document.getElementById(`p${pNum}-desk-title`).innerText = `// Editing Card #${localEngineState.historyLog.length - index}`;
+            });
+        };
+
+        // DELETE A DECISION CARD
+        window.deleteCard = function(index) {
+            if(!confirm("Are you sure you want to delete this decision?")) return;
+            let currentLog = localEngineState.historyLog || [];
+            currentLog.splice(index, 1);
+            recalcMetricsFromLog(currentLog);
+        };
+
+        // CALCULATE BALANCE, ENERGY, STRESS DYNAMICALLY FROM REMAINING ENGINE
+        function recalcMetricsFromLog(logArray) {
+            let nextCash = localEngineState.initialBudget;
+            let nextVitality = 100;
+            let nextSuccess = 0;
+
+            // Compute math from oldest logs to newest logs
+            let reversedLog = [...logArray].reverse();
+            reversedLog.forEach(item => {
+                nextCash = Math.max(0, nextCash - item.cost);
+                if(localEngineState.currentMode === "EXPEDITIONS") {
+                    nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 15) : Math.max(0, nextVitality - 20);
+                    nextSuccess += 1;
+                } else {
+                    nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 20) : Math.max(0, nextVitality - 25);
+                    nextSuccess += 120;
+                }
             });
 
             update(ref(db, 'rooms/' + currentRoomId), {
                 remainingCash: nextCash,
                 vitalityScore: nextVitality,
                 successCounter: nextSuccess,
-                historyLog: currentLog
-            }).then(() => {
-                nameInput.value = "";
-                costInput.value = "";
+                historyLog: logArray
             });
-        };
+        }
 
         function renderDashboard(dashId) {
             const cfg = modeConfigs[localEngineState.currentMode];
@@ -370,13 +480,15 @@
                     stars >= i ? successContent += '★' : successContent += '☆';
                 }
             } else {
-                successContent = localEngineState.successCounter + " Active";
+                successContent = localEngineState.successCounter + " Trait";
             }
 
             document.getElementById(dashId).innerHTML = `
                 <div class="metric-card">
                     <span class="metric-label">${cfg.bar1Label}</span>
-                    <div class="metric-val" style="color: ${cashColor}">$${Math.round(localEngineState.remainingCash)}</div>
+                    <div class="metric-val" style="color: ${cashColor}">
+                        $ <input type="number" class="inline-edit-budget" value="${Math.round(localEngineState.remainingCash)}" onchange="window.changeInitialBudget(this.value)">
+                    </div>
                     <div class="bar-container"><div class="bar-fill" style="width: ${cashPct}%; background:${cashColor}"></div></div>
                 </div>
                 <div class="metric-card">
@@ -386,31 +498,47 @@
                 </div>
                 <div class="metric-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                     <span class="metric-label">${cfg.bar3Label}</span>
-                    <div class="metric-val" style="color: var(--neon-gold); font-size:15px; margin-top:4px;">${successContent}</div>
+                    <div class="metric-val" style="color: var(--neon-purple); font-size:15px; margin-top:4px;">${successContent}</div>
                 </div>
             `;
         }
 
-        function renderTables() {
+        // BEAUTIFIED MODERN LOG CARDS RENDERING
+        function renderLogCards() {
             let logList = localEngineState.historyLog || [];
-            let tableHtml = logList.map(item => `
-                <div class="log-item">
-                    <div>
-                        <span style="color:var(--neon-purple); font-size:10px; font-weight:bold;">[${item.author.toUpperCase()}]</span> 
-                        <span class="log-name">${item.name}</span>
+            
+            let cardsHtml = logList.map((item, idx) => {
+                const badgeClass = item.impact === 'pos' ? 'pos' : 'neg';
+                const badgeLabel = item.impact === 'pos' ? 'Positive' : 'Negative';
+                const initial = item.author ? item.author.charAt(0) : 'P';
+
+                return `
+                    <div class="log-card">
+                        <div class="log-card-left">
+                            <div class="log-avatar">${initial}</div>
+                            <div class="log-details">
+                                <span class="log-card-name">${item.name}</span>
+                                <span class="log-card-meta">Decided by: <strong>${item.author}</strong></span>
+                            </div>
+                        </div>
+                        <div class="log-card-right">
+                            <span class="log-card-cost" style="color: ${item.impact === 'pos' ? 'var(--neon-green)' : 'var(--neon-red)'}">-$${item.cost}</span>
+                            <span class="impact-badge ${badgeClass}">${badgeLabel}</span>
+                            <div class="log-actions">
+                                <button class="action-icon-btn" title="Edit Item" onclick="window.startEditCard(${idx})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="action-icon-btn delete-btn" title="Delete Item" onclick="window.deleteCard(${idx})"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="log-meta" style="color: ${item.impact === 'pos' ? 'var(--neon-green)' : 'var(--neon-red)'}">
-                        -$${item.cost} (${item.impact === 'pos' ? '👍' : '👎'})
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             if(logList.length === 0) {
-                tableHtml = `<div style="text-align:center; color:#475569; font-size:11px; padding:20px; font-style:italic;">No commits yet. Debate in English and add your first asset/cost!</div>`;
+                cardsHtml = `<div style="text-align:center; color:#475569; font-size:12px; padding:35px; font-style:italic;">Your decision line is empty. Chat in English and type your first decision item above!</div>`;
             }
 
-            document.getElementById('p1-log-table').innerHTML = tableHtml;
-            document.getElementById('p2-log-table').innerHTML = tableHtml;
+            document.getElementById('p1-log-table').innerHTML = cardsHtml;
+            document.getElementById('p2-log-table').innerHTML = cardsHtml;
         }
     </script>
 </body>
