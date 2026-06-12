@@ -6,7 +6,7 @@
     <title>The Synergy Cell Simulator - Live Cloud</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -17,6 +17,7 @@
             --neon-purple: #a855f7;
             --neon-green: #4ade80;
             --neon-red: #f87171;
+            --neon-gold: #fbbf24;
             --text-light: #f8fafc;
             --border: rgba(255, 255, 255, 0.08);
         }
@@ -31,6 +32,14 @@
         .simulation-info-bar {
             background: #0f172a; border: 1px solid var(--border); padding: 12px 20px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; color: #94a3b8; margin-bottom: 15px; border-radius: 10px;
         }
+
+        /* Mission Briefing Box */
+        .mission-box {
+            background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 12px; padding: 15px 20px; margin-bottom: 15px; display: none;
+        }
+        .mission-title { font-size: 13px; font-weight: bold; color: var(--neon-purple); text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+        .mission-text { font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 8px; }
+        .mission-steps { font-size: 11px; color: #94a3b8; padding-left: 15px; }
 
         .simulation-container { display: flex; gap: 20px; flex: 1; width: 100%; }
         .device-screen {
@@ -47,9 +56,7 @@
         input, select { width: 100%; padding: 12px; background: #090d16; border: 1px solid var(--border); border-radius: 8px; color: white; font-family: inherit; }
         input:focus, select:focus { border-color: var(--neon-blue); outline: none; }
         
-        .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .mode-btn { background: #090d16; border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; font-weight: bold; font-size: 12px; color: #64748b; }
-        .mode-btn.active { border-color: var(--neon-purple); color: var(--neon-purple); background: rgba(168, 85, 247, 0.05); }
+        .mode-dropdown { background: #090d16; color: white; cursor: pointer; font-weight: bold; }
 
         .action-btn { width: 100%; background: linear-gradient(90deg, #0284c7, #a855f7); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
         .action-btn:hover { filter: brightness(1.2); }
@@ -82,8 +89,7 @@
         .log-section { flex: 1; min-height: 180px; display: flex; flex-direction: column; }
         .log-table-wrapper { display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; padding-right: 5px; }
         
-        .log-card { background: #0f172a; border: 1px solid var(--border); padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.2s; }
-        .log-card:hover { border-color: rgba(255,255,255,0.15); }
+        .log-card { background: #0f172a; border: 1px solid var(--border); padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .log-card-left { display: flex; align-items: center; gap: 12px; }
         .log-avatar { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--neon-purple); color: var(--neon-purple); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; text-transform: uppercase; }
         .log-details { display: flex; flex-direction: column; gap: 2px; }
@@ -97,7 +103,7 @@
         .impact-badge.neg { background: rgba(248, 113, 113, 0.1); color: var(--neon-red); border: 1px solid rgba(248, 113, 113, 0.2); }
         
         .log-actions { display: flex; gap: 6px; margin-left: 5px; border-left: 1px solid var(--border); padding-left: 10px; }
-        .action-icon-btn { background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 12px; padding: 4px; transition: 0.2s; }
+        .action-icon-btn { background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 12px; padding: 4px; }
         .action-icon-btn:hover { color: white; }
         .action-icon-btn.delete-btn:hover { color: var(--neon-red); }
     </style>
@@ -105,44 +111,47 @@
 <body>
 
     <div class="simulation-info-bar">
-        <div><i class="fa-solid fa-cloud" style="color: var(--neon-green);"></i> <strong>LIVE CELL:</strong> English Meetings Session</div>
+        <div><i class="fa-solid fa-cloud" style="color: var(--neon-green);"></i> <strong>LIVE CELL:</strong> English Meetings Hub</div>
         <div style="font-family: 'Courier Prime', monospace; color: var(--neon-purple);" id="room-display">[SESSION NOT STARTED]</div>
+    </div>
+
+    <div class="mission-box" id="global-mission-box">
+        <div class="mission-title" id="mission-title-content"></div>
+        <div class="mission-text" id="mission-text-content"></div>
+        <ul class="mission-steps" id="mission-steps-content"></ul>
     </div>
 
     <div class="simulation-container">
         
-        <!-- CLIENT ALPHA -->
         <div id="device-p1" class="device-screen">
             <div class="device-header">
                 <span class="tech-title">// PLAYER 1 CONTROLLER</span>
                 <span class="device-badge" id="badge-p1-name">Waiting...</span>
             </div>
 
-            <!-- SETUP LAYER -->
             <div id="p1-setup">
                 <div class="setup-group">
-                    <label>Choose Simulation Universe:</label>
-                    <div class="mode-selector">
-                        <div class="mode-btn active" id="btn-mode-exp" onclick="window.setMode('EXPEDITIONS')">🧳 EXPEDITIONS</div>
-                        <div class="mode-btn" id="btn-mode-ven" onclick="window.setMode('VENTURES')">🚀 VENTURES</div>
-                    </div>
+                    <label>Select Today's Lesson Scenario:</label>
+                    <select id="select-game-mode" class="mode-dropdown">
+                        <option value="EXPEDITIONS">🧳 Scenario A: Vacation Expedition (Trip Planner)</option>
+                        <option value="VENTURES">🚀 Scenario B: Tech Venture Startup (Business Tech)</option>
+                        <option value="ROAD_TRIP">🚗 Scenario C: Renting a Car & Road Trip (Agency Deals)</option>
+                    </select>
                 </div>
                 <div class="setup-group">
                     <label>Your Name:</label>
                     <input type="text" id="input-p1-name" placeholder="Type your name...">
                 </div>
                 <div class="setup-group">
-                    <label>Session Room ID (Share this with your partner):</label>
+                    <label>Session Room ID (Give this to your partner):</label>
                     <input type="text" id="input-room-id" value="room-1" style="font-family:'Courier Prime'; color:var(--neon-purple);">
                 </div>
                 <button class="action-btn" style="margin-top:10px;" onclick="window.initSandbox()">Launch Shared Cell ➔</button>
             </div>
 
-            <!-- LIVE GAME LAYER -->
             <div id="p1-game" style="display:none; flex-direction: column; flex: 1;">
                 <div class="dashboard-grid" id="p1-dash"></div>
                 
-                <!-- Suggestions -->
                 <div class="suggestions-box">
                     <div class="suggestions-title"><i class="fa-regular fa-lightbulb"></i> Idea Starters (Click to use):</div>
                     <div class="suggestions-tags" id="p1-suggestions"></div>
@@ -151,12 +160,12 @@
                 <div class="workspace-title" id="p1-desk-title">// Action Desk</div>
                 <div class="interactive-panel">
                     <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
-                        <input type="text" id="p1-item-name" placeholder="e.g., Luxury Hotel / Marketing Ads">
+                        <input type="text" id="p1-item-name" placeholder="Type deal item description...">
                         <input type="number" id="p1-item-cost" placeholder="$ Cost">
                     </div>
                     <div class="impact-selector">
-                        <div class="imp-btn positive" id="p1-imp-pos" onclick="window.selectImpact(1, 'pos')">👍 Recovers Energy</div>
-                        <div class="imp-btn negative selected" id="p1-imp-neg" onclick="window.selectImpact(1, 'neg')">👎 Drains Energy</div>
+                        <div class="imp-btn positive" id="p1-imp-pos" onclick="window.selectImpact(1, 'pos')">👍 Balance Status</div>
+                        <div class="imp-btn negative selected" id="p1-imp-neg" onclick="window.selectImpact(1, 'neg')">👎 Stress Impact</div>
                     </div>
                     <button class="action-btn" id="p1-submit-btn" style="padding:10px; font-size:12px;" onclick="window.submitLog(1)">Send Decision ➔</button>
                 </div>
@@ -168,14 +177,12 @@
             </div>
         </div>
 
-        <!-- CLIENT BRAVO -->
         <div id="device-p2" class="device-screen">
             <div class="device-header">
                 <span class="tech-title">// PLAYER 2 CONTROLLER</span>
                 <span class="device-badge" id="badge-p2-name">Waiting...</span>
             </div>
 
-            <!-- SETUP LAYER -->
             <div id="p2-setup">
                 <div class="setup-group">
                     <label>Your Name:</label>
@@ -188,11 +195,9 @@
                 <button class="action-btn" style="margin-top:10px; background:linear-gradient(90deg, #a855f7, #0284c7);" onclick="window.joinSandbox()">Join Shared Cell ➔</button>
             </div>
 
-            <!-- LIVE GAME LAYER -->
             <div id="p2-game" style="display:none; flex-direction: column; flex: 1;">
                 <div class="dashboard-grid" id="p2-dash"></div>
                 
-                <!-- Suggestions -->
                 <div class="suggestions-box">
                     <div class="suggestions-title"><i class="fa-regular fa-lightbulb"></i> Idea Starters (Click to use):</div>
                     <div class="suggestions-tags" id="p2-suggestions"></div>
@@ -201,12 +206,12 @@
                 <div class="workspace-title" id="p2-desk-title">// Action Desk</div>
                 <div class="interactive-panel">
                     <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
-                        <input type="text" id="p2-item-name" placeholder="e.g., Local Street Food / Servers Pack">
+                        <input type="text" id="p2-item-name" placeholder="Type deal item description...">
                         <input type="number" id="p2-item-cost" placeholder="$ Cost">
                     </div>
                     <div class="impact-selector">
-                        <div class="imp-btn positive" id="p2-imp-pos" onclick="window.selectImpact(2, 'pos')">👍 Recovers Energy</div>
-                        <div class="imp-btn negative selected" id="p2-imp-neg" onclick="window.selectImpact(2, 'neg')">👎 Drains Energy</div>
+                        <div class="imp-btn positive" id="p2-imp-pos" onclick="window.selectImpact(2, 'pos')">👍 Balance Status</div>
+                        <div class="imp-btn negative selected" id="p2-imp-neg" onclick="window.selectImpact(2, 'neg')">👎 Stress Impact</div>
                     </div>
                     <button class="action-btn" id="p2-submit-btn" style="padding:10px; font-size:12px;" onclick="window.submitLog(2)">Send Decision ➔</button>
                 </div>
@@ -220,7 +225,6 @@
 
     </div>
 
-    <!-- FIREBASE MODULE INTEGRATION -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
         import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
@@ -238,7 +242,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // ENGINE LOCAL STATE
         let localEngineState = {
             currentMode: "EXPEDITIONS",
             player1Name: "Player 1",
@@ -253,27 +256,34 @@
         };
 
         let currentRoomId = "room-1";
-        let editingIndex = null; // Tracks if we are editing an existing item
+        let editingIndex = null;
 
-        const modeConfigs = {
+        // SCENARIOS ARCHITECTURE MAPPING (CAMALEÃO)
+        const scenarioConfigs = {
             "EXPEDITIONS": {
+                title: "🧳 Mission Scenario: Vacation Expedition",
+                briefing: "You and your partner are planning a dream vacation trip. Negotiate costs responsibly, but remember that cheap options might affect your body energy!",
+                steps: "<li>Open your microphones and talk about where to stay, eat, and visit.</li><li>Register expenses in the Action Desk. Select 'Recovers Energy' for luxury/rest, or 'Drains Energy' for long walks/cheap items.</li>",
                 bar1Label: "💰 Budget Remaining", bar2Label: "🔋 Team Energy", bar3Label: "📸 Memories",
                 posText: "👍 Recovers Energy", negText: "👎 Drains Energy",
                 suggestions: ["Luxury Hotel", "Street Food", "Flight Tickets", "Tour Guide", "Souvenirs", "Museum Pass", "Train Ticket", "Local Restaurant", "Emergency Taxi"]
             },
             "VENTURES": {
+                title: "🚀 Mission Scenario: Tech Venture Startup",
+                briefing: "You just launched a new software company! Work together to allocate investment funds into critical business assets, but watch out for extreme team stress.",
+                steps: "<li>Debate what software tools, offices, or people your company needs right now.</li><li>Commit costs. Select 'Reduces Stress' for employee benefits or perks, or 'Increases Burnout' for massive infrastructure.</li>",
                 bar1Label: "💳 Funding Left", bar2Label: "🤯 Team Burnout", bar3Label: "📈 Active Users",
                 posText: "👍 Reduces Stress", negText: "👎 Increases Burnout",
                 suggestions: ["Cloud Servers", "Marketing Ads", "Office Rent", "Graphic Designer", "Coffee Machine", "Legal Advice", "Software License", "Team Dinner", "Consultant"]
+            },
+            "ROAD_TRIP": {
+                title: "🚗 Mission Scenario: Renting a Car & Road Trip",
+                briefing: "You are at the vehicle rental agency desk preparing a cross-country trip. Choose the perfect car upgrades and features, balancing deals with safety fatigue.",
+                steps: "<li>Talk to your partner about car classes, add-ons, full insurance protections, and fuel terms.</li><li>Send deals to cloud. Select 'Improves Safety' for premium choices, or 'Increases Fatigue' for cheap compact options.</li>",
+                bar1Label: "🚙 Agency Car Cash", bar2Label: "🥱 Driver's Fatigue", bar3Label: "🛡️ Upgrades Added",
+                posText: "👍 Improves Safety", negText: "👎 Increases Fatigue",
+                suggestions: ["SUV Upgrade", "Full Insurance Cover", "GPS Navigation", "Child Car Seat", "Prepaid Fuel Tank", "Toll Pass Device", "Additional Driver Fee", "Roof Cargo Box", "Roadside Assist Pack"]
             }
-        };
-
-        // EXPOSE FUNCTIONS TO WINDOW
-        window.setMode = function(mode) {
-            localEngineState.currentMode = mode;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-            if(mode === 'EXPEDITIONS') document.getElementById('btn-mode-exp').classList.add('active');
-            else document.getElementById('btn-mode-ven').classList.add('active');
         };
 
         window.selectImpact = function(playerNum, type) {
@@ -294,10 +304,11 @@
             document.getElementById(`p${playerNum}-item-name`).value = text;
         };
 
-        // SETUP INITIAL ROOM AS PLAYER 1
+        // INITIALIZE ROOM (PLAYER 1)
         window.initSandbox = function() {
             currentRoomId = document.getElementById('input-room-id').value.trim() || "room-1";
             localEngineState.player1Name = document.getElementById('input-p1-name').value.trim() || "Player 1";
+            localEngineState.currentMode = document.getElementById('select-game-mode').value;
             localEngineState.historyLog = ["EMPTY_ROOM"]; 
 
             set(ref(db, 'rooms/' + currentRoomId), localEngineState).then(() => {
@@ -307,7 +318,7 @@
             });
         };
 
-        // JOIN ROOM AS PLAYER 2
+        // JOIN ACTIVE ROOM (PLAYER 2)
         window.joinSandbox = function() {
             currentRoomId = document.getElementById('input-p2-room-id').value.trim() || "room-1";
             localEngineState.player2Name = document.getElementById('input-p2-name').value.trim() || "Player 2";
@@ -321,7 +332,7 @@
             });
         };
 
-        // LISTEN TO REALTIME CLOUD CHANGES
+        // LISTEN AND RE-RENDER CAMALEÃO ENVIRONMENT
         function listenToCloud() {
             document.getElementById('room-display').innerText = `[ACTIVE SESSION ROOM: ${currentRoomId.toUpperCase()}]`;
             
@@ -334,15 +345,23 @@
                     localEngineState.historyLog = [];
                 }
 
-                // Update text options based on mode
-                const config = modeConfigs[localEngineState.currentMode];
+                // FETCH THE CHOSEN SCENARIO CONFIG
+                const config = scenarioConfigs[localEngineState.currentMode];
+
+                // RENDER TOP MISSION BRIEFING
+                document.getElementById('global-mission-box').style.display = "block";
+                document.getElementById('mission-title-content').innerHTML = `<i class="fa-solid fa-compass"></i> ${config.title}`;
+                document.getElementById('mission-text-content').innerText = config.briefing;
+                document.getElementById('mission-steps-content').innerHTML = `<strong>What to do now:</strong><br>${config.steps}`;
+
+                // RENDER IMPACT ACTION DESK BUTTON LABELS
                 document.querySelectorAll('.positive').forEach(el => el.innerText = config.posText);
                 document.querySelectorAll('.negative').forEach(el => el.innerText = config.negText);
                 
                 document.getElementById('badge-p1-name').innerText = localEngineState.player1Name;
                 document.getElementById('badge-p2-name').innerText = localEngineState.player2Name;
 
-                // Sync UI layers
+                // LAYER CHECK
                 if(document.getElementById('p1-setup').style.display !== 'none' && data.player1Name !== "Player 1") {
                     document.getElementById('p1-setup').style.display = 'none';
                     document.getElementById('p1-game').style.display = 'flex';
@@ -361,14 +380,13 @@
         }
 
         function renderSuggestions(playerNum) {
-            const list = modeConfigs[localEngineState.currentMode].suggestions;
+            const list = scenarioConfigs[localEngineState.currentMode].suggestions;
             const container = document.getElementById(`p${playerNum}-suggestions`);
             container.innerHTML = list.map(item => `
                 <span class="sug-tag" onclick="window.applySuggestion(${playerNum}, '${item}')">${item}</span>
             `).join('');
         }
 
-        // CHANGE STARTING BUDGET LIVE ON GAME SCREEN
         window.changeInitialBudget = function(val) {
             let num = parseFloat(val) || 3000;
             update(ref(db, 'rooms/' + currentRoomId), {
@@ -376,7 +394,7 @@
             }).then(() => recalcMetricsFromLog(localEngineState.historyLog));
         };
 
-        // SUBMIT AND SEND DECISION TO CLOUD
+        // SUBMIT AND COMPUTE RULES DYNAMICALLY BASED ON CURRENT MODE
         window.submitLog = function(playerNum) {
             const nameInput = document.getElementById(`p${playerNum}-item-name`);
             const costInput = document.getElementById(`p${playerNum}-item-cost`);
@@ -385,25 +403,23 @@
             const itemCost = parseFloat(costInput.value) || 0;
             const impactType = playerNum === 1 ? localEngineState.p1SelectedImpact : localEngineState.p2SelectedImpact;
 
-            if(!itemName) return alert("Please write a description first!");
+            if(!itemName) return alert("Please type an item description first!");
 
             let currentLog = localEngineState.historyLog || [];
 
             if (editingIndex !== null) {
-                // We are updating an existing card
                 currentLog[editingIndex] = {
-                    author: currentLog[editingIndex].author, // Keep original creator
+                    author: currentLog[editingIndex].author,
                     name: itemName,
                     cost: itemCost,
                     impact: impactType
                 };
                 editingIndex = null;
-                document.getElementById('p1-submit-btn').innerText = "Send Decision ➔";
-                document.getElementById('p2-submit-btn').innerText = "Send Decision ➔";
-                document.getElementById('p1-desk-title').innerText = "// Action Desk";
-                document.getElementById('p2-desk-title').innerText = "// Action Desk";
+                [1,2].forEach(p => {
+                    document.getElementById(`p${p}-submit-btn`).innerText = "Send Decision ➔";
+                    document.getElementById(`p${p}-desk-title`).innerText = "// Action Desk";
+                });
             } else {
-                // Creating a brand new card
                 currentLog.unshift({
                     author: playerNum === 1 ? localEngineState.player1Name : localEngineState.player2Name,
                     name: itemName,
@@ -417,12 +433,9 @@
             recalcMetricsFromLog(currentLog);
         };
 
-        // EDIT A DECISION CARD
         window.startEditCard = function(index) {
             editingIndex = index;
             const item = localEngineState.historyLog[index];
-            
-            // Populate inputs on both control dashboards for ease of access
             [1, 2].forEach(pNum => {
                 document.getElementById(`p${pNum}-item-name`).value = item.name;
                 document.getElementById(`p${pNum}-item-cost`).value = item.cost;
@@ -432,30 +445,32 @@
             });
         };
 
-        // DELETE A DECISION CARD
         window.deleteCard = function(index) {
-            if(!confirm("Are you sure you want to delete this decision?")) return;
+            if(!confirm("Are you sure you want to remove this item?")) return;
             let currentLog = localEngineState.historyLog || [];
             currentLog.splice(index, 1);
             recalcMetricsFromLog(currentLog);
         };
 
-        // CALCULATE BALANCE, ENERGY, STRESS DYNAMICALLY FROM REMAINING ENGINE
+        // RECALCULATE SIMULATOR MATHEMATICS
         function recalcMetricsFromLog(logArray) {
             let nextCash = localEngineState.initialBudget;
             let nextVitality = 100;
             let nextSuccess = 0;
 
-            // Compute math from oldest logs to newest logs
             let reversedLog = [...logArray].reverse();
             reversedLog.forEach(item => {
                 nextCash = Math.max(0, nextCash - item.cost);
                 if(localEngineState.currentMode === "EXPEDITIONS") {
                     nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 15) : Math.max(0, nextVitality - 20);
                     nextSuccess += 1;
-                } else {
+                } else if(localEngineState.currentMode === "VENTURES") {
                     nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 20) : Math.max(0, nextVitality - 25);
                     nextSuccess += 120;
+                } else {
+                    // ROAD TRIP COMPUTATION
+                    nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 10) : Math.max(0, nextVitality - 15);
+                    nextSuccess += 1; // Counter of features added
                 }
             });
 
@@ -468,19 +483,19 @@
         }
 
         function renderDashboard(dashId) {
-            const cfg = modeConfigs[localEngineState.currentMode];
+            const cfg = scenarioConfigs[localEngineState.currentMode];
             const cashPct = Math.min(100, Math.max(0, (localEngineState.remainingCash / localEngineState.initialBudget) * 100));
             const cashColor = cashPct > 35 ? 'var(--neon-green)' : 'var(--neon-red)';
             const vitColor = localEngineState.vitalityScore > 40 ? 'var(--neon-blue)' : 'var(--neon-gold)';
 
-            let successContent = "";
+            let finalCounterDisplay = "";
             if(localEngineState.currentMode === "EXPEDITIONS") {
                 let stars = Math.min(5, Math.floor(localEngineState.successCounter / 2));
-                for(let i=1; i<=5; i++) {
-                    stars >= i ? successContent += '★' : successContent += '☆';
-                }
+                for(let i=1; i<=5; i++) { stars >= i ? finalCounterDisplay += '★' : finalCounterDisplay += '☆'; }
+            } else if(localEngineState.currentMode === "VENTURES") {
+                finalCounterDisplay = localEngineState.successCounter + " Trait";
             } else {
-                successContent = localEngineState.successCounter + " Trait";
+                finalCounterDisplay = localEngineState.successCounter + " Selected";
             }
 
             document.getElementById(dashId).innerHTML = `
@@ -498,18 +513,18 @@
                 </div>
                 <div class="metric-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                     <span class="metric-label">${cfg.bar3Label}</span>
-                    <div class="metric-val" style="color: var(--neon-purple); font-size:15px; margin-top:4px;">${successContent}</div>
+                    <div class="metric-val" style="color: var(--neon-purple); font-size:14px; margin-top:4px;">${finalCounterDisplay}</div>
                 </div>
             `;
         }
 
-        // BEAUTIFIED MODERN LOG CARDS RENDERING
         function renderLogCards() {
             let logList = localEngineState.historyLog || [];
+            const cfg = scenarioConfigs[localEngineState.currentMode];
             
             let cardsHtml = logList.map((item, idx) => {
                 const badgeClass = item.impact === 'pos' ? 'pos' : 'neg';
-                const badgeLabel = item.impact === 'pos' ? 'Positive' : 'Negative';
+                const badgeLabel = item.impact === 'pos' ? 'Positive Impact' : 'Negative Impact';
                 const initial = item.author ? item.author.charAt(0) : 'P';
 
                 return `
@@ -525,8 +540,8 @@
                             <span class="log-card-cost" style="color: ${item.impact === 'pos' ? 'var(--neon-green)' : 'var(--neon-red)'}">-$${item.cost}</span>
                             <span class="impact-badge ${badgeClass}">${badgeLabel}</span>
                             <div class="log-actions">
-                                <button class="action-icon-btn" title="Edit Item" onclick="window.startEditCard(${idx})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="action-icon-btn delete-btn" title="Delete Item" onclick="window.deleteCard(${idx})"><i class="fa-solid fa-trash-can"></i></button>
+                                <button class="action-icon-btn" title="Edit" onclick="window.startEditCard(${idx})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="action-icon-btn delete-btn" title="Delete" onclick="window.deleteCard(${idx})"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
                     </div>
@@ -534,7 +549,7 @@
             }).join('');
 
             if(logList.length === 0) {
-                cardsHtml = `<div style="text-align:center; color:#475569; font-size:12px; padding:35px; font-style:italic;">Your decision line is empty. Chat in English and type your first decision item above!</div>`;
+                cardsHtml = `<div style="text-align:center; color:#475569; font-size:12px; padding:35px; font-style:italic;">No deal tracked yet. Agree in English and post your first deal card!</div>`;
             }
 
             document.getElementById('p1-log-table').innerHTML = cardsHtml;
