@@ -3,383 +3,414 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Up! - Open Dilemma Engine</title>
+    <title>The Synergy Cell Simulator - Live Cloud</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
-            --bg-dark: #090d16;
-            --panel-bg: rgba(20, 27, 45, 0.7);
-            --neon-blue: #00d2ff;
-            --neon-purple: #b026ff;
-            --neon-gold: #ffbd00;
-            --neon-green: #39ff14;
-            --text-light: #f1f5f9;
+            --bg-dark: #040711;
+            --panel-bg: rgba(13, 20, 38, 0.8);
+            --neon-blue: #38bdf8;
+            --neon-purple: #a855f7;
+            --neon-green: #4ade80;
+            --neon-red: #f87171;
+            --text-light: #f8fafc;
             --border: rgba(255, 255, 255, 0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 30px 20px;
-            background-image: radial-gradient(circle at 50% 15%, rgba(176, 38, 255, 0.08) 0%, transparent 50%),
-                              radial-gradient(circle at 10% 80%, rgba(0, 210, 255, 0.05) 0%, transparent 40%);
+            background-color: var(--bg-dark); color: var(--text-light);
+            font-family: 'Poppins', sans-serif; min-height: 100vh;
+            display: flex; flex-direction: column; padding: 15px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        .simulation-info-bar {
+            background: #0f172a; border: 1px solid var(--border); padding: 12px 20px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; color: #94a3b8; margin-bottom: 15px; border-radius: 10px;
         }
 
-        .header {
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 25px;
-            margin-bottom: 35px;
+        .simulation-container { display: flex; gap: 20px; flex: 1; width: 100%; }
+        .device-screen {
+            flex: 1; background: var(--panel-bg); border: 2px solid var(--border); border-radius: 16px; padding: 25px; display: flex; flex-direction: column; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .header h1 { font-family: 'Courier Prime', monospace; color: var(--neon-blue); font-size: 26px; letter-spacing: 1px; }
-        .header p { font-size: 13px; color: #64748b; margin-top: 5px; text-transform: uppercase; }
 
-        .screen { display: none; }
-        .screen.active { display: block; }
+        .device-header { border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .tech-title { font-family: 'Courier Prime', monospace; font-size: 13px; color: var(--neon-blue); letter-spacing: 1px; }
+        .device-badge { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; font-size: 11px; color: #94a3b8; border: 1px solid var(--border); text-transform: uppercase; }
 
-        .input-group { display: flex; gap: 15px; margin-bottom: 25px; }
-        input[type="text"] {
-            flex: 1; padding: 16px; background: #0b101d; border: 1px solid var(--border); border-radius: 10px; color: white; font-family: 'Poppins', sans-serif; font-size: 14px; transition: border 0.3s;
-        }
-        input[type="text"]:focus { border-color: var(--neon-blue); outline: none; }
-
-        .level-selector { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 30px; }
-        .lvl-btn {
-            background: #0b101d; border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: #64748b; cursor: pointer; text-align: center; font-weight: bold; transition: all 0.2s;
-        }
-        .lvl-btn.selected { border-color: var(--neon-gold); color: var(--neon-gold); background: rgba(255,189,0,0.04); box-shadow: 0 0 12px rgba(255,189,0,0.1); }
-
-        .main-btn {
-            width: 100%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); color: white; border: none; padding: 18px; font-weight: 700; font-size: 15px; border-radius: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;
-        }
-        .main-btn:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2); }
-
-        .dice-area { text-align: center; margin-bottom: 40px; }
-        .dice-trigger {
-            background: rgba(255,255,255,0.03); border: 2px dashed rgba(255,255,255,0.1); width: 120px; height: 120px; border-radius: 20px; display: inline-flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; margin-bottom: 15px;
-        }
-        .dice-trigger:hover { border-color: var(--neon-blue); background: rgba(0,210,255,0.02); transform: scale(1.05); }
-        .dice-trigger i { font-size: 50px; color: var(--neon-blue); }
-        .dice-trigger.rolling i { animation: spin 0.6s infinite linear; color: var(--neon-gold); }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        .dilemma-box {
-            background: rgba(0, 0, 0, 0.2); border-left: 4px solid var(--neon-purple); padding: 25px; border-radius: 0 12px 12px 0; margin-bottom: 35px; min-height: 100px;
-        }
-        .dilemma-box h3 { font-family: 'Courier Prime', monospace; color: var(--neon-purple); font-size: 14px; margin-bottom: 10px; letter-spacing: 0.5px; }
-        .dilemma-box p { font-size: 16px; line-height: 1.6; color: #cbd5e1; font-weight: 300; }
-
-        .playground-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; }
-        .section-title { font-family: 'Courier Prime', monospace; font-size: 13px; color: var(--neon-gold); letter-spacing: 0.5px; margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-
-        .vocab-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        .vocab-card {
-            background: rgba(11, 16, 29, 0.7); border: 1px solid var(--border); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;
-        }
-        .vocab-info { flex: 1; padding-right: 15px; }
-        .vocab-term { font-size: 14px; font-weight: 700; color: white; display: block; margin-bottom: 4px; }
-        .vocab-def { font-size: 12px; color: #94a3b8; line-height: 1.4; }
+        /* Setup / Config */
+        .setup-group { margin-bottom: 15px; }
+        label { display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; background: #090d16; border: 1px solid var(--border); border-radius: 8px; color: white; font-family: inherit; }
+        input:focus, select:focus { border-color: var(--neon-blue); outline: none; }
         
-        .score-btn {
-            background: rgba(57, 255, 20, 0.1); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap;
-        }
-        .score-btn:hover { background: var(--neon-green); color: black; }
-        .score-btn.claimed { background: #1e293b; border-color: var(--border); color: #64748b; cursor: not-allowed; }
+        .mode-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .mode-btn { background: #090d16; border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; font-weight: bold; font-size: 12px; color: #64748b; }
+        .mode-btn.active { border-color: var(--neon-purple); color: var(--neon-purple); background: rgba(168, 85, 247, 0.05); }
 
-        .pilot-box { background: rgba(0, 210, 255, 0.02); border: 1px solid rgba(0, 210, 255, 0.1); padding: 20px; border-radius: 12px; height: fit-content; }
-        .pilot-actions { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        .pilot-btn {
-            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: #cbd5e1; padding: 14px; border-radius: 8px; text-align: left; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 12px; transition: all 0.2s;
-        }
-        .pilot-btn:hover { background: rgba(0, 210, 255, 0.06); border-color: var(--neon-blue); color: white; }
-        .pilot-btn i { color: var(--neon-blue); font-size: 16px; }
+        .action-btn { width: 100%; background: linear-gradient(90deg, #0284c7, #a855f7); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        .action-btn:hover { filter: brightness(1.2); }
 
-        .audit-log { background: #0b101d; border: 1px solid var(--border); border-radius: 8px; padding: 15px; max-height: 160px; overflow-y: auto; font-family: 'Courier Prime', monospace; font-size: 11px; color: #64748b; margin-top: 15px; }
-        .audit-entry { margin-bottom: 6px; line-height: 1.4; }
-        .audit-entry span { color: var(--neon-green); font-weight: bold; }
+        /* Dashboard */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .metric-card { background: #090d16; border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; }
+        .metric-label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 2px; text-transform: uppercase; }
+        .metric-val { font-size: 18px; font-weight: bold; font-family: 'Courier Prime', monospace; }
+        .bar-container { background: #1e293b; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden; }
+        .bar-fill { height: 100%; transition: width 0.4s ease; width: 100%; }
 
-        .end-session-btn {
-            background: transparent; border: 1px solid #ef4444; color: #fca5a5; padding: 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; margin-top: 25px; transition: all 0.2s; text-align: center;
-        }
-        .end-session-btn:hover { background: rgba(239, 68, 68, 0.1); }
+        /* Sandbox Workspace */
+        .workspace-title { font-size: 12px; font-family: 'Courier Prime', monospace; color: var(--neon-purple); margin-bottom: 10px; text-transform: uppercase;}
+        .interactive-panel { background: rgba(255,255,255,0.01); border: 1px dashed var(--border); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .impact-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+        .imp-btn { background: #090d16; border: 1px solid var(--border); padding: 8px; border-radius: 6px; font-size: 11px; cursor: pointer; color: #64748b; text-align: center; font-weight: bold;}
+        .imp-btn.positive.selected { border-color: var(--neon-green); color: var(--neon-green); background: rgba(74,222,128,0.05); }
+        .imp-btn.negative.selected { border-color: var(--neon-red); color: var(--neon-red); background: rgba(248,113,113,0.05); }
 
-        .report-card { background: white; color: #0f172a; padding: 40px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border-top: 8px solid var(--neon-gold); }
-        .report-card h2 { color: #1e3a8a; font-family: 'Courier Prime', monospace; margin-bottom: 20px; text-align: center; }
-        .report-metric { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        .report-metric strong { color: #1e40af; font-size: 14px; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        .report-metric p { font-size: 15px; color: #334155; line-height: 1.5; }
+        /* History Log Table */
+        .log-section { flex: 1; min-height: 150px; display: flex; flex-direction: column; }
+        .log-table-wrapper { background: #090d16; border: 1px solid var(--border); border-radius: 8px; flex: 1; overflow-y: auto; padding: 10px; }
+        .log-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 12px; }
+        .log-item:last-child { border-bottom: none; }
+        .log-name { font-weight: 500; }
+        .log-meta { font-family: 'Courier Prime', monospace; font-size: 11px; }
+
+        .flash-effect { animation: flash 0.5s ease-out; }
+        @keyframes flash { 0% { border-color: var(--neon-purple); } 100% { border-color: var(--border); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1 id="app-title">TEAM UP! // OPEN DILEMMAS</h1>
-            <p id="app-subtitle">Swerve the conversation into strategic negotiation</p>
-        </div>
-
-        <div id="screen-1" class="screen active">
-            <div class="input-group">
-                <input type="text" id="p1-input" placeholder="Student 1 Name...">
-                <input type="text" id="p2-input" placeholder="Student 2 Name...">
-            </div>
-            
-            <div class="section-title"><i class="fa-solid fa-sliders"></i> Target Proficiency Level</div>
-            <div class="level-selector">
-                <div class="lvl-btn" onclick="selectLevel('A1')">A1</div>
-                <div class="lvl-btn" onclick="selectLevel('A2')">A2</div>
-                <div class="lvl-btn selected" onclick="selectLevel('B1')">B1</div>
-                <div class="lvl-btn" onclick="selectLevel('B2')">B2</div>
-                <div class="lvl-btn" onclick="selectLevel('C1')">C1</div>
-                <div class="lvl-btn" onclick="selectLevel('C2')">C2</div>
-            </div>
-
-            <button class="main-btn" onclick="startPlayground()">Open Playground Portal ➔</button>
-        </div>
-
-        <div id="screen-2" class="screen">
-            <div class="dice-area">
-                <div class="dice-trigger" id="dice-btn" onclick="rollDice()">
-                    <i class="fa-solid fa-dice-five"></i>
-                </div>
-                <h2 id="topic-display" style="font-family:'Courier Prime', monospace; font-size:22px; color:var(--neon-blue);">ROLL THE DICE TO CHOOSE A THEME</h2>
-            </div>
-
-            <div class="dilemma-box" id="dilemma-wrapper" style="display:none;">
-                <h3><i class="fa-solid fa-shuffle"></i> GENERATED OPEN DILEMMA</h3>
-                <p id="dilemma-text">Awaiting theme generation protocol...</p>
-            </div>
-
-            <div class="playground-layout">
-                <div>
-                    <div class="section-title"><i class="fa-solid fa-bolt"></i> 1. Vocabulary Boosters (Plain English)</div>
-                    <div class="vocab-list" id="vocab-wrapper">
-                        </div>
-                    
-                    <button class="end-session-btn" onclick="compileReport()">Conclude Conversation & Archive Report ➔</button>
-                </div>
-
-                <div class="pilot-box">
-                    <div class="section-title"><i class="fa-solid fa-circle-nodes"></i> 2. Co-Pilot Interaction Deck</div>
-                    <div class="pilot-actions">
-                        <button class="pilot-btn" onclick="logHelpAction('Emergency Vocabulary Help Request')">
-                            <i class="fa-solid fa-life-ring"></i>
-                            <div>
-                                <strong>SOS Word Help</strong>
-                                <p style="font-size:11px; color:#64748b; margin-top:2px;">Requested a word translation/meaning to peer.</p>
-                            </div>
-                        </button>
-                        <button class="pilot-btn" onclick="logHelpAction('Peer-to-Peer Structural Correction')">
-                            <i class="fa-solid fa-handshake-angle"></i>
-                            <div>
-                                <strong>Peer Assistance Accorded</strong>
-                                <p style="font-size:11px; color:#64748b; margin-top:2px;">Partner fixed or optimized an ongoing sentence.</p>
-                            </div>
-                        </button>
-                    </div>
-
-                    <div style="margin-top:25px; font-size:11px; color:var(--neon-blue); font-weight:bold; font-family:'Courier Prime', monospace;">LIVE CHRONOLOGY LOG:</div>
-                    <div class="audit-log" id="audit-log-box">
-                        <div class="audit-entry">&gt; System initialized. Awaiting user roll input.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="screen-3" class="screen">
-            <div class="report-card">
-                <h2><i class="fa-solid fa-award"></i> CONVERSATION FILE HARVEST</h2>
-                <div id="report-names" style="text-align:center; font-weight:bold; font-size:18px; color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:15px; margin-bottom:25px;"></div>
-                
-                <div class="report-metric">
-                    <strong>Negotiated Dilemma Architecture:</strong>
-                    <p id="rep-scenario"></p>
-                </div>
-
-                <div class="report-metric" style="border-left: 5px solid var(--neon-green); background: #f0fdf4;">
-                    <strong>Successfully Pinned Vocabulary Tokens:</strong>
-                    <ul id="rep-vocab-success" style="margin-left: 20px; margin-top: 5px; font-size: 14px; color: #166534; display:grid; gap:4px;"></ul>
-                </div>
-
-                <div class="report-metric" style="border-left: 5px solid var(--neon-blue); background: #eff6ff;">
-                    <strong>Co-Pilot Collaborative Interaction Marks:</strong>
-                    <ul id="rep-copilot-log" style="margin-left: 20px; margin-top: 5px; font-size: 14px; color: #1e40af; display:grid; gap:4px;"></ul>
-                </div>
-            </div>
-            <button class="main-btn" style="margin-top:30px; background:linear-gradient(90deg, #475569, #1e293b);" onclick="location.reload()">Initiate New Theme 🎲</button>
-        </div>
+    <div class="simulation-info-bar">
+        <div><i class="fa-solid fa-cloud" style="color: var(--neon-green);"></i> <strong>FIREBASE LIVE CELL:</strong> Connected to English Meetings</div>
+        <div style="font-family: 'Courier Prime', monospace; color: var(--neon-gold);" id="room-display">[SESSION NOT STARTED]</div>
     </div>
 
-    <script>
-        const GROQ_API_KEY = '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';
+    <div class="simulation-container">
         
-        let session = {
-            p1: '', p2: '', level: 'B1',
-            currentTopic: '', currentDilemma: '',
-            vocabList: [], claimedVocab: [],
-            interactionLog: []
+        <div id="device-p1" class="device-screen">
+            <div class="device-header">
+                <span class="tech-title">// CELL CONTROLLER - ALPHA</span>
+                <span class="device-badge" id="badge-p1-name">Victor</span>
+            </div>
+
+            <div id="p1-setup">
+                <div class="setup-group">
+                    <label>Choose Simulation Universe:</label>
+                    <div class="mode-selector">
+                        <div class="mode-btn active" id="btn-mode-exp" onclick="window.setMode('EXPEDITIONS')">🧳 EXPEDITIONS</div>
+                        <div class="mode-btn" id="btn-mode-ven" onclick="window.setMode('VENTURES')">🚀 VENTURES</div>
+                    </div>
+                </div>
+                <div class="setup-group">
+                    <label>Your Name:</label>
+                    <input type="text" id="input-p1-name" value="Victor">
+                </div>
+                <div class="setup-group">
+                    <label>Unique Session Room ID (Share this with partner):</label>
+                    <input type="text" id="input-room-id" value="class-room-1" style="font-family:'Courier Prime'; color:var(--neon-gold);">
+                </div>
+                <div class="setup-group">
+                    <label>Initial Capital / Budget ($):</label>
+                    <input type="number" id="input-budget" value="3000">
+                </div>
+                <button class="action-btn" style="margin-top:10px;" onclick="window.initSandbox()">Launch Shared Cell ➔</button>
+            </div>
+
+            <div id="p1-game" style="display:none; flex-direction: column; flex: 1;">
+                <div class="dashboard-grid" id="p1-dash"></div>
+                
+                <div class="workspace-title">// Action Desk (Add Items After Debating)</div>
+                <div class="interactive-panel">
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
+                        <input type="text" id="p1-item-name" placeholder="e.g., Luxury Hotel Room / Cloud Servers">
+                        <input type="number" id="p1-item-cost" placeholder="$ Cost">
+                    </div>
+                    <div class="impact-selector">
+                        <div class="imp-btn positive" id="p1-imp-pos" onclick="window.selectImpact(1, 'pos')">👍 Recovers Energy</div>
+                        <div class="imp-btn negative selected" id="p1-imp-neg" onclick="window.selectImpact(1, 'neg')">👎 Drains Energy</div>
+                    </div>
+                    <button class="action-btn" style="padding:8px; font-size:11px;" onclick="window.submitLog(1)">Commit Decision to Cloud</button>
+                </div>
+
+                <div class="log-section">
+                    <div class="workspace-title">// Shared Project Log (Roteiro / Backlog)</div>
+                    <div class="log-table-wrapper" id="p1-log-table"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="device-p2" class="device-screen">
+            <div class="device-header">
+                <span class="tech-title">// CELL CONTROLLER - BRAVO</span>
+                <span class="device-badge" id="badge-p2-name">Pedro</span>
+            </div>
+
+            <div id="p2-setup">
+                <div class="setup-group">
+                    <label>Your Name:</label>
+                    <input type="text" id="input-p2-name" value="Pedro">
+                </div>
+                <div class="setup-group">
+                    <label>Enter Partner's Room ID to Join:</label>
+                    <input type="text" id="input-p2-room-id" value="class-room-1" style="font-family:'Courier Prime'; color:var(--neon-gold);">
+                </div>
+                <button class="action-btn" style="margin-top:10px; background:linear-gradient(90deg, #a855f7, #0284c7);" onclick="window.joinSandbox()">Join Shared Cell ➔</button>
+            </div>
+
+            <div id="p2-game" style="display:none; flex-direction: column; flex: 1;">
+                <div class="dashboard-grid" id="p2-dash"></div>
+                
+                <div class="workspace-title">// Action Desk (Add Items After Debating)</div>
+                <div class="interactive-panel">
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
+                        <input type="text" id="p2-item-name" placeholder="e.g., Local Street Food / Marketing Ads">
+                        <input type="number" id="p2-item-cost" placeholder="$ Cost">
+                    </div>
+                    <div class="impact-selector">
+                        <div class="imp-btn positive" id="p2-imp-pos" onclick="window.selectImpact(2, 'pos')">👍 Recovers Energy</div>
+                        <div class="imp-btn negative selected" id="p2-imp-neg" onclick="window.selectImpact(2, 'neg')">👎 Drains Energy</div>
+                    </div>
+                    <button class="action-btn" style="padding:8px; font-size:11px;" onclick="window.submitLog(2)">Commit Decision to Cloud</button>
+                </div>
+
+                <div class="log-section">
+                    <div class="workspace-title">// Shared Project Log (Roteiro / Backlog)</div>
+                    <div class="log-table-wrapper" id="p2-log-table"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        // OFFICIAL CONFIGURATION SUBMITTED BY THE USER
+        const firebaseConfig = {
+            apiKey: "AIzaSyCuqzhyaH6cSNvqxwPh74tHoWaRE5KHleE",
+            authDomain: "english-meetings-f08e4.firebaseapp.com",
+            databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com",
+            projectId: "english-meetings-f08e4",
+            storageBucket: "english-meetings-f08e4.firebasestorage.app",
+            messagingSenderId: "210364939189",
+            appId: "1:210364939189:web:d412e96de70d424dc6b7fc"
         };
 
-        function selectLevel(lvl) {
-            session.level = lvl;
-            document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('selected'));
-            event.target.classList.add('selected');
-        }
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        function startPlayground() {
-            session.p1 = document.getElementById('p1-input').value.trim() || 'Student A';
-            session.p2 = document.getElementById('p2-input').value.trim() || 'Student B';
-            
-            document.getElementById('screen-1').classList.remove('active');
-            document.getElementById('screen-2').classList.add('active');
-            
-            document.getElementById('app-subtitle').innerText = `Active Session: ${session.p1} ↔ ${session.p2} [Target: ${session.level}]`;
-        }
+        // ENGINE LOCAL MIRROR
+        let localEngineState = {
+            currentMode: "EXPEDITIONS",
+            player1Name: "Victor",
+            player2Name: "Pedro",
+            initialBudget: 3000,
+            remainingCash: 3000,
+            vitalityScore: 100,
+            successCounter: 0,
+            historyLog: [],
+            p1SelectedImpact: 'neg',
+            p2SelectedImpact: 'neg'
+        };
 
-        async function rollDice() {
-            const diceBtn = document.getElementById('dice-btn');
-            const topicTxt = document.getElementById('topic-display');
-            
-            diceBtn.classList.add('rolling');
-            topicTxt.innerText = "🎲 SELECTING RANDOM REALM THEME...";
+        let currentRoomId = "class-room-1";
 
-            const prompt = `Act as an expert ESL Material Designer. Generate an open, unscripted dilemmatic conversation paradox for two English learners at ${session.level} level.
-            
-            CRITICAL DESIGN PATTERNS:
-            1. THEME SELECTION: Pick a random overarching topic category (e.g., Travel, Money, Future Technology, Health & Fitness, Career Paths, Social Media Habits).
-            2. OPEN DILEMMA GENERATION: Write an open question paradox (Max 50 words) that forces ${session.p1} and ${session.p2} to choose or compromise between two opposite alternatives based on their actual opinions (e.g., Save money in cheap conditions vs spend heavily for comfort; complete remote flexibility vs structural office collaboration). Address them directly by their names: "${session.p1}" and "${session.p2}". Do not say "you are roleplaying".
-            3. TARGET VOCABULARY SCAFFOLD: Generate exactly 4 advanced idioms, lexical combinations, or phrasal verbs that fit naturally into this debate topic. Each element must contain a short, simple explanation written entirely in English appropriate for level ${session.level}.
-
-            Return EXACTLY this JSON structure with zero raw markdown markers outside the json object:
-            {
-              "topic": "NAME OF GENERAL THEME (e.g. WORK CULTURE)",
-              "dilemma": "Dilemmatic question text explicitly referencing ${session.p1} and ${session.p2}...",
-              "vocabulary": [
-                {"term": "...", "definition": "Simple English explanation..."},
-                {"term": "...", "definition": "Simple English explanation..."},
-                {"term": "...", "definition": "Simple English explanation..."},
-                {"term": "...", "definition": "Simple English explanation..."}
-              ]
-            }`;
-
-            try {
-                const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${GROQ_API_KEY}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: "llama-3.1-8b-instant", messages: [{role: "user", content: prompt}], temperature: 0.85, response_format: {type: "json_object"} })
-                });
-                const data = await resp.json();
-                const result = JSON.parse(data.choices[0].message.content);
-
-                session.currentTopic = result.topic;
-                session.currentDilemma = result.dilemma;
-                session.vocabList = result.vocabulary;
-                session.claimedVocab = [];
-
-                topicTxt.innerText = `THEME: ${result.topic}`;
-                document.getElementById('dilemma-text').innerText = result.dilemma;
-                document.getElementById('dilemma-wrapper').style.display = "block";
-                
-                buildVocabDeck();
-                logToAudit(`Dice selected Theme [${result.topic}]. Open negotiation vector synced.`);
-
-            } catch (e) {
-                topicTxt.innerText = "Connection jitter. Please roll the dice again.";
-            } finally {
-                diceBtn.classList.remove('rolling');
+        const modeConfigs = {
+            "EXPEDITIONS": {
+                bar1Label: "💰 Cash Remaining", bar2Label: "🔋 Team Energy", bar3Label: "📸 Memories",
+                posText: "👍 Recovers Energy", negText: "👎 Drains Energy"
+            },
+            "VENTURES": {
+                bar1Label: "💳 Funding Left", bar2Label: "🤯 Team Burnout", bar3Label: "📈 Users Traction",
+                posText: "👍 Reduces Team Stress", negText: "👎 Increases Burnout"
             }
-        }
+        };
 
-        function buildVocabDeck() {
-            const wrapper = document.getElementById('vocab-wrapper');
-            wrapper.innerHTML = "";
+        // EXPOSE FUNCTIONS TO WINDOW FOR HTML INLINE CLICK ATTRIBUTES
+        window.setMode = function(mode) {
+            localEngineState.currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            if(mode === 'EXPEDITIONS') document.getElementById('btn-mode-exp').classList.add('active');
+            else document.getElementById('btn-mode-ven').classList.add('active');
+        };
+
+        window.selectImpact = function(playerNum, type) {
+            if(playerNum === 1) {
+                localEngineState.p1SelectedImpact = type;
+                document.getElementById('p1-imp-pos').classList.remove('selected');
+                document.getElementById('p1-imp-neg').classList.remove('selected');
+                document.getElementById(`p1-imp-${type}`).classList.add('selected');
+            } else {
+                localEngineState.p2SelectedImpact = type;
+                document.getElementById('p2-imp-pos').classList.remove('selected');
+                document.getElementById('p2-imp-neg').classList.remove('selected');
+                document.getElementById(`p2-imp-${type}`).classList.add('selected');
+            }
+        };
+
+        // INITIALIZE AS OWNER (ALPHA)
+        window.initSandbox = function() {
+            currentRoomId = document.getElementById('input-room-id').value.trim() || "class-room-1";
+            localEngineState.player1Name = document.getElementById('input-p1-name').value.trim() || "Victor";
+            localEngineState.initialBudget = parseFloat(document.getElementById('input-budget').value) || 3000;
+            localEngineState.remainingCash = localEngineState.initialBudget;
+            localEngineState.historyLog = ["EMPTY_ROOM"]; 
+
+            set(ref(db, 'rooms/' + currentRoomId), localEngineState).then(() => {
+                listenToCloud();
+                document.getElementById('p1-setup').style.display = 'none';
+                document.getElementById('p1-game').style.display = 'flex';
+            });
+        };
+
+        // JOIN AS CLIENT (BRAVO)
+        window.joinSandbox = function() {
+            currentRoomId = document.getElementById('input-p2-room-id').value.trim() || "class-room-1";
+            localEngineState.player2Name = document.getElementById('input-p2-name').value.trim() || "Pedro";
+
+            update(ref(db, 'rooms/' + currentRoomId), {
+                player2Name: localEngineState.player2Name
+            }).then(() => {
+                listenToCloud();
+                document.getElementById('p2-setup').style.display = 'none';
+                document.getElementById('p2-game').style.display = 'flex';
+            });
+        };
+
+        function listenToCloud() {
+            document.getElementById('room-display').innerText = `[ACTIVE ROOM: ${currentRoomId.toUpperCase()}]`;
             
-            session.vocabList.forEach((v, index) => {
-                wrapper.innerHTML += `
-                    <div class="vocab-card" id="v-card-${index}">
-                        <div class="vocab-info">
-                            <strong class="vocab-term">${v.term}</strong>
-                            <span class="vocab-def">${v.definition}</span>
-                        </div>
-                        <button class="score-btn" onclick="claimWord(${index}, '${v.term}')">Used in Conversation ✓</button>
-                    </div>`;
+            onValue(ref(db, 'rooms/' + currentRoomId), (snapshot) => {
+                const data = snapshot.val();
+                if (!data) return;
+
+                localEngineState = data;
+                if(!localEngineState.historyLog || localEngineState.historyLog[0] === "EMPTY_ROOM") {
+                    localEngineState.historyLog = [];
+                }
+
+                const config = modeConfigs[localEngineState.currentMode];
+                document.querySelectorAll('.positive').forEach(el => el.innerText = config.posText);
+                document.querySelectorAll('.negative').forEach(el => el.innerText = config.negText);
+                
+                document.getElementById('badge-p1-name').innerText = localEngineState.player1Name;
+                document.getElementById('badge-p2-name').innerText = localEngineState.player2Name;
+
+                if(document.getElementById('p1-setup').style.display !== 'none' && localEngineState.player1Name !== "Victor") {
+                    document.getElementById('p1-setup').style.display = 'none';
+                    document.getElementById('p1-game').style.display = 'flex';
+                }
+                if(document.getElementById('p2-setup').style.display !== 'none' && localEngineState.player2Name !== "Pedro") {
+                    document.getElementById('p2-setup').style.display = 'none';
+                    document.getElementById('p2-game').style.display = 'flex';
+                }
+
+                renderDashboard('p1-dash');
+                renderDashboard('p2-dash');
+                renderTables();
             });
         }
 
-        function claimWord(index, term) {
-            if(session.claimedVocab.includes(term)) return;
+        window.submitLog = function(playerNum) {
+            const nameInput = document.getElementById(`p${playerNum}-item-name`);
+            const costInput = document.getElementById(`p${playerNum}-item-cost`);
             
-            session.claimedVocab.push(term);
-            const btn = document.querySelector(`#v-card-${index} .score-btn`);
-            btn.innerText = "Active & Tracked";
-            btn.classList.add('claimed');
-            btn.removeAttribute('onclick');
-            
-            logToAudit(`Vocabulary Token Captured: "<span>${term}</span>" naturally merged into discourse.`);
-        }
+            const itemName = nameInput.value.trim();
+            const itemCost = parseFloat(costInput.value) || 0;
+            const impactType = playerNum === 1 ? localEngineState.p1SelectedImpact : localEngineState.p2SelectedImpact;
 
-        function logHelpAction(type) {
-            session.interactionLog.push(type);
-            logToAudit(`Co-Pilot Event Logged: [${type}] triggered.`);
-        }
+            if(!itemName) return alert("Please type a description first!");
 
-        function logToAudit(text) {
-            const box = document.getElementById('audit-log-box');
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-            box.innerHTML += `<div class="audit-entry">[${time}] ${text}</div>`;
-            box.scrollTop = box.scrollHeight;
-        }
+            let nextCash = Math.max(0, localEngineState.remainingCash - itemCost);
+            let nextVitality = localEngineState.vitalityScore;
+            let nextSuccess = localEngineState.successCounter;
 
-        function compileReport() {
-            document.getElementById('screen-2').classList.remove('active');
-            document.getElementById('screen-3').classList.add('active');
-
-            document.getElementById('report-names').innerText = `${session.p1} • ${session.p2}`;
-            document.getElementById('rep-scenario').innerText = session.currentDilemma || "Autonomous Free Flow Discourse.";
-
-            const vocabArea = document.getElementById('rep-vocab-success');
-            vocabArea.innerHTML = "";
-            if(session.claimedVocab.length === 0) {
-                vocabArea.innerHTML = "<li>No specific vocabulary tags pinned during this talk round.</li>";
+            if(localEngineState.currentMode === "EXPEDITIONS") {
+                nextVitality = impactType === 'pos' ? Math.min(100, nextVitality + 15) : Math.max(0, nextVitality - 20);
+                nextSuccess += 1;
             } else {
-                session.claimedVocab.forEach(w => {
-                    vocabArea.innerHTML += `<li><i class="fa-solid fa-check"></i> <strong>${w}</strong></li>`;
-                });
+                nextVitality = impactType === 'pos' ? Math.min(100, nextVitality + 20) : Math.max(0, nextVitality - 25);
+                nextSuccess += Math.floor(Math.random() * 200) + 50;
             }
 
-            const copilotArea = document.getElementById('rep-copilot-log');
-            copilotArea.innerHTML = "";
-            if(session.interactionLog.length === 0) {
-                copilotArea.innerHTML = "<li>No assistance triggers marked. Fluid autonomous talk state.</li>";
-            } else {
-                const counts = {};
-                session.interactionLog.forEach(x => { counts[x] = (counts[x] || 0) + 1; });
-                for (const [key, val] of Object.entries(counts)) {
-                    copilotArea.innerHTML += `<li>Triggered <strong>${key}</strong> (${val}x)</li>`;
+            let currentLog = localEngineState.historyLog || [];
+            currentLog.unshift({
+                author: playerNum === 1 ? localEngineState.player1Name : localEngineState.player2Name,
+                name: itemName,
+                cost: itemCost,
+                impact: impactType
+            });
+
+            update(ref(db, 'rooms/' + currentRoomId), {
+                remainingCash: nextCash,
+                vitalityScore: nextVitality,
+                successCounter: nextSuccess,
+                historyLog: currentLog
+            }).then(() => {
+                nameInput.value = "";
+                costInput.value = "";
+            });
+        };
+
+        function renderDashboard(dashId) {
+            const cfg = modeConfigs[localEngineState.currentMode];
+            const cashPct = Math.min(100, Math.max(0, (localEngineState.remainingCash / localEngineState.initialBudget) * 100));
+            const cashColor = cashPct > 35 ? 'var(--neon-green)' : 'var(--neon-red)';
+            const vitColor = localEngineState.vitalityScore > 40 ? 'var(--neon-blue)' : 'var(--neon-gold)';
+
+            let successContent = "";
+            if(localEngineState.currentMode === "EXPEDITIONS") {
+                let stars = Math.min(5, Math.floor(localEngineState.successCounter / 2));
+                for(let i=1; i<=5; i++) {
+                    stars >= i ? successContent += '★' : successContent += '☆';
                 }
+            } else {
+                successContent = localEngineState.successCounter + " Active";
             }
+
+            document.getElementById(dashId).innerHTML = `
+                <div class="metric-card">
+                    <span class="metric-label">${cfg.bar1Label}</span>
+                    <div class="metric-val" style="color: ${cashColor}">$${Math.round(localEngineState.remainingCash)}</div>
+                    <div class="bar-container"><div class="bar-fill" style="width: ${cashPct}%; background:${cashColor}"></div></div>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-label">${cfg.bar2Label}</span>
+                    <div class="metric-val" style="color: ${vitColor}">${localEngineState.vitalityScore}%</div>
+                    <div class="bar-container"><div class="bar-fill" style="width: ${localEngineState.vitalityScore}%; background:${vitColor}"></div></div>
+                </div>
+                <div class="metric-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <span class="metric-label">${cfg.bar3Label}</span>
+                    <div class="metric-val" style="color: var(--neon-gold); font-size:15px; margin-top:4px;">${successContent}</div>
+                </div>
+            `;
+        }
+
+        function renderTables() {
+            let logList = localEngineState.historyLog || [];
+            let tableHtml = logList.map(item => `
+                <div class="log-item">
+                    <div>
+                        <span style="color:var(--neon-purple); font-size:10px; font-weight:bold;">[${item.author.toUpperCase()}]</span> 
+                        <span class="log-name">${item.name}</span>
+                    </div>
+                    <div class="log-meta" style="color: ${item.impact === 'pos' ? 'var(--neon-green)' : 'var(--neon-red)'}">
+                        -$${item.cost} (${item.impact === 'pos' ? '👍' : '👎'})
+                    </div>
+                </div>
+            `).join('');
+
+            if(logList.length === 0) {
+                tableHtml = `<div style="text-align:center; color:#475569; font-size:11px; padding:20px; font-style:italic;">No commits yet. Debate in English and add your first asset/cost!</div>`;
+            }
+
+            document.getElementById('p1-log-table').innerHTML = tableHtml;
+            document.getElementById('p2-log-table').innerHTML = tableHtml;
         }
     </script>
 </body>
