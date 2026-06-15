@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Speaking Quest Arena</title>
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght=400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -166,13 +167,16 @@
 </head>
 <body>
 
+    <!-- CONTROL TOP HEADER -->
     <div class="os-header">
         <div class="os-logo"><i class="fa-solid fa-gamepad"></i> SPEAKING QUEST ARENA</div>
         <div class="progress-container" id="step-indicators"></div>
     </div>
 
+    <!-- MAIN APP CANVAS -->
     <div class="main-container">
 
+        <!-- SCREEN 1: CLEAN GAME SETUP -->
         <div id="scr-1" class="os-screen active">
             <h1>Create Your Player Card</h1>
             <p class="subtitle">Pick your favorite topics. The game will automatically create a custom conversation challenge for your group!</p>
@@ -205,30 +209,37 @@
             </div>
         </div>
 
+        <!-- SCREEN 2: GAMEPLAY ARENA -->
         <div id="scr-2" class="os-screen">
             
+            <!-- AI Dynamic Challenge Banner Box -->
             <div class="mission-main-box">
                 <div class="mission-title-row">
                     <span style="font-size:11px; text-transform:uppercase; color:var(--accent-purple); font-weight:700;"><i class="fa-solid fa-trophy"></i> Current Group Mission</span>
-                    <div class="level-badge" id="mission-level-display">Group Level: A2</div>
+                    <div class="level-badge" id="mission-level-display">Group Level: Calculating...</div>
                 </div>
-                <div style="font-size:18px; font-weight:700; color:white; line-height:1.4;" id="inspiration-text-display">Creating your dynamic challenge map...</div>
+                <div style="font-size:18px; font-weight:700; color:white; line-height:1.4;" id="inspiration-text-display">Waiting for more players to join the party...</div>
                 
+                <!-- Simple English Useful Vocabulary Box -->
                 <div class="vocabulary-pill-box">
                     <span style="font-size: 11px; font-weight:700; color:var(--accent-blue); text-transform: uppercase; display:block; margin-bottom: 4px;"><i class="fa-solid fa-book-open"></i> Useful Words For This Mission</span>
-                    <p style="font-size: 13.5px; color: var(--text-main); line-height: 1.4;" id="vocab-text-display">Loading terms...</p>
+                    <p style="font-size: 13.5px; color: var(--text-main); line-height: 1.4;" id="vocab-text-display">Connect 2 players to unlock keywords.</p>
                 </div>
             </div>
 
+            <!-- Main Split Layout Grid -->
             <div class="sandbox-layout">
                 
+                <!-- Left Control Column: Group Status & Communication Hacks -->
                 <div class="info-sidebar">
                     
+                    <!-- Dynamic Practice Tip Card -->
                     <div class="strategy-box">
                         <h4 id="strat-tech-title"><i class="fa-solid fa-star"></i> Quick Team Trick</h4>
-                        <p id="strat-tech-desc">Loading...</p>
+                        <p id="strat-tech-desc">Waiting for active group mission...</p>
                     </div>
 
+                    <!-- Peers Status List -->
                     <div>
                         <div class="section-label">Connected Players</div>
                         <div style="display:flex; flex-direction:column; gap:10px;" id="render-sandbox-peers"></div>
@@ -236,8 +247,10 @@
 
                 </div>
 
+                <!-- Right Control Column: Active Collaboration Boards -->
                 <div class="canvas-grid">
                     
+                    <!-- Block 1: AUTONOMOUS ORAL QUESTIONS -->
                     <div class="workspace-block">
                         <div class="section-label" style="color: var(--accent-blue); margin-bottom: 4px;"><i class="fa-solid fa-volume-high"></i> Ask your friends infinite possibilities!</div>
                         <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">What possibilities do you want to create? Ask right now!</p>
@@ -252,9 +265,11 @@
                         <p style="font-size: 11px; color: var(--accent-blue); text-align: center; font-style: italic;">Use these triggers to pass the mic to your peers!</p>
                     </div>
 
+                    <!-- Block 2: Live Shared Ideas Feed -->
                     <div class="workspace-block">
                         <div class="section-label" style="color: var(--accent-pink); margin-bottom: 10px;"><i class="fa-solid fa-lightbulb"></i> Live Board: Ideas & Solutions</div>
                         
+                        <!-- Post Controls -->
                         <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
                             <input type="text" id="sticky-input" placeholder="Type a cool idea or take a role card..." style="margin-bottom:0; flex:1; padding: 10px;">
                             <label style="font-size:11px; display:flex; align-items:center; gap:4px; color:var(--text-muted); cursor:pointer; user-select:none;">
@@ -263,6 +278,7 @@
                             <button class="btn-primary" style="padding:10px 15px; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple));" onclick="addStickyNote()"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
 
+                        <!-- Realtime Cards Feed Grid -->
                         <div class="sticky-container" id="mural-sticky-grid"></div>
                     </div>
 
@@ -270,6 +286,7 @@
 
             </div>
 
+            <!-- Lower Progress Action Board Footer -->
             <div class="nav-wrapper" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top:1px solid var(--border); padding-top:20px;">
                 <div class="lock-notice" id="mural-lock-message">
                     <i class="fa-solid fa-lock"></i> Add at least 2 cards to the Live Board to unlock the end page.
@@ -280,6 +297,7 @@
             </div>
         </div>
 
+        <!-- SCREEN 3: SUMMARY PAGE -->
         <div id="scr-3" class="os-screen">
             <h1>Quest Completed! 🏆</h1>
             <p class="subtitle">Amazing team dynamic. Your conversation history and active logs are saved successfully.</p>
@@ -300,7 +318,7 @@
                 </div>
                 <div class="summary-card" style="grid-column: span 2;">
                     <i class="fa-solid fa-heart" style="color:var(--accent-pink); font-size: 22px;"></i>
-                    <p style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-top:8px;">Confidence Hearts Sent</p>
+                    <p style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-top:8px;">Confidence Boosts Sent</p>
                     <h3 id="sum-boosts">0</h3>
                 </div>
             </div>
@@ -313,6 +331,7 @@
 
     </div>
 
+    <!-- SCRIPT INFRASTRUCTURE ENGINE -->
     <script type="module">
         const poolPassions = ["🎵 Music", "⚽ Sports", "🎬 Movies", "🎮 Gaming", "✈ Travel", "🍔 Food", "🤖 Technology", "📈 Business", "🎨 Art", "🌎 Languages"];
         const poolHappiness = ["Helping people", "Learning things", "Solving problems", "Teaching others", "Creating things", "Making teams better", "Sharing ideas"];
@@ -322,13 +341,11 @@
         const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
         const GROQ_KEY = "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";
 
-        let cellPeers = [
-            { name: "Ana", level: 2, assets: ["🎵 Music", "🌎 Languages"], boosts: 0 },
-            { name: "Pedro", level: 4, assets: ["🤖 Technology", "📈 Business"], boosts: 0 }
-        ];
-
         let currentScreen = 1;
-        let userData = { name: "You", level: 2, assets: [], motivations: [] };
+        let myId = "";
+        let userData = { name: "", level: 2, assets: [], motivations: [] };
+        let onlinePlayers = {};
+        let currentMission = null;
         let localNotesCount = 0;
         let totalBoostsSent = 0;
 
@@ -387,7 +404,10 @@
             let selectedPassions = Array.from(document.querySelectorAll('.tag-p.selected')).map(el => el.textContent);
             let selectedHappiness = Array.from(document.querySelectorAll('.tag-h.selected')).map(el => el.textContent);
             
-            if(!nameInput) nameInput = "Explorer";
+            if(!nameInput) {
+                alert("Please type your name!");
+                return;
+            }
             if(selectedPassions.length !== 3 || selectedHappiness.length !== 3) {
                 alert("Please select exactly 3 topics from each box!");
                 return;
@@ -398,28 +418,122 @@
             userData.assets = selectedPassions;
             userData.motivations = selectedHappiness;
 
-            document.getElementById('start-btn').innerText = "Launching Arena...";
+            document.getElementById('start-btn').innerText = "Entering Room...";
             document.getElementById('start-btn').disabled = true;
 
-            await queryGroqAIEnvironment();
+            // Register yourself live into Firebase
+            try {
+                let res = await fetch(`${DATABASE_URL}/players.json`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        name: userData.name,
+                        level: userData.level,
+                        assets: userData.assets,
+                        boosts: 0,
+                        timestamp: Date.now()
+                    })
+                });
+                let data = await res.json();
+                myId = data.name; // Save unique key reference
+                
+                navTo(2);
+                startGlobalSyncLoop();
+            } catch(e) {
+                alert("Network error connecting to live server.");
+                document.getElementById('start-btn').innerText = "Launch Game Space ➔";
+                document.getElementById('start-btn').disabled = false;
+            }
         };
 
-        async function queryGroqAIEnvironment() {
-            let totalLevel = userData.level + cellPeers[0].level + cellPeers[1].level;
-            let averageLevelIndex = Math.round(totalLevel / 3) - 1;
-            let targetLevelName = levelNames[averageLevelIndex] || "B1";
+        function startGlobalSyncLoop() {
+            // Check Firebase every 2.5 seconds
+            setInterval(async () => {
+                try {
+                    // 1. Sync Players
+                    const pRes = await fetch(`${DATABASE_URL}/players.json`);
+                    onlinePlayers = (await pRes.json()) || {};
+                    renderActivePeers();
 
-            document.getElementById('mission-level-display').innerText = `Group Level: ${targetLevelName}`;
+                    // 2. Sync Shared Mission Room
+                    const mRes = await fetch(`${DATABASE_URL}/current_mission.json`);
+                    currentMission = await mRes.json();
 
-            let randomMyAsset = userData.assets[Math.floor(Math.random() * userData.assets.length)];
-            let randomPeerAsset = cellPeers[0].assets[Math.floor(Math.random() * cellPeers[0].assets.length)];
+                    let playerIds = Object.keys(onlinePlayers);
+                    if (playerIds.length >= 2) {
+                        if (!currentMission) {
+                            // Two players matched, generate mission immediately
+                            await triggerGroqAILiveGeneration(playerIds);
+                        } else {
+                            // Update display from active live mission server model
+                            document.getElementById('mission-level-display').innerText = `Group Level: ${currentMission.targetLevel}`;
+                            document.getElementById('inspiration-text-display').innerText = currentMission.inspiration;
+                            document.getElementById('vocab-text-display').innerHTML = `"${currentMission.microtext}" <br><span style="color:var(--text-muted); font-size:12px; display:block; margin-top:6px;"><b>Meanings:</b> ${currentMission.definitions}</span>`;
+                            document.getElementById('strat-tech-desc').innerText = currentMission.trick;
+                        }
+                    } else {
+                        document.getElementById('inspiration-text-display').innerText = `Waiting for more players to join the party... (${playerIds.length}/2)`;
+                    }
 
-            const systemInstructions = `You are a gamified lesson planner. Output everything in very simple English for English learners at level ${targetLevelName}. Never use any complex words or any Portuguese.
+                    // 3. Sync Sticky Notes Mural
+                    const nRes = await fetch(`${DATABASE_URL}/notes.json`);
+                    const notesData = await nRes.json();
+                    renderMuralNotes(notesData);
+
+                } catch(e) {
+                    console.log("Realtime Sync Issue: ", e);
+                }
+            }, 2500);
+        }
+
+        function renderActivePeers() {
+            let sideHTML = "";
+            Object.keys(onlinePlayers).forEach((key) => {
+                let p = onlinePlayers[key];
+                let isMe = (key === myId);
+                sideHTML += `
+                    <div class="mini-profile-card" style="${isMe ? 'border-color: var(--accent-purple);' : ''} margin-bottom: 8px;">
+                        <h5 style="display:flex; justify-content:space-between; width:100%;">
+                            <span>👤 ${p.name} ${isMe ? '(You)' : ''}</span> 
+                            <span style="color:var(--accent-pink)">❤️ ${p.boosts || 0}</span>
+                        </h5>
+                        <div class="tag-row">${p.assets ? p.assets.map(a=>`<span class="mini-tag">${a}</span>`).join('') : ''}</div>
+                        ${!isMe ? `<button class="btn-primary" onclick="boostOnlinePeer('${key}')" style="padding:4px 8px; font-size:11px; margin-top:8px; border-radius:4px; background:rgba(236,72,153,0.12); border:1px solid var(--accent-pink); color:white; width:100%; justify-content:center;">Confidence Boost</button>` : ''}
+                    </div>
+                `;
+            });
+            document.getElementById('render-sandbox-peers').innerHTML = sideHTML;
+        }
+
+        async function triggerGroqAILiveGeneration(playerIds) {
+            // Calculate real average level index dynamically
+            let totalLevelSum = 0;
+            let allAssets = [];
+            playerIds.forEach(id => {
+                totalLevelSum += onlinePlayers[id].level;
+                if(onlinePlayers[id].assets) allAssets.push(...onlinePlayers[id].assets);
+            });
+            
+            let avgIndex = Math.round(totalLevelSum / playerIds.length) - 1;
+            let targetLevelName = levelNames[avgIndex] || "B1";
+
+            // Grab random topics from the collective list typed/chosen by the actual players
+            let randomAssetA = allAssets[Math.floor(Math.random() * allAssets.length)] || "🎮 Gaming";
+            let randomAssetB = allAssets[Math.floor(Math.random() * allAssets.length)] || "🌎 Languages";
+            if(randomAssetA === randomAssetB && allAssets.length > 1) {
+                randomAssetB = allAssets.find(a => a !== randomAssetA);
+            }
+
+            // ENHANCED ENTREPRENEURIAL PROMPT: Forces AI to deliver an inspiring project mission about innovating or creating something
+            const systemInstructions = `You are a visionary startup coach and dynamic gamified lesson planner. 
+            Output everything in very simple English for English learners at level ${targetLevelName}. Never use complex words, never use Portuguese.
+            
+            Your mission is to look at the players' interests: "${randomAssetA}" and "${randomAssetB}", and create an inspiring challenge where they must INVENT, BUILD, IMPROVE, or REVOLUTIONIZE a solution, product, or community project together. They should feel like CEOs.
+            
             You must reply with a valid JSON string containing exactly these four keys:
-            "inspiration": (A short gamified challenge sentence combining ${randomMyAsset} and ${randomPeerAsset}),
-            "microtext": (A 2 line story scenario using two useful phrasal verbs in bold based on that challenge),
+            "inspiration": (An inspiring challenge sentence prompting the group to create or improve a business/solution/system combining ${randomAssetA} and ${randomAssetB}),
+            "microtext": (A 2 line story/scenario describing this innovation problem using two useful phrasal verbs in bold based on that challenge),
             "definitions": (Very easy English meanings for those bold phrasal verbs),
-            "trick": (A simple communication tip for team work)
+            "trick": (A simple strategic advice on how to collaborate and lead as autonomous creators)
             `;
 
             try {
@@ -432,106 +546,81 @@
                     body: JSON.stringify({
                         model: "llama3-8b-8192",
                         response_format: { type: "json_object" },
-                        messages: [{ role: "system", content: systemInstructions }, { role: "user", content: "Build the JSON payload now." }]
+                        messages: [{ role: "system", content: systemInstructions }, { role: "user", content: "Build entrepreneurial creative payload now." }]
                     })
                 });
-
                 const data = await response.json();
                 const payload = JSON.parse(data.choices[0].message.content);
 
-                document.getElementById('inspiration-text-display').innerText = payload.inspiration;
-                document.getElementById('vocab-text-display').innerHTML = `"${payload.microtext}" <br><span style="color:var(--text-muted); font-size:12px; display:block; margin-top:6px;"><b>Meanings:</b> ${payload.definitions}</span>`;
-                document.getElementById('strat-tech-desc').innerText = payload.trick;
-                
-                renderSandboxSidebar();
-                startFirebaseRealtimeStream();
-                navTo(2);
+                // Publish live to server room environment so everyone shares it
+                await fetch(`${DATABASE_URL}/current_mission.json`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        targetLevel: targetLevelName,
+                        inspiration: payload.inspiration,
+                        microtext: payload.microtext,
+                        definitions: payload.definitions,
+                        trick: payload.trick
+                    })
+                });
 
             } catch (err) {
-                console.error("API Fallback system activated:", err);
-                document.getElementById('inspiration-text-display').innerText = `Let's merge "${randomMyAsset}" and "${randomPeerAsset}" to build an organic project together!`;
-                document.getElementById('vocab-text-display').innerHTML = `We need to <b>figure out</b> (find the answer) how to balance this. Let's <b>work out</b> (make/develop) a solution.`;
-                document.getElementById('strat-tech-desc').innerText = "Ask open questions like: 'What do you think?' to help your group talk safely.";
-                
-                renderSandboxSidebar();
-                startFirebaseRealtimeStream();
-                navTo(2);
+                // Fallback static rescue logic focused on building something cool
+                await fetch(`${DATABASE_URL}/current_mission.json`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        targetLevel: targetLevelName,
+                        inspiration: `Your team mission is to design a unique hybrid project that combines "${randomAssetA}" and "${randomAssetB}" to solve a major community problem!`,
+                        microtext: `We must <b>come up with</b> (invent) an incredible new strategy and <b>set up</b> (start) a live workspace to launch it.`,
+                        definitions: `come up with = invent/think of an idea ; set up = launch/organize a system`,
+                        trick: `Act like partners! Challenge each other's ideas with "How can we make this better?"`
+                    })
+                });
             }
         }
 
-        function renderSandboxSidebar() {
-            let sideHTML = `
-                <div class="mini-profile-card" style="border-color: var(--accent-purple); margin-bottom: 10px;">
-                    <h5>👤 ${userData.name} (You)</h5>
-                    <div class="tag-row">${userData.assets.map(a=>`<span class="mini-tag">${a}</span>`).join('')}</div>
-                </div>
-            `;
-            cellPeers.forEach((p, idx) => {
-                sideHTML += `
-                    <div class="mini-profile-card" id="peer-card-${idx}" style="margin-bottom:8px;">
-                        <h5 style="display:flex; justify-content:space-between; width:100%;">
-                            <span>👤 ${p.name}</span> 
-                            <span style="color:var(--accent-pink)" id="boost-count-${idx}">❤️ ${p.boosts}</span>
-                        </h5>
-                        <div class="tag-row">${p.assets.map(a=>`<span class="mini-tag">${a}</span>`).join('')}</div>
-                        <button class="btn-primary boost-trigger-btn" data-idx="${idx}" style="padding:4px 8px; font-size:11px; margin-top:8px; border-radius:4px; background:rgba(236,72,153,0.12); border:1px solid var(--accent-pink); color:white; width:100%; justify-content:center;">Send Heart</button>
-                    </div>
-                `;
-            });
-            document.getElementById('render-sandbox-peers').innerHTML = sideHTML;
+        window.boostOnlinePeer = async function(peerKey) {
+            let currentBoostCount = onlinePlayers[peerKey].boosts || 0;
+            try {
+                await fetch(`${DATABASE_URL}/players/${peerKey}/boosts.json`, {
+                    method: "PUT",
+                    body: JSON.stringify(currentBoostCount + 1)
+                });
+                totalBoostsSent++;
+                document.getElementById('sum-boosts').innerText = totalBoostsSent;
+            } catch(e) { console.log(e); }
+        };
 
-            document.querySelectorAll('.boost-trigger-btn').forEach(btn => {
-                btn.addEventListener('click', () => boostPeer(parseInt(btn.getAttribute('data-idx'))));
-            });
-        }
+        function renderMuralNotes(data) {
+            const container = document.getElementById('mural-sticky-grid');
+            const colors = ['var(--sticky-yellow)', 'var(--sticky-blue)', 'var(--sticky-pink)'];
+            let html = "";
+            let index = 0;
 
-        function startFirebaseRealtimeStream() {
-            setInterval(async () => {
-                try {
-                    const res = await fetch(`${DATABASE_URL}/notes.json`);
-                    const data = await res.json();
+            if (data) {
+                Object.keys(data).forEach((key) => {
+                    const note = data[key];
+                    let badge = note.type === 'role' ? '<span class="sticky-badge">Role</span>' : '<span class="sticky-badge" style="background:#3b82f6">Idea</span>';
+                    let cardClass = note.type === 'role' ? 'sticky-note role-play-card' : 'sticky-note';
                     
-                    const container = document.getElementById('mural-sticky-grid');
-                    const colors = ['var(--sticky-yellow)', 'var(--sticky-blue)', 'var(--sticky-pink)'];
-                    let html = "";
-                    let index = 0;
-
-                    if (data) {
-                        Object.keys(data).forEach((key) => {
-                            const note = data[key];
-                            let badge = note.type === 'role' ? '<span class="sticky-badge">Role</span>' : '<span class="sticky-badge" style="background:#3b82f6">Idea</span>';
-                            let cardClass = note.type === 'role' ? 'sticky-note role-play-card' : 'sticky-note';
-                            
-                            html += `
-                                <div class="${cardClass}" style="background: ${colors[index % colors.length]}">
-                                    ${badge}
-                                    <div style="word-break: break-word; overflow-y: auto; max-height: 90px; margin-top:5px; font-size:12px;">"${note.text}"</div>
-                                    <div class="sticky-footer">
-                                        <span>By: ${note.author}</span>
-                                        <button class="suggest-skill-btn" data-author="${note.author}">💡 Tip</button>
-                                    </div>
-                                </div>
-                            `;
-                            index++;
-                        });
-                    }
-                    
-                    container.innerHTML = html;
-                    localNotesCount = index;
-                    document.getElementById('sum-ideas').innerText = localNotesCount;
-                    
-                    document.querySelectorAll('.suggest-skill-btn').forEach(btn => {
-                        btn.onclick = () => {
-                            alert(`Awesome! You shared a useful practice trick with ${btn.getAttribute('data-author')}!`);
-                        };
-                    });
-
-                    updateLockStatus();
-
-                } catch (e) {
-                    console.log("Sync error checking nodes: ", e);
-                }
-            }, 2500);
+                    html += `
+                        <div class="${cardClass}" style="background: ${colors[index % colors.length]}">
+                            ${badge}
+                            <div style="word-break: break-word; overflow-y: auto; max-height: 90px; margin-top:5px; font-size:12px;">"${note.text}"</div>
+                            <div class="sticky-footer">
+                                <span>By: ${note.author}</span>
+                                <button class="suggest-skill-btn" onclick="alert('Awesome tip shared!')">💡 Tip</button>
+                            </div>
+                        </div>
+                    `;
+                    index++;
+                });
+            }
+            
+            container.innerHTML = html;
+            localNotesCount = index;
+            document.getElementById('sum-ideas').innerText = localNotesCount;
+            updateLockStatus();
         }
 
         window.addStickyNote = async function() {
@@ -545,16 +634,14 @@
                     method: "POST",
                     body: JSON.stringify({
                         text: txt,
-                        author: userData.name,
+                        author: userData.name || "Explorer",
                         type: isRolePlay ? 'role' : 'idea',
                         timestamp: Date.now()
                     })
                 });
                 input.value = "";
                 document.getElementById('roleplay-toggle').checked = false;
-            } catch (e) {
-                console.error("Database connection missing: ", e);
-            }
+            } catch (e) { console.log(e); }
         };
 
         function updateLockStatus() {
@@ -565,20 +652,13 @@
                 btn.disabled = false;
                 btn.style.background = "var(--accent-green)";
                 btn.style.cursor = "pointer";
-                msg.innerHTML = `<span style="color:var(--accent-green)"><i class="fa-solid fa-lock-open"></i> Goal Unlocked! ${localNotesCount} items shared. Ready to complete!</span>`;
+                msg.innerHTML = `<span style="color:var(--accent-green)"><i class="fa-solid fa-lock-open"></i> Goal Unlocked! Ready to complete!</span>`;
             } else {
                 btn.disabled = true;
                 btn.style.background = "var(--text-muted)";
                 btn.style.cursor = "not-allowed";
-                msg.innerHTML = `<i class="fa-solid fa-lock"></i> Share at least 2 ideas or roles to complete the level (${localNotesCount}/2).`;
+                msg.innerHTML = `<i class="fa-solid fa-lock"></i> Share at least 2 ideas on the Live Board to finish (${localNotesCount}/2).`;
             }
-        }
-
-        function boostPeer(idx) {
-            cellPeers[idx].boosts += 1;
-            totalBoostsSent += 1;
-            document.getElementById(`boost-count-${idx}`).innerText = `❤️ ${cellPeers[idx].boosts}`;
-            document.getElementById('sum-boosts').innerText = totalBoostsSent;
         }
 
         window.attemptFinish = function() {
@@ -586,7 +666,13 @@
             navTo(3);
         };
 
-        window.restartOS = function() {
+        window.restartOS = async function() {
+            // Wipe data endpoints on total manual game reset to clear room assets cleanly
+            try {
+                await fetch(`${DATABASE_URL}/players.json`, { method: "DELETE" });
+                await fetch(`${DATABASE_URL}/notes.json`, { method: "DELETE" });
+                await fetch(`${DATABASE_URL}/current_mission.json`, { method: "DELETE" });
+            } catch(e) { }
             window.location.reload();
         };
     </script>
