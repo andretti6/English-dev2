@@ -3,558 +3,592 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Synergy Cell Simulator - Live Cloud</title>
+    <title>English Speaking Quest Arena</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Poppins:wght=300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <style>
+        /* CLEAN NOTION + GAMIFIED DARK PALETTE */
         :root {
-            --bg-dark: #040711;
-            --panel-bg: rgba(13, 20, 38, 0.8);
-            --neon-blue: #38bdf8;
-            --neon-purple: #a855f7;
-            --neon-green: #4ade80;
-            --neon-red: #f87171;
-            --neon-gold: #fbbf24;
-            --text-light: #f8fafc;
+            --bg-dark: #0b0e14;
+            --panel-bg: #151922;
             --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-green: #10b981;
+            --accent-yellow: #eab308;
+            
+            --sticky-yellow: #fef08a;
+            --sticky-blue: #bfdbfe;
+            --sticky-pink: #fbcfe8;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-dark); color: var(--text-light);
-            font-family: 'Poppins', sans-serif; min-height: 100vh;
-            display: flex; flex-direction: column; padding: 15px;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .simulation-info-bar {
-            background: #0f172a; border: 1px solid var(--border); padding: 12px 20px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; color: #94a3b8; margin-bottom: 15px; border-radius: 10px;
+        /* Clean Minimal Header */
+        .os-header {
+            background: var(--panel-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .os-logo {
+            font-family: 'Courier Prime', monospace;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: var(--accent-purple);
+        }
+        .progress-container { display: flex; gap: 8px; }
+        .progress-step {
+            width: 40px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; transition: all 0.3s;
+        }
+        .progress-step.active {
+            background: var(--accent-purple); box-shadow: 0 0 10px var(--accent-purple);
         }
 
-        /* Mission Briefing Box */
-        .mission-box {
-            background: rgba(168, 85, 247, 0.05); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 12px; padding: 15px 20px; margin-bottom: 15px; display: none;
+        /* Screen Content Containers */
+        .main-container {
+            max-width: 1200px; width: 100%; margin: 25px auto; padding: 0 20px; flex: 1;
         }
-        .mission-title { font-size: 13px; font-weight: bold; color: var(--neon-purple); text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
-        .mission-text { font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-bottom: 8px; }
-        .mission-steps { font-size: 11px; color: #94a3b8; padding-left: 15px; }
+        .os-screen { display: none; animation: fadeIn 0.2s ease forwards; }
+        .os-screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .simulation-container { display: flex; gap: 20px; flex: 1; width: 100%; }
-        .device-screen {
-            flex: 1; background: var(--panel-bg); border: 2px solid var(--border); border-radius: 16px; padding: 25px; display: flex; flex-direction: column; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        /* Typography */
+        h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+        .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 15px; }
+        
+        /* Clean Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white; border: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-primary:disabled { background: var(--text-muted) !important; cursor: not-allowed; opacity: 0.4; }
+        .btn-sec { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+        .btn-sec:hover { color: white; background: rgba(255,255,255,0.02); }
+
+        /* Form Controls */
+        input[type="text"], select { 
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 20px;
+        }
+        
+        /* Tag Selection Grid */
+        .grid-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 25px; }
+        .selectable-tag {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 13px; transition: all 0.2s; color: var(--text-muted); user-select: none;
+        }
+        .selectable-tag:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+        .selectable-tag.selected { background: rgba(139, 92, 246, 0.2); border-color: var(--accent-purple); color: white; font-weight: 600; }
+
+        /* GAME MATRIX LAYOUT */
+        .sandbox-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+        .info-sidebar { display: flex; flex-direction: column; gap: 15px; }
+        .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px; }
+        
+        .mini-profile-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 13px; }
+        .mini-profile-card h5 { margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+        .tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+        .mini-tag { background: rgba(255,255,255,0.04); font-size: 10px; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-main); }
+
+        /* Tip Box */
+        .strategy-box { background: linear-gradient(135deg, rgba(234,179,8,0.08), transparent); border: 1px solid rgba(234,179,8,0.2); border-radius: 10px; padding: 15px; }
+        .strategy-box h4 { font-size: 13px; color: var(--accent-yellow); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .strategy-box p { font-size: 12.5px; color: var(--text-main); line-height: 1.4; }
+
+        /* Unified Quest Header Banner */
+        .mission-main-box { background: linear-gradient(90deg, rgba(139,92,246,0.1), transparent); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .mission-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .level-badge { background: var(--accent-purple); color: white; font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; }
+        .vocabulary-pill-box { background: rgba(0,0,0,0.2); border-left: 3px solid var(--accent-blue); padding: 12px 15px; margin-top: 15px; border-radius: 0 6px 6px 0; }
+
+        /* Interactive Board Blocks */
+        .canvas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; min-height: 450px; }
+        .workspace-block { background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+        
+        /* Oral Dynamic List Style */
+        .oral-quest-container {
+            flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding: 15px; background: rgba(255,255,255,0.01); border: 1px dashed var(--border); border-radius: 8px; margin-bottom: 5px;
+        }
+        .oral-prompt-headline {
+            font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-bottom: 15px; text-align: center;
+        }
+        .oral-list-item {
+            font-size: 15px; padding: 12px; margin-bottom: 8px; border-radius: 6px; background: rgba(255,255,255,0.02); border-left: 3px solid var(--accent-blue); font-weight: 500;
+        }
+        .oral-list-blank {
+            font-size: 15px; padding: 12px; margin-bottom: 8px; color: var(--text-muted); font-style: italic; border-left: 3px dashed var(--border);
         }
 
-        .device-header { border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .tech-title { font-family: 'Courier Prime', monospace; font-size: 13px; color: var(--neon-blue); letter-spacing: 1px; }
-        .device-badge { background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; font-size: 11px; color: #94a3b8; border: 1px solid var(--border); text-transform: uppercase; }
+        /* Sticky Notes Board */
+        .sticky-container { display: flex; flex-wrap: wrap; gap: 12px; flex: 1; align-content: flex-start; margin-top: 10px; overflow-y: auto; max-height: 350px;}
+        .sticky-note {
+            width: 135px; height: 135px; padding: 12px; border-radius: 4px; color: #1e293b; font-weight: 600; font-size: 12px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 6px rgba(0,0,0,0.15); animation: pop 0.2s ease forwards; position: relative;
+        }
+        .sticky-note.role-play-card { border: 2px dashed #000; }
+        .sticky-badge { position: absolute; top: -6px; right: -6px; background: black; color: white; font-size: 8px; padding: 2px 6px; border-radius: 10px; text-transform: uppercase; }
+        .sticky-footer { display: flex; justify-content: space-between; align-items: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 4px; }
+        .suggest-skill-btn { background: transparent; border: none; color: black; cursor: pointer; font-size: 10px; font-weight: 700; }
 
-        /* Setup Layers */
-        .setup-group { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; background: #090d16; border: 1px solid var(--border); border-radius: 8px; color: white; font-family: inherit; }
-        input:focus, select:focus { border-color: var(--neon-blue); outline: none; }
-        
-        .mode-dropdown { background: #090d16; color: white; cursor: pointer; font-weight: bold; }
+        /* Lock Notification Footer */
+        .lock-notice { font-size: 13px; color: var(--accent-pink); display: flex; align-items: center; gap: 6px; font-weight: 500; }
 
-        .action-btn { width: 100%; background: linear-gradient(90deg, #0284c7, #a855f7); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
-        .action-btn:hover { filter: brightness(1.2); }
+        /* SCREEN 3: HIGH-STAKES WINNER REPORT */
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 25px; }
+        .summary-card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-align: center; }
+        .summary-card h3 { font-size: 32px; font-family: 'Courier Prime', monospace; margin: 8px 0; color: var(--accent-green); }
 
-        /* Dashboard Metrics */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .metric-card { background: #090d16; border: 1px solid var(--border); padding: 12px; border-radius: 10px; text-align: center; position: relative; }
-        .metric-label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 2px; text-transform: uppercase; }
-        .metric-val { font-size: 18px; font-weight: bold; font-family: 'Courier Prime', monospace; }
-        .bar-container { background: #1e293b; height: 6px; border-radius: 3px; margin-top: 6px; overflow: hidden; }
-        .bar-fill { height: 100%; transition: width 0.4s ease; width: 100%; }
-        .inline-edit-budget { background: transparent; border: none; border-bottom: 1px dashed var(--neon-blue); color: inherit; font-family: inherit; font-size: inherit; font-weight: inherit; text-align: center; width: 80px; padding: 0; cursor: pointer; }
-
-        /* Suggestions Panel */
-        .suggestions-box { background: rgba(56, 189, 248, 0.03); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: 8px; padding: 10px; margin-bottom: 15px; }
-        .suggestions-title { font-size: 11px; font-weight: bold; color: var(--neon-blue); text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
-        .suggestions-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .sug-tag { background: rgba(255,255,255,0.04); border: 1px solid var(--border); padding: 4px 8px; border-radius: 20px; font-size: 11px; color: #cbd5e1; cursor: pointer; transition: 0.2s; }
-        .sug-tag:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--neon-blue); }
-
-        /* Interactive Action Panel */
-        .workspace-title { font-size: 12px; font-family: 'Courier Prime', monospace; color: var(--neon-purple); margin-bottom: 10px; text-transform: uppercase;}
-        .interactive-panel { background: rgba(255,255,255,0.01); border: 1px dashed var(--border); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
-        .impact-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
-        .imp-btn { background: #090d16; border: 1px solid var(--border); padding: 8px; border-radius: 6px; font-size: 11px; cursor: pointer; color: #64748b; text-align: center; font-weight: bold;}
-        .imp-btn.positive.selected { border-color: var(--neon-green); color: var(--neon-green); background: rgba(74,222,128,0.05); }
-        .imp-btn.negative.selected { border-color: var(--neon-red); color: var(--neon-red); background: rgba(248,113,113,0.05); }
-
-        /* Modernized Log List Cards */
-        .log-section { flex: 1; min-height: 180px; display: flex; flex-direction: column; }
-        .log-table-wrapper { display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; padding-right: 5px; }
-        
-        .log-card { background: #0f172a; border: 1px solid var(--border); padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .log-card-left { display: flex; align-items: center; gap: 12px; }
-        .log-avatar { background: rgba(168, 85, 247, 0.1); border: 1px solid var(--neon-purple); color: var(--neon-purple); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .log-details { display: flex; flex-direction: column; gap: 2px; }
-        .log-card-name { font-weight: 600; font-size: 13px; color: var(--text-light); }
-        .log-card-meta { font-size: 11px; color: #64748b; }
-        
-        .log-card-right { display: flex; align-items: center; gap: 15px; }
-        .log-card-cost { font-family: 'Courier Prime', monospace; font-weight: bold; font-size: 14px; }
-        .impact-badge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .impact-badge.pos { background: rgba(74, 222, 128, 0.1); color: var(--neon-green); border: 1px solid rgba(74, 222, 128, 0.2); }
-        .impact-badge.neg { background: rgba(248, 113, 113, 0.1); color: var(--neon-red); border: 1px solid rgba(248, 113, 113, 0.2); }
-        
-        .log-actions { display: flex; gap: 6px; margin-left: 5px; border-left: 1px solid var(--border); padding-left: 10px; }
-        .action-icon-btn { background: transparent; border: none; color: #64748b; cursor: pointer; font-size: 12px; padding: 4px; }
-        .action-icon-btn:hover { color: white; }
-        .action-icon-btn.delete-btn:hover { color: var(--neon-red); }
+        /* Clean Print Config */
+        @media print {
+            body { background: white !important; color: black !important; }
+            .os-header, .btn-primary, .btn-sec, .nav-wrapper, #screen-actions, .section-label { display: none !important; }
+            .card, .summary-card { border: 1px solid #aaa !important; background: white !important; color: black !important; box-shadow: none !important; }
+            h1, h2, h3, p, span, div { color: black !important; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="simulation-info-bar">
-        <div><i class="fa-solid fa-cloud" style="color: var(--neon-green);"></i> <strong>LIVE CELL:</strong> English Meetings Hub</div>
-        <div style="font-family: 'Courier Prime', monospace; color: var(--neon-purple);" id="room-display">[SESSION NOT STARTED]</div>
+    <div class="os-header">
+        <div class="os-logo"><i class="fa-solid fa-gamepad"></i> SPEAKING QUEST ARENA</div>
+        <div class="progress-container" id="step-indicators"></div>
     </div>
 
-    <div class="mission-box" id="global-mission-box">
-        <div class="mission-title" id="mission-title-content"></div>
-        <div class="mission-text" id="mission-text-content"></div>
-        <ul class="mission-steps" id="mission-steps-content"></ul>
-    </div>
+    <div class="main-container">
 
-    <div class="simulation-container">
-        
-        <div id="device-p1" class="device-screen">
-            <div class="device-header">
-                <span class="tech-title">// PLAYER 1 CONTROLLER</span>
-                <span class="device-badge" id="badge-p1-name">Waiting...</span>
-            </div>
-
-            <div id="p1-setup">
-                <div class="setup-group">
-                    <label>Select Today's Lesson Scenario:</label>
-                    <select id="select-game-mode" class="mode-dropdown">
-                        <option value="EXPEDITIONS">🧳 Scenario A: Vacation Expedition (Trip Planner)</option>
-                        <option value="VENTURES">🚀 Scenario B: Tech Venture Startup (Business Tech)</option>
-                        <option value="ROAD_TRIP">🚗 Scenario C: Renting a Car & Road Trip (Agency Deals)</option>
-                    </select>
-                </div>
-                <div class="setup-group">
-                    <label>Your Name:</label>
-                    <input type="text" id="input-p1-name" placeholder="Type your name...">
-                </div>
-                <div class="setup-group">
-                    <label>Session Room ID (Give this to your partner):</label>
-                    <input type="text" id="input-room-id" value="room-1" style="font-family:'Courier Prime'; color:var(--neon-purple);">
-                </div>
-                <button class="action-btn" style="margin-top:10px;" onclick="window.initSandbox()">Launch Shared Cell ➔</button>
-            </div>
-
-            <div id="p1-game" style="display:none; flex-direction: column; flex: 1;">
-                <div class="dashboard-grid" id="p1-dash"></div>
-                
-                <div class="suggestions-box">
-                    <div class="suggestions-title"><i class="fa-regular fa-lightbulb"></i> Idea Starters (Click to use):</div>
-                    <div class="suggestions-tags" id="p1-suggestions"></div>
-                </div>
-
-                <div class="workspace-title" id="p1-desk-title">// Action Desk</div>
-                <div class="interactive-panel">
-                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
-                        <input type="text" id="p1-item-name" placeholder="Type deal item description...">
-                        <input type="number" id="p1-item-cost" placeholder="$ Cost">
+        <div id="scr-1" class="os-screen active">
+            <h1>Create Your Player Card</h1>
+            <p class="subtitle">Pick your favorite topics. The game will automatically create a custom conversation challenge for your group!</p>
+            
+            <div class="card">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
+                    <div>
+                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Your Name</h3>
+                        <input type="text" id="user-name" placeholder="Type your nickname or name...">
                     </div>
-                    <div class="impact-selector">
-                        <div class="imp-btn positive" id="p1-imp-pos" onclick="window.selectImpact(1, 'pos')">👍 Balance Status</div>
-                        <div class="imp-btn negative selected" id="p1-imp-neg" onclick="window.selectImpact(1, 'neg')">👎 Stress Impact</div>
+                    <div>
+                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">English Level</h3>
+                        <select id="user-level">
+                            <option value="1">A1 (Beginner)</option>
+                            <option value="2" selected>A2 (Elementary)</option>
+                            <option value="3">B1 (Intermediate)</option>
+                            <option value="4">B2 (Upper Intermediate)</option>
+                            <option value="5">C1 (Advanced)</option>
+                        </select>
                     </div>
-                    <button class="action-btn" id="p1-submit-btn" style="padding:10px; font-size:12px;" onclick="window.submitLog(1)">Send Decision ➔</button>
                 </div>
 
-                <div class="log-section">
-                    <div class="workspace-title">// Shared Decision Log</div>
-                    <div class="log-table-wrapper" id="p1-log-table"></div>
-                </div>
+                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Choose 3 topics you enjoy or know well</h3>
+                <div class="grid-selector" id="render-passions"></div>
+
+                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-blue); margin-bottom:8px;">What makes you happy when working in a group? (Choose 3)</h3>
+                <div class="grid-selector" id="render-happiness"></div>
+
+                <button class="btn-primary" id="start-btn" onclick="submitOnboarding()">Launch Game Space ➔</button>
             </div>
         </div>
 
-        <div id="device-p2" class="device-screen">
-            <div class="device-header">
-                <span class="tech-title">// PLAYER 2 CONTROLLER</span>
-                <span class="device-badge" id="badge-p2-name">Waiting...</span>
-            </div>
-
-            <div id="p2-setup">
-                <div class="setup-group">
-                    <label>Your Name:</label>
-                    <input type="text" id="input-p2-name" placeholder="Type your name...">
+        <div id="scr-2" class="os-screen">
+            
+            <div class="mission-main-box">
+                <div class="mission-title-row">
+                    <span style="font-size:11px; text-transform:uppercase; color:var(--accent-purple); font-weight:700;"><i class="fa-solid fa-trophy"></i> Current Group Mission</span>
+                    <div class="level-badge" id="mission-level-display">Group Level: A2</div>
                 </div>
-                <div class="setup-group">
-                    <label>Enter Partner's Room ID to Join:</label>
-                    <input type="text" id="input-p2-room-id" value="room-1" style="font-family:'Courier Prime'; color:var(--neon-purple);">
-                </div>
-                <button class="action-btn" style="margin-top:10px; background:linear-gradient(90deg, #a855f7, #0284c7);" onclick="window.joinSandbox()">Join Shared Cell ➔</button>
-            </div>
-
-            <div id="p2-game" style="display:none; flex-direction: column; flex: 1;">
-                <div class="dashboard-grid" id="p2-dash"></div>
+                <div style="font-size:18px; font-weight:700; color:white; line-height:1.4;" id="inspiration-text-display">Creating your dynamic challenge map...</div>
                 
-                <div class="suggestions-box">
-                    <div class="suggestions-title"><i class="fa-regular fa-lightbulb"></i> Idea Starters (Click to use):</div>
-                    <div class="suggestions-tags" id="p2-suggestions"></div>
+                <div class="vocabulary-pill-box">
+                    <span style="font-size: 11px; font-weight:700; color:var(--accent-blue); text-transform: uppercase; display:block; margin-bottom: 4px;"><i class="fa-solid fa-book-open"></i> Useful Words For This Mission</span>
+                    <p style="font-size: 13.5px; color: var(--text-main); line-height: 1.4;" id="vocab-text-display">Loading terms...</p>
+                </div>
+            </div>
+
+            <div class="sandbox-layout">
+                
+                <div class="info-sidebar">
+                    
+                    <div class="strategy-box">
+                        <h4 id="strat-tech-title"><i class="fa-solid fa-star"></i> Quick Team Trick</h4>
+                        <p id="strat-tech-desc">Loading...</p>
+                    </div>
+
+                    <div>
+                        <div class="section-label">Connected Players</div>
+                        <div style="display:flex; flex-direction:column; gap:10px;" id="render-sandbox-peers"></div>
+                    </div>
+
                 </div>
 
-                <div class="workspace-title" id="p2-desk-title">// Action Desk</div>
-                <div class="interactive-panel">
-                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:8px;">
-                        <input type="text" id="p2-item-name" placeholder="Type deal item description...">
-                        <input type="number" id="p2-item-cost" placeholder="$ Cost">
+                <div class="canvas-grid">
+                    
+                    <div class="workspace-block">
+                        <div class="section-label" style="color: var(--accent-blue); margin-bottom: 4px;"><i class="fa-solid fa-volume-high"></i> Ask your friends infinite possibilities!</div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">What possibilities do you want to create? Ask right now!</p>
+                        
+                        <div class="oral-quest-container">
+                            <div class="oral-prompt-headline">💡 Dynamic Speech Sparkers</div>
+                            <div class="oral-list-item">1. What if...?</div>
+                            <div class="oral-list-item">2. How about...?</div>
+                            <div class="oral-list-blank">3. ___________________________</div>
+                            <div class="oral-list-blank">4. ___________________________</div>
+                        </div>
+                        <p style="font-size: 11px; color: var(--accent-blue); text-align: center; font-style: italic;">Use these triggers to pass the mic to your peers!</p>
                     </div>
-                    <div class="impact-selector">
-                        <div class="imp-btn positive" id="p2-imp-pos" onclick="window.selectImpact(2, 'pos')">👍 Balance Status</div>
-                        <div class="imp-btn negative selected" id="p2-imp-neg" onclick="window.selectImpact(2, 'neg')">👎 Stress Impact</div>
+
+                    <div class="workspace-block">
+                        <div class="section-label" style="color: var(--accent-pink); margin-bottom: 10px;"><i class="fa-solid fa-lightbulb"></i> Live Board: Ideas & Solutions</div>
+                        
+                        <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
+                            <input type="text" id="sticky-input" placeholder="Type a cool idea or take a role card..." style="margin-bottom:0; flex:1; padding: 10px;">
+                            <label style="font-size:11px; display:flex; align-items:center; gap:4px; color:var(--text-muted); cursor:pointer; user-select:none;">
+                                <input type="checkbox" id="roleplay-toggle"> Character Role?
+                            </label>
+                            <button class="btn-primary" style="padding:10px 15px; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple));" onclick="addStickyNote()"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+
+                        <div class="sticky-container" id="mural-sticky-grid"></div>
                     </div>
-                    <button class="action-btn" id="p2-submit-btn" style="padding:10px; font-size:12px;" onclick="window.submitLog(2)">Send Decision ➔</button>
+
                 </div>
 
-                <div class="log-section">
-                    <div class="workspace-title">// Shared Decision Log</div>
-                    <div class="log-table-wrapper" id="p2-log-table"></div>
+            </div>
+
+            <div class="nav-wrapper" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top:1px solid var(--border); padding-top:20px;">
+                <div class="lock-notice" id="mural-lock-message">
+                    <i class="fa-solid fa-lock"></i> Add at least 2 cards to the Live Board to unlock the end page.
                 </div>
+                <button class="btn-primary" id="finish-conversation-btn" style="background: var(--text-muted);" onclick="attemptFinish()" disabled>
+                    Finish Adventure Log ➔
+                </button>
+            </div>
+        </div>
+
+        <div id="scr-3" class="os-screen">
+            <h1>Quest Completed! 🏆</h1>
+            <p class="subtitle">Amazing team dynamic. Your conversation history and active logs are saved successfully.</p>
+            
+            <div class="card" style="text-align:center; padding:40px; background: linear-gradient(135deg, rgba(16,185,129,0.08), transparent); border-color: rgba(16,185,129,0.3);">
+                <i class="fa-solid fa-star-and-crescent" style="font-size:48px; color:var(--accent-yellow); margin-bottom:15px; text-shadow: 0 0 15px rgba(234,179,8,0.5);"></i>
+                <h2 style="font-size: 24px; color: #fff; font-family:'Courier Prime', monospace;">You Did Great Together!</h2>
+                <p style="color:var(--text-main); font-size:14px; max-width:650px; margin: 15px auto 0; line-height: 1.6;">
+                    You successfully finished this live challenge! By focusing directly on your partner's goals, asking live questions, and working as a real community, you practiced language in a useful, real-world way. Keep up this incredible energy!
+                </p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card" style="grid-column: span 2;">
+                    <i class="fa-solid fa-lightbulb" style="color:var(--accent-purple); font-size: 22px;"></i>
+                    <p style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-top:8px;">Shared Board Ideas</p>
+                    <h3 id="sum-ideas">0</h3>
+                </div>
+                <div class="summary-card" style="grid-column: span 2;">
+                    <i class="fa-solid fa-heart" style="color:var(--accent-pink); font-size: 22px;"></i>
+                    <p style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-top:8px;">Confidence Hearts Sent</p>
+                    <h3 id="sum-boosts">0</h3>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin-top:35px; display:flex; justify-content:center; gap:15px;" id="screen-actions">
+                <button class="btn-primary" style="background: var(--accent-blue)" onclick="window.print()"><i class="fa-solid fa-file-pdf"></i> Print Game Summary Report</button>
+                <button class="btn-sec" onclick="restartOS()"><i class="fa-solid fa-rotate-left"></i> Start New Game</button>
             </div>
         </div>
 
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+        const poolPassions = ["🎵 Music", "⚽ Sports", "🎬 Movies", "🎮 Gaming", "✈ Travel", "🍔 Food", "🤖 Technology", "📈 Business", "🎨 Art", "🌎 Languages"];
+        const poolHappiness = ["Helping people", "Learning things", "Solving problems", "Teaching others", "Creating things", "Making teams better", "Sharing ideas"];
+        const levelNames = ["A1", "A2", "B1", "B2", "C1"];
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCuqzhyaH6cSNvqxwPh74tHoWaRE5KHleE",
-            authDomain: "english-meetings-f08e4.firebaseapp.com",
-            databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com",
-            projectId: "english-meetings-f08e4",
-            storageBucket: "english-meetings-f08e4.firebasestorage.app",
-            messagingSenderId: "210364939189",
-            appId: "1:210364939189:web:d412e96de70d424dc6b7fc"
+        const DATABASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
+        const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+        const GROQ_KEY = "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";
+
+        let cellPeers = [
+            { name: "Ana", level: 2, assets: ["🎵 Music", "🌎 Languages"], boosts: 0 },
+            { name: "Pedro", level: 4, assets: ["🤖 Technology", "📈 Business"], boosts: 0 }
+        ];
+
+        let currentScreen = 1;
+        let userData = { name: "You", level: 2, assets: [], motivations: [] };
+        let localNotesCount = 0;
+        let totalBoostsSent = 0;
+
+        window.onload = function() {
+            buildStepIndicators();
+            buildOnboardingPickers();
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        let localEngineState = {
-            currentMode: "EXPEDITIONS",
-            player1Name: "Player 1",
-            player2Name: "Player 2",
-            initialBudget: 3000,
-            remainingCash: 3000,
-            vitalityScore: 100,
-            successCounter: 0,
-            historyLog: [],
-            p1SelectedImpact: 'neg',
-            p2SelectedImpact: 'neg'
-        };
-
-        let currentRoomId = "room-1";
-        let editingIndex = null;
-
-        // SCENARIOS ARCHITECTURE MAPPING (CAMALEÃO)
-        const scenarioConfigs = {
-            "EXPEDITIONS": {
-                title: "🧳 Mission Scenario: Vacation Expedition",
-                briefing: "You and your partner are planning a dream vacation trip. Negotiate costs responsibly, but remember that cheap options might affect your body energy!",
-                steps: "<li>Open your microphones and talk about where to stay, eat, and visit.</li><li>Register expenses in the Action Desk. Select 'Recovers Energy' for luxury/rest, or 'Drains Energy' for long walks/cheap items.</li>",
-                bar1Label: "💰 Budget Remaining", bar2Label: "🔋 Team Energy", bar3Label: "📸 Memories",
-                posText: "👍 Recovers Energy", negText: "👎 Drains Energy",
-                suggestions: ["Luxury Hotel", "Street Food", "Flight Tickets", "Tour Guide", "Souvenirs", "Museum Pass", "Train Ticket", "Local Restaurant", "Emergency Taxi"]
-            },
-            "VENTURES": {
-                title: "🚀 Mission Scenario: Tech Venture Startup",
-                briefing: "You just launched a new software company! Work together to allocate investment funds into critical business assets, but watch out for extreme team stress.",
-                steps: "<li>Debate what software tools, offices, or people your company needs right now.</li><li>Commit costs. Select 'Reduces Stress' for employee benefits or perks, or 'Increases Burnout' for massive infrastructure.</li>",
-                bar1Label: "💳 Funding Left", bar2Label: "🤯 Team Burnout", bar3Label: "📈 Active Users",
-                posText: "👍 Reduces Stress", negText: "👎 Increases Burnout",
-                suggestions: ["Cloud Servers", "Marketing Ads", "Office Rent", "Graphic Designer", "Coffee Machine", "Legal Advice", "Software License", "Team Dinner", "Consultant"]
-            },
-            "ROAD_TRIP": {
-                title: "🚗 Mission Scenario: Renting a Car & Road Trip",
-                briefing: "You are at the vehicle rental agency desk preparing a cross-country trip. Choose the perfect car upgrades and features, balancing deals with safety fatigue.",
-                steps: "<li>Talk to your partner about car classes, add-ons, full insurance protections, and fuel terms.</li><li>Send deals to cloud. Select 'Improves Safety' for premium choices, or 'Increases Fatigue' for cheap compact options.</li>",
-                bar1Label: "🚙 Agency Car Cash", bar2Label: "🥱 Driver's Fatigue", bar3Label: "🛡️ Upgrades Added",
-                posText: "👍 Improves Safety", negText: "👎 Increases Fatigue",
-                suggestions: ["SUV Upgrade", "Full Insurance Cover", "GPS Navigation", "Child Car Seat", "Prepaid Fuel Tank", "Toll Pass Device", "Additional Driver Fee", "Roof Cargo Box", "Roadside Assist Pack"]
+        function buildStepIndicators() {
+            const container = document.getElementById('step-indicators');
+            container.innerHTML = "";
+            for(let i=1; i<=3; i++) {
+                container.innerHTML += `<div class="progress-step ${i <= currentScreen ? 'active' : ''}"></div>`;
             }
-        };
-
-        window.selectImpact = function(playerNum, type) {
-            if(playerNum === 1) {
-                localEngineState.p1SelectedImpact = type;
-                document.getElementById('p1-imp-pos').classList.remove('selected');
-                document.getElementById('p1-imp-neg').classList.remove('selected');
-                document.getElementById(`p1-imp-${type}`).classList.add('selected');
-            } else {
-                localEngineState.p2SelectedImpact = type;
-                document.getElementById('p2-imp-pos').classList.remove('selected');
-                document.getElementById('p2-imp-neg').classList.remove('selected');
-                document.getElementById(`p2-imp-${type}`).classList.add('selected');
-            }
-        };
-
-        window.applySuggestion = function(playerNum, text) {
-            document.getElementById(`p${playerNum}-item-name`).value = text;
-        };
-
-        // INITIALIZE ROOM (PLAYER 1)
-        window.initSandbox = function() {
-            currentRoomId = document.getElementById('input-room-id').value.trim() || "room-1";
-            localEngineState.player1Name = document.getElementById('input-p1-name').value.trim() || "Player 1";
-            localEngineState.currentMode = document.getElementById('select-game-mode').value;
-            localEngineState.historyLog = ["EMPTY_ROOM"]; 
-
-            set(ref(db, 'rooms/' + currentRoomId), localEngineState).then(() => {
-                listenToCloud();
-                document.getElementById('p1-setup').style.display = 'none';
-                document.getElementById('p1-game').style.display = 'flex';
-            });
-        };
-
-        // JOIN ACTIVE ROOM (PLAYER 2)
-        window.joinSandbox = function() {
-            currentRoomId = document.getElementById('input-p2-room-id').value.trim() || "room-1";
-            localEngineState.player2Name = document.getElementById('input-p2-name').value.trim() || "Player 2";
-
-            update(ref(db, 'rooms/' + currentRoomId), {
-                player2Name: localEngineState.player2Name
-            }).then(() => {
-                listenToCloud();
-                document.getElementById('p2-setup').style.display = 'none';
-                document.getElementById('p2-game').style.display = 'flex';
-            });
-        };
-
-        // LISTEN AND RE-RENDER CAMALEÃO ENVIRONMENT
-        function listenToCloud() {
-            document.getElementById('room-display').innerText = `[ACTIVE SESSION ROOM: ${currentRoomId.toUpperCase()}]`;
-            
-            onValue(ref(db, 'rooms/' + currentRoomId), (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
-
-                localEngineState = data;
-                if(!localEngineState.historyLog || localEngineState.historyLog[0] === "EMPTY_ROOM") {
-                    localEngineState.historyLog = [];
-                }
-
-                // FETCH THE CHOSEN SCENARIO CONFIG
-                const config = scenarioConfigs[localEngineState.currentMode];
-
-                // RENDER TOP MISSION BRIEFING
-                document.getElementById('global-mission-box').style.display = "block";
-                document.getElementById('mission-title-content').innerHTML = `<i class="fa-solid fa-compass"></i> ${config.title}`;
-                document.getElementById('mission-text-content').innerText = config.briefing;
-                document.getElementById('mission-steps-content').innerHTML = `<strong>What to do now:</strong><br>${config.steps}`;
-
-                // RENDER IMPACT ACTION DESK BUTTON LABELS
-                document.querySelectorAll('.positive').forEach(el => el.innerText = config.posText);
-                document.querySelectorAll('.negative').forEach(el => el.innerText = config.negText);
-                
-                document.getElementById('badge-p1-name').innerText = localEngineState.player1Name;
-                document.getElementById('badge-p2-name').innerText = localEngineState.player2Name;
-
-                // LAYER CHECK
-                if(document.getElementById('p1-setup').style.display !== 'none' && data.player1Name !== "Player 1") {
-                    document.getElementById('p1-setup').style.display = 'none';
-                    document.getElementById('p1-game').style.display = 'flex';
-                }
-                if(document.getElementById('p2-setup').style.display !== 'none' && data.player2Name !== "Player 2") {
-                    document.getElementById('p2-setup').style.display = 'none';
-                    document.getElementById('p2-game').style.display = 'flex';
-                }
-
-                renderSuggestions(1);
-                renderSuggestions(2);
-                renderDashboard('p1-dash');
-                renderDashboard('p2-dash');
-                renderLogCards();
-            });
         }
 
-        function renderSuggestions(playerNum) {
-            const list = scenarioConfigs[localEngineState.currentMode].suggestions;
-            const container = document.getElementById(`p${playerNum}-suggestions`);
-            container.innerHTML = list.map(item => `
-                <span class="sug-tag" onclick="window.applySuggestion(${playerNum}, '${item}')">${item}</span>
+        function buildOnboardingPickers() {
+            const passionsContainer = document.getElementById('render-passions');
+            passionsContainer.innerHTML = poolPassions.map((p, i) => `
+                <div class="selectable-tag tag-p" id="tag-p-${i}">${p}</div>
             `).join('');
+
+            const happinessContainer = document.getElementById('render-happiness');
+            happinessContainer.innerHTML = poolHappiness.map((h, i) => `
+                <div class="selectable-tag tag-h" id="tag-h-${i}">${h}</div>
+            `).join('');
+
+            document.querySelectorAll('.tag-p').forEach(el => {
+                el.addEventListener('click', () => toggleTag(el, 'p'));
+            });
+            document.querySelectorAll('.tag-h').forEach(el => {
+                el.addEventListener('click', () => toggleTag(el, 'h'));
+            });
         }
 
-        window.changeInitialBudget = function(val) {
-            let num = parseFloat(val) || 3000;
-            update(ref(db, 'rooms/' + currentRoomId), {
-                initialBudget: num
-            }).then(() => recalcMetricsFromLog(localEngineState.historyLog));
-        };
+        function toggleTag(el, type) {
+            const className = type === 'p' ? '.tag-p.selected' : '.tag-h.selected';
+            const selectedCount = document.querySelectorAll(className).length;
+            if(!el.classList.contains('selected') && selectedCount >= 3) {
+                alert("Please select up to 3 topics.");
+                return;
+            }
+            el.classList.toggle('selected');
+        }
 
-        // SUBMIT AND COMPUTE RULES DYNAMICALLY BASED ON CURRENT MODE
-        window.submitLog = function(playerNum) {
-            const nameInput = document.getElementById(`p${playerNum}-item-name`);
-            const costInput = document.getElementById(`p${playerNum}-item-cost`);
+        function navTo(screenNum) {
+            document.getElementById(`scr-${currentScreen}`).classList.remove('active');
+            currentScreen = screenNum;
+            document.getElementById(`scr-${currentScreen}`).classList.add('active');
+            buildStepIndicators();
+        }
+
+        window.submitOnboarding = async function() {
+            let nameInput = document.getElementById('user-name').value.trim();
+            let selectedLevel = parseInt(document.getElementById('user-level').value);
+            let selectedPassions = Array.from(document.querySelectorAll('.tag-p.selected')).map(el => el.textContent);
+            let selectedHappiness = Array.from(document.querySelectorAll('.tag-h.selected')).map(el => el.textContent);
             
-            const itemName = nameInput.value.trim();
-            const itemCost = parseFloat(costInput.value) || 0;
-            const impactType = playerNum === 1 ? localEngineState.p1SelectedImpact : localEngineState.p2SelectedImpact;
-
-            if(!itemName) return alert("Please type an item description first!");
-
-            let currentLog = localEngineState.historyLog || [];
-
-            if (editingIndex !== null) {
-                currentLog[editingIndex] = {
-                    author: currentLog[editingIndex].author,
-                    name: itemName,
-                    cost: itemCost,
-                    impact: impactType
-                };
-                editingIndex = null;
-                [1,2].forEach(p => {
-                    document.getElementById(`p${p}-submit-btn`).innerText = "Send Decision ➔";
-                    document.getElementById(`p${p}-desk-title`).innerText = "// Action Desk";
-                });
-            } else {
-                currentLog.unshift({
-                    author: playerNum === 1 ? localEngineState.player1Name : localEngineState.player2Name,
-                    name: itemName,
-                    cost: itemCost,
-                    impact: impactType
-                });
+            if(!nameInput) nameInput = "Explorer";
+            if(selectedPassions.length !== 3 || selectedHappiness.length !== 3) {
+                alert("Please select exactly 3 topics from each box!");
+                return;
             }
 
-            nameInput.value = "";
-            costInput.value = "";
-            recalcMetricsFromLog(currentLog);
+            userData.name = nameInput;
+            userData.level = selectedLevel;
+            userData.assets = selectedPassions;
+            userData.motivations = selectedHappiness;
+
+            document.getElementById('start-btn').innerText = "Launching Arena...";
+            document.getElementById('start-btn').disabled = true;
+
+            await queryGroqAIEnvironment();
         };
 
-        window.startEditCard = function(index) {
-            editingIndex = index;
-            const item = localEngineState.historyLog[index];
-            [1, 2].forEach(pNum => {
-                document.getElementById(`p${pNum}-item-name`).value = item.name;
-                document.getElementById(`p${pNum}-item-cost`).value = item.cost;
-                window.selectImpact(pNum, item.impact);
-                document.getElementById(`p${pNum}-submit-btn`).innerText = "Save Edit Changes 💾";
-                document.getElementById(`p${pNum}-desk-title`).innerText = `// Editing Card #${localEngineState.historyLog.length - index}`;
-            });
-        };
+        async function queryGroqAIEnvironment() {
+            let totalLevel = userData.level + cellPeers[0].level + cellPeers[1].level;
+            let averageLevelIndex = Math.round(totalLevel / 3) - 1;
+            let targetLevelName = levelNames[averageLevelIndex] || "B1";
 
-        window.deleteCard = function(index) {
-            if(!confirm("Are you sure you want to remove this item?")) return;
-            let currentLog = localEngineState.historyLog || [];
-            currentLog.splice(index, 1);
-            recalcMetricsFromLog(currentLog);
-        };
+            document.getElementById('mission-level-display').innerText = `Group Level: ${targetLevelName}`;
 
-        // RECALCULATE SIMULATOR MATHEMATICS
-        function recalcMetricsFromLog(logArray) {
-            let nextCash = localEngineState.initialBudget;
-            let nextVitality = 100;
-            let nextSuccess = 0;
+            let randomMyAsset = userData.assets[Math.floor(Math.random() * userData.assets.length)];
+            let randomPeerAsset = cellPeers[0].assets[Math.floor(Math.random() * cellPeers[0].assets.length)];
 
-            let reversedLog = [...logArray].reverse();
-            reversedLog.forEach(item => {
-                nextCash = Math.max(0, nextCash - item.cost);
-                if(localEngineState.currentMode === "EXPEDITIONS") {
-                    nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 15) : Math.max(0, nextVitality - 20);
-                    nextSuccess += 1;
-                } else if(localEngineState.currentMode === "VENTURES") {
-                    nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 20) : Math.max(0, nextVitality - 25);
-                    nextSuccess += 120;
-                } else {
-                    // ROAD TRIP COMPUTATION
-                    nextVitality = item.impact === 'pos' ? Math.min(100, nextVitality + 10) : Math.max(0, nextVitality - 15);
-                    nextSuccess += 1; // Counter of features added
-                }
-            });
+            const systemInstructions = `You are a gamified lesson planner. Output everything in very simple English for English learners at level ${targetLevelName}. Never use any complex words or any Portuguese.
+            You must reply with a valid JSON string containing exactly these four keys:
+            "inspiration": (A short gamified challenge sentence combining ${randomMyAsset} and ${randomPeerAsset}),
+            "microtext": (A 2 line story scenario using two useful phrasal verbs in bold based on that challenge),
+            "definitions": (Very easy English meanings for those bold phrasal verbs),
+            "trick": (A simple communication tip for team work)
+            `;
 
-            update(ref(db, 'rooms/' + currentRoomId), {
-                remainingCash: nextCash,
-                vitalityScore: nextVitality,
-                successCounter: nextSuccess,
-                historyLog: logArray
-            });
+            try {
+                const response = await fetch(GROQ_API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama3-8b-8192",
+                        response_format: { type: "json_object" },
+                        messages: [{ role: "system", content: systemInstructions }, { role: "user", content: "Build the JSON payload now." }]
+                    })
+                });
+
+                const data = await response.json();
+                const payload = JSON.parse(data.choices[0].message.content);
+
+                document.getElementById('inspiration-text-display').innerText = payload.inspiration;
+                document.getElementById('vocab-text-display').innerHTML = `"${payload.microtext}" <br><span style="color:var(--text-muted); font-size:12px; display:block; margin-top:6px;"><b>Meanings:</b> ${payload.definitions}</span>`;
+                document.getElementById('strat-tech-desc').innerText = payload.trick;
+                
+                renderSandboxSidebar();
+                startFirebaseRealtimeStream();
+                navTo(2);
+
+            } catch (err) {
+                console.error("API Fallback system activated:", err);
+                document.getElementById('inspiration-text-display').innerText = `Let's merge "${randomMyAsset}" and "${randomPeerAsset}" to build an organic project together!`;
+                document.getElementById('vocab-text-display').innerHTML = `We need to <b>figure out</b> (find the answer) how to balance this. Let's <b>work out</b> (make/develop) a solution.`;
+                document.getElementById('strat-tech-desc').innerText = "Ask open questions like: 'What do you think?' to help your group talk safely.";
+                
+                renderSandboxSidebar();
+                startFirebaseRealtimeStream();
+                navTo(2);
+            }
         }
 
-        function renderDashboard(dashId) {
-            const cfg = scenarioConfigs[localEngineState.currentMode];
-            const cashPct = Math.min(100, Math.max(0, (localEngineState.remainingCash / localEngineState.initialBudget) * 100));
-            const cashColor = cashPct > 35 ? 'var(--neon-green)' : 'var(--neon-red)';
-            const vitColor = localEngineState.vitalityScore > 40 ? 'var(--neon-blue)' : 'var(--neon-gold)';
-
-            let finalCounterDisplay = "";
-            if(localEngineState.currentMode === "EXPEDITIONS") {
-                let stars = Math.min(5, Math.floor(localEngineState.successCounter / 2));
-                for(let i=1; i<=5; i++) { stars >= i ? finalCounterDisplay += '★' : finalCounterDisplay += '☆'; }
-            } else if(localEngineState.currentMode === "VENTURES") {
-                finalCounterDisplay = localEngineState.successCounter + " Trait";
-            } else {
-                finalCounterDisplay = localEngineState.successCounter + " Selected";
-            }
-
-            document.getElementById(dashId).innerHTML = `
-                <div class="metric-card">
-                    <span class="metric-label">${cfg.bar1Label}</span>
-                    <div class="metric-val" style="color: ${cashColor}">
-                        $ <input type="number" class="inline-edit-budget" value="${Math.round(localEngineState.remainingCash)}" onchange="window.changeInitialBudget(this.value)">
-                    </div>
-                    <div class="bar-container"><div class="bar-fill" style="width: ${cashPct}%; background:${cashColor}"></div></div>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-label">${cfg.bar2Label}</span>
-                    <div class="metric-val" style="color: ${vitColor}">${localEngineState.vitalityScore}%</div>
-                    <div class="bar-container"><div class="bar-fill" style="width: ${localEngineState.vitalityScore}%; background:${vitColor}"></div></div>
-                </div>
-                <div class="metric-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                    <span class="metric-label">${cfg.bar3Label}</span>
-                    <div class="metric-val" style="color: var(--neon-purple); font-size:14px; margin-top:4px;">${finalCounterDisplay}</div>
+        function renderSandboxSidebar() {
+            let sideHTML = `
+                <div class="mini-profile-card" style="border-color: var(--accent-purple); margin-bottom: 10px;">
+                    <h5>👤 ${userData.name} (You)</h5>
+                    <div class="tag-row">${userData.assets.map(a=>`<span class="mini-tag">${a}</span>`).join('')}</div>
                 </div>
             `;
-        }
-
-        function renderLogCards() {
-            let logList = localEngineState.historyLog || [];
-            const cfg = scenarioConfigs[localEngineState.currentMode];
-            
-            let cardsHtml = logList.map((item, idx) => {
-                const badgeClass = item.impact === 'pos' ? 'pos' : 'neg';
-                const badgeLabel = item.impact === 'pos' ? 'Positive Impact' : 'Negative Impact';
-                const initial = item.author ? item.author.charAt(0) : 'P';
-
-                return `
-                    <div class="log-card">
-                        <div class="log-card-left">
-                            <div class="log-avatar">${initial}</div>
-                            <div class="log-details">
-                                <span class="log-card-name">${item.name}</span>
-                                <span class="log-card-meta">Decided by: <strong>${item.author}</strong></span>
-                            </div>
-                        </div>
-                        <div class="log-card-right">
-                            <span class="log-card-cost" style="color: ${item.impact === 'pos' ? 'var(--neon-green)' : 'var(--neon-red)'}">-$${item.cost}</span>
-                            <span class="impact-badge ${badgeClass}">${badgeLabel}</span>
-                            <div class="log-actions">
-                                <button class="action-icon-btn" title="Edit" onclick="window.startEditCard(${idx})"><i class="fa-solid fa-pen"></i></button>
-                                <button class="action-icon-btn delete-btn" title="Delete" onclick="window.deleteCard(${idx})"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        </div>
+            cellPeers.forEach((p, idx) => {
+                sideHTML += `
+                    <div class="mini-profile-card" id="peer-card-${idx}" style="margin-bottom:8px;">
+                        <h5 style="display:flex; justify-content:space-between; width:100%;">
+                            <span>👤 ${p.name}</span> 
+                            <span style="color:var(--accent-pink)" id="boost-count-${idx}">❤️ ${p.boosts}</span>
+                        </h5>
+                        <div class="tag-row">${p.assets.map(a=>`<span class="mini-tag">${a}</span>`).join('')}</div>
+                        <button class="btn-primary boost-trigger-btn" data-idx="${idx}" style="padding:4px 8px; font-size:11px; margin-top:8px; border-radius:4px; background:rgba(236,72,153,0.12); border:1px solid var(--accent-pink); color:white; width:100%; justify-content:center;">Send Heart</button>
                     </div>
                 `;
-            }).join('');
+            });
+            document.getElementById('render-sandbox-peers').innerHTML = sideHTML;
 
-            if(logList.length === 0) {
-                cardsHtml = `<div style="text-align:center; color:#475569; font-size:12px; padding:35px; font-style:italic;">No deal tracked yet. Agree in English and post your first deal card!</div>`;
-            }
-
-            document.getElementById('p1-log-table').innerHTML = cardsHtml;
-            document.getElementById('p2-log-table').innerHTML = cardsHtml;
+            document.querySelectorAll('.boost-trigger-btn').forEach(btn => {
+                btn.addEventListener('click', () => boostPeer(parseInt(btn.getAttribute('data-idx'))));
+            });
         }
+
+        function startFirebaseRealtimeStream() {
+            setInterval(async () => {
+                try {
+                    const res = await fetch(`${DATABASE_URL}/notes.json`);
+                    const data = await res.json();
+                    
+                    const container = document.getElementById('mural-sticky-grid');
+                    const colors = ['var(--sticky-yellow)', 'var(--sticky-blue)', 'var(--sticky-pink)'];
+                    let html = "";
+                    let index = 0;
+
+                    if (data) {
+                        Object.keys(data).forEach((key) => {
+                            const note = data[key];
+                            let badge = note.type === 'role' ? '<span class="sticky-badge">Role</span>' : '<span class="sticky-badge" style="background:#3b82f6">Idea</span>';
+                            let cardClass = note.type === 'role' ? 'sticky-note role-play-card' : 'sticky-note';
+                            
+                            html += `
+                                <div class="${cardClass}" style="background: ${colors[index % colors.length]}">
+                                    ${badge}
+                                    <div style="word-break: break-word; overflow-y: auto; max-height: 90px; margin-top:5px; font-size:12px;">"${note.text}"</div>
+                                    <div class="sticky-footer">
+                                        <span>By: ${note.author}</span>
+                                        <button class="suggest-skill-btn" data-author="${note.author}">💡 Tip</button>
+                                    </div>
+                                </div>
+                            `;
+                            index++;
+                        });
+                    }
+                    
+                    container.innerHTML = html;
+                    localNotesCount = index;
+                    document.getElementById('sum-ideas').innerText = localNotesCount;
+                    
+                    document.querySelectorAll('.suggest-skill-btn').forEach(btn => {
+                        btn.onclick = () => {
+                            alert(`Awesome! You shared a useful practice trick with ${btn.getAttribute('data-author')}!`);
+                        };
+                    });
+
+                    updateLockStatus();
+
+                } catch (e) {
+                    console.log("Sync error checking nodes: ", e);
+                }
+            }, 2500);
+        }
+
+        window.addStickyNote = async function() {
+            const input = document.getElementById('sticky-input');
+            const isRolePlay = document.getElementById('roleplay-toggle').checked;
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            try {
+                await fetch(`${DATABASE_URL}/notes.json`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        text: txt,
+                        author: userData.name,
+                        type: isRolePlay ? 'role' : 'idea',
+                        timestamp: Date.now()
+                    })
+                });
+                input.value = "";
+                document.getElementById('roleplay-toggle').checked = false;
+            } catch (e) {
+                console.error("Database connection missing: ", e);
+            }
+        };
+
+        function updateLockStatus() {
+            const btn = document.getElementById('finish-conversation-btn');
+            const msg = document.getElementById('mural-lock-message');
+            
+            if (localNotesCount >= 2) {
+                btn.disabled = false;
+                btn.style.background = "var(--accent-green)";
+                btn.style.cursor = "pointer";
+                msg.innerHTML = `<span style="color:var(--accent-green)"><i class="fa-solid fa-lock-open"></i> Goal Unlocked! ${localNotesCount} items shared. Ready to complete!</span>`;
+            } else {
+                btn.disabled = true;
+                btn.style.background = "var(--text-muted)";
+                btn.style.cursor = "not-allowed";
+                msg.innerHTML = `<i class="fa-solid fa-lock"></i> Share at least 2 ideas or roles to complete the level (${localNotesCount}/2).`;
+            }
+        }
+
+        function boostPeer(idx) {
+            cellPeers[idx].boosts += 1;
+            totalBoostsSent += 1;
+            document.getElementById(`boost-count-${idx}`).innerText = `❤️ ${cellPeers[idx].boosts}`;
+            document.getElementById('sum-boosts').innerText = totalBoostsSent;
+        }
+
+        window.attemptFinish = function() {
+            if(localNotesCount < 2) return;
+            navTo(3);
+        };
+
+        window.restartOS = function() {
+            window.location.reload();
+        };
     </script>
 </body>
 </html>
