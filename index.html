@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Speaking Quest Arena</title>
+    <title>English Speaking Quest Arena (Fun A2 Edition)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght=400;600;700&display=swap" rel="stylesheet">
@@ -71,7 +71,7 @@
 
         h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; color: #fff; }
         .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
-        .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 15px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 20px; transition: all 0.3s; }
         
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
@@ -83,27 +83,21 @@
         .btn-sec:hover { color: white; background: rgba(255,255,255,0.02); }
 
         input[type="text"], select { 
-            background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 15px;
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 11px; border-radius: 8px; color: white; font-family: inherit; font-size: 13px; width: 100%; margin-bottom: 12px;
         }
+        input[type="text"]:focus, select:focus { border-color: var(--accent-purple); outline: none; }
         
-        .grid-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .selectable-tag {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 13px; transition: all 0.2s; color: var(--text-muted); user-select: none;
-        }
-        .selectable-tag:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
-        .selectable-tag.selected { background: rgba(139, 92, 246, 0.2); border-color: var(--accent-purple); color: white; font-weight: 600; }
+        .input-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 5px; letter-spacing: 0.3px;}
 
         .sandbox-layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
         .info-sidebar { display: flex; flex-direction: column; gap: 15px; }
         .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px; }
         
         .mini-profile-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 13px; }
-        .mini-profile-card h5 { margin-bottom: 6px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
-        .tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
-        .mini-tag { background: rgba(255,255,255,0.04); font-size: 10px; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-main); }
+        .mini-profile-card h5 { margin-bottom: 4px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+        .profile-desc-text { font-size: 11px; color: var(--text-muted); line-height: 1.3; margin-top: 3px; }
 
         .strategy-box { background: linear-gradient(135deg, rgba(234,179,8,0.08), transparent); border: 1px solid rgba(234,179,8,0.2); border-radius: 10px; padding: 15px; }
-        .strategy-box h4 { font-size: 13px; color: var(--accent-yellow); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
         .strategy-box p { font-size: 12.5px; color: var(--text-main); line-height: 1.4; }
 
         .mission-main-box { 
@@ -114,26 +108,37 @@
         }
         .mission-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .level-badge { background: var(--accent-purple); color: white; font-size: 11px; padding: 4px 10px; border-radius: 4px; font-weight: 700; }
-        .vocabulary-pill-box { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent-blue); padding: 15px; margin-top: 15px; border-radius: 0 8px 8px 0; }
+        
+        .vocabulary-pill-box { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent-blue); padding: 18px; margin-top: 15px; border-radius: 0 8px 8px 0; }
+        .structured-paragraph { margin-bottom: 12px; line-height: 1.6; font-size: 14.5px; color: var(--text-main); }
+        .structured-paragraph:last-child { margin-bottom: 0; }
+        .structured-paragraph b { color: var(--accent-yellow); background: rgba(234, 179, 8, 0.15); padding: 2px 5px; border-radius: 4px; font-weight: 600; }
 
         .canvas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .workspace-block { background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; }
         
-        .wh-badge-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; display: grid; margin-bottom: 12px; }
-        .wh-badge { background: rgba(59,130,246,0.15); border: 1px solid var(--accent-blue); text-align: center; font-size: 11px; padding: 6px; font-weight: 700; color: #fff; border-radius: 4px; }
+        /* FLASHY CONVERSATION STARTERS ALERT BOX */
+        .flashy-starter-box {
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+            animation: pulseGlow 2s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 10px rgba(236, 72, 153, 0.3); }
+            to { box-shadow: 0 0 20px rgba(236, 72, 153, 0.6); }
+        }
+        .wh-badge-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; display: grid; }
+        .wh-badge { background: rgba(0, 0, 0, 0.4); text-align: center; font-size: 12px; padding: 8px; font-weight: 700; color: #fff; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); text-transform: uppercase;}
 
         .sticky-container { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; align-content: flex-start; margin-top: 10px; overflow-y: auto; max-height: 220px; min-height: 150px; }
         .sticky-note {
             width: 125px; height: 125px; padding: 10px; border-radius: 4px; color: #1e293b; font-weight: 600; font-size: 11px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); position: relative; animation: pop 0.2s ease forwards;
         }
-        .sticky-note.role-play-card { border: 2px dashed #000; }
-        .sticky-badge { position: absolute; top: -6px; right: -6px; background: black; color: white; font-size: 8px; padding: 1px 5px; border-radius: 10px; text-transform: uppercase; }
-        .sticky-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 4px; font-size: 9px; }
-        .sticky-btn { background: transparent; border: none; color: black; cursor: pointer; font-weight: 700; }
 
-        .signature-box {
-            background: rgba(16, 185, 129, 0.08); border: 1px dashed var(--accent-green); border-radius: 8px; padding: 12px; margin-top: 10px;
-        }
+        .signature-box { background: rgba(16, 185, 129, 0.08); border: 1px dashed var(--accent-green); border-radius: 8px; padding: 12px; margin-top: 10px;}
 
         .homework-layout { background: #fff; color: #1e293b; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 20px; }
         .hw-title { font-family: 'Courier Prime', monospace; border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 20px; color: #0f172a; }
@@ -141,12 +146,10 @@
         .hw-section h3 { font-size: 14px; text-transform: uppercase; color: #475569; border-left: 4px solid #8b5cf6; padding-left: 8px; margin-bottom: 10px; }
         .hw-list { list-style: none; padding-left: 5px; }
         .hw-list li { padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 14px; color: #334155; }
-        
-        .research-prompt-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; font-style: italic; font-size: 13.5px; }
 
         @media print {
             body { background: white !important; color: black !important; }
-            .os-header, .btn-primary, .btn-sec, #screen-actions, .nav-wrapper, .signature-box { display: none !important; }
+            .os-header, .btn-primary, .btn-sec, #screen-actions, .nav-wrapper, .signature-box, #add-p3-trigger { display: none !important; }
             .homework-layout { padding: 0 !important; box-shadow: none !important; }
         }
     </style>
@@ -154,41 +157,69 @@
 <body>
 
     <div class="os-header">
-        <div class="os-logo"><i class="fa-solid fa-graduation-cap"></i> LEADER SPEECH ARENA & LOGS</div>
+        <div class="os-logo"><i class="fa-solid fa-gamepad"></i> LEADER SPEECH ARENA — FUN MATCHMAKER</div>
         <div class="progress-container" id="step-indicators"></div>
     </div>
 
     <div class="main-container">
 
         <div id="scr-1" class="os-screen active">
-            <h1>Setup Your Leader Profile Card</h1>
-            <p class="subtitle">Enter your details. The AI engine will dynamically generate a real city infrastructure crisis matching your collective profiles.</p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <div>
+                    <h1>Setup Active Operation Team</h1>
+                    <p class="subtitle" style="margin-bottom:0;">Type what you love and what you can do. The AI will mix your inputs into a fun, simple creative challenge!</p>
+                </div>
+                <button class="btn-sec" id="add-p3-trigger" style="border-color:var(--accent-pink); color:var(--accent-pink);" onclick="togglePlayer3Slot(true)">
+                    <i class="fa-solid fa-user-plus"></i> Add Leader 3 Slot
+                </button>
+            </div>
             
-            <div class="card">
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
-                    <div>
-                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Your Professional Profile Name</h3>
-                        <input type="text" id="user-name" placeholder="Type your full name or nickname...">
-                    </div>
-                    <div>
-                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Target Fluency Tier</h3>
-                        <select id="user-level">
-                            <option value="1">A1 (Beginner)</option>
-                            <option value="2" selected>A2 (Elementary)</option>
-                            <option value="3">B1 (Intermediate)</option>
-                            <option value="4">B2 (Upper Intermediate)</option>
-                            <option value="5">C1 (Advanced)</option>
-                        </select>
-                    </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px;" id="team-grid-container">
+                <div class="card" style="border-top: 4px solid var(--accent-purple);">
+                    <h2 style="font-size:15px; margin-bottom:12px; color:#fff;"><i class="fa-solid fa-user"></i> Leader 1</h2>
+                    
+                    <span class="input-label">Name / Nickname</span>
+                    <input type="text" id="p1-name" placeholder="Type name here...">
+                    
+                    <span class="input-label">What do you love? (Hobbies, passions, fields)</span>
+                    <input type="text" id="p1-love" placeholder="e.g., Playing video games, cooking, soccer...">
+                    
+                    <span class="input-label">What are you really good at? (Optional)</span>
+                    <input type="text" id="p1-good" placeholder="e.g., Creating ideas, drawing fast, organizing...">
                 </div>
 
-                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Choose 3 domains you leverage or enjoy</h3>
-                <div class="grid-selector" id="render-passions"></div>
+                <div class="card" style="border-top: 4px solid var(--accent-blue);">
+                    <h2 style="font-size:15px; margin-bottom:12px; color:#fff;"><i class="fa-solid fa-user"></i> Leader 2</h2>
+                    
+                    <span class="input-label">Name / Nickname</span>
+                    <input type="text" id="p2-name" placeholder="Type name here...">
+                    
+                    <span class="input-label">What do you love? (Hobbies, passions, fields)</span>
+                    <input type="text" id="p2-love" placeholder="e.g., Pop music, watching anime, business...">
+                    
+                    <span class="input-label">What are you really good at? (Optional)</span>
+                    <input type="text" id="p2-good" placeholder="e.g., Speaking to people, planning projects...">
+                </div>
 
-                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-blue); margin-bottom:8px;">What empowers you most when steering a collective project? (Choose 3)</h3>
-                <div class="grid-selector" id="render-happiness"></div>
+                <div class="card" id="p3-card-slot" style="border-top: 4px solid var(--accent-pink); display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h2 style="font-size:15px; color:#fff;"><i class="fa-solid fa-user"></i> Leader 3</h2>
+                        <button style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;" onclick="togglePlayer3Slot(false)"><i class="fa-solid fa-xmark"></i> Remove</button>
+                    </div>
+                    
+                    <span class="input-label">Name / Nickname</span>
+                    <input type="text" id="p3-name" placeholder="Type name here...">
+                    
+                    <span class="input-label">What do you love?</span>
+                    <input type="text" id="p3-love" placeholder="e.g., Traveling, photography...">
+                    
+                    <span class="input-label">What are you really good at? (Optional)</span>
+                    <input type="text" id="p3-good" placeholder="e.g., Finding information...">
+                </div>
+            </div>
 
-                <button class="btn-primary" id="start-btn" onclick="submitOnboarding()">Start Game! ➔</button>
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-primary" id="start-btn" style="padding:16px 50px; font-size:15px;" onclick="generateStrictLocalMission()">Launch Fun Matchmaker Challenge ➔</button>
             </div>
         </div>
 
@@ -196,169 +227,118 @@
             
             <div class="mission-main-box">
                 <div class="mission-title-row">
-                    <span style="font-size:12px; text-transform:uppercase; color:var(--accent-yellow); font-weight:700; letter-spacing:1px;"><i class="fa-solid fa-triangle-exclamation"></i> CURRENT GROUP CHALLENGE DISPATCH</span>
-                    <div class="level-badge" id="mission-level-display">Group Tier: Syncing...</div>
+                    <span style="font-size:12px; text-transform:uppercase; color:var(--accent-yellow); font-weight:700; letter-spacing:1px;"><i class="fa-solid fa-star"></i> YOUR FUN TEAM MISSION</span>
+                    <div class="level-badge">Level: Simple A2 English</div>
                 </div>
-                <div style="font-size:20px; font-weight:700; color:#ffffff; line-height:1.4; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;" id="inspiration-text-display">Waiting for an active team match to formulate simulation logs...</div>
+                <div style="font-size:22px; font-weight:700; color:#ffffff; line-height:1.4; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;" id="live-challenge-title">Mixing your favorite things...</div>
                 
                 <div class="vocabulary-pill-box">
-                    <span style="font-size:11px; font-weight:700; color:var(--accent-blue); text-transform:uppercase; display:block; margin-bottom:6px;"><i class="fa-solid fa-book-open-reader"></i> Context Case Analysis Study</span>
-                    <p style="font-size:14px; color:var(--text-main); line-height:1.5; font-style:italic;" id="vocab-text-display">Waiting for another leader to establish synchronization loops...</p>
+                    <span style="font-size:11px; font-weight:700; color:var(--accent-blue); text-transform:uppercase; display:block; margin-bottom:10px;"><i class="fa-solid fa-book-open"></i> Mission Story (Read together)</span>
+                    <div id="live-reading-block-structured">
+                        </div>
                 </div>
             </div>
 
             <div class="sandbox-layout">
-                
                 <div class="info-sidebar">
                     
-                    <div class="strategy-box">
-                        <h4 id="strat-tech-title"><i class="fa-solid fa-unlock-keyhole"></i> Team Challenge Trick</h4>
-                        <p id="strat-tech-desc">Talk to your partner! Ask simple questions to share your project plans together.</p>
+                    <div class="flashy-starter-box">
+                        <span style="font-size:11px; font-weight:900; color:#fff; text-transform:uppercase; display:block; margin-bottom:8px; text-align:center;"><i class="fa-solid fa-comments"></i> SPEAK NOW! ASK EACH OTHER:</span>
+                        <div class="wh-badge-grid">
+                            <div class="wh-badge">What?</div>
+                            <div class="wh-badge">How?</div>
+                            <div class="wh-badge">Why?</div>
+                            <div class="wh-badge">Who?</div>
+                        </div>
                     </div>
 
                     <div>
-                        <div class="section-label">Your Active Operation Partners</div>
-                        <div style="display:flex; flex-direction:column; gap:10px;" id="render-sandbox-peers"></div>
+                        <div class="section-label">Active Squad Map</div>
+                        <div style="display:flex; flex-direction:column; gap:10px;" id="live-peers-box"></div>
                     </div>
 
-                    <div class="signature-box" id="personal-signature-panel">
-                        <span style="font-size:11px; font-weight:700; color:var(--accent-green); text-transform:uppercase; display:block; margin-bottom:4px;"><i class="fa-solid fa-file-signature"></i> Mission Sign-off</span>
-                        <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Are you ready to lock the activity? You cannot go back after this.</p>
-                        <label style="display:flex; align-items:center; gap:6px; font-size:13px; color:#fff; cursor:pointer;">
-                            <input type="checkbox" id="signature-toggle" onchange="toggleMySignature()"> Sign My Control Card
-                        </label>
-                        <div id="partner-signature-status" style="font-size:10px; color:var(--accent-yellow); margin-top:6px;">Waiting for partner signature...</div>
+                    <div class="signature-box">
+                        <span style="font-size:11px; font-weight:700; color:var(--accent-green); text-transform:uppercase; display:block; margin-bottom:6px;"><i class="fa-solid fa-file-signature"></i> Class Work Verification</span>
+                        <div id="dynamic-signature-checkboxes-container"></div>
                     </div>
-
                 </div>
 
                 <div class="canvas-grid">
-                    
                     <div style="display:flex; flex-direction:column; gap:15px;">
-                        
-                        <div class="workspace-block" style="padding:14px;">
-                            <div class="section-label" style="color:var(--accent-blue); margin-bottom:4px;"><i class="fa-solid fa-circle-question"></i> Wh- Investigation Prompts</div>
-                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Use these deep-dive structures to pass the microphone:</p>
-                            <div class="wh-badge-grid">
-                                <div class="wh-badge">What...?</div>
-                                <div class="wh-badge">How...?</div>
-                                <div class="wh-badge">Why...?</div>
-                                <div class="wh-badge">Where...?</div>
-                            </div>
-                        </div>
-
                         <div class="workspace-block" style="flex:1;">
-                            <div class="section-label" style="color:var(--accent-yellow); margin-bottom:2px;"><i class="fa-solid fa-spell-check"></i> Dynamic Vocabulary Log</div>
-                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Encountered a new phrase during the call? Add it instantly:</p>
-                            
+                            <div class="section-label" style="color:var(--accent-yellow); margin-bottom:2px;"><i class="fa-solid fa-spell-check"></i> Useful Vocabulary Log</div>
                             <div style="display:flex; gap:6px; margin-bottom:8px;">
-                                <input type="text" id="vocab-input" placeholder="Type new word/idiom..." style="margin-bottom:0; flex:1; padding:8px 12px; font-size:13px;">
-                                <button class="btn-primary" style="padding:0 15px; background:var(--accent-yellow); color:black;" onclick="addNewVocabularyTerm()"><i class="fa-solid fa-plus"></i></button>
+                                <input type="text" id="vocab-input" placeholder="Type a cool new word..." style="margin-bottom:0; flex:1;">
+                                <button class="btn-primary" style="background:var(--accent-yellow); color:black;" onclick="submitStickyItem('vocab')"><i class="fa-solid fa-plus"></i></button>
                             </div>
-
-                            <div class="sticky-container" id="mural-vocab-grid" style="min-height:110px; max-height:130px;"></div>
+                            <div class="sticky-container" id="grid-vocab" style="min-height:110px;"></div>
                         </div>
-
                     </div>
 
                     <div style="display:flex; flex-direction:column; gap:15px;">
-                        
                         <div class="workspace-block" style="padding:15px;">
-                            <div class="section-label" style="color:var(--accent-green); margin-bottom:2px;"><i class="fa-solid fa-square-check"></i> Our Final Project Solutions MURAL</div>
-                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Type your final systems. Everyone sees these stickies instantly:</p>
+                            <div class="section-label" style="color:var(--accent-green); margin-bottom:2px;"><i class="fa-solid fa-square-check"></i> Our Project Idea Mural</div>
                             <div style="display:flex; gap:6px; margin-bottom: 8px;">
-                                <input type="text" id="solution-input" placeholder="We will build/create a..." style="margin-bottom:0; padding:8px; font-size:13px; flex:1;">
-                                <button class="btn-primary" style="padding:0 15px; background:var(--accent-green);" onclick="addNewSolutionItem()"><i class="fa-solid fa-check"></i> Send Solution</button>
+                                <input type="text" id="solution-input" placeholder="Our project is..." style="margin-bottom:0; flex:1;">
+                                <button class="btn-primary" style="background:var(--accent-green);" onclick="submitStickyItem('solution')"><i class="fa-solid fa-check"></i></button>
                             </div>
-                            <div class="sticky-container" id="mural-solutions-grid" style="min-height:90px; max-height:110px;"></div>
+                            <div class="sticky-container" id="grid-solutions" style="min-height:90px;"></div>
                         </div>
 
                         <div class="workspace-block" style="flex:1;">
-                            <div class="section-label" style="color:var(--accent-pink); margin-bottom:2px;"><i class="fa-solid fa-lightbulb"></i> Strategic Board: Ideas & Simulations</div>
-                            
-                            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;">
-                                <input type="text" id="sticky-input" placeholder="Type a strategy proposal or simulation framework..." style="margin-bottom:0; padding:10px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <label style="font-size:11px; display:flex; align-items:center; gap:4px; color:var(--text-muted); cursor:pointer; user-select:none;">
-                                        <input type="checkbox" id="roleplay-toggle"> Activate Simulation Role Card?
-                                    </label>
-                                    <button class="btn-primary" style="padding:8px 16px; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple));" onclick="addStickyNote()"><i class="fa-solid fa-paper-plane"></i> Dispatch Card</button>
-                                </div>
+                            <div class="section-label" style="color:var(--accent-pink); margin-bottom:2px;"><i class="fa-solid fa-lightbulb"></i> Fun Draft Notes</div>
+                            <div style="display:flex; gap:6px; margin-bottom:10px;">
+                                <input type="text" id="sticky-input" placeholder="Type an extra idea..." style="margin-bottom:0; flex:1;">
+                                <button class="btn-primary" style="background:var(--accent-pink);" onclick="submitStickyItem('idea')"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
-
-                            <div class="sticky-container" id="mural-sticky-grid" style="min-height:100px;"></div>
+                            <div class="sticky-container" id="grid-ideas" style="min-height:100px;"></div>
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
 
             <div class="nav-wrapper" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
-                <div class="lock-notice" id="mural-lock-message">
-                    <span style="color:var(--accent-yellow);" id="lock-status-text"><i class="fa-solid fa-lock"></i> Sign your control cards above to open the homework portal.</span>
-                </div>
-                <button class="btn-primary" id="finish-conversation-btn" style="background:var(--accent-green);" onclick="attemptFinish()" disabled>
-                    Compile Adventure Homework Log ➔
-                </button>
+                <div id="lock-status-text" style="color:var(--accent-yellow); font-size:13px;"><i class="fa-solid fa-lock"></i> Check all leader boxes above to open the homework log sheet.</div>
+                <button class="btn-primary" id="finish-conversation-btn" style="background:var(--accent-green);" onclick="compileAndTransitionToHomework()" disabled>Compile Adventure Homework Log ➔</button>
             </div>
         </div>
 
         <div id="scr-3" class="os-screen">
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <h1>Your Team Report & Homework Page</h1>
-                    <p class="subtitle">Print this page to save your exercises and project details simply.</p>
+                    <h1>Team Strategic Report & Homework</h1>
+                    <p class="subtitle">Print this sheet directly for your student portfolio or review.</p>
                 </div>
-                <div style="display:flex; gap:10px;" id="screen-actions">
+                <div style="display:flex; gap:10px;">
                     <button class="btn-primary" style="background:var(--accent-blue)" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Homework Page</button>
-                    <button class="btn-sec" onclick="restartOS()"><i class="fa-solid fa-rotate-left"></i> Start Fresh Game Room</button>
+                    <button class="btn-sec" onclick="window.location.reload()"><i class="fa-solid fa-rotate-left"></i> Start Fresh Room</button>
                 </div>
             </div>
 
             <div class="homework-layout">
                 <div class="hw-title">
-                    <h2>🚀 MY ENGLISH ADVENTURE LOG</h2>
-                    <p style="font-size:12px; color:#64748b; text-transform:uppercase; margin-top:4px;">Easy Portfolio & Class Work Summary</p>
+                    <h2>🚀 MY ENGLISH MISSION LOG & PORTFOLIO (A2 TIER)</h2>
+                    <p style="font-size:12px; color:#64748b; margin-top:4px;">Easy Speaking and Creation Class Summary</p>
                 </div>
 
                 <div class="hw-section">
-                    <h3>1. The City Problem We Studied</h3>
-                    <p style="font-size:15px; font-weight:600; line-height:1.5; color:#0f172a;" id="hw-rendered-challenge">Loading problem statement...</p>
+                    <h3>1. Our Fun Challenge Question</h3>
+                    <p style="font-size:16px; font-weight:600; color:#0f172a;" id="hw-challenge-title">Loading...</p>
                 </div>
 
                 <div class="hw-section">
-                    <h3>2. Our Final Project Solutions</h3>
-                    <ul class="hw-list" id="hw-rendered-solutions-list">
-                        <li>No final solutions added.</li>
-                    </ul>
+                    <h3>2. Complete Mission Story</h3>
+                    <div id="hw-analysis-paragraphs" style="font-size:14px; line-height:1.6; color:#334155;"></div>
                 </div>
 
                 <div class="hw-section">
-                    <h3>3. Class Ideas & Conversation Notes</h3>
-                    <ul class="hw-list" id="hw-rendered-ideas">
-                        <li>No notes added.</li>
-                    </ul>
+                    <h3>3. What We Created Together</h3>
+                    <ul class="hw-list" id="hw-solutions-list"></ul>
                 </div>
 
                 <div class="hw-section">
-                    <h3>4. Good Words to Learn (My Vocabulary Bank)</h3>
-                    <div style="background:#f1f5f9; padding:15px; border-radius:6px; margin-bottom:15px;">
-                        <strong style="font-size:12px; text-transform:uppercase; color:#475569; display:block; margin-bottom:6px;">Important text words:</strong>
-                        <p id="hw-rendered-native-vocab" style="font-size:13.5px; font-style:italic; color:#1e293b;"></p>
-                    </div>
-                    <strong style="font-size:12px; text-transform:uppercase; color:#475569; display:block; margin-bottom:6px;">Words we added in class:</strong>
-                    <ul class="hw-list" id="hw-rendered-user-vocab">
-                        <li>No vocabulary words added.</li>
-                    </ul>
-                </div>
-
-                <div class="hw-section">
-                    <h3>5. My Homework Task</h3>
-                    <div class="research-prompt-box" id="hw-rendered-research">
-                        Find 2 real cities with this same traffic or environmental problem. Write 3 short sentences about how your team plan can help those cities.
-                    </div>
+                    <h3>4. Vocabulary Bank</h3>
+                    <ul class="hw-list" id="hw-vocab-list"></ul>
                 </div>
             </div>
         </div>
@@ -366,500 +346,187 @@
     </div>
 
     <script type="module">
-        const poolPassions = ["🎵 Music", "⚽ Sports", "🎬 Movies", "🎮 Gaming", "✈ Travel", "🍔 Food", "🤖 Technology", "📈 Business", "🎨 Art", "🌎 Languages"];
-        const poolHappiness = ["Helping people", "Learning things", "Solving problems", "Teaching others", "Creating things", "Making teams better", "Sharing ideas"];
-        const levelNames = ["A1", "A2", "B1", "B2", "C1"];
-        
-        const genericSoftSkillsPool = [
-            { title: "🤝 Teamwork Drill", desc: "Act like partners! Challenge your friend's ideas kindly. Use simple questions like: 'How can we make this project better?'" },
-            { title: "👂 Good Listening", desc: "Listen to your team partner carefully. Say things like: 'That is a great idea! Let's also add...'" },
-            { title: "⚡ Quick Problem Solving", desc: "If there is a change or problem, talk to your partner. Ask them: 'What can we do right now to fix this?'" }
-        ];
-
-        const DATABASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
         const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
         const GROQ_KEY = "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";
 
-        let currentScreen = 1;
-        let myFirebaseKey = ""; // ARQUITETURA CORRIGIDA: Armazena a chave gerada de fato pelo POST
-        let userData = { name: "", level: 2, assets: [], motivations: [] };
-        let onlinePlayers = {};
-        
-        let savedMissionLocalCopy = null;
-        let savedNotesLocalCopy = {};
-        let savedVocabLocalCopy = {};
-        let savedSolutionsLocalCopy = {};
-        
-        let selectedSkillFramework = genericSoftSkillsPool[0];
-        let aiGeneratingLock = false;
+        let isPlayer3Active = false;
+        let activeSquad = [];
+        let parsedMissionPayload = null;
 
-        window.onload = function() {
-            buildStepIndicators();
-            buildOnboardingPickers();
-            selectedSkillFramework = genericSoftSkillsPool[Math.floor(Math.random() * genericSoftSkillsPool.length)];
-            document.getElementById('strat-tech-title').innerHTML = `<i class="fa-solid fa-star"></i> ${selectedSkillFramework.title}`;
-            document.getElementById('strat-tech-desc').innerText = selectedSkillFramework.desc;
+        let localMemory = { vocab: [], solutions: [], ideas: [] };
+
+        window.togglePlayer3Slot = function(show) {
+            isPlayer3Active = show;
+            document.getElementById('p3-card-slot').style.display = show ? 'block' : 'none';
+            document.getElementById('add-p3-trigger').style.display = show ? 'none' : 'inline-flex';
         };
 
-        function buildStepIndicators() {
-            const container = document.getElementById('step-indicators');
-            container.innerHTML = "";
-            for(let i=1; i<=3; i++) {
-                container.innerHTML += `<div class="progress-step ${i <= currentScreen ? 'active' : ''}"></div>`;
-            }
-        }
-
-        function buildOnboardingPickers() {
-            const passionsContainer = document.getElementById('render-passions');
-            passionsContainer.innerHTML = poolPassions.map((p, i) => `
-                <div class="selectable-tag tag-p" id="tag-p-${i}">${p}</div>
-            `).join('');
-
-            const happinessContainer = document.getElementById('render-happiness');
-            happinessContainer.innerHTML = poolHappiness.map((h, i) => `
-                <div class="selectable-tag tag-h" id="tag-h-${i}">${h}</div>
-            `).join('');
-
-            document.querySelectorAll('.tag-p').forEach(el => {
-                el.addEventListener('click', () => toggleTag(el, 'p'));
-            });
-            document.querySelectorAll('.tag-h').forEach(el => {
-                el.addEventListener('click', () => toggleTag(el, 'h'));
-            });
-        }
-
-        function toggleTag(el, type) {
-            const className = type === 'p' ? '.tag-p.selected' : '.tag-h.selected';
-            const selectedCount = document.querySelectorAll(className).length;
-            if(!el.classList.contains('selected') && selectedCount >= 3) {
-                alert("Please select up to 3 domains.");
-                return;
-            }
-            el.classList.toggle('selected');
-        }
-
-        function navTo(screenNum) {
-            document.getElementById(`scr-${currentScreen}`).classList.remove('active');
-            currentScreen = screenNum;
-            document.getElementById(`scr-${currentScreen}`).classList.add('active');
-            buildStepIndicators();
-        }
-
-        window.submitOnboarding = async function() {
-            let nameInput = document.getElementById('user-name').value.trim();
-            let selectedLevel = parseInt(document.getElementById('user-level').value);
-            let selectedPassions = Array.from(document.querySelectorAll('.tag-p.selected')).map(el => el.textContent);
-            let selectedHappiness = Array.from(document.querySelectorAll('.tag-h.selected')).map(el => el.textContent);
+        window.generateStrictLocalMission = async function() {
+            activeSquad = [];
             
-            if(!nameInput) {
-                alert("Please type your professional profile name!");
-                return;
-            }
-            if(selectedPassions.length !== 3 || selectedHappiness.length !== 3) {
-                alert("Please select exactly 3 items from each block matrix!");
+            let n1 = document.getElementById('p1-name').value.trim() || "Leader 1";
+            let n2 = document.getElementById('p2-name').value.trim() || "Leader 2";
+            let l1 = document.getElementById('p1-love').value.trim();
+            let l2 = document.getElementById('p2-love').value.trim();
+
+            if(!l1 || !l2) {
+                alert("Please fill at least 'What do you love?' for Leader 1 and Leader 2!");
                 return;
             }
 
-            userData.name = nameInput;
-            userData.level = selectedLevel;
-            userData.assets = selectedPassions;
-            userData.motivations = selectedHappiness;
+            activeSquad.push({
+                name: n1,
+                love: l1,
+                good: document.getElementById('p1-good').value.trim()
+            });
 
-            document.getElementById('start-btn').innerText = "Connecting Operations Node...";
+            activeSquad.push({
+                name: n2,
+                love: l2,
+                good: document.getElementById('p2-good').value.trim()
+            });
+
+            if (isPlayer3Active) {
+                activeSquad.push({
+                    name: document.getElementById('p3-name').value.trim() || "Leader 3",
+                    love: document.getElementById('p3-love').value.trim(),
+                    good: document.getElementById('p3-good').value.trim()
+                });
+            }
+
+            document.getElementById('start-btn').innerText = "Mixing passions... Triggering A2 Engine...";
             document.getElementById('start-btn').disabled = true;
 
-            try {
-                const checkRes = await fetch(`${DATABASE_URL}/players.json`);
-                const currentPlayersObj = await checkRes.json();
-                
-                // FLUSH TOTAL REAL: Se não houver ninguém ativo ou se os dados tiverem mais de 3 horas, limpa tudo do banco.
-                if (!currentPlayersObj || Object.keys(currentPlayersObj).length === 0) {
-                    await forceSystemWipe();
-                }
+            let crossAnalysisPrompt = activeSquad.map(p => `- ${p.name} loves "${p.love}" and is good at "${p.good}"`).join('\n');
 
-                let res = await fetch(`${DATABASE_URL}/players.json`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        name: userData.name,
-                        level: userData.level,
-                        assets: userData.assets,
-                        motivations: userData.motivations,
-                        signed: false,
-                        timestamp: Date.now()
-                    })
-                });
-                let data = await res.json();
-                myFirebaseKey = data.name; // IMPORTANTE: O Firebase retorna a chave gerada dentro da propriedade 'name'
-                
-                navTo(2);
-                startGlobalSyncLoop();
-            } catch(e) {
-                alert("Network timeout connecting to server.");
-                document.getElementById('start-btn').innerText = "Start Game! ➔";
-                document.getElementById('start-btn').disabled = false;
-            }
-        };
-
-        async function forceSystemWipe() {
-            await fetch(`${DATABASE_URL}/players.json`, { method: "DELETE" });
-            await fetch(`${DATABASE_URL}/notes.json`, { method: "DELETE" });
-            await fetch(`${DATABASE_URL}/vocabulary.json`, { method: "DELETE" });
-            await fetch(`${DATABASE_URL}/solutions.json`, { method: "DELETE" });
-            await fetch(`${DATABASE_URL}/current_mission.json`, { method: "DELETE" });
-        }
-
-        function startGlobalSyncLoop() {
-            syncRealtimePipeline();
-            setInterval(syncRealtimePipeline, 2000); // Frequência aumentada para resposta instantânea
-        }
-
-        async function syncRealtimePipeline() {
-            if (currentScreen === 3) return; 
+            const systemPromptInstruction = `You are a creative and fun English learning assistant for level A2 students. 
+            Do NOT create a city crisis or boring urban planning problems. Create a very fun, simple, and inspiring hobby/project challenge.
             
-            try {
-                // 1. Fetch Active Operation Nodes
-                const pRes = await fetch(`${DATABASE_URL}/players.json`);
-                onlinePlayers = (await pRes.json()) || {};
-                renderActivePeers();
+            Look at what the users love and combine them into a funny mashup or game.
+            Use simple A2-level English. Short sentences, easy vocabulary.
 
-                // 2. Mission Pull
-                const mRes = await fetch(`${DATABASE_URL}/current_mission.json`);
-                savedMissionLocalCopy = await mRes.json();
-
-                let playerKeys = Object.keys(onlinePlayers);
-                
-                if (playerKeys.length >= 2) {
-                    if (!savedMissionLocalCopy && !aiGeneratingLock) {
-                        aiGeneratingLock = true;
-                        document.getElementById('inspiration-text-display').innerText = "Analyzing team alignment... Generating dynamic urban challenge...";
-                        await triggerGroqAILiveGeneration(playerKeys);
-                    } else if (savedMissionLocalCopy) {
-                        document.getElementById('mission-level-display').innerText = `Group Tier: ${savedMissionLocalCopy.targetLevel}`;
-                        document.getElementById('inspiration-text-display').innerText = savedMissionLocalCopy.inspiration;
-                        document.getElementById('vocab-text-display').innerHTML = savedMissionLocalCopy.readingText || "Analyzing context parameters...";
-                    }
-                    
-                    checkSignaturesCooperativeStatus(playerKeys);
-                } else {
-                    document.getElementById('mission-level-display').innerText = `Group Tier: Waiting...`;
-                    document.getElementById('inspiration-text-display').innerHTML = `<span style="color: var(--accent-yellow);"><i class="fa-solid fa-users-gear"></i> « Waiting for partners to join the control center... »</span>`;
-                    document.getElementById('vocab-text-display').innerText = "The dynamic mission text, cross-domain problems, and solutions panel will load automatically when your partner connects.";
-                    
-                    if (savedMissionLocalCopy) {
-                        await fetch(`${DATABASE_URL}/current_mission.json`, { method: "DELETE" });
-                    }
-                    document.getElementById('finish-conversation-btn').disabled = true;
-                }
-
-                // 3. Sync General Notes Board Module
-                const nRes = await fetch(`${DATABASE_URL}/notes.json`);
-                savedNotesLocalCopy = await nRes.json() || {};
-                renderMuralNotes(savedNotesLocalCopy);
-
-                // 4. Sync Dynamic Live Vocabulary Module
-                const vRes = await fetch(`${DATABASE_URL}/vocabulary.json`);
-                savedVocabLocalCopy = await vRes.json() || {};
-                renderVocabNotes(savedVocabLocalCopy);
-
-                // 5. Sync Solutions MURAL
-                const sRes = await fetch(`${DATABASE_URL}/solutions.json`);
-                savedSolutionsLocalCopy = await sRes.json() || {};
-                renderSolutionsNotes(savedSolutionsLocalCopy);
-
-            } catch(e) {
-                console.log("Telemetry Sync Exception: ", e);
-            }
-        }
-
-        function renderActivePeers() {
-            let sideHTML = "";
-            Object.keys(onlinePlayers).forEach((key) => {
-                let p = onlinePlayers[key];
-                let isMe = (key === myFirebaseKey);
-                sideHTML += `
-                    <div class="mini-profile-card" style="${isMe ? 'border-color: var(--accent-purple);' : ''} margin-bottom: 8px;">
-                        <h5><span>👤 ${p.name} ${isMe ? '(You)' : ''}</span></h5>
-                        <div style="font-size:10px; color:${p.signed ? 'var(--accent-green)' : 'var(--accent-yellow)'}; margin-top:2px;">
-                            <i class="fa-solid ${p.signed ? 'fa-check-double' : 'fa-clock'}"></i> ${p.signed ? 'Signed Card!' : 'Still Working...'}
-                        </div>
-                        <div class="tag-row" style="margin-top:6px;">${p.assets ? p.assets.map(a=>`<span class="mini-tag" style="background:rgba(59,130,246,0.1); border-color:var(--accent-blue);">${a}</span>`).join('') : ''}</div>
-                    </div>
-                `;
-            });
-            document.getElementById('render-sandbox-peers').innerHTML = sideHTML;
-        }
-
-        window.toggleMySignature = async function() {
-            let currentCheckedState = document.getElementById('signature-toggle').checked;
-            if(!myFirebaseKey) return;
-
-            try {
-                await fetch(`${DATABASE_URL}/players/${myFirebaseKey}/signed.json`, {
-                    method: "PUT",
-                    body: JSON.stringify(currentCheckedState)
-                });
-            } catch(e) { console.log(e); }
-        };
-
-        function checkSignaturesCooperativeStatus(playerKeys) {
-            let unsignedCount = 0;
-            let totalPlayersCount = playerKeys.length;
-            
-            playerKeys.forEach(key => {
-                if(!onlinePlayers[key].signed) unsignedCount++;
-            });
-
-            if (unsignedCount === 0 && totalPlayersCount >= 2) {
-                document.getElementById('lock-status-text').innerHTML = `<span style="color:var(--accent-green);"><i class="fa-solid fa-lock-open"></i> All leaders signed! The log compile bridge is fully armed.</span>`;
-                document.getElementById('finish-conversation-btn').disabled = false;
-                document.getElementById('partner-signature-status').innerHTML = `<span style="color:var(--accent-green);">Your partner signed! Ready!</span>`;
-            } else {
-                document.getElementById('partner-signature-status').innerText = `Waiting for both players to check sign cards...`;
-                document.getElementById('lock-status-text').innerHTML = `<span style="color:var(--accent-yellow);"><i class="fa-solid fa-lock"></i> Both players must check 'Sign My Control Card' to unlock.</span>`;
-                document.getElementById('finish-conversation-btn').disabled = true;
-            }
-        }
-
-        async function triggerGroqAILiveGeneration(playerKeys) {
-            let totalLevelSum = 0;
-            let allAssets = [];
-            
-            playerKeys.forEach(key => {
-                totalLevelSum += onlinePlayers[key].level;
-                if(onlinePlayers[key].assets) allAssets.push(...onlinePlayers[key].assets);
-            });
-            
-            let avgIndex = Math.floor(totalLevelSum / playerKeys.length) - 1;
-            if (avgIndex < 0) avgIndex = 0;
-            let targetLevelName = levelNames[avgIndex] || "A2";
-
-            let randomAssetA = allAssets[Math.floor(Math.random() * allAssets.length)] || "🎬 Movies";
-            let randomAssetB = allAssets[Math.floor(Math.random() * allAssets.length)] || "🎨 Art";
-            if(randomAssetA === randomAssetB && allAssets.length > 1) {
-                randomAssetB = allAssets.find(a => a !== randomAssetA) || "🎨 Art";
-            }
-
-            const systemInstructions = `You are an elite urban innovation consultant. 
-            Deliver all outputs using extremely simple English appropriate for learners at level ${targetLevelName}. Never use complex grammatical structures or Portuguese words.
-            
-            Analyze these two topics: "${randomAssetA}" and "${randomAssetB}".
-            Create a real problem happening in a big city (like very bad traffic jams, air pollution, historical buildings collapsing, or food waste).
-            
-            You must reply with a valid JSON object holding exactly these two keys:
-            "inspiration": "A clear problem question challenging them to use ${randomAssetA} and ${randomAssetB} to solve it",
-            "readingText": "A short 3-line paragraph explaining this city issue simply. You MUST include exactly two useful phrasal verbs or idioms highlighted inside bold tags like: <b>deal with</b> (solve/handle) or <b>come up with</b> (think of/create)."
+            You MUST respond with a valid JSON object holding exactly these four keys (nothing else):
+            "title": "A short, super clear and simple challenge question or phrase matching the users interests.",
+            "introduction": "Paragraph 1 (Introduction): Tell a fun story mixing their favorite things. (Example: What if we mix games and food? Let's make a restaurant game!)",
+            "details": "Paragraph 2 (Details): Explain how to do this simple project. You MUST include exactly two very easy phrasal verbs inside bold tags like: <b>talk about</b>, <b>look for</b>, or <b>write down</b>.",
+            "conclusion": "Paragraph 3 (Conclusion): Ask them a friendly question to use their skill and start making the project now."
             `;
 
             try {
                 const response = await fetch(GROQ_API_URL, {
                     method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${GROQ_KEY}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Authorization": `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" },
                     body: JSON.stringify({
                         model: "llama3-8b-8192",
                         response_format: { type: "json_object" },
-                        messages: [{ role: "system", content: systemInstructions }, { role: "user", content: "Generate data." }]
+                        messages: [
+                            { role: "system", content: systemPromptInstruction },
+                            { role: "user", content: `Create a fun A2 challenge for these student inputs:\n${crossAnalysisPrompt}` }
+                        ],
+                        temperature: 0.6
                     })
                 });
-                const data = await response.json();
-                savedMissionLocalCopy = JSON.parse(data.choices[0].message.content);
-                savedMissionLocalCopy.targetLevel = targetLevelName;
 
-                await fetch(`${DATABASE_URL}/current_mission.json`, {
-                    method: "PUT",
-                    body: JSON.stringify(savedMissionLocalCopy)
-                });
+                const rawJson = await response.json();
+                parsedMissionPayload = JSON.parse(rawJson.choices[0].message.content);
 
-            } catch (err) {
-                savedMissionLocalCopy = {
-                    targetLevel: targetLevelName,
-                    inspiration: `The city has big traffic jams every day. Create a good system using "${randomAssetA}" and "${randomAssetB}" to make travel faster!`,
-                    readingText: `Big cities must <b>deal with</b> (solve/handle) vehicle traffic problems every day. Students need to <b>come up with</b> (think of/create) smart ideas to change this.`
+                document.getElementById('live-challenge-title').innerText = parsedMissionPayload.title;
+                
+                document.getElementById('live-reading-block-structured').innerHTML = `
+                    <p class="structured-paragraph"><b>[Intro]</b> ${parsedMissionPayload.introduction}</p>
+                    <p class="structured-paragraph"><b>[Mission Rules]</b> ${parsedMissionPayload.details}</p>
+                    <p class="structured-paragraph"><b>[Your Turn]</b> ${parsedMissionPayload.conclusion}</p>
+                `;
+
+            } catch (error) {
+                // Fallback divertido A2 em caso de falha de conexão
+                parsedMissionPayload = {
+                    title: `Let's combine ${activeSquad[0].love} and ${activeSquad[1].love} to make a super project!`,
+                    introduction: `Imagine we can mix your favorite things today to show your friends in class.`,
+                    details: `You need to <b>talk about</b> your best ideas and <b>write down</b> a cool name for this new project on the board.`,
+                    conclusion: `What is the first thing you want to create together? Ask your partner!`
                 };
-                await fetch(`${DATABASE_URL}/current_mission.json`, { method: "PUT", body: JSON.stringify(savedMissionLocalCopy) });
-            } finally {
-                aiGeneratingLock = false;
+
+                document.getElementById('live-challenge-title').innerText = parsedMissionPayload.title;
+                document.getElementById('live-reading-block-structured').innerHTML = `
+                    <p class="structured-paragraph"><b>[Intro]</b> ${parsedMissionPayload.introduction}</p>
+                    <p class="structured-paragraph"><b>[Mission Rules]</b> ${parsedMissionPayload.details}</p>
+                    <p class="structured-paragraph"><b>[Your Turn]</b> ${parsedMissionPayload.conclusion}</p>
+                `;
             }
-        }
 
-        function renderMuralNotes(data) {
-            const container = document.getElementById('mural-sticky-grid');
-            const colors = ['var(--sticky-yellow)', 'var(--sticky-blue)', 'var(--sticky-pink)'];
-            let html = "";
-            let index = 0;
+            document.getElementById('scr-1').classList.remove('active');
+            document.getElementById('scr-2').classList.add('active');
+            document.getElementById('step-indicators').innerHTML = '<div class="progress-step active"></div><div class="progress-step active"></div><div class="progress-step"></div>';
 
-            if (data) {
-                Object.keys(data).forEach((key) => {
-                    const note = data[key];
-                    let isRole = (note.type === 'role');
-                    let badge = isRole ? '<span class="sticky-badge">Simulation</span>' : '<span class="sticky-badge" style="background:#3b82f6">Idea</span>';
-                    
-                    html += `
-                        <div class="sticky-note ${isRole ? 'role-play-card' : ''}" style="background: ${colors[index % colors.length]}">
-                            ${badge}
-                            <div style="word-break: break-word; overflow-y: auto; max-height:75px; font-size:11px; margin-top:4px;">"${note.text}"</div>
-                            <div class="sticky-actions">
-                                <span>By: ${note.author}</span>
-                                <button class="sticky-btn" style="color:#ef4444;" onclick="deleteStickyItem('notes', '${key}')"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                    index++;
-                });
-            }
-            container.innerHTML = html;
-        }
-
-        function renderVocabNotes(data) {
-            const container = document.getElementById('mural-vocab-grid');
-            let html = "";
-            if (data) {
-                Object.keys(data).forEach((key) => {
-                    const entry = data[key];
-                    html += `
-                        <div class="sticky-note" style="background: var(--sticky-green); width:100px; height:100px; padding:8px;">
-                            <span class="sticky-badge" style="background:var(--accent-green); color:black;">Vocab</span>
-                            <div style="word-break:break-word; overflow-y:auto; font-size:11px; font-weight:700; max-height:55px; margin-top:4px;">${entry.text}</div>
-                            <div class="sticky-actions">
-                                <span style="font-size:8px; color:#475569;">By: ${entry.author}</span>
-                                <button class="sticky-btn" style="color:#ef4444;" onclick="deleteStickyItem('vocabulary', '${key}')"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            container.innerHTML = html;
-        }
-
-        function renderSolutionsNotes(data) {
-            const container = document.getElementById('mural-solutions-grid');
-            let html = "";
-            if (data) {
-                Object.keys(data).forEach((key) => {
-                    const sol = data[key];
-                    html += `
-                        <div class="sticky-note" style="background: var(--sticky-teal); width:120px; height:90px; padding:8px; border: 1px solid var(--accent-green);">
-                            <span class="sticky-badge" style="background:var(--accent-green); color:white; font-size:7px;">Solution</span>
-                            <div style="word-break:break-word; overflow-y:auto; font-size:11px; font-weight:600; max-height:50px; margin-top:4px; color:#115e59;">"${sol.text}"</div>
-                            <div class="sticky-actions">
-                                <span style="font-size:8px; color:#115e59;">By: ${sol.author}</span>
-                                <button class="sticky-btn" style="color:#ef4444;" onclick="deleteStickyItem('solutions', '${key}')"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-            container.innerHTML = html;
-        }
-
-        window.addStickyNote = async function() {
-            const input = document.getElementById('sticky-input');
-            const isRolePlay = document.getElementById('roleplay-toggle').checked;
-            const txt = input.value.trim();
-            if(!txt) return;
-
-            try {
-                await fetch(`${DATABASE_URL}/notes.json`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        text: txt,
-                        author: userData.name || "Leader",
-                        type: isRolePlay ? 'role' : 'idea',
-                        timestamp: Date.now()
-                    })
-                });
-                input.value = "";
-                document.getElementById('roleplay-toggle').checked = false;
-            } catch (e) { console.log(e); }
+            renderPlaygroundSidebar();
         };
 
-        window.addNewVocabularyTerm = async function() {
-            const input = document.getElementById('vocab-input');
-            const txt = input.value.trim();
-            if(!txt) return;
+        function renderPlaygroundSidebar() {
+            document.getElementById('live-peers-box').innerHTML = activeSquad.map((p, idx) => `
+                <div class="mini-profile-card">
+                    <h5>👤 ${p.name}</h5>
+                    <div class="profile-desc-text"><b>Loves:</b> ${p.love}</div>
+                    ${p.good ? `<div class="profile-desc-text"><b>Good at:</b> ${p.good}</div>` : ''}
+                </div>
+            `).join('');
 
-            try {
-                await fetch(`${DATABASE_URL}/vocabulary.json`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        text: txt,
-                        author: userData.name || "Leader",
-                        timestamp: Date.now()
-                    })
-                });
-                input.value = "";
-            } catch(e) { console.log(e); }
+            document.getElementById('dynamic-signature-checkboxes-container').innerHTML = activeSquad.map((p, idx) => `
+                <label style="display:flex; align-items:center; gap:6px; margin-bottom:6px; font-size:13px; color:#fff; cursor:pointer;">
+                    <input type="checkbox" class="sig-check" onchange="evaluateSquadSignatures()"> Team ${p.name} Done
+                </label>
+            `).join('');
+        }
+
+        window.submitStickyItem = function(type) {
+            let inputId = type === 'vocab' ? 'vocab-input' : (type === 'solution' ? 'solution-input' : 'sticky-input');
+            let gridId = type === 'vocab' ? 'grid-vocab' : (type === 'solution' ? 'grid-solutions' : 'grid-ideas');
+            let color = type === 'vocab' ? 'var(--sticky-green)' : (type === 'solution' ? 'var(--sticky-teal)' : 'var(--sticky-yellow)');
+
+            let val = document.getElementById(inputId).value.trim();
+            if(!val) return;
+
+            localMemory[type === 'vocab' ? 'vocab' : (type === 'solution' ? 'solutions' : 'ideas')].push(val);
+            document.getElementById(inputId).value = "";
+
+            let element = document.createElement('div');
+            element.className = 'sticky-note';
+            element.style.background = color;
+            element.style.width = type==='vocab'?'100px':'125px';
+            element.style.height = type==='vocab'?'100px':'125px';
+            element.innerHTML = `<div style="font-size:11px; font-weight:600; overflow-y:auto; height:100%;">"${val}"</div>`;
+            document.getElementById(gridId).appendChild(element);
         };
 
-        window.addNewSolutionItem = async function() {
-            const input = document.getElementById('solution-input');
-            const txt = input.value.trim();
-            if(!txt) return;
+        window.evaluateSquadSignatures = function() {
+            let totalBoxes = document.querySelectorAll('.sig-check').length;
+            let checkedBoxes = document.querySelectorAll('.sig-check:checked').length;
 
-            try {
-                await fetch(`${DATABASE_URL}/solutions.json`, {
-                    method: "POST",
-                    body: JSON.stringify({
-                        text: txt,
-                        author: userData.name || "Leader",
-                        timestamp: Date.now()
-                    })
-                });
-                input.value = "";
-            } catch(e) { console.log(e); }
+            if(totalBoxes === checkedBoxes) {
+                document.getElementById('lock-status-text').innerHTML = `<span style="color:var(--accent-green);"><i class="fa-solid fa-lock-open"></i> All leaders verified. Report unlocked.</span>`;
+                document.getElementById('finish-conversation-btn').disabled = false;
+            } else {
+                document.getElementById('lock-status-text').innerHTML = `<span style="color:var(--accent-yellow);"><i class="fa-solid fa-lock"></i> Check all leader boxes above to open the homework log sheet.</span>`;
+                document.getElementById('finish-conversation-btn').disabled = true;
+            }
         };
 
-        window.deleteStickyItem = async function(nodeEndpoint, targetKey) {
-            try {
-                await fetch(`${DATABASE_URL}/${nodeEndpoint}/${targetKey}.json`, { method: "DELETE" });
-            } catch(e) { console.log(e); }
-        };
-
-        window.attemptFinish = async function() {
-            document.getElementById('hw-rendered-challenge').innerText = savedMissionLocalCopy ? savedMissionLocalCopy.inspiration : "No mission statement selected.";
-            document.getElementById('hw-rendered-native-vocab').innerHTML = savedMissionLocalCopy ? savedMissionLocalCopy.readingText : "No dictionary terms available.";
+        window.compileAndTransitionToHomework = function() {
+            document.getElementById('hw-challenge-title').innerText = parsedMissionPayload.title;
             
-            const solutionsListContainer = document.getElementById('hw-rendered-solutions-list');
-            let solKeys = Object.keys(savedSolutionsLocalCopy);
-            if (solKeys.length > 0) {
-                solutionsListContainer.innerHTML = solKeys.map(k => `
-                    <li>✅ <b>"${savedSolutionsLocalCopy[k].text}"</b> — <span style="font-size:12px; color:#64748b;">Created by: ${savedSolutionsLocalCopy[k].author}</span></li>
-                `).join('');
-            } else {
-                solutionsListContainer.innerHTML = `<li>No specific project solutions entered during the sprint.</li>`;
-            }
+            document.getElementById('hw-analysis-paragraphs').innerHTML = `
+                <p style="margin-bottom:8px;"><b>Introduction:</b> ${parsedMissionPayload.introduction}</p>
+                <p style="margin-bottom:8px;"><b>Mission Rules:</b> ${parsedMissionPayload.details}</p>
+                <p style="margin-bottom:0;"><b>Our Task:</b> ${parsedMissionPayload.conclusion}</p>
+            `;
 
-            const ideasListContainer = document.getElementById('hw-rendered-ideas');
-            let noteKeys = Object.keys(savedNotesLocalCopy);
-            if(noteKeys.length > 0) {
-                ideasListContainer.innerHTML = noteKeys.map(k => `
-                    <li>📌 <b>[${savedNotesLocalCopy[k].type.toUpperCase()}]</b> "${savedNotesLocalCopy[k].text}" — <span style="font-size:12px; color:#64748b;">By: ${savedNotesLocalCopy[k].author}</span></li>
-                `).join('');
-            } else {
-                ideasListContainer.innerHTML = `<li>No extra conversation notes recorded.</li>`;
-            }
+            document.getElementById('hw-solutions-list').innerHTML = localMemory.solutions.map(s => `<li>⭐ "${s}"</li>`).join('') || '<li>No ideas written down yet.</li>';
+            document.getElementById('hw-vocab-list').innerHTML = localMemory.vocab.map(v => `<li>⚡ "${v}"</li>`).join('') || '<li>No words tracked today.</li>';
 
-            const vocabListContainer = document.getElementById('hw-rendered-user-vocab');
-            let vocabKeys = Object.keys(savedVocabLocalCopy);
-            if(vocabKeys.length > 0) {
-                vocabListContainer.innerHTML = vocabKeys.map(k => `
-                    <li>⚡ <b>"${savedVocabLocalCopy[k].text}"</b> — <span style="font-size:12px; color:#64748b;">Added by: ${savedVocabLocalCopy[k].author}</span></li>
-                `).join('');
-            } else {
-                vocabListContainer.innerHTML = `<li>No vocabulary words added.</li>`;
-            }
+            document.getElementById('scr-2').classList.remove('active');
+            document.getElementById('scr-3').classList.add('active');
 
-            try {
-                await forceSystemWipe();
-            } catch(e) { console.error(e); }
-
-            navTo(3);
-        };
-
-        window.restartOS = async function() {
-            window.location.reload();
+            document.getElementById('step-indicators').innerHTML = '<div class="progress-step active"></div><div class="progress-step active"></div><div class="progress-step active"></div>';
         };
     </script>
 </body>
