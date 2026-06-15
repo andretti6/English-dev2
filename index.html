@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Speaking Quest Arena</title>
-    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght=400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* CLEAN NOTION + GAMIFIED DARK PALETTE */
         :root {
             --bg-dark: #0b0e14;
             --panel-bg: #151922;
@@ -28,6 +26,8 @@
             --sticky-yellow: #fef08a;
             --sticky-blue: #bfdbfe;
             --sticky-pink: #fbcfe8;
+            --sticky-green: #bbf7d0;
+            --sticky-teal: #ccfbf1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,7 +40,6 @@
             flex-direction: column;
         }
 
-        /* Clean Minimal Header */
         .os-header {
             background: var(--panel-bg);
             border-bottom: 1px solid var(--border);
@@ -63,44 +62,38 @@
             background: var(--accent-purple); box-shadow: 0 0 10px var(--accent-purple);
         }
 
-        /* Screen Content Containers */
         .main-container {
-            max-width: 1200px; width: 100%; margin: 25px auto; padding: 0 20px; flex: 1;
+            max-width: 1400px; width: 100%; margin: 20px auto; padding: 0 20px; flex: 1;
         }
         .os-screen { display: none; animation: fadeIn 0.2s ease forwards; }
         .os-screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Typography */
         h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; color: #fff; }
         .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
         .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 15px; }
         
-        /* Clean Buttons */
         .btn-primary {
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-            color: white; border: none; padding: 14px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s;
+            color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s;
         }
         .btn-primary:hover { filter: brightness(1.1); }
-        .btn-primary:disabled { background: var(--text-muted) !important; cursor: not-allowed; opacity: 0.4; }
-        .btn-sec { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+        .btn-primary:disabled { background: var(--text-muted) !important; cursor: not-allowed; opacity: 0.4; box-shadow: none !important; }
+        .btn-sec { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 13px; }
         .btn-sec:hover { color: white; background: rgba(255,255,255,0.02); }
 
-        /* Form Controls */
         input[type="text"], select { 
-            background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 20px;
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 15px;
         }
         
-        /* Tag Selection Grid */
-        .grid-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 25px; }
+        .grid-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; }
         .selectable-tag {
             background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 12px; border-radius: 8px; text-align: center; cursor: pointer; font-size: 13px; transition: all 0.2s; color: var(--text-muted); user-select: none;
         }
         .selectable-tag:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
         .selectable-tag.selected { background: rgba(139, 92, 246, 0.2); border-color: var(--accent-purple); color: white; font-weight: 600; }
 
-        /* GAME MATRIX LAYOUT */
-        .sandbox-layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+        .sandbox-layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; }
         .info-sidebar { display: flex; flex-direction: column; gap: 15px; }
         .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 6px; }
         
@@ -109,86 +102,76 @@
         .tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
         .mini-tag { background: rgba(255,255,255,0.04); font-size: 10px; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); color: var(--text-main); }
 
-        /* Tip Box */
         .strategy-box { background: linear-gradient(135deg, rgba(234,179,8,0.08), transparent); border: 1px solid rgba(234,179,8,0.2); border-radius: 10px; padding: 15px; }
         .strategy-box h4 { font-size: 13px; color: var(--accent-yellow); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
         .strategy-box p { font-size: 12.5px; color: var(--text-main); line-height: 1.4; }
 
-        /* Unified Quest Header Banner */
-        .mission-main-box { background: linear-gradient(90deg, rgba(139,92,246,0.1), transparent); border: 1px solid rgba(139,92,246,0.2); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .mission-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .level-badge { background: var(--accent-purple); color: white; font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 700; }
-        .vocabulary-pill-box { background: rgba(0,0,0,0.2); border-left: 3px solid var(--accent-blue); padding: 12px 15px; margin-top: 15px; border-radius: 0 6px 6px 0; }
+        .mission-main-box { 
+            background: linear-gradient(135deg, #1e1b4b, #111827); 
+            border: 2px solid var(--accent-purple); 
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+            border-radius: 12px; padding: 22px; margin-bottom: 20px; 
+        }
+        .mission-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .level-badge { background: var(--accent-purple); color: white; font-size: 11px; padding: 4px 10px; border-radius: 4px; font-weight: 700; }
+        .vocabulary-pill-box { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent-blue); padding: 15px; margin-top: 15px; border-radius: 0 8px 8px 0; }
 
-        /* Interactive Board Blocks */
-        .canvas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; min-height: 450px; }
-        .workspace-block { background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+        .canvas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .workspace-block { background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; }
         
-        /* Oral Dynamic List Style */
-        .oral-quest-container {
-            flex: 1; display: flex; flex-direction: column; justify-content: flex-start; padding: 15px; background: rgba(255,255,255,0.01); border: 1px dashed var(--border); border-radius: 8px; margin-bottom: 5px;
-        }
-        .oral-prompt-headline {
-            font-size: 14px; font-weight: 600; color: var(--accent-blue); margin-bottom: 15px; text-align: center;
-        }
-        .oral-list-item {
-            font-size: 15px; padding: 12px; margin-bottom: 8px; border-radius: 6px; background: rgba(255,255,255,0.02); border-left: 3px solid var(--accent-blue); font-weight: 500;
-        }
-        .oral-list-blank {
-            font-size: 15px; padding: 12px; margin-bottom: 8px; color: var(--text-muted); font-style: italic; border-left: 3px dashed var(--border);
-        }
+        .wh-badge-grid { grid-template-columns: repeat(4, 1fr); gap: 6px; display: grid; margin-bottom: 12px; }
+        .wh-badge { background: rgba(59,130,246,0.15); border: 1px solid var(--accent-blue); text-align: center; font-size: 11px; padding: 6px; font-weight: 700; color: #fff; border-radius: 4px; }
 
-        /* Sticky Notes Board */
-        .sticky-container { display: flex; flex-wrap: wrap; gap: 12px; flex: 1; align-content: flex-start; margin-top: 10px; overflow-y: auto; max-height: 350px;}
+        .sticky-container { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; align-content: flex-start; margin-top: 10px; overflow-y: auto; max-height: 220px; min-height: 150px; }
         .sticky-note {
-            width: 135px; height: 135px; padding: 12px; border-radius: 4px; color: #1e293b; font-weight: 600; font-size: 12px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 6px rgba(0,0,0,0.15); animation: pop 0.2s ease forwards; position: relative;
+            width: 125px; height: 125px; padding: 10px; border-radius: 4px; color: #1e293b; font-weight: 600; font-size: 11px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 2px 2px 5px rgba(0,0,0,0.15); position: relative; animation: pop 0.2s ease forwards;
         }
         .sticky-note.role-play-card { border: 2px dashed #000; }
-        .sticky-badge { position: absolute; top: -6px; right: -6px; background: black; color: white; font-size: 8px; padding: 2px 6px; border-radius: 10px; text-transform: uppercase; }
-        .sticky-footer { display: flex; justify-content: space-between; align-items: center; font-size: 9px; opacity: 0.8; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 4px; }
-        .suggest-skill-btn { background: transparent; border: none; color: black; cursor: pointer; font-size: 10px; font-weight: 700; }
+        .sticky-badge { position: absolute; top: -6px; right: -6px; background: black; color: white; font-size: 8px; padding: 1px 5px; border-radius: 10px; text-transform: uppercase; }
+        .sticky-actions { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.06); padding-top: 4px; font-size: 9px; }
+        .sticky-btn { background: transparent; border: none; color: black; cursor: pointer; font-weight: 700; }
 
-        /* Lock Notification Footer */
-        .lock-notice { font-size: 13px; color: var(--accent-pink); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+        .signature-box {
+            background: rgba(16, 185, 129, 0.08); border: 1px dashed var(--accent-green); border-radius: 8px; padding: 12px; margin-top: 10px;
+        }
 
-        /* SCREEN 3: HIGH-STAKES WINNER REPORT */
-        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 25px; }
-        .summary-card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-align: center; }
-        .summary-card h3 { font-size: 32px; font-family: 'Courier Prime', monospace; margin: 8px 0; color: var(--accent-green); }
+        .homework-layout { background: #fff; color: #1e293b; border-radius: 12px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 20px; }
+        .hw-title { font-family: 'Courier Prime', monospace; border-bottom: 2px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 20px; color: #0f172a; }
+        .hw-section { margin-bottom: 25px; }
+        .hw-section h3 { font-size: 14px; text-transform: uppercase; color: #475569; border-left: 4px solid #8b5cf6; padding-left: 8px; margin-bottom: 10px; }
+        .hw-list { list-style: none; padding-left: 5px; }
+        .hw-list li { padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 14px; color: #334155; }
+        
+        .research-prompt-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; font-style: italic; font-size: 13.5px; }
 
-        /* Clean Print Config */
         @media print {
             body { background: white !important; color: black !important; }
-            .os-header, .btn-primary, .btn-sec, .nav-wrapper, #screen-actions, .section-label { display: none !important; }
-            .card, .summary-card { border: 1px solid #aaa !important; background: white !important; color: black !important; box-shadow: none !important; }
-            h1, h2, h3, p, span, div { color: black !important; }
+            .os-header, .btn-primary, .btn-sec, #screen-actions, .nav-wrapper, .signature-box { display: none !important; }
+            .homework-layout { padding: 0 !important; box-shadow: none !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- CONTROL TOP HEADER -->
     <div class="os-header">
-        <div class="os-logo"><i class="fa-solid fa-gamepad"></i> SPEAKING QUEST ARENA</div>
+        <div class="os-logo"><i class="fa-solid fa-graduation-cap"></i> LEADER SPEECH ARENA & LOGS</div>
         <div class="progress-container" id="step-indicators"></div>
     </div>
 
-    <!-- MAIN APP CANVAS -->
     <div class="main-container">
 
-        <!-- SCREEN 1: CLEAN GAME SETUP -->
         <div id="scr-1" class="os-screen active">
-            <h1>Create Your Player Card</h1>
-            <p class="subtitle">Pick your favorite topics. The game will automatically create a custom conversation challenge for your group!</p>
+            <h1>Setup Your Leader Profile Card</h1>
+            <p class="subtitle">Enter your details. The AI engine will dynamically generate a real city infrastructure crisis matching your collective profiles.</p>
             
             <div class="card">
                 <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px;">
                     <div>
-                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Your Name</h3>
-                        <input type="text" id="user-name" placeholder="Type your nickname or name...">
+                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Your Professional Profile Name</h3>
+                        <input type="text" id="user-name" placeholder="Type your full name or nickname...">
                     </div>
                     <div>
-                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">English Level</h3>
+                        <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Target Fluency Tier</h3>
                         <select id="user-level">
                             <option value="1">A1 (Beginner)</option>
                             <option value="2" selected>A2 (Elementary)</option>
@@ -199,159 +182,223 @@
                     </div>
                 </div>
 
-                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Choose 3 topics you enjoy or know well</h3>
+                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-purple); margin-bottom:8px;">Choose 3 domains you leverage or enjoy</h3>
                 <div class="grid-selector" id="render-passions"></div>
 
-                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-blue); margin-bottom:8px;">What makes you happy when working in a group? (Choose 3)</h3>
+                <h3 style="font-size:12px; text-transform:uppercase; color:var(--accent-blue); margin-bottom:8px;">What empowers you most when steering a collective project? (Choose 3)</h3>
                 <div class="grid-selector" id="render-happiness"></div>
 
-                <button class="btn-primary" id="start-btn" onclick="submitOnboarding()">Launch Game Space ➔</button>
+                <button class="btn-primary" id="start-btn" onclick="submitOnboarding()">Start Game! ➔</button>
             </div>
         </div>
 
-        <!-- SCREEN 2: GAMEPLAY ARENA -->
         <div id="scr-2" class="os-screen">
             
-            <!-- AI Dynamic Challenge Banner Box -->
             <div class="mission-main-box">
                 <div class="mission-title-row">
-                    <span style="font-size:11px; text-transform:uppercase; color:var(--accent-purple); font-weight:700;"><i class="fa-solid fa-trophy"></i> Current Group Mission</span>
-                    <div class="level-badge" id="mission-level-display">Group Level: Calculating...</div>
+                    <span style="font-size:12px; text-transform:uppercase; color:var(--accent-yellow); font-weight:700; letter-spacing:1px;"><i class="fa-solid fa-triangle-exclamation"></i> CURRENT GROUP CHALLENGE DISPATCH</span>
+                    <div class="level-badge" id="mission-level-display">Group Tier: Syncing...</div>
                 </div>
-                <div style="font-size:18px; font-weight:700; color:white; line-height:1.4;" id="inspiration-text-display">Waiting for more players to join the party...</div>
+                <div style="font-size:20px; font-weight:700; color:#ffffff; line-height:1.4; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:12px;" id="inspiration-text-display">Waiting for an active team match to formulate simulation logs...</div>
                 
-                <!-- Simple English Useful Vocabulary Box -->
                 <div class="vocabulary-pill-box">
-                    <span style="font-size: 11px; font-weight:700; color:var(--accent-blue); text-transform: uppercase; display:block; margin-bottom: 4px;"><i class="fa-solid fa-book-open"></i> Useful Words For This Mission</span>
-                    <p style="font-size: 13.5px; color: var(--text-main); line-height: 1.4;" id="vocab-text-display">Connect 2 players to unlock keywords.</p>
+                    <span style="font-size:11px; font-weight:700; color:var(--accent-blue); text-transform:uppercase; display:block; margin-bottom:6px;"><i class="fa-solid fa-book-open-reader"></i> Context Case Analysis Study</span>
+                    <p style="font-size:14px; color:var(--text-main); line-height:1.5; font-style:italic;" id="vocab-text-display">Waiting for another leader to establish synchronization loops...</p>
                 </div>
             </div>
 
-            <!-- Main Split Layout Grid -->
             <div class="sandbox-layout">
                 
-                <!-- Left Control Column: Group Status & Communication Hacks -->
                 <div class="info-sidebar">
                     
-                    <!-- Dynamic Practice Tip Card -->
                     <div class="strategy-box">
-                        <h4 id="strat-tech-title"><i class="fa-solid fa-star"></i> Quick Team Trick</h4>
-                        <p id="strat-tech-desc">Waiting for active group mission...</p>
+                        <h4 id="strat-tech-title"><i class="fa-solid fa-unlock-keyhole"></i> Team Challenge Trick</h4>
+                        <p id="strat-tech-desc">Talk to your partner! Ask simple questions to share your project plans together.</p>
                     </div>
 
-                    <!-- Peers Status List -->
                     <div>
-                        <div class="section-label">Connected Players</div>
+                        <div class="section-label">Your Active Operation Partners</div>
                         <div style="display:flex; flex-direction:column; gap:10px;" id="render-sandbox-peers"></div>
                     </div>
 
-                </div>
-
-                <!-- Right Control Column: Active Collaboration Boards -->
-                <div class="canvas-grid">
-                    
-                    <!-- Block 1: AUTONOMOUS ORAL QUESTIONS -->
-                    <div class="workspace-block">
-                        <div class="section-label" style="color: var(--accent-blue); margin-bottom: 4px;"><i class="fa-solid fa-volume-high"></i> Ask your friends infinite possibilities!</div>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">What possibilities do you want to create? Ask right now!</p>
-                        
-                        <div class="oral-quest-container">
-                            <div class="oral-prompt-headline">💡 Dynamic Speech Sparkers</div>
-                            <div class="oral-list-item">1. What if...?</div>
-                            <div class="oral-list-item">2. How about...?</div>
-                            <div class="oral-list-blank">3. ___________________________</div>
-                            <div class="oral-list-blank">4. ___________________________</div>
-                        </div>
-                        <p style="font-size: 11px; color: var(--accent-blue); text-align: center; font-style: italic;">Use these triggers to pass the mic to your peers!</p>
+                    <div class="signature-box" id="personal-signature-panel">
+                        <span style="font-size:11px; font-weight:700; color:var(--accent-green); text-transform:uppercase; display:block; margin-bottom:4px;"><i class="fa-solid fa-file-signature"></i> Mission Sign-off</span>
+                        <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Are you ready to lock the activity? You cannot go back after this.</p>
+                        <label style="display:flex; align-items:center; gap:6px; font-size:13px; color:#fff; cursor:pointer;">
+                            <input type="checkbox" id="signature-toggle" onchange="toggleMySignature()"> Sign My Control Card
+                        </label>
+                        <div id="partner-signature-status" style="font-size:10px; color:var(--accent-yellow); margin-top:6px;">Waiting for partner signature...</div>
                     </div>
 
-                    <!-- Block 2: Live Shared Ideas Feed -->
-                    <div class="workspace-block">
-                        <div class="section-label" style="color: var(--accent-pink); margin-bottom: 10px;"><i class="fa-solid fa-lightbulb"></i> Live Board: Ideas & Solutions</div>
+                </div>
+
+                <div class="canvas-grid">
+                    
+                    <div style="display:flex; flex-direction:column; gap:15px;">
                         
-                        <!-- Post Controls -->
-                        <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
-                            <input type="text" id="sticky-input" placeholder="Type a cool idea or take a role card..." style="margin-bottom:0; flex:1; padding: 10px;">
-                            <label style="font-size:11px; display:flex; align-items:center; gap:4px; color:var(--text-muted); cursor:pointer; user-select:none;">
-                                <input type="checkbox" id="roleplay-toggle"> Character Role?
-                            </label>
-                            <button class="btn-primary" style="padding:10px 15px; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple));" onclick="addStickyNote()"><i class="fa-solid fa-paper-plane"></i></button>
+                        <div class="workspace-block" style="padding:14px;">
+                            <div class="section-label" style="color:var(--accent-blue); margin-bottom:4px;"><i class="fa-solid fa-circle-question"></i> Wh- Investigation Prompts</div>
+                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Use these deep-dive structures to pass the microphone:</p>
+                            <div class="wh-badge-grid">
+                                <div class="wh-badge">What...?</div>
+                                <div class="wh-badge">How...?</div>
+                                <div class="wh-badge">Why...?</div>
+                                <div class="wh-badge">Where...?</div>
+                            </div>
                         </div>
 
-                        <!-- Realtime Cards Feed Grid -->
-                        <div class="sticky-container" id="mural-sticky-grid"></div>
+                        <div class="workspace-block" style="flex:1;">
+                            <div class="section-label" style="color:var(--accent-yellow); margin-bottom:2px;"><i class="fa-solid fa-spell-check"></i> Dynamic Vocabulary Log</div>
+                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Encountered a new phrase during the call? Add it instantly:</p>
+                            
+                            <div style="display:flex; gap:6px; margin-bottom:8px;">
+                                <input type="text" id="vocab-input" placeholder="Type new word/idiom..." style="margin-bottom:0; flex:1; padding:8px 12px; font-size:13px;">
+                                <button class="btn-primary" style="padding:0 15px; background:var(--accent-yellow); color:black;" onclick="addNewVocabularyTerm()"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+
+                            <div class="sticky-container" id="mural-vocab-grid" style="min-height:110px; max-height:130px;"></div>
+                        </div>
+
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:15px;">
+                        
+                        <div class="workspace-block" style="padding:15px;">
+                            <div class="section-label" style="color:var(--accent-green); margin-bottom:2px;"><i class="fa-solid fa-square-check"></i> Our Final Project Solutions MURAL</div>
+                            <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">Type your final systems. Everyone sees these stickies instantly:</p>
+                            <div style="display:flex; gap:6px; margin-bottom: 8px;">
+                                <input type="text" id="solution-input" placeholder="We will build/create a..." style="margin-bottom:0; padding:8px; font-size:13px; flex:1;">
+                                <button class="btn-primary" style="padding:0 15px; background:var(--accent-green);" onclick="addNewSolutionItem()"><i class="fa-solid fa-check"></i> Send Solution</button>
+                            </div>
+                            <div class="sticky-container" id="mural-solutions-grid" style="min-height:90px; max-height:110px;"></div>
+                        </div>
+
+                        <div class="workspace-block" style="flex:1;">
+                            <div class="section-label" style="color:var(--accent-pink); margin-bottom:2px;"><i class="fa-solid fa-lightbulb"></i> Strategic Board: Ideas & Simulations</div>
+                            
+                            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px;">
+                                <input type="text" id="sticky-input" placeholder="Type a strategy proposal or simulation framework..." style="margin-bottom:0; padding:10px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <label style="font-size:11px; display:flex; align-items:center; gap:4px; color:var(--text-muted); cursor:pointer; user-select:none;">
+                                        <input type="checkbox" id="roleplay-toggle"> Activate Simulation Role Card?
+                                    </label>
+                                    <button class="btn-primary" style="padding:8px 16px; background:linear-gradient(135deg, var(--accent-pink), var(--accent-purple));" onclick="addStickyNote()"><i class="fa-solid fa-paper-plane"></i> Dispatch Card</button>
+                                </div>
+                            </div>
+
+                            <div class="sticky-container" id="mural-sticky-grid" style="min-height:100px;"></div>
+                        </div>
+
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- Lower Progress Action Board Footer -->
-            <div class="nav-wrapper" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top:1px solid var(--border); padding-top:20px;">
+            <div class="nav-wrapper" style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
                 <div class="lock-notice" id="mural-lock-message">
-                    <i class="fa-solid fa-lock"></i> Add at least 2 cards to the Live Board to unlock the end page.
+                    <span style="color:var(--accent-yellow);" id="lock-status-text"><i class="fa-solid fa-lock"></i> Sign your control cards above to open the homework portal.</span>
                 </div>
-                <button class="btn-primary" id="finish-conversation-btn" style="background: var(--text-muted);" onclick="attemptFinish()" disabled>
-                    Finish Adventure Log ➔
+                <button class="btn-primary" id="finish-conversation-btn" style="background:var(--accent-green);" onclick="attemptFinish()" disabled>
+                    Compile Adventure Homework Log ➔
                 </button>
             </div>
         </div>
 
-        <!-- SCREEN 3: SUMMARY PAGE -->
         <div id="scr-3" class="os-screen">
-            <h1>Quest Completed! 🏆</h1>
-            <p class="subtitle">Amazing team dynamic. Your conversation history and active logs are saved successfully.</p>
-            
-            <div class="card" style="text-align:center; padding:40px; background: linear-gradient(135deg, rgba(16,185,129,0.08), transparent); border-color: rgba(16,185,129,0.3);">
-                <i class="fa-solid fa-star-and-crescent" style="font-size:48px; color:var(--accent-yellow); margin-bottom:15px; text-shadow: 0 0 15px rgba(234,179,8,0.5);"></i>
-                <h2 style="font-size: 24px; color: #fff; font-family:'Courier Prime', monospace;">You Did Great Together!</h2>
-                <p style="color:var(--text-main); font-size:14px; max-width:650px; margin: 15px auto 0; line-height: 1.6;">
-                    You successfully finished this live challenge! By focusing directly on your partner's goals, asking live questions, and working as a real community, you practiced language in a useful, real-world way. Keep up this incredible energy!
-                </p>
-            </div>
-
-            <div class="summary-grid">
-                <div class="summary-card" style="grid-column: span 2;">
-                    <i class="fa-solid fa-lightbulb" style="color:var(--accent-purple); font-size: 22px;"></i>
-                    <p style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-top:8px;">Shared Board Ideas</p>
-                    <h3 id="sum-ideas">0</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h1>Your Team Report & Homework Page</h1>
+                    <p class="subtitle">Print this page to save your exercises and project details simply.</p>
                 </div>
-                <div class="summary-card" style="grid-column: span 2;">
-                    <i class="fa-solid fa-heart" style="color:var(--accent-pink); font-size: 22px;"></i>
-                    <p style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-top:8px;">Confidence Boosts Sent</p>
-                    <h3 id="sum-boosts">0</h3>
+                <div style="display:flex; gap:10px;" id="screen-actions">
+                    <button class="btn-primary" style="background:var(--accent-blue)" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Homework Page</button>
+                    <button class="btn-sec" onclick="restartOS()"><i class="fa-solid fa-rotate-left"></i> Start Fresh Game Room</button>
                 </div>
             </div>
 
-            <div style="text-align:center; margin-top:35px; display:flex; justify-content:center; gap:15px;" id="screen-actions">
-                <button class="btn-primary" style="background: var(--accent-blue)" onclick="window.print()"><i class="fa-solid fa-file-pdf"></i> Print Game Summary Report</button>
-                <button class="btn-sec" onclick="restartOS()"><i class="fa-solid fa-rotate-left"></i> Start New Game</button>
+            <div class="homework-layout">
+                <div class="hw-title">
+                    <h2>🚀 MY ENGLISH ADVENTURE LOG</h2>
+                    <p style="font-size:12px; color:#64748b; text-transform:uppercase; margin-top:4px;">Easy Portfolio & Class Work Summary</p>
+                </div>
+
+                <div class="hw-section">
+                    <h3>1. The City Problem We Studied</h3>
+                    <p style="font-size:15px; font-weight:600; line-height:1.5; color:#0f172a;" id="hw-rendered-challenge">Loading problem statement...</p>
+                </div>
+
+                <div class="hw-section">
+                    <h3>2. Our Final Project Solutions</h3>
+                    <ul class="hw-list" id="hw-rendered-solutions-list">
+                        <li>No final solutions added.</li>
+                    </ul>
+                </div>
+
+                <div class="hw-section">
+                    <h3>3. Class Ideas & Conversation Notes</h3>
+                    <ul class="hw-list" id="hw-rendered-ideas">
+                        <li>No notes added.</li>
+                    </ul>
+                </div>
+
+                <div class="hw-section">
+                    <h3>4. Good Words to Learn (My Vocabulary Bank)</h3>
+                    <div style="background:#f1f5f9; padding:15px; border-radius:6px; margin-bottom:15px;">
+                        <strong style="font-size:12px; text-transform:uppercase; color:#475569; display:block; margin-bottom:6px;">Important text words:</strong>
+                        <p id="hw-rendered-native-vocab" style="font-size:13.5px; font-style:italic; color:#1e293b;"></p>
+                    </div>
+                    <strong style="font-size:12px; text-transform:uppercase; color:#475569; display:block; margin-bottom:6px;">Words we added in class:</strong>
+                    <ul class="hw-list" id="hw-rendered-user-vocab">
+                        <li>No vocabulary words added.</li>
+                    </ul>
+                </div>
+
+                <div class="hw-section">
+                    <h3>5. My Homework Task</h3>
+                    <div class="research-prompt-box" id="hw-rendered-research">
+                        Find 2 real cities with this same traffic or environmental problem. Write 3 short sentences about how your team plan can help those cities.
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 
-    <!-- SCRIPT INFRASTRUCTURE ENGINE -->
     <script type="module">
         const poolPassions = ["🎵 Music", "⚽ Sports", "🎬 Movies", "🎮 Gaming", "✈ Travel", "🍔 Food", "🤖 Technology", "📈 Business", "🎨 Art", "🌎 Languages"];
         const poolHappiness = ["Helping people", "Learning things", "Solving problems", "Teaching others", "Creating things", "Making teams better", "Sharing ideas"];
         const levelNames = ["A1", "A2", "B1", "B2", "C1"];
+        
+        const genericSoftSkillsPool = [
+            { title: "🤝 Teamwork Drill", desc: "Act like partners! Challenge your friend's ideas kindly. Use simple questions like: 'How can we make this project better?'" },
+            { title: "👂 Good Listening", desc: "Listen to your team partner carefully. Say things like: 'That is a great idea! Let's also add...'" },
+            { title: "⚡ Quick Problem Solving", desc: "If there is a change or problem, talk to your partner. Ask them: 'What can we do right now to fix this?'" }
+        ];
 
         const DATABASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
         const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
         const GROQ_KEY = "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";
 
         let currentScreen = 1;
-        let myId = "";
+        let myFirebaseKey = ""; // ARQUITETURA CORRIGIDA: Armazena a chave gerada de fato pelo POST
         let userData = { name: "", level: 2, assets: [], motivations: [] };
         let onlinePlayers = {};
-        let currentMission = null;
-        let localNotesCount = 0;
-        let totalBoostsSent = 0;
+        
+        let savedMissionLocalCopy = null;
+        let savedNotesLocalCopy = {};
+        let savedVocabLocalCopy = {};
+        let savedSolutionsLocalCopy = {};
+        
+        let selectedSkillFramework = genericSoftSkillsPool[0];
+        let aiGeneratingLock = false;
 
         window.onload = function() {
             buildStepIndicators();
             buildOnboardingPickers();
+            selectedSkillFramework = genericSoftSkillsPool[Math.floor(Math.random() * genericSoftSkillsPool.length)];
+            document.getElementById('strat-tech-title').innerHTML = `<i class="fa-solid fa-star"></i> ${selectedSkillFramework.title}`;
+            document.getElementById('strat-tech-desc').innerText = selectedSkillFramework.desc;
         };
 
         function buildStepIndicators() {
@@ -385,7 +432,7 @@
             const className = type === 'p' ? '.tag-p.selected' : '.tag-h.selected';
             const selectedCount = document.querySelectorAll(className).length;
             if(!el.classList.contains('selected') && selectedCount >= 3) {
-                alert("Please select up to 3 topics.");
+                alert("Please select up to 3 domains.");
                 return;
             }
             el.classList.toggle('selected');
@@ -405,11 +452,11 @@
             let selectedHappiness = Array.from(document.querySelectorAll('.tag-h.selected')).map(el => el.textContent);
             
             if(!nameInput) {
-                alert("Please type your name!");
+                alert("Please type your professional profile name!");
                 return;
             }
             if(selectedPassions.length !== 3 || selectedHappiness.length !== 3) {
-                alert("Please select exactly 3 topics from each box!");
+                alert("Please select exactly 3 items from each block matrix!");
                 return;
             }
 
@@ -418,122 +465,189 @@
             userData.assets = selectedPassions;
             userData.motivations = selectedHappiness;
 
-            document.getElementById('start-btn').innerText = "Entering Room...";
+            document.getElementById('start-btn').innerText = "Connecting Operations Node...";
             document.getElementById('start-btn').disabled = true;
 
-            // Register yourself live into Firebase
             try {
+                const checkRes = await fetch(`${DATABASE_URL}/players.json`);
+                const currentPlayersObj = await checkRes.json();
+                
+                // FLUSH TOTAL REAL: Se não houver ninguém ativo ou se os dados tiverem mais de 3 horas, limpa tudo do banco.
+                if (!currentPlayersObj || Object.keys(currentPlayersObj).length === 0) {
+                    await forceSystemWipe();
+                }
+
                 let res = await fetch(`${DATABASE_URL}/players.json`, {
                     method: "POST",
                     body: JSON.stringify({
                         name: userData.name,
                         level: userData.level,
                         assets: userData.assets,
-                        boosts: 0,
+                        motivations: userData.motivations,
+                        signed: false,
                         timestamp: Date.now()
                     })
                 });
                 let data = await res.json();
-                myId = data.name; // Save unique key reference
+                myFirebaseKey = data.name; // IMPORTANTE: O Firebase retorna a chave gerada dentro da propriedade 'name'
                 
                 navTo(2);
                 startGlobalSyncLoop();
             } catch(e) {
-                alert("Network error connecting to live server.");
-                document.getElementById('start-btn').innerText = "Launch Game Space ➔";
+                alert("Network timeout connecting to server.");
+                document.getElementById('start-btn').innerText = "Start Game! ➔";
                 document.getElementById('start-btn').disabled = false;
             }
         };
 
+        async function forceSystemWipe() {
+            await fetch(`${DATABASE_URL}/players.json`, { method: "DELETE" });
+            await fetch(`${DATABASE_URL}/notes.json`, { method: "DELETE" });
+            await fetch(`${DATABASE_URL}/vocabulary.json`, { method: "DELETE" });
+            await fetch(`${DATABASE_URL}/solutions.json`, { method: "DELETE" });
+            await fetch(`${DATABASE_URL}/current_mission.json`, { method: "DELETE" });
+        }
+
         function startGlobalSyncLoop() {
-            // Check Firebase every 2.5 seconds
-            setInterval(async () => {
-                try {
-                    // 1. Sync Players
-                    const pRes = await fetch(`${DATABASE_URL}/players.json`);
-                    onlinePlayers = (await pRes.json()) || {};
-                    renderActivePeers();
+            syncRealtimePipeline();
+            setInterval(syncRealtimePipeline, 2000); // Frequência aumentada para resposta instantânea
+        }
 
-                    // 2. Sync Shared Mission Room
-                    const mRes = await fetch(`${DATABASE_URL}/current_mission.json`);
-                    currentMission = await mRes.json();
+        async function syncRealtimePipeline() {
+            if (currentScreen === 3) return; 
+            
+            try {
+                // 1. Fetch Active Operation Nodes
+                const pRes = await fetch(`${DATABASE_URL}/players.json`);
+                onlinePlayers = (await pRes.json()) || {};
+                renderActivePeers();
 
-                    let playerIds = Object.keys(onlinePlayers);
-                    if (playerIds.length >= 2) {
-                        if (!currentMission) {
-                            // Two players matched, generate mission immediately
-                            await triggerGroqAILiveGeneration(playerIds);
-                        } else {
-                            // Update display from active live mission server model
-                            document.getElementById('mission-level-display').innerText = `Group Level: ${currentMission.targetLevel}`;
-                            document.getElementById('inspiration-text-display').innerText = currentMission.inspiration;
-                            document.getElementById('vocab-text-display').innerHTML = `"${currentMission.microtext}" <br><span style="color:var(--text-muted); font-size:12px; display:block; margin-top:6px;"><b>Meanings:</b> ${currentMission.definitions}</span>`;
-                            document.getElementById('strat-tech-desc').innerText = currentMission.trick;
-                        }
-                    } else {
-                        document.getElementById('inspiration-text-display').innerText = `Waiting for more players to join the party... (${playerIds.length}/2)`;
+                // 2. Mission Pull
+                const mRes = await fetch(`${DATABASE_URL}/current_mission.json`);
+                savedMissionLocalCopy = await mRes.json();
+
+                let playerKeys = Object.keys(onlinePlayers);
+                
+                if (playerKeys.length >= 2) {
+                    if (!savedMissionLocalCopy && !aiGeneratingLock) {
+                        aiGeneratingLock = true;
+                        document.getElementById('inspiration-text-display').innerText = "Analyzing team alignment... Generating dynamic urban challenge...";
+                        await triggerGroqAILiveGeneration(playerKeys);
+                    } else if (savedMissionLocalCopy) {
+                        document.getElementById('mission-level-display').innerText = `Group Tier: ${savedMissionLocalCopy.targetLevel}`;
+                        document.getElementById('inspiration-text-display').innerText = savedMissionLocalCopy.inspiration;
+                        document.getElementById('vocab-text-display').innerHTML = savedMissionLocalCopy.readingText || "Analyzing context parameters...";
                     }
-
-                    // 3. Sync Sticky Notes Mural
-                    const nRes = await fetch(`${DATABASE_URL}/notes.json`);
-                    const notesData = await nRes.json();
-                    renderMuralNotes(notesData);
-
-                } catch(e) {
-                    console.log("Realtime Sync Issue: ", e);
+                    
+                    checkSignaturesCooperativeStatus(playerKeys);
+                } else {
+                    document.getElementById('mission-level-display').innerText = `Group Tier: Waiting...`;
+                    document.getElementById('inspiration-text-display').innerHTML = `<span style="color: var(--accent-yellow);"><i class="fa-solid fa-users-gear"></i> « Waiting for partners to join the control center... »</span>`;
+                    document.getElementById('vocab-text-display').innerText = "The dynamic mission text, cross-domain problems, and solutions panel will load automatically when your partner connects.";
+                    
+                    if (savedMissionLocalCopy) {
+                        await fetch(`${DATABASE_URL}/current_mission.json`, { method: "DELETE" });
+                    }
+                    document.getElementById('finish-conversation-btn').disabled = true;
                 }
-            }, 2500);
+
+                // 3. Sync General Notes Board Module
+                const nRes = await fetch(`${DATABASE_URL}/notes.json`);
+                savedNotesLocalCopy = await nRes.json() || {};
+                renderMuralNotes(savedNotesLocalCopy);
+
+                // 4. Sync Dynamic Live Vocabulary Module
+                const vRes = await fetch(`${DATABASE_URL}/vocabulary.json`);
+                savedVocabLocalCopy = await vRes.json() || {};
+                renderVocabNotes(savedVocabLocalCopy);
+
+                // 5. Sync Solutions MURAL
+                const sRes = await fetch(`${DATABASE_URL}/solutions.json`);
+                savedSolutionsLocalCopy = await sRes.json() || {};
+                renderSolutionsNotes(savedSolutionsLocalCopy);
+
+            } catch(e) {
+                console.log("Telemetry Sync Exception: ", e);
+            }
         }
 
         function renderActivePeers() {
             let sideHTML = "";
             Object.keys(onlinePlayers).forEach((key) => {
                 let p = onlinePlayers[key];
-                let isMe = (key === myId);
+                let isMe = (key === myFirebaseKey);
                 sideHTML += `
                     <div class="mini-profile-card" style="${isMe ? 'border-color: var(--accent-purple);' : ''} margin-bottom: 8px;">
-                        <h5 style="display:flex; justify-content:space-between; width:100%;">
-                            <span>👤 ${p.name} ${isMe ? '(You)' : ''}</span> 
-                            <span style="color:var(--accent-pink)">❤️ ${p.boosts || 0}</span>
-                        </h5>
-                        <div class="tag-row">${p.assets ? p.assets.map(a=>`<span class="mini-tag">${a}</span>`).join('') : ''}</div>
-                        ${!isMe ? `<button class="btn-primary" onclick="boostOnlinePeer('${key}')" style="padding:4px 8px; font-size:11px; margin-top:8px; border-radius:4px; background:rgba(236,72,153,0.12); border:1px solid var(--accent-pink); color:white; width:100%; justify-content:center;">Confidence Boost</button>` : ''}
+                        <h5><span>👤 ${p.name} ${isMe ? '(You)' : ''}</span></h5>
+                        <div style="font-size:10px; color:${p.signed ? 'var(--accent-green)' : 'var(--accent-yellow)'}; margin-top:2px;">
+                            <i class="fa-solid ${p.signed ? 'fa-check-double' : 'fa-clock'}"></i> ${p.signed ? 'Signed Card!' : 'Still Working...'}
+                        </div>
+                        <div class="tag-row" style="margin-top:6px;">${p.assets ? p.assets.map(a=>`<span class="mini-tag" style="background:rgba(59,130,246,0.1); border-color:var(--accent-blue);">${a}</span>`).join('') : ''}</div>
                     </div>
                 `;
             });
             document.getElementById('render-sandbox-peers').innerHTML = sideHTML;
         }
 
-        async function triggerGroqAILiveGeneration(playerIds) {
-            // Calculate real average level index dynamically
+        window.toggleMySignature = async function() {
+            let currentCheckedState = document.getElementById('signature-toggle').checked;
+            if(!myFirebaseKey) return;
+
+            try {
+                await fetch(`${DATABASE_URL}/players/${myFirebaseKey}/signed.json`, {
+                    method: "PUT",
+                    body: JSON.stringify(currentCheckedState)
+                });
+            } catch(e) { console.log(e); }
+        };
+
+        function checkSignaturesCooperativeStatus(playerKeys) {
+            let unsignedCount = 0;
+            let totalPlayersCount = playerKeys.length;
+            
+            playerKeys.forEach(key => {
+                if(!onlinePlayers[key].signed) unsignedCount++;
+            });
+
+            if (unsignedCount === 0 && totalPlayersCount >= 2) {
+                document.getElementById('lock-status-text').innerHTML = `<span style="color:var(--accent-green);"><i class="fa-solid fa-lock-open"></i> All leaders signed! The log compile bridge is fully armed.</span>`;
+                document.getElementById('finish-conversation-btn').disabled = false;
+                document.getElementById('partner-signature-status').innerHTML = `<span style="color:var(--accent-green);">Your partner signed! Ready!</span>`;
+            } else {
+                document.getElementById('partner-signature-status').innerText = `Waiting for both players to check sign cards...`;
+                document.getElementById('lock-status-text').innerHTML = `<span style="color:var(--accent-yellow);"><i class="fa-solid fa-lock"></i> Both players must check 'Sign My Control Card' to unlock.</span>`;
+                document.getElementById('finish-conversation-btn').disabled = true;
+            }
+        }
+
+        async function triggerGroqAILiveGeneration(playerKeys) {
             let totalLevelSum = 0;
             let allAssets = [];
-            playerIds.forEach(id => {
-                totalLevelSum += onlinePlayers[id].level;
-                if(onlinePlayers[id].assets) allAssets.push(...onlinePlayers[id].assets);
+            
+            playerKeys.forEach(key => {
+                totalLevelSum += onlinePlayers[key].level;
+                if(onlinePlayers[key].assets) allAssets.push(...onlinePlayers[key].assets);
             });
             
-            let avgIndex = Math.round(totalLevelSum / playerIds.length) - 1;
-            let targetLevelName = levelNames[avgIndex] || "B1";
+            let avgIndex = Math.floor(totalLevelSum / playerKeys.length) - 1;
+            if (avgIndex < 0) avgIndex = 0;
+            let targetLevelName = levelNames[avgIndex] || "A2";
 
-            // Grab random topics from the collective list typed/chosen by the actual players
-            let randomAssetA = allAssets[Math.floor(Math.random() * allAssets.length)] || "🎮 Gaming";
-            let randomAssetB = allAssets[Math.floor(Math.random() * allAssets.length)] || "🌎 Languages";
+            let randomAssetA = allAssets[Math.floor(Math.random() * allAssets.length)] || "🎬 Movies";
+            let randomAssetB = allAssets[Math.floor(Math.random() * allAssets.length)] || "🎨 Art";
             if(randomAssetA === randomAssetB && allAssets.length > 1) {
-                randomAssetB = allAssets.find(a => a !== randomAssetA);
+                randomAssetB = allAssets.find(a => a !== randomAssetA) || "🎨 Art";
             }
 
-            // ENHANCED ENTREPRENEURIAL PROMPT: Forces AI to deliver an inspiring project mission about innovating or creating something
-            const systemInstructions = `You are a visionary startup coach and dynamic gamified lesson planner. 
-            Output everything in very simple English for English learners at level ${targetLevelName}. Never use complex words, never use Portuguese.
+            const systemInstructions = `You are an elite urban innovation consultant. 
+            Deliver all outputs using extremely simple English appropriate for learners at level ${targetLevelName}. Never use complex grammatical structures or Portuguese words.
             
-            Your mission is to look at the players' interests: "${randomAssetA}" and "${randomAssetB}", and create an inspiring challenge where they must INVENT, BUILD, IMPROVE, or REVOLUTIONIZE a solution, product, or community project together. They should feel like CEOs.
+            Analyze these two topics: "${randomAssetA}" and "${randomAssetB}".
+            Create a real problem happening in a big city (like very bad traffic jams, air pollution, historical buildings collapsing, or food waste).
             
-            You must reply with a valid JSON string containing exactly these four keys:
-            "inspiration": (An inspiring challenge sentence prompting the group to create or improve a business/solution/system combining ${randomAssetA} and ${randomAssetB}),
-            "microtext": (A 2 line story/scenario describing this innovation problem using two useful phrasal verbs in bold based on that challenge),
-            "definitions": (Very easy English meanings for those bold phrasal verbs),
-            "trick": (A simple strategic advice on how to collaborate and lead as autonomous creators)
+            You must reply with a valid JSON object holding exactly these two keys:
+            "inspiration": "A clear problem question challenging them to use ${randomAssetA} and ${randomAssetB} to solve it",
+            "readingText": "A short 3-line paragraph explaining this city issue simply. You MUST include exactly two useful phrasal verbs or idioms highlighted inside bold tags like: <b>deal with</b> (solve/handle) or <b>come up with</b> (think of/create)."
             `;
 
             try {
@@ -546,50 +660,29 @@
                     body: JSON.stringify({
                         model: "llama3-8b-8192",
                         response_format: { type: "json_object" },
-                        messages: [{ role: "system", content: systemInstructions }, { role: "user", content: "Build entrepreneurial creative payload now." }]
+                        messages: [{ role: "system", content: systemInstructions }, { role: "user", content: "Generate data." }]
                     })
                 });
                 const data = await response.json();
-                const payload = JSON.parse(data.choices[0].message.content);
+                savedMissionLocalCopy = JSON.parse(data.choices[0].message.content);
+                savedMissionLocalCopy.targetLevel = targetLevelName;
 
-                // Publish live to server room environment so everyone shares it
                 await fetch(`${DATABASE_URL}/current_mission.json`, {
                     method: "PUT",
-                    body: JSON.stringify({
-                        targetLevel: targetLevelName,
-                        inspiration: payload.inspiration,
-                        microtext: payload.microtext,
-                        definitions: payload.definitions,
-                        trick: payload.trick
-                    })
+                    body: JSON.stringify(savedMissionLocalCopy)
                 });
 
             } catch (err) {
-                // Fallback static rescue logic focused on building something cool
-                await fetch(`${DATABASE_URL}/current_mission.json`, {
-                    method: "PUT",
-                    body: JSON.stringify({
-                        targetLevel: targetLevelName,
-                        inspiration: `Your team mission is to design a unique hybrid project that combines "${randomAssetA}" and "${randomAssetB}" to solve a major community problem!`,
-                        microtext: `We must <b>come up with</b> (invent) an incredible new strategy and <b>set up</b> (start) a live workspace to launch it.`,
-                        definitions: `come up with = invent/think of an idea ; set up = launch/organize a system`,
-                        trick: `Act like partners! Challenge each other's ideas with "How can we make this better?"`
-                    })
-                });
+                savedMissionLocalCopy = {
+                    targetLevel: targetLevelName,
+                    inspiration: `The city has big traffic jams every day. Create a good system using "${randomAssetA}" and "${randomAssetB}" to make travel faster!`,
+                    readingText: `Big cities must <b>deal with</b> (solve/handle) vehicle traffic problems every day. Students need to <b>come up with</b> (think of/create) smart ideas to change this.`
+                };
+                await fetch(`${DATABASE_URL}/current_mission.json`, { method: "PUT", body: JSON.stringify(savedMissionLocalCopy) });
+            } finally {
+                aiGeneratingLock = false;
             }
         }
-
-        window.boostOnlinePeer = async function(peerKey) {
-            let currentBoostCount = onlinePlayers[peerKey].boosts || 0;
-            try {
-                await fetch(`${DATABASE_URL}/players/${peerKey}/boosts.json`, {
-                    method: "PUT",
-                    body: JSON.stringify(currentBoostCount + 1)
-                });
-                totalBoostsSent++;
-                document.getElementById('sum-boosts').innerText = totalBoostsSent;
-            } catch(e) { console.log(e); }
-        };
 
         function renderMuralNotes(data) {
             const container = document.getElementById('mural-sticky-grid');
@@ -600,27 +693,65 @@
             if (data) {
                 Object.keys(data).forEach((key) => {
                     const note = data[key];
-                    let badge = note.type === 'role' ? '<span class="sticky-badge">Role</span>' : '<span class="sticky-badge" style="background:#3b82f6">Idea</span>';
-                    let cardClass = note.type === 'role' ? 'sticky-note role-play-card' : 'sticky-note';
+                    let isRole = (note.type === 'role');
+                    let badge = isRole ? '<span class="sticky-badge">Simulation</span>' : '<span class="sticky-badge" style="background:#3b82f6">Idea</span>';
                     
                     html += `
-                        <div class="${cardClass}" style="background: ${colors[index % colors.length]}">
+                        <div class="sticky-note ${isRole ? 'role-play-card' : ''}" style="background: ${colors[index % colors.length]}">
                             ${badge}
-                            <div style="word-break: break-word; overflow-y: auto; max-height: 90px; margin-top:5px; font-size:12px;">"${note.text}"</div>
-                            <div class="sticky-footer">
+                            <div style="word-break: break-word; overflow-y: auto; max-height:75px; font-size:11px; margin-top:4px;">"${note.text}"</div>
+                            <div class="sticky-actions">
                                 <span>By: ${note.author}</span>
-                                <button class="suggest-skill-btn" onclick="alert('Awesome tip shared!')">💡 Tip</button>
+                                <button class="sticky-btn" style="color:#ef4444;" onclick="deleteStickyItem('notes', '${key}')"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </div>
                     `;
                     index++;
                 });
             }
-            
             container.innerHTML = html;
-            localNotesCount = index;
-            document.getElementById('sum-ideas').innerText = localNotesCount;
-            updateLockStatus();
+        }
+
+        function renderVocabNotes(data) {
+            const container = document.getElementById('mural-vocab-grid');
+            let html = "";
+            if (data) {
+                Object.keys(data).forEach((key) => {
+                    const entry = data[key];
+                    html += `
+                        <div class="sticky-note" style="background: var(--sticky-green); width:100px; height:100px; padding:8px;">
+                            <span class="sticky-badge" style="background:var(--accent-green); color:black;">Vocab</span>
+                            <div style="word-break:break-word; overflow-y:auto; font-size:11px; font-weight:700; max-height:55px; margin-top:4px;">${entry.text}</div>
+                            <div class="sticky-actions">
+                                <span style="font-size:8px; color:#475569;">By: ${entry.author}</span>
+                                <button class="sticky-btn" style="color:#ef4444;" onclick="deleteStickyItem('vocabulary', '${key}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        function renderSolutionsNotes(data) {
+            const container = document.getElementById('mural-solutions-grid');
+            let html = "";
+            if (data) {
+                Object.keys(data).forEach((key) => {
+                    const sol = data[key];
+                    html += `
+                        <div class="sticky-note" style="background: var(--sticky-teal); width:120px; height:90px; padding:8px; border: 1px solid var(--accent-green);">
+                            <span class="sticky-badge" style="background:var(--accent-green); color:white; font-size:7px;">Solution</span>
+                            <div style="word-break:break-word; overflow-y:auto; font-size:11px; font-weight:600; max-height:50px; margin-top:4px; color:#115e59;">"${sol.text}"</div>
+                            <div class="sticky-actions">
+                                <span style="font-size:8px; color:#115e59;">By: ${sol.author}</span>
+                                <button class="sticky-btn" style="color:#ef4444;" onclick="deleteStickyItem('solutions', '${key}')"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            container.innerHTML = html;
         }
 
         window.addStickyNote = async function() {
@@ -634,7 +765,7 @@
                     method: "POST",
                     body: JSON.stringify({
                         text: txt,
-                        author: userData.name || "Explorer",
+                        author: userData.name || "Leader",
                         type: isRolePlay ? 'role' : 'idea',
                         timestamp: Date.now()
                     })
@@ -644,35 +775,90 @@
             } catch (e) { console.log(e); }
         };
 
-        function updateLockStatus() {
-            const btn = document.getElementById('finish-conversation-btn');
-            const msg = document.getElementById('mural-lock-message');
-            
-            if (localNotesCount >= 2) {
-                btn.disabled = false;
-                btn.style.background = "var(--accent-green)";
-                btn.style.cursor = "pointer";
-                msg.innerHTML = `<span style="color:var(--accent-green)"><i class="fa-solid fa-lock-open"></i> Goal Unlocked! Ready to complete!</span>`;
-            } else {
-                btn.disabled = true;
-                btn.style.background = "var(--text-muted)";
-                btn.style.cursor = "not-allowed";
-                msg.innerHTML = `<i class="fa-solid fa-lock"></i> Share at least 2 ideas on the Live Board to finish (${localNotesCount}/2).`;
-            }
-        }
+        window.addNewVocabularyTerm = async function() {
+            const input = document.getElementById('vocab-input');
+            const txt = input.value.trim();
+            if(!txt) return;
 
-        window.attemptFinish = function() {
-            if(localNotesCount < 2) return;
+            try {
+                await fetch(`${DATABASE_URL}/vocabulary.json`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        text: txt,
+                        author: userData.name || "Leader",
+                        timestamp: Date.now()
+                    })
+                });
+                input.value = "";
+            } catch(e) { console.log(e); }
+        };
+
+        window.addNewSolutionItem = async function() {
+            const input = document.getElementById('solution-input');
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            try {
+                await fetch(`${DATABASE_URL}/solutions.json`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        text: txt,
+                        author: userData.name || "Leader",
+                        timestamp: Date.now()
+                    })
+                });
+                input.value = "";
+            } catch(e) { console.log(e); }
+        };
+
+        window.deleteStickyItem = async function(nodeEndpoint, targetKey) {
+            try {
+                await fetch(`${DATABASE_URL}/${nodeEndpoint}/${targetKey}.json`, { method: "DELETE" });
+            } catch(e) { console.log(e); }
+        };
+
+        window.attemptFinish = async function() {
+            document.getElementById('hw-rendered-challenge').innerText = savedMissionLocalCopy ? savedMissionLocalCopy.inspiration : "No mission statement selected.";
+            document.getElementById('hw-rendered-native-vocab').innerHTML = savedMissionLocalCopy ? savedMissionLocalCopy.readingText : "No dictionary terms available.";
+            
+            const solutionsListContainer = document.getElementById('hw-rendered-solutions-list');
+            let solKeys = Object.keys(savedSolutionsLocalCopy);
+            if (solKeys.length > 0) {
+                solutionsListContainer.innerHTML = solKeys.map(k => `
+                    <li>✅ <b>"${savedSolutionsLocalCopy[k].text}"</b> — <span style="font-size:12px; color:#64748b;">Created by: ${savedSolutionsLocalCopy[k].author}</span></li>
+                `).join('');
+            } else {
+                solutionsListContainer.innerHTML = `<li>No specific project solutions entered during the sprint.</li>`;
+            }
+
+            const ideasListContainer = document.getElementById('hw-rendered-ideas');
+            let noteKeys = Object.keys(savedNotesLocalCopy);
+            if(noteKeys.length > 0) {
+                ideasListContainer.innerHTML = noteKeys.map(k => `
+                    <li>📌 <b>[${savedNotesLocalCopy[k].type.toUpperCase()}]</b> "${savedNotesLocalCopy[k].text}" — <span style="font-size:12px; color:#64748b;">By: ${savedNotesLocalCopy[k].author}</span></li>
+                `).join('');
+            } else {
+                ideasListContainer.innerHTML = `<li>No extra conversation notes recorded.</li>`;
+            }
+
+            const vocabListContainer = document.getElementById('hw-rendered-user-vocab');
+            let vocabKeys = Object.keys(savedVocabLocalCopy);
+            if(vocabKeys.length > 0) {
+                vocabListContainer.innerHTML = vocabKeys.map(k => `
+                    <li>⚡ <b>"${savedVocabLocalCopy[k].text}"</b> — <span style="font-size:12px; color:#64748b;">Added by: ${savedVocabLocalCopy[k].author}</span></li>
+                `).join('');
+            } else {
+                vocabListContainer.innerHTML = `<li>No vocabulary words added.</li>`;
+            }
+
+            try {
+                await forceSystemWipe();
+            } catch(e) { console.error(e); }
+
             navTo(3);
         };
 
         window.restartOS = async function() {
-            // Wipe data endpoints on total manual game reset to clear room assets cleanly
-            try {
-                await fetch(`${DATABASE_URL}/players.json`, { method: "DELETE" });
-                await fetch(`${DATABASE_URL}/notes.json`, { method: "DELETE" });
-                await fetch(`${DATABASE_URL}/current_mission.json`, { method: "DELETE" });
-            } catch(e) { }
             window.location.reload();
         };
     </script>
