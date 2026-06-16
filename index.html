@@ -363,14 +363,14 @@
 
         async function fetchObsidianMission() {
             const dateStr = getFormattedDate();
-            const path = `Database_Missoes/${dateStr}.md.md`;
+            // Configurado para o padrão estável de arquivos .md normais
+            const path = `Database_Missoes/${dateStr}.md`;
 
             try {
                 const response = await fetch(path);
-                if (!response.ok) throw new Error("No scheduled markdown file found for today.");
+                if (!response.ok) throw new Error(`Could not find the mission file: ${path}`);
                 
                 const rawText = await response.text();
-                // Quebra o arquivo .md nos delimitadores '---'
                 const blocks = rawText.split('---').map(b => b.trim());
 
                 missionDataGlobal.title = blocks[0] || "No Mission Title Loaded";
@@ -388,7 +388,7 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('obsidian-mission-title').innerText = "⚠️ Mission file not found for today's date in _Database_Missoes.";
+                document.getElementById('obsidian-mission-title').innerHTML = `⚠️ Mission file (<b>${dateStr}.md</b>) not found inside <b>Database_Missoes</b> folder on GitHub Pages.`;
             }
         }
 
