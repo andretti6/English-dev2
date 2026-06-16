@@ -1,534 +1,591 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collab Idea Gen & Dev Matrix</title>
+    <title>IdeaQuest Hub - AI Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght=400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght=400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --bg-dark: #0b0e14;
-            --panel-bg: #151922;
-            --border: rgba(255, 255, 255, 0.08);
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-            --accent-green: #10b981;
-            --accent-yellow: #eab308;
-            --accent-red: #ef4444;
+            --bg-main: #0c0b1e;
+            --bg-panel: #11112b;
+            --bg-card: #16163f;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-white: #ffffff;
+            --text-muted: #8081b3;
+            
+            /* Game Palette */
+            --neon-blue: #38bdf8;
+            --neon-purple: #c084fc;
+            --neon-pink: #f43f5e;
+            --neon-green: #10b981;
+            --neon-yellow: #fbbf24;
+            --neon-orange: #fb923c;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: var(--bg-dark); color: var(--text-main);
+            background-color: var(--bg-main); color: var(--text-white);
             font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
         }
 
+        /* HEADER NAV */
         .os-header {
-            background: var(--panel-bg); border-bottom: 1px solid var(--border);
-            padding: 15px 25px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(17, 17, 43, 0.8); border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;
         }
-        .os-logo { font-family: 'Courier Prime', monospace; font-size: 14px; color: var(--accent-blue); font-weight: bold; }
+        .os-logo { font-family: 'Courier Prime', monospace; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: var(--text-white); }
+        .live-tag { background: #ef4444; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 
-        .main-container { max-width: 1150px; width: 100%; margin: 30px auto; padding: 0 20px; flex: 1; }
-        .os-screen { display: none; animation: fadeIn 0.2s ease forwards; }
+        .main-container { max-width: 1200px; width: 100%; margin: 20px auto; padding: 0 20px; flex: 1; }
+        .os-screen { display: none; animation: fadeIn 0.25s ease forwards; }
         .os-screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-0 auto 20px auto; }
-        h1 { font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #fff; }
-        .subtitle { color: var(--text-muted); font-size: 14px; text-align: center; margin-bottom: 25px; }
-
-        input[type="text"] { 
-            background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 15px;
+        /* SCREEN 1 SETUP */
+        .setup-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; max-width: 500px; margin: 40px auto; }
+        input[type="text"] {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 15px;
         }
-        input[type="text"]:focus { border-color: var(--accent-blue); outline: none; }
-        .input-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px; letter-spacing: 0.5px; }
+        input[type="text"]:focus { border-color: var(--neon-blue); outline: none; }
+        .input-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px; }
 
+        /* BUTTONS */
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
         }
-        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-primary:hover { filter: brightness(1.2); }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-color); padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-danger { background: transparent; color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); padding: 10px 15px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        /* AVATAR LIST */
+        .avatar-group { display: flex; align-items: center; gap: 6px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: white; border: 2px solid rgba(255,255,255,0.1); }
+
+        /* SCREEN 2: MAIN GAME DASHBOARD */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; margin-bottom: 24px; }
+        .global-mission-box { background: var(--bg-panel); border: 1px solid rgba(192, 132, 252, 0.2); border-radius: 16px; padding: 25px; margin-bottom: 24px; }
+        .section-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-purple); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .mission-text-display { font-size: 22px; font-weight: 700; color: white; line-height: 1.4; margin-bottom: 10px; }
+        .mission-desc { color: var(--text-muted); font-size: 14px; }
+
+        .boosters-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 12px; }
+        .boosters-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+        .booster-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .booster-card:hover { transform: translateY(-2px); background: var(--bg-card); }
+        .booster-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+        .booster-name { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .booster-sub { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+        .booster-alert-screen { background: rgba(251, 191, 36, 0.06); border: 1px dashed var(--neon-yellow); border-radius: 12px; padding: 15px; margin-bottom: 24px; color: #fef08a; font-size: 13.5px; display: none; line-height: 1.4; }
+
+        /* SIDEBAR PLACARDS */
+        .sidebar-box { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .ideas-counter-panel { text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .counter-lbl { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+        .counter-numbers { font-size: 36px; font-weight: 800; color: var(--neon-green); margin: 8px 0; font-family: monospace; }
+        .progress-bar-container { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; overflow: hidden; width: 100%; }
+        .progress-bar-fill { background: var(--neon-green); height: 100%; width: 0%; transition: width 0.4s ease; }
+
+        .leaderboard-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; margin-bottom: 10px; }
+        .leaderboard-user-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .leaderboard-user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+        .score-value { font-family: monospace; font-size: 13px; font-weight: 700; color: var(--neon-purple); }
+
+        .peer-secret-box { background: rgba(192, 132, 252, 0.05); border: 1px solid rgba(192, 132, 252, 0.2); border-radius: 12px; padding: 15px; }
+        .peer-box-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-purple); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .peer-box-task { font-size: 13px; font-weight: 700; color: white; margin-bottom: 6px; }
+        .peer-box-tip { font-size: 11.5px; color: var(--text-muted); line-height: 1.3; }
+
+        /* MURAL COMPONENT */
+        .mural-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .mural-main-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+        .mural-canvas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .game-idea-card { border-radius: 12px; padding: 16px; min-height: 115px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.2); position: relative; }
+        .game-idea-text { font-size: 13px; font-weight: 600; color: white; line-height: 1.4; overflow-y: auto; max-height: 70px; }
+        .game-idea-author { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 6px; display: flex; justify-content: space-between; }
+        .card-actions i { cursor: pointer; margin-left: 6px; opacity: 0.7; }
+        .card-actions i:hover { opacity: 1; }
+
+        .card-c1 { background: #7c2d12; border: 1px solid #ea580c; }
+        .card-c2 { background: #4c0519; border: 1px solid #be123c; }
+        .card-c3 { background: #062f4f; border: 1px solid #0284c7; }
+        .card-c4 { background: #064e3b; border: 1px solid #059669; }
+        .mural-input-bar { display: flex; gap: 10px; background: var(--bg-panel); padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .action-footer-nav { display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); padding: 15px 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 20px; }
+
+        /* SCREEN 3: CYBER HOMEWORK REPORT DESIGN */
+        .homework-layout-cyber {
+            background: var(--bg-panel); border: 2px solid var(--border-color); border-radius: 16px; padding: 35px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5); margin-top: 10px;
+        }
+        .hw-cyber-title-box { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }
+        .hw-cyber-title-box h2 { font-size: 26px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }
         
-        .btn-secondary {
-            background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+        .hw-cyber-card {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px;
         }
-        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
-
-        .btn-danger {
-            background: transparent; color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px 15px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;
+        .hw-cyber-card h3 {
+            font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
         }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--accent-red); }
-
-        .asymmetric-trigger-btn {
-            width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 8px; text-align: left; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; transition: all 0.2s;
+        .hw-cyber-ideas-list li {
+            background: rgba(0,0,0,0.2); border-left: 3px solid var(--neon-purple); padding: 12px; border-radius: 6px; margin-bottom: 8px; font-size: 13.5px; list-style: none;
         }
-        .asymmetric-trigger-btn:hover { border-color: var(--accent-purple); background: rgba(139,92,246,0.05); }
-        .asymmetric-panel { background: #1a1625; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 15px; display: none; animation: fadeIn 0.2s ease; }
+        .hw-cyber-reading { font-size: 15px; color: #e2e8f0; line-height: 1.6; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
         
-        .action-toggle-btn {
-            width: 100%; text-align: left; background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; transition: all 0.2s;
-        }
-        .action-toggle-btn:hover { border-color: var(--accent-blue); background: rgba(59,130,246,0.05); }
-
-        .asymmetric-item { font-size: 13px; color: #e2e8f0; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); line-height: 1.4; }
-        .asymmetric-item:last-child { border: none; }
-        .asymmetric-item badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; text-transform: uppercase; }
-
-        .workspace-layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
-
-        .mission-panel { background: linear-gradient(135deg, #1e1b4b, #2a113a); border: 1px solid var(--accent-pink); border-radius: 12px; padding: 22px; margin-bottom: 20px; }
-        .mission-main-title { font-size: 15.5px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; line-height: 1.4; }
-        .mission-sub-item { font-size: 13.5px; color: #e2e8f0; margin-top: 8px; padding-left: 15px; line-height: 1.4; position: relative; }
-        .mission-sub-item::before { content: "•"; position: absolute; left: 0; color: var(--accent-pink); font-weight: bold; }
-
-        .reflection-panel { background: #111622; border: 1px solid var(--accent-blue); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: none; }
-        .reflection-title { font-size: 12px; text-transform: uppercase; color: var(--accent-yellow); margin-bottom: 10px; font-weight: 700; letter-spacing: 0.5px; }
-        .reflection-text { font-size: 14.5px; line-height: 1.6; color: var(--text-main); margin-bottom: 15px; }
-
-        .roleplay-panel { background: #161224; border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: none; }
-        .role-box-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
-        .role-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 15px; }
-        .role-card h5 { color: var(--accent-green); font-size: 14px; margin-bottom: 5px; }
-
-        .mural-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .sticky-container { display: flex; flex-wrap: wrap; gap: 12px; min-height: 150px; margin-top: 15px; }
-        .sticky-note {
-            width: 160px; height: 160px; background: #fef08a; color: #1e293b; padding: 12px; border-radius: 6px; font-weight: 600; font-size: 12px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 3px 3px 8px rgba(0,0,0,0.4); position: relative; transition: transform 0.2s;
-        }
-        .sticky-note:hover { transform: scale(1.02); }
-        .sticky-note .text-content { overflow-y: auto; max-height: 95px; white-space: normal; word-break: break-word; line-height: 1.3; }
-        .sticky-note .author { font-size: 9px; text-transform: uppercase; color: #64748b; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .sticky-actions { display: flex; gap: 6px; }
-        .sticky-actions i { cursor: pointer; padding: 2px; transition: color 0.2s; }
-        .sticky-actions i:hover { color: var(--accent-blue); }
-        .sticky-actions .fa-trash:hover { color: var(--accent-red); }
-
-        .signature-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 10px; }
-
-        .homework-layout { background: #fff; color: #1e293b; border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-        .hw-header { border-bottom: 2px dashed #cbd5e1; padding-bottom: 15px; margin-bottom: 25px; }
-        .hw-section { margin-bottom: 30px; }
-        .hw-section h3 { font-size: 15px; text-transform: uppercase; color: #1e3a8a; border-left: 4px solid var(--accent-blue); padding-left: 10px; margin-bottom: 12px; font-weight: 700; }
-        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; list-style: none; padding: 0; }
-        .vocab-grid li { background: #f8fafc; padding: 10px; border-radius: 6px; border-left: 3px solid var(--accent-purple); font-size: 13px; }
+        .hw-cyber-questions { padding-left: 20px; font-size: 14px; color: #cbd5e1; line-height: 1.8; }
+        .hw-cyber-questions li { margin-bottom: 12px; font-weight: 500; }
         
-        .question-list { padding-left: 20px; line-height: 1.8; font-size: 14px; color: #334155; }
-        .question-list li { margin-bottom: 10px; font-weight: 500; }
+        .hw-cyber-vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; list-style: none; padding: 0; }
+        .hw-cyber-vocab-grid li { background: var(--bg-card); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); font-size: 13px; line-height: 1.4; }
 
+        /* LOADING SPINNER */
+        .ai-loading-placeholder { text-align: center; padding: 20px; color: var(--neon-blue); font-weight: 600; font-size: 14px; }
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(56,189,248,0.2); border-radius: 50%; border-top-color: var(--neon-blue); animation: spin 1s ease-in-out infinite; margin-right: 10px; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* AUTOMATIC INK SAVER FOR PRINTING */
         @media print {
             body { background: white !important; color: black !important; }
-            .os-header, .btn-primary, .btn-secondary, #print-actions-row, .action-toggle-btn { display: none !important; }
-            .homework-layout { padding: 0 !important; box-shadow: none !important; }
+            .os-header, .btn-primary, .btn-secondary, #print-actions, .boosters-row, .sidebar-box, .mural-input-bar { display: none !important; }
+            .homework-layout-cyber { background: white !important; color: #1e293b !important; border: none !important; padding: 0 !important; box-shadow: none !important; }
+            .hw-cyber-title-box h2 { color: #1e3a8a !important; }
+            .hw-cyber-card { background: #f8fafc !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; }
+            .hw-cyber-card h3 { color: #1e3a8a !important; }
+            .hw-cyber-ideas-list li { background: #fff !important; color: #334155 !important; border-left: 4px solid #7c3aed !important; }
+            .hw-cyber-reading { background: #fff !important; color: #334155 !important; }
+            .hw-cyber-questions { color: #334155 !important; }
+            .hw-cyber-vocab-grid li { background: #fff !important; border: 1px solid #cbd5e1 !important; color: #334155 !important; }
         }
     </style>
 </head>
 <body>
 
     <div class="os-header">
-        <div class="os-logo"><i class="fa-solid fa-tower-broadcast"></i> COLLAB BOX MATRIX</div>
-        <div style="font-size:12px; color:var(--text-muted);" id="room-display-status">Room: Standby</div>
+        <div class="os-logo">IDEAQUEST ⬡</div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="avatar-group" id="header-avatar-container"></div>
+            <div class="live-tag"><span style="width:6px; height:6px; background:#fff; border-radius:50%; display:inline-block;"></span> CLOUD SYNC</div>
+        </div>
     </div>
 
     <div class="main-container">
 
+        <!-- SCREEN 1: LOGIN -->
         <div id="scr-1" class="os-screen active">
-            <div style="text-align: center; margin-bottom: 25px;">
-                <h1>What will you create together?</h1>
-                <p class="subtitle">Connect to your co-creation room, claim your exclusive roles, and start brainstorming.</p>
+            <div style="text-align: center; margin-bottom: 25px; margin-top: 20px;">
+                <h1 style="font-size: 32px; font-weight: 800;">Launch Your Co-Creation Arena</h1>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 5px;">Input your shared multiplayer node room to synchronize devices.</p>
             </div>
 
-            <div class="card" style="max-width: 550px; margin: 0 auto 20px auto;">
-                <span class="input-label">1. Shared Room Name</span>
-                <input type="text" id="room-id" value="collab-room-alpha">
+            <div class="setup-card">
+                <span class="input-label">Multiplayer Room Code</span>
+                <input type="text" id="room-id" value="squad-english-pro">
 
-                <span class="input-label">2. Your Name / Nickname</span>
+                <span class="input-label">Your Player Character Name</span>
                 <input type="text" id="my-name" placeholder="Type your name...">
 
                 <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                    <button class="btn-primary" style="justify-content:center;" onclick="connectToLocalRoom()">Connect & Join Sync Space ➔</button>
-                    <button class="btn-danger" style="justify-content:center;" onclick="clearRoomMemory()"><i class="fa-solid fa-trash-can"></i> Clear Workspace Memory</button>
+                    <button class="btn-primary" style="justify-content:center;" onclick="connectToFirebaseSession()">Join Operational Grid ➔</button>
+                    <button class="btn-danger" style="justify-content:center;" onclick="purgeFirebaseRoom()"><i class="fa-solid fa-trash-can"></i> Force Server Wipe</button>
                 </div>
             </div>
         </div>
 
+        <!-- SCREEN 2: GAME HUB -->
         <div id="scr-2" class="os-screen">
-            <div class="workspace-layout">
-                
+            <div class="dashboard-grid">
                 <div>
-                    <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--accent-pink); margin-bottom:15px; letter-spacing:0.5px;"><i class="fa-solid fa-user-gear"></i> Your Secret Facilitation Cards</div>
-                    
-                    <button class="asymmetric-trigger-btn" onclick="toggleElementDisplay('dev-zone-panel')">
-                        <span><i class="fa-solid fa-brain" style="color:var(--accent-purple); margin-right:8px;"></i> 1. The Dev Zone</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </button>
-                    <div class="asymmetric-panel" id="dev-zone-panel">
-                        <div id="dev-zone-content">Loading specialized actions...</div>
+                    <div class="global-mission-box">
+                        <div class="section-tag"><i class="fa-solid fa-earth-americas"></i> Global Mission</div>
+                        <div class="mission-text-display" id="obsidian-quest-title">Loading cloud framework...</div>
+                        <div class="mission-desc">Generate radical concepts. Place your visions into the interactive mural panel below.</div>
                     </div>
 
-                    <button class="asymmetric-trigger-btn" onclick="toggleElementDisplay('inspiring-questions-panel')">
-                        <span><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-pink); margin-right:8px;"></i> 2. Inspiring Questions</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </button>
-                    <div class="asymmetric-panel" id="inspiring-questions-panel">
-                        <div id="inspiring-questions-content">Loading targeted queries...</div>
-                    </div>
+                    <div class="boosters-section-title">Topic Boosters — Click to Explore Challenges</div>
+                    <div class="boosters-row" id="boosters-box-row"></div>
+                    <div class="booster-alert-screen" id="booster-text-alert"></div>
 
-                    <div class="card" style="padding:15px; margin-top:20px; background: rgba(255,255,255,0.01);">
-                        <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px;">Connected Squad</div>
-                        <div id="mini-squad-list" style="font-size:12px; display:flex; flex-direction:column; gap:5px;"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="mission-panel">
-                        <div class="mission-main-title" id="obsidian-mission-title">
-                            <i class="fa-solid fa-rocket" style="color:var(--accent-pink);"></i> Loading Mission...
+                    <div>
+                        <div class="mural-header-row">
+                            <div class="mural-main-title">Mural of Shared Ideas</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--neon-green);" id="mural-ideas-status-tag">0 / 15 ideas</div>
                         </div>
-                        <div class="mission-sub-item" id="obsidian-q1"><b>1 -</b> Loading Question 1...</div>
-                        <div class="mission-sub-item" id="obsidian-q2"><b>2 -</b> Loading Question 2...</div>
-                    </div>
-
-                    <button class="action-toggle-btn" onclick="toggleElementDisplay('ai-reflection-hub')">
-                        <span><i class="fa-solid fa-lightbulb" style="color:var(--accent-yellow); margin-right:8px;"></i> View Live Reflection Framework</span>
-                        <i class="fa-solid fa-folder-open"></i>
-                    </button>
-                    
-                    <div class="reflection-panel" id="ai-reflection-hub">
-                        <div class="reflection-title">Reading Practice (A2)</div>
-                        <div class="reflection-text" id="obsidian-reading">Loading text...</div>
-                    </div>
-
-                    <div class="mural-box">
-                        <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--accent-yellow); margin-bottom:10px;"><i class="fa-solid fa-layer-group"></i> Collab Idea Gen Mural</div>
-                        <div style="display:flex; gap:8px;">
-                            <input type="text" id="mural-input-text" placeholder="Type an idea, strategy or concept..." style="margin-bottom:0;">
+                        <div class="mural-canvas" id="mural-sync-canvas"></div>
+                        <div class="mural-input-bar">
+                            <input type="text" id="mural-input-text" placeholder="Type a concept, strategy or solution here..." style="margin-bottom:0;">
                             <input type="hidden" id="edit-target-id" value="">
-                            <button class="btn-primary" id="mural-submit-btn" onclick="publishStickyNote()"><i class="fa-solid fa-thumbtack"></i> Stick</button>
+                            <button class="btn-primary" id="mural-submit-btn" onclick="publishStickyToFirebase()"><i class="fa-solid fa-plus"></i> Add Idea</button>
                         </div>
-                        <div class="sticky-container" id="mural-canvas-sync"></div>
-                    </div>
-
-                    <button class="action-toggle-btn" style="border-color: rgba(16,185,129,0.4);" onclick="toggleElementDisplay('live-roleplay-hub')">
-                        <span><i class="fa-solid fa-comments" style="color:var(--accent-green); margin-right:8px;"></i> 🎲 Test your idea in real life! (Simulated Role-play)</span>
-                        <i class="fa-solid fa-chevron-down"></i>
-                    </button>
-
-                    <div class="roleplay-panel" id="live-roleplay-hub">
-                        <div style="font-size:12px; text-transform:uppercase; color:var(--accent-green); font-weight:700;">Active Dynamic Challenge</div>
-                        <p style="font-size:13.5px; margin-top:5px; line-height:1.5; color:#e2e8f0;">Use your conversation skills to test the viability of your invention using the assigned perspective roles below:</p>
-                        <div class="role-box-grid">
-                            <div class="role-card">
-                                <h5>Assigned Roles For Today:</h5>
-                                <p style="font-size:13.5px; color:#fff; line-height:1.5; white-space: pre-line;" id="obsidian-roleplay">Loading roles...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="signature-row" style="margin-top:20px;">
-                        <div style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-unlock"></i> Operations unlocked. Ready when you are.</div>
-                        <button class="btn-primary" style="background:var(--accent-green);" onclick="transitionToFinalReport()">Conclude Operation & Go to Homework ➔</button>
                     </div>
                 </div>
 
+                <div class="sidebar-box">
+                    <div class="ideas-counter-panel">
+                        <div class="counter-lbl">Ideas Generated</div>
+                        <div class="counter-numbers" id="sidebar-counter-big">0</div>
+                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">of 15 target goal</div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="sidebar-bar-fill"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="leaderboard-title">Squad Member Status</div>
+                        <div id="sidebar-squad-list"></div>
+                    </div>
+                    <div class="peer-secret-box">
+                        <div class="peer-box-title"><i class="fa-solid fa-user-shield"></i> Secret Facilitator Card</div>
+                        <div class="peer-box-task" id="peer-task-header">Assigned Strategy</div>
+                        <div class="peer-box-tip" id="peer-tip-desc">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-footer-nav">
+                <div style="font-size: 13px; color: var(--text-muted);"><i class="fa-solid fa-lock-open"></i> Realtime Node Operational. Keep pushing communication.</div>
+                <button class="btn-primary" style="background: var(--neon-green);" onclick="transitionToHomeworkReport()">Conclude Operation & View Homework ➔</button>
             </div>
         </div>
 
+        <!-- SCREEN 3: CYBER-STYLE HOMEWORK REPORT -->
         <div id="scr-3" class="os-screen">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;" id="print-actions-row">
-                <button class="btn-secondary" onclick="backToWorkspace()"><i class="fa-solid fa-arrow-left"></i> Back to Workspace</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;" id="print-actions">
+                <button class="btn-secondary" onclick="backToGameWorkspace()"><i class="fa-solid fa-arrow-left"></i> Return to Match Workspace</button>
                 <div style="display:flex; gap:10px;">
                     <button class="btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Homework Page</button>
-                    <button class="btn-danger" onclick="window.location.reload()"><i class="fa-solid fa-door-open"></i> Exit Room</button>
+                    <button class="btn-danger" onclick="window.location.reload()"><i class="fa-solid fa-door-open"></i> Terminate Connection</button>
                 </div>
             </div>
 
-            <div class="homework-layout">
-                <div class="hw-header">
-                    <h2>🚀 CO-CREATION STRATEGIC MISSION REPORT</h2>
-                    <div style="font-size:13px; color:#64748b; margin-top:4px;" id="hw-meta-lbl"></div>
+            <div class="homework-layout-cyber">
+                <div class="hw-cyber-title-box">
+                    <h2><i class="fa-solid fa-file-invoice" style="color:var(--neon-blue);"></i> CO-CREATION STRATEGIC MISSION REPORT</h2>
+                    <div style="font-size:12px; color:var(--text-muted); font-family:monospace; margin-top:6px;" id="hw-meta-lbl"></div>
                 </div>
 
-                <div class="hw-section">
-                    <h3>1. Collected Brainstorm Ideas & Solutions</h3>
-                    <ul id="hw-ideas-list" style="list-style:none; padding:0; font-size:14.5px; line-height:1.6;"></ul>
+                <div class="hw-cyber-card">
+                    <h3><i class="fa-solid fa-database"></i> 1. Logged Brainstorm Concepts & Solutions</h3>
+                    <ul class="hw-cyber-ideas-list" id="hw-ideas-list"></ul>
                 </div>
 
-                <div class="hw-section">
-                    <h3>2. Core Reading Application (A2 Reading Practice)</h3>
-                    <div class="live-text-stream" id="hw-reading-box" style="color:#334155; line-height:1.6; font-size:15px; margin-bottom:15px; background: #f8fafc; padding: 15px; border-radius: 8px;"></div>
+                <div class="hw-cyber-card">
+                    <h3><i class="fa-solid fa-book-open"></i> 2. Core Reading Application (Generated by Groq AI)</h3>
+                    <div class="hw-cyber-reading" id="hw-reading-box">
+                        <div class="ai-loading-placeholder"><div class="spinner"></div>Generating custom text tailored to your class topic...</div>
+                    </div>
                 </div>
 
-                <div class="hw-section">
-                    <h3>3. Text Interpretation Questions</h3>
-                    <ol class="question-list">
+                <div class="hw-cyber-card">
+                    <h3><i class="fa-solid fa-circle-question"></i> 3. Text Interpretation Questions</h3>
+                    <ol class="hw-cyber-questions">
                         <li>Based on the dynamic of today's text, how do teams apply these specific future tools to cooperate effectively?</li>
                         <li>Why is mastering this specific target capacity useful to help groups build complex innovations without breaking workflow?</li>
                         <li>Give a real-world scenario where the terms learned in section 5 would optimize a professional routine.</li>
                     </ol>
                 </div>
 
-                <div class="hw-section">
-                    <h3>4. Inspiring Writing Challenges</h3>
-                    <ol class="question-list" style="color: #0f766e;">
+                <div class="hw-cyber-card">
+                    <h3><i class="fa-solid fa-pen-fancy" style="color:var(--neon-green)"></i> 4. Inspiring Writing Challenges</h3>
+                    <ol class="hw-cyber-questions" style="color: #a7f3d0;">
                         <li>If you could amplify your own capacity or focus 10 times today, how would that change your daily teamwork or career?</li>
                         <li>Look at the co-creation ideas listed in section 1. Choose one concept and explain how it solves the core challenge proposed.</li>
                     </ol>
                 </div>
 
-                <div class="hw-section">
-                    <h3>5. Target Vocabulary Expansion Bank</h3>
-                    <ul class="vocab-grid" id="hw-vocab-box"></ul>
+                <div class="hw-cyber-card">
+                    <h3><i class="fa-solid fa-language"></i> 5. Target Vocabulary Expansion Bank</h3>
+                    <ul class="hw-cyber-vocab-grid" id="hw-vocab-box">
+                        <div class="ai-loading-placeholder"><div class="spinner"></div>Extracting core glossary items...</div>
+                    </ul>
                 </div>
             </div>
         </div>
 
     </div>
 
+    <!-- FIREBASE AND GAME LOGIC ENGINE -->
     <script type="module">
+        const FIREBASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
+        const GROQ_API_KEY = "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";
+        
         let roomId = "";
         let myId = "";
-        let currentRoomState = null;
-        let visibleStates = {};
-        let missionDataGlobal = { title: "", q1: "", q2: "", roleplay: "", reading: "", vocabulary: "" };
+        let globalRoomState = { members: {}, stickies: [] };
+        let missionDataGlobal = { title: "", boosters: [] };
 
-        const asymmetricDataPool = {
+        const peerDirectivesPool = {
             setA: {
-                dev: [
-                    "💡 Help your friends to argument one's ideas better under 2 minutes <badge style='background:#3b82f6;'>communication</badge>",
-                    "💡 Challenge someone to explain their idea using simple words, as if explaining to a child <badge style='background:#8b5cf6;'>clarity</badge>"
-                ],
-                questions: [
-                    "❓ Ask: What 2 solutions can you create to this impossible idea?",
-                    "❓ Ask: Who would be the first person to invest money in this concept, and why?"
-                ]
+                title: "Help your peer express ideas clearly",
+                tips: "Ask them to summarize their concepts in under 15 words. If they run into overly long explanations, say: 'In simple words, please!'"
             },
             setB: {
-                dev: [
-                    "💡 Ask your friends what could be the worst case scenario and how this would make the solution stronger <badge style='background:#ec4899;'>antifragility</badge>",
-                    "💡 Force the group to pause for 30 seconds to find a hidden flaw in the current main idea <badge style='background:#eab308;'>critical thinking</badge>"
-                ],
-                questions: [
-                    "❓ Ask: How can we make this idea work with absolutely zero digital technology?",
-                    "❓ Ask: If a competitor stole this idea right now, what would be their biggest problem trying to copy it?"
-                ]
+                title: "Help your peer challenge hidden flaws",
+                tips: "Ask them: 'What is the worst problem that could break this concept?' Force the squad to pause for 30 seconds to analyze details."
             }
         };
 
-        window.toggleElementDisplay = function(elementId) {
-            visibleStates[elementId] = !visibleStates[elementId];
-            let el = document.getElementById(elementId);
-            if(el) el.style.display = visibleStates[elementId] ? "block" : "none";
-        };
-
-        function getStorageRoom() {
-            let id = document.getElementById('room-id').value.trim() || "global-default";
-            let data = localStorage.getItem(`room_${id}`);
-            return data ? JSON.parse(data) : { members: {}, stickies: [] };
-        }
-
-        function saveStorageRoom(state) {
-            localStorage.setItem(`room_${roomId}`, JSON.stringify(state));
-            currentRoomState = state;
-            renderRealtimeWorkspace();
-        }
-
-        window.clearRoomMemory = function() {
-            let id = document.getElementById('room-id').value.trim() || "global-default";
-            let password = prompt("Teacher security area. Enter Master Password to wipe room memory:");
-            
-            if (password === "admin123") {
-                localStorage.removeItem(`room_${id}`);
-                alert(`Memory for room "${id}" wiped. Ready clean!`);
-                window.location.reload();
-            } else if (password !== null) {
-                alert("Incorrect password! Access denied.");
-            }
-        };
+        const avatarColors = ["#a855f7", "#06b6d4", "#ec4899", "#eab308", "#10b981", "#f97316"];
+        const muralCardSkins = ["card-c1", "card-c2", "card-c3", "card-c4"];
 
         function getFormattedDate() {
             const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         }
 
+        // FETCH OBSIDIAN DATA
         async function fetchObsidianMission() {
             const dateStr = getFormattedDate();
-            
-            // Configurações reais do seu repositório para contornar bloqueios do navegador local
-            const githubUser = "andretti6"; 
-            const githubRepo = "English-dev2";
-            const path = `https://${githubUser}.github.io/${githubRepo}/Database_Missoes/${dateStr}.md`;
+            const path = `https://andretti6.github.io/English-dev2/Database_Missoes/${dateStr}.md`;
 
             try {
                 const response = await fetch(path);
-                if (!response.ok) throw new Error(`Could not find the mission file: ${path}`);
-                
+                if (!response.ok) throw new Error("HTTP Error");
                 const rawText = await response.text();
                 const blocks = rawText.split('---').map(b => b.trim());
 
-                missionDataGlobal.title = blocks[0] || "No Mission Title Loaded";
-                missionDataGlobal.q1 = blocks[1] || "-";
-                missionDataGlobal.q2 = blocks[2] || "-";
-                missionDataGlobal.roleplay = blocks[3] || "-";
-                missionDataGlobal.reading = blocks[4] || "-";
-                missionDataGlobal.vocabulary = blocks[5] || "";
+                missionDataGlobal.title = blocks[0] || "No Global Mission Loaded Today";
+                missionDataGlobal.boosters = [];
+                for(let i = 1; i <= 3; i++) {
+                    if(blocks[i]) {
+                        let txt = blocks[i], lbl = "QUERY";
+                        let match = txt.match(/^\[(.*?)\]/);
+                        if(match) { lbl = match[1]; txt = txt.replace(/^\[.*?\]/, '').trim(); }
+                        missionDataGlobal.boosters.push({ label: lbl, query: txt });
+                    }
+                }
 
-                document.getElementById('obsidian-mission-title').innerHTML = `<i class="fa-solid fa-rocket" style="color:var(--accent-pink);"></i> ${missionDataGlobal.title}`;
-                document.getElementById('obsidian-q1').innerHTML = `<b>1 -</b> ${missionDataGlobal.q1}`;
-                document.getElementById('obsidian-q2').innerHTML = `<b>2 -</b> ${missionDataGlobal.q2}`;
-                document.getElementById('obsidian-reading').innerHTML = missionDataGlobal.reading;
-                document.getElementById('obsidian-roleplay').innerText = missionDataGlobal.roleplay;
-
+                document.getElementById('obsidian-quest-title').innerText = `"${missionDataGlobal.title}"`;
+                generateBoosterCards();
             } catch (err) {
-                console.error(err);
-                document.getElementById('obsidian-mission-title').innerHTML = `⚠️ Mission file (<b>${dateStr}.md</b>) not found inside <b>Database_Missoes</b> folder.`;
+                document.getElementById('obsidian-quest-title').innerHTML = `<span style="color:#f43f5e; font-size:14px;">⚠️ Mission file (${dateStr}.md) not found in Database_Missoes. Using default setup.</span>`;
+                missionDataGlobal.title = "Future Challenges & Modern Innovations";
+                generateBoosterCards();
             }
         }
 
-        window.connectToLocalRoom = async function() {
-            roomId = document.getElementById('room-id').value.trim() || "global-default";
-            myId = document.getElementById('my-name').value.trim();
-
-            if(!myId) {
-                alert("Please declare your name to enter the sync room.");
-                return;
+        function generateBoosterCards() {
+            let container = document.getElementById('boosters-box-row'); container.innerHTML = "";
+            const iconsMap = ["🤖", "🌱", "🧠"], subTextsMap = ["Tech, AI, and digital layers", "Sustainability and emissions", "Human behavior and values"];
+            
+            // Default boosters fallback if empty
+            if(missionDataGlobal.boosters.length === 0) {
+                missionDataGlobal.boosters = [
+                    { label: "Innovation", query: "How will technology shift this standard routine?" },
+                    { label: "Impact", query: "What are the social and economic variables involved?" },
+                    { label: "Future", query: "How will this concept look in 20 years?" }
+                ];
             }
 
-            await fetchObsidianMission();
-
-            let state = getStorageRoom();
-            let position = Object.keys(state.members).length;
-            let assignedSet = (position % 2 === 0) ? "setA" : "setB";
-
-            state.members[myId] = { name: myId, level: "A2", roleSet: assignedSet };
-            saveStorageRoom(state);
-
-            setInterval(() => {
-                let freshState = getStorageRoom();
-                currentRoomState = freshState;
-                renderRealtimeWorkspace();
-            }, 1500);
-
-            document.getElementById('scr-1').classList.remove('active');
-            document.getElementById('scr-2').classList.add('active');
-            document.getElementById('room-display-status').innerText = `Active Session: ${roomId} | Profile: ${myId}`;
-            
-            setupAsymmetricCards(assignedSet);
-        };
-
-        function setupAsymmetricCards(setName) {
-            let data = asymmetricDataPool[setName];
-            document.getElementById('dev-zone-content').innerHTML = data.dev.map(i => `<div class="asymmetric-item">${i}</div>`).join('');
-            document.getElementById('inspiring-questions-content').innerHTML = data.questions.map(i => `<div class="asymmetric-item">${i}</div>`).join('');
-        }
-
-        function renderRealtimeWorkspace() {
-            const data = currentRoomState;
-            const members = data.members || {};
-
-            document.getElementById('mini-squad-list').innerHTML = Object.keys(members).map(k => `
-                <div><i class="fa-solid fa-circle-user"></i> <b>${members[k].name}</b></div>
-            `).join('');
-
-            let canvas = document.getElementById('mural-canvas-sync');
-            canvas.innerHTML = "";
-            
-            (data.stickies || []).forEach((st, idx) => {
-                let node = document.createElement('div');
-                node.className = 'sticky-note';
-                node.innerHTML = `
-                    <div class="text-content" id="sticky-text-node-${idx}">"${st.text}"</div>
-                    <div class="author">
-                        <span>By: ${st.author}</span>
-                        <div class="sticky-actions">
-                            <i class="fa-solid fa-pencil" onclick="initiateEditSticky(${idx})" title="Edit Concept"></i>
-                            <i class="fa-solid fa-trash" onclick="deleteStickyNote(${idx})" title="Delete Concept"></i>
-                        </div>
-                    </div>
-                `;
-                canvas.appendChild(node);
+            missionDataGlobal.boosters.forEach((b, idx) => {
+                let card = document.createElement('div'); card.className = 'booster-card';
+                let currentIcon = iconsMap[idx] || "⚡", currentSub = subTextsMap[idx] || "Strategy trigger";
+                let themeColor = idx === 0 ? 'var(--neon-blue)' : idx === 1 ? 'var(--neon-green)' : 'var(--neon-pink)';
+                
+                card.style.borderColor = `rgba(${idx === 0 ? '56,189,248' : idx === 1 ? '16,185,129' : '244,63,94'}, 0.3)`;
+                card.innerHTML = `<span class="booster-icon">${currentIcon}</span><div class="booster-name" style="color:${themeColor}">${b.label}</div><div class="booster-sub">${currentSub}</div>`;
+                card.onclick = () => {
+                    let alertScreen = document.getElementById('booster-text-alert'); alertScreen.style.display = "block";
+                    alertScreen.innerHTML = `<strong>💡 ${b.label} Challenge Question:</strong><br>${b.query}`;
+                };
+                container.appendChild(card);
             });
         }
 
-        window.publishStickyNote = function() {
-            let inputEl = document.getElementById('mural-input-text');
-            let targetIdEl = document.getElementById('edit-target-id');
-            let txt = inputEl.value.trim();
-            if(!txt) return;
-
-            let state = getStorageRoom();
+        // AI GENERATION VIA GROQ CHAT COMPLETIONS
+        async function generateAIContent(topicTitle) {
+            const promptContent = `
+            You are an expert ESL Teacher. Write a text for an English student (Level A2-B1, simple sentences but professional vocabulary) based on the topic: "${topicTitle}".
             
-            if(targetIdEl.value !== "") {
-                let idx = parseInt(targetIdEl.value);
-                if(state.stickies[idx]) {
-                    state.stickies[idx].text = txt;
+            Provide the output strictly in this exact JSON structure (do not include any conversational filler, markdown formatting or wrap in backticks, output raw valid JSON):
+            {
+               "readingText": "Write a 150-word clear, modern educational text here about the topic.",
+               "vocabulary": [
+                  {"word": "key word 1", "translation": "translation in Portuguese"},
+                  {"word": "key word 2", "translation": "translation in Portuguese"},
+                  {"word": "key word 3", "translation": "translation in Portuguese"},
+                  {"word": "key word 4", "translation": "translation in Portuguese"}
+               ]
+            }`;
+
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama3-8b-8192",
+                        messages: [{ role: "user", content: promptContent }],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                let rawJsonText = data.choices[0].message.content.trim();
+                
+                // Clean markdown wrappers if LLM mistakenly adds them
+                if (rawJsonText.startsWith("```json")) rawJsonText = rawJsonText.substring(7);
+                if (rawJsonText.endsWith("```")) rawJsonText = rawJsonText.substring(0, rawJsonText.length - 3);
+                
+                const aiResult = JSON.parse(rawJsonText.trim());
+                
+                // Render text
+                document.getElementById('hw-reading-box').innerHTML = aiResult.readingText;
+                
+                // Render vocabulary
+                let vocabHtml = aiResult.vocabulary.map(item => `<li><strong>${item.word}</strong> — ${item.translation}</li>`).join('');
+                document.getElementById('hw-vocab-box').innerHTML = vocabHtml;
+
+            } catch (error) {
+                console.error("Groq Generation Error:", error);
+                document.getElementById('hw-reading-box').innerText = "System was unable to contact Groq AI network. Please check your credentials or network connections.";
+                document.getElementById('hw-vocab-box').innerHTML = "<li>Error pulling vocabulary entries.</li>";
+            }
+        }
+
+        // REALTIME FIREBASE SYNC ENGINE
+        async function syncWithFirebase() {
+            try {
+                let res = await fetch(`${FIREBASE_URL}${roomId}.json`);
+                let data = await res.json();
+                if (data) {
+                    globalRoomState.members = data.members || {};
+                    globalRoomState.stickies = data.stickies ? Object.values(data.stickies) : [];
+                } else {
+                    globalRoomState = { members: {}, stickies: [] };
                 }
-                targetIdEl.value = "";
-                document.getElementById('mural-submit-btn').innerHTML = `<i class="fa-solid fa-thumbtack"></i> Stick`;
+                renderRealtimeWorkspace();
+            } catch (e) { console.error("Sync Failure:", e); }
+        }
+
+        async function writeMembersToFirebase(membersObj) {
+            await fetch(`${FIREBASE_URL}${roomId}/members.json`, { method: 'PUT', body: JSON.stringify(membersObj) });
+        }
+
+        window.connectToFirebaseSession = async function() {
+            roomId = document.getElementById('room-id').value.replace(/[^a-zA-Z0-9-_]/g, '');
+            myId = document.getElementById('my-name').value.trim();
+            if(!myId) { alert("Please input your username."); return; }
+
+            await fetchObsidianMission();
+            let res = await fetch(`${FIREBASE_URL}${roomId}.json`);
+            let data = await res.json() || {};
+            let currentMembers = data.members || {};
+
+            let position = Object.keys(currentMembers).length;
+            let assignedSet = (position % 2 === 0) ? "setA" : "setB";
+
+            if (!currentMembers[myId]) {
+                currentMembers[myId] = { name: myId, roleSet: assignedSet, color: avatarColors[position % avatarColors.length] };
+                await writeMembersToFirebase(currentMembers);
             } else {
-                state.stickies.push({ text: txt, author: myId });
+                assignedSet = currentMembers[myId].roleSet;
             }
 
-            saveStorageRoom(state);
-            inputEl.value = "";
+            document.getElementById('scr-1').classList.remove('active');
+            document.getElementById('scr-2').classList.add('active');
+            setupAsymmetricCoachingPanel(assignedSet);
+
+            await syncWithFirebase();
+            setInterval(syncWithFirebase, 2000);
         };
 
-        window.initiateEditSticky = function(idx) {
-            let state = currentRoomState;
-            if(state && state.stickies[idx]) {
-                document.getElementById('mural-input-text').value = state.stickies[idx].text;
-                document.getElementById('edit-target-id').value = idx;
-                document.getElementById('mural-submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Update`;
-                document.getElementById('mural-input-text').focus();
-            }
-        };
+        function setupAsymmetricCoachingPanel(setName) {
+            let target = peerDirectivesPool[setName];
+            document.getElementById('peer-task-header').innerText = target.title;
+            document.getElementById('peer-tip-desc').innerText = target.tips;
+        }
 
-        window.deleteStickyNote = function(idx) {
-            if(!confirm("Are you sure you want to remove this sticky note?")) return;
-            let state = getStorageRoom();
-            state.stickies.splice(idx, 1);
-            saveStorageRoom(state);
-        };
-
-        window.transitionToFinalReport = function() {
-            const data = currentRoomState;
+        function renderRealtimeWorkspace() {
+            let mContainer = document.getElementById('header-avatar-container'); mContainer.innerHTML = "";
+            let sContainer = document.getElementById('sidebar-squad-list'); sContainer.innerHTML = "";
             
-            document.getElementById('hw-meta-lbl').innerText = `Sync Channel Space: ${roomId} | Date: ${getFormattedDate()}`;
-            document.getElementById('hw-reading-box').innerHTML = missionDataGlobal.reading;
-            
-            let vocabHtml = "";
-            if (missionDataGlobal.vocabulary) {
-                const lines = missionDataGlobal.vocabulary.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-                vocabHtml = lines.map(line => {
-                    let parts = line.split(':');
-                    let word = parts[0] ? parts[0].replace('- ', '') : 'Term';
-                    let def = parts[1] || '';
-                    return `<li><strong>${word}</strong> — ${def}</li>`;
-                }).join('');
-            }
-            document.getElementById('hw-vocab-box').innerHTML = vocabHtml || "<li>No terminology found.</li>";
+            let members = globalRoomState.members || {};
+            Object.keys(members).forEach((k, idx) => {
+                let u = members[k]; let initial = u.name.substring(0, 2).toUpperCase();
+                
+                let av = document.createElement('div'); av.className = 'user-avatar'; av.style.backgroundColor = u.color; av.innerText = initial;
+                mContainer.appendChild(av);
 
-            document.getElementById('hw-ideas-list').innerHTML = (data.stickies || []).map(s => `
-                <li style="margin-bottom:8px; border-bottom:1px dashed #e2e8f0; padding-bottom:4px; color:#334155;">
-                    ⭐ <b>[Logged Concept by ${s.author}]:</b> "${s.text}"
-                </li>
-            `).join('') || "<li>No strategic sticky notes were processed during the session.</li>";
+                let fakeScore = 150 + (idx * 40);
+                sContainer.innerHTML += `
+                    <div class="leaderboard-user-row">
+                        <div class="leaderboard-user-info">
+                            <span style="background:${u.color}; width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:8px; color:#fff; font-weight:800;">${initial}</span>
+                            <span>${u.name}</span>
+                        </div><span class="score-value">${fakeScore} pts</span>
+                    </div>`;
+            });
+
+            let canvas = document.getElementById('mural-sync-canvas'); canvas.innerHTML = "";
+            let stickies = globalRoomState.stickies || [];
+            
+            document.getElementById('mural-ideas-status-tag').innerText = `${stickies.length} / 15 ideas`;
+            document.getElementById('sidebar-counter-big').innerText = stickies.length;
+            document.getElementById('sidebar-bar-fill').style.width = `${Math.min((stickies.length / 15) * 100, 100)}%`;
+
+            stickies.forEach((st, idx) => {
+                let skin = muralCardSkins[idx % muralCardSkins.length];
+                let item = document.createElement('div'); item.className = `game-idea-card ${skin}`;
+                item.innerHTML = `
+                    <div class="game-idea-text">"${st.text}"</div>
+                    <div class="game-idea-author"><span>— ${st.author}</span>
+                        <div class="card-actions"><i class="fa-solid fa-trash-can" onclick="removeStickyNodeFromFirebase('${st.fbKey}')" title="Delete"></i></div>
+                    </div>`;
+                canvas.appendChild(item);
+            });
+        }
+
+        window.publishStickyToFirebase = async function() {
+            let input = document.getElementById('mural-input-text'); let text = input.value.trim();
+            if(!text) return;
+
+            let tempKey = 'key_' + Date.now();
+            let payload = { text: text, author: myId, fbKey: tempKey };
+
+            await fetch(`${FIREBASE_URL}${roomId}/stickies/${tempKey}.json`, { method: 'PUT', body: JSON.stringify(payload) });
+            input.value = "";
+            await syncWithFirebase();
+        };
+
+        window.removeStickyNodeFromFirebase = async function(fbKey) {
+            if(!confirm("Drop this concept from the shared server?")) return;
+            await fetch(`${FIREBASE_URL}${roomId}/stickies/${fbKey}.json`, { method: 'DELETE' });
+            await syncWithFirebase();
+        };
+
+        window.purgeFirebaseRoom = async function() {
+            let pass = prompt("Enter Administration Key:");
+            if(pass === "admin123") {
+                let id = document.getElementById('room-id').value.trim();
+                await fetch(`${FIREBASE_URL}${id}.json`, { method: 'DELETE' });
+                alert("Room database entirely formatted."); window.location.reload();
+            } else if(pass !== null) { alert("Wrong security password."); }
+        };
+
+        window.transitionToHomeworkReport = function() {
+            document.getElementById('hw-meta-lbl').innerText = `NODE TRACK CODE: ${roomId} | STAMP: ${getFormattedDate()}`;
+            
+            // Set placeholders for AI generation
+            document.getElementById('hw-reading-box').innerHTML = `<div class="ai-loading-placeholder"><div class="spinner"></div>Generating custom text tailored to your class topic...</div>`;
+            document.getElementById('hw-vocab-box').innerHTML = `<div class="ai-loading-placeholder"><div class="spinner"></div>Extracting core glossary items...</div>`;
+
+            let stickies = globalRoomState.stickies || [];
+            document.getElementById('hw-ideas-list').innerHTML = stickies.map(s => `<li>⭐ <b>[Logged Concept by ${s.author}]:</b> "${s.text}"</li>`).join('') || "<li>No strategic entries found on server database.</li>";
 
             document.getElementById('scr-2').classList.remove('active');
             document.getElementById('scr-3').classList.add('active');
+
+            // Fire async Groq engine text production
+            generateAIContent(missionDataGlobal.title);
         };
 
-        window.backToWorkspace = function() {
+        window.backToGameWorkspace = function() {
             document.getElementById('scr-3').classList.remove('active');
             document.getElementById('scr-2').classList.add('active');
         };
