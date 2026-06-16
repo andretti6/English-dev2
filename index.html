@@ -1,11 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Collab Idea Gen & Dev Matrix</title>
-    <!-- Fonts, Icons & Local Sync Setup -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght=400;600;700&display=swap" rel="stylesheet">
@@ -69,7 +67,6 @@
         }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--accent-red); }
 
-        /* RETRACTABLE EXPANSION INTERFACE */
         .asymmetric-trigger-btn {
             width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 8px; text-align: left; font-weight: 600; font-size: 13.5px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; transition: all 0.2s;
         }
@@ -85,27 +82,22 @@
         .asymmetric-item:last-child { border: none; }
         .asymmetric-item badge { font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 5px; text-transform: uppercase; }
 
-        /* LIVE LAYOUT */
         .workspace-layout { display: grid; grid-template-columns: 340px 1fr; gap: 20px; }
 
-        /* MISSION BRIEFING BLOCK (SIMPLE ENGLISH) */
         .mission-panel { background: linear-gradient(135deg, #1e1b4b, #2a113a); border: 1px solid var(--accent-pink); border-radius: 12px; padding: 22px; margin-bottom: 20px; }
         .mission-main-title { font-size: 15.5px; font-weight: 700; color: #fff; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; line-height: 1.4; }
         .mission-sub-item { font-size: 13.5px; color: #e2e8f0; margin-top: 8px; padding-left: 15px; line-height: 1.4; position: relative; }
         .mission-sub-item::before { content: "•"; position: absolute; left: 0; color: var(--accent-pink); font-weight: bold; }
 
-        /* EXPANDABLE FRAMEWORKS & ROLEPLAY */
         .reflection-panel { background: #111622; border: 1px solid var(--accent-blue); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: none; }
         .reflection-title { font-size: 12px; text-transform: uppercase; color: var(--accent-yellow); margin-bottom: 10px; font-weight: 700; letter-spacing: 0.5px; }
         .reflection-text { font-size: 14.5px; line-height: 1.6; color: var(--text-main); margin-bottom: 15px; }
-        .reflection-text b { color: var(--accent-yellow); background: rgba(234,179,8,0.15); padding: 1px 4px; border-radius: 3px; }
 
         .roleplay-panel { background: #161224; border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: none; }
-        .role-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .role-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(16, 185, 129, 0.2); pading: 15px; border-radius: 8px; padding: 15px; }
+        .role-box-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 15px; }
+        .role-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 8px; padding: 15px; }
         .role-card h5 { color: var(--accent-green); font-size: 14px; margin-bottom: 5px; }
 
-        /* STICKY MURAL */
         .mural-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
         .sticky-container { display: flex; flex-wrap: wrap; gap: 12px; min-height: 150px; margin-top: 15px; }
         .sticky-note {
@@ -119,10 +111,8 @@
         .sticky-actions i:hover { color: var(--accent-blue); }
         .sticky-actions .fa-trash:hover { color: var(--accent-red); }
 
-        /* SIGNATURE CLUSTER */
         .signature-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 15px; border-radius: 10px; }
 
-        /* TELA 3 HOMEWORK PAGE */
         .homework-layout { background: #fff; color: #1e293b; border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .hw-header { border-bottom: 2px dashed #cbd5e1; padding-bottom: 15px; margin-bottom: 25px; }
         .hw-section { margin-bottom: 30px; }
@@ -149,7 +139,6 @@
 
     <div class="main-container">
 
-        <!-- SCREEN 1: REALTIME ONBOARDING (SIMPLIFIED) -->
         <div id="scr-1" class="os-screen active">
             <div style="text-align: center; margin-bottom: 25px;">
                 <h1>What will you create together?</h1>
@@ -170,15 +159,12 @@
             </div>
         </div>
 
-        <!-- SCREEN 2: MAIN SYNCED MATRIX -->
         <div id="scr-2" class="os-screen">
             <div class="workspace-layout">
                 
-                <!-- SIDEBAR: ASYMMETRIC CONTROLS (PLAYER EXCLUSIVE DRIVEN) -->
                 <div>
                     <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--accent-pink); margin-bottom:15px; letter-spacing:0.5px;"><i class="fa-solid fa-user-gear"></i> Your Secret Facilitation Cards</div>
                     
-                    <!-- BUTTON 1: THE DEV ZONE -->
                     <button class="asymmetric-trigger-btn" onclick="toggleElementDisplay('dev-zone-panel')">
                         <span><i class="fa-solid fa-brain" style="color:var(--accent-purple); margin-right:8px;"></i> 1. The Dev Zone</span>
                         <i class="fa-solid fa-chevron-down"></i>
@@ -187,7 +173,6 @@
                         <div id="dev-zone-content">Loading specialized actions...</div>
                     </div>
 
-                    <!-- BUTTON 2: INSPIRING QUESTIONS -->
                     <button class="asymmetric-trigger-btn" onclick="toggleElementDisplay('inspiring-questions-panel')">
                         <span><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--accent-pink); margin-right:8px;"></i> 2. Inspiring Questions</span>
                         <i class="fa-solid fa-chevron-down"></i>
@@ -202,33 +187,25 @@
                     </div>
                 </div>
 
-                <!-- MAIN PANEL: MISSION, COLLAB IDEA GEN & REALTIME MURAL -->
                 <div>
-                    <!-- MISSION STRATEGIC BLOCK (SIMPLE ENGLISH) -->
                     <div class="mission-panel">
-                        <div class="mission-main-title">
-                            <i class="fa-solid fa-rocket" style="color:var(--accent-pink);"></i> 
-                            Imagine the world in 2040: what new invention can change the lives of millions of people, and is also possible to build?
+                        <div class="mission-main-title" id="obsidian-mission-title">
+                            <i class="fa-solid fa-rocket" style="color:var(--accent-pink);"></i> Loading Mission...
                         </div>
-                        <div class="mission-sub-item"><b>1 -</b> What human capacity or skill, if multiplied by 10, can solve a problem that looks impossible today?</div>
-                        <div class="mission-sub-item"><b>2 -</b> What is your friend's best quality or skill to help build this future solution?</div>
+                        <div class="mission-sub-item" id="obsidian-q1"><b>1 -</b> Loading Question 1...</div>
+                        <div class="mission-sub-item" id="obsidian-q2"><b>2 -</b> Loading Question 2...</div>
                     </div>
 
-                    <!-- CLICKABLE LIVE REFLECTION FRAMEWORK TOGGLE -->
                     <button class="action-toggle-btn" onclick="toggleElementDisplay('ai-reflection-hub')">
                         <span><i class="fa-solid fa-lightbulb" style="color:var(--accent-yellow); margin-right:8px;"></i> View Live Reflection Framework</span>
                         <i class="fa-solid fa-folder-open"></i>
                     </button>
                     
                     <div class="reflection-panel" id="ai-reflection-hub">
-                        <div class="reflection-title">Framework Insight</div>
-                        <div class="reflection-text" id="live-reflection-body">Generating contextual challenge framework...</div>
-                        
-                        <div class="reflection-title" style="color:var(--accent-green); border:none; margin-top:10px;"><i class="fa-solid fa-book"></i> Target Expressions</div>
-                        <div id="live-reflection-vocab" style="font-size:13px; color:var(--text-muted); line-height:1.4;"></div>
+                        <div class="reflection-title">Reading Practice (A2)</div>
+                        <div class="reflection-text" id="obsidian-reading">Loading text...</div>
                     </div>
 
-                    <!-- MURAL CANVAS -->
                     <div class="mural-box">
                         <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--accent-yellow); margin-bottom:10px;"><i class="fa-solid fa-layer-group"></i> Collab Idea Gen Mural</div>
                         <div style="display:flex; gap:8px;">
@@ -239,7 +216,6 @@
                         <div class="sticky-container" id="mural-canvas-sync"></div>
                     </div>
 
-                    <!-- CLICKABLE ROLEPLAY TOGGLE -->
                     <button class="action-toggle-btn" style="border-color: rgba(16,185,129,0.4);" onclick="toggleElementDisplay('live-roleplay-hub')">
                         <span><i class="fa-solid fa-comments" style="color:var(--accent-green); margin-right:8px;"></i> 🎲 Test your idea in real life! (Simulated Role-play)</span>
                         <i class="fa-solid fa-chevron-down"></i>
@@ -248,19 +224,14 @@
                     <div class="roleplay-panel" id="live-roleplay-hub">
                         <div style="font-size:12px; text-transform:uppercase; color:var(--accent-green); font-weight:700;">Active Dynamic Challenge</div>
                         <p style="font-size:13.5px; margin-top:5px; line-height:1.5; color:#e2e8f0;">Use your conversation skills to test the viability of your invention using the assigned perspective roles below:</p>
-                        <div class="role-box-grid" id="roleplay-cards-container">
+                        <div class="role-box-grid">
                             <div class="role-card">
-                                <h5>Player 1: The Futurist Inventor</h5>
-                                <p style="font-size:12.5px; color:var(--text-muted); line-height:1.4;">Your goal is to pitch the concept. Explain how expanding a human capacity 10x makes this profitable and simple.</p>
-                            </div>
-                            <div class="role-card">
-                                <h5>Player 2: The Pragmatic Realist</h5>
-                                <p style="font-size:12.5px; color:var(--text-muted); line-height:1.4;">Your goal is to find practical real-world obstacles. Ask about execution time, real human costs, and immediate limits.</p>
+                                <h5>Assigned Roles For Today:</h5>
+                                <p style="font-size:13.5px; color:#fff; line-height:1.5; white-space: pre-line;" id="obsidian-roleplay">Loading roles...</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- WORKSPACE OPERATION CONCLUSION -->
                     <div class="signature-row" style="margin-top:20px;">
                         <div style="font-size:13px; color:var(--text-muted);"><i class="fa-solid fa-unlock"></i> Operations unlocked. Ready when you are.</div>
                         <button class="btn-primary" style="background:var(--accent-green);" onclick="transitionToFinalReport()">Conclude Operation & Go to Homework ➔</button>
@@ -270,7 +241,6 @@
             </div>
         </div>
 
-        <!-- SCREEN 3: HOMEWORK COMPILATION -->
         <div id="scr-3" class="os-screen">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;" id="print-actions-row">
                 <button class="btn-secondary" onclick="backToWorkspace()"><i class="fa-solid fa-arrow-left"></i> Back to Workspace</button>
@@ -298,18 +268,18 @@
 
                 <div class="hw-section">
                     <h3>3. Text Interpretation Questions</h3>
-                    <ol class="question-list" id="hw-reading-questions">
-                        <li>According to the story text, what happens when a modern professional team decides to **think outside the box**?</li>
-                        <li>What is the result when team members work together and refuse to **back down** from an emergency?</li>
-                        <li>Why is it helpful to **figure out** a strategy before launching a product or invention in the market?</li>
+                    <ol class="question-list">
+                        <li>Based on the dynamic of today's text, how do teams apply these specific future tools to cooperate effectively?</li>
+                        <li>Why is mastering this specific target capacity useful to help groups build complex innovations without breaking workflow?</li>
+                        <li>Give a real-world scenario where the terms learned in section 5 would optimize a professional routine.</li>
                     </ol>
                 </div>
 
                 <div class="hw-section">
                     <h3>4. Inspiring Writing Challenges</h3>
                     <ol class="question-list" style="color: #0f766e;">
-                        <li>If you could safely amplify your own memory or focus 10 times today, how would that transform your current work routine or professional growth?</li>
-                        <li>Look at your classmate's ideas listed in section 1. Choose one concept and explain what immediate action step you can take to start exploring it this week.</li>
+                        <li>If you could amplify your own capacity or focus 10 times today, how would that change your daily teamwork or career?</li>
+                        <li>Look at the co-creation ideas listed in section 1. Choose one concept and explain how it solves the core challenge proposed.</li>
                     </ol>
                 </div>
 
@@ -323,13 +293,11 @@
     </div>
 
     <script type="module">
-        const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
-        const GROQ_KEY = "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";
-
         let roomId = "";
         let myId = "";
         let currentRoomState = null;
         let visibleStates = {};
+        let missionDataGlobal = { title: "", q1: "", q2: "", roleplay: "", reading: "", vocabulary: "" };
 
         const asymmetricDataPool = {
             setA: {
@@ -363,7 +331,7 @@
         function getStorageRoom() {
             let id = document.getElementById('room-id').value.trim() || "global-default";
             let data = localStorage.getItem(`room_${id}`);
-            return data ? JSON.parse(data) : { aiPayload: null, members: {}, stickies: [] };
+            return data ? JSON.parse(data) : { members: {}, stickies: [] };
         }
 
         function saveStorageRoom(state) {
@@ -374,11 +342,57 @@
 
         window.clearRoomMemory = function() {
             let id = document.getElementById('room-id').value.trim() || "global-default";
-            localStorage.removeItem(`room_${id}`);
-            alert(`Memory for room "${id}" wiped. Ready clean!`);
+            let password = prompt("Teacher security area. Enter Master Password to wipe room memory:");
+            
+            if (password === "admin123") {
+                localStorage.removeItem(`room_${id}`);
+                alert(`Memory for room "${id}" wiped. Ready clean!`);
+                window.location.reload();
+            } else if (password !== null) {
+                alert("Incorrect password! Access denied.");
+            }
         };
 
-        window.connectToLocalRoom = function() {
+        function getFormattedDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        async function fetchObsidianMission() {
+            const dateStr = getFormattedDate();
+            const path = `Database_Missoes/${dateStr}.md`;
+
+            try {
+                const response = await fetch(path);
+                if (!response.ok) throw new Error("No scheduled markdown file found for today.");
+                
+                const rawText = await response.text();
+                // Quebra o arquivo .md nos delimitadores '---'
+                const blocks = rawText.split('---').map(b => b.trim());
+
+                missionDataGlobal.title = blocks[0] || "No Mission Title Loaded";
+                missionDataGlobal.q1 = blocks[1] || "-";
+                missionDataGlobal.q2 = blocks[2] || "-";
+                missionDataGlobal.roleplay = blocks[3] || "-";
+                missionDataGlobal.reading = blocks[4] || "-";
+                missionDataGlobal.vocabulary = blocks[5] || "";
+
+                document.getElementById('obsidian-mission-title').innerHTML = `<i class="fa-solid fa-rocket" style="color:var(--accent-pink);"></i> ${missionDataGlobal.title}`;
+                document.getElementById('obsidian-q1').innerHTML = `<b>1 -</b> ${missionDataGlobal.q1}`;
+                document.getElementById('obsidian-q2').innerHTML = `<b>2 -</b> ${missionDataGlobal.q2}`;
+                document.getElementById('obsidian-reading').innerHTML = missionDataGlobal.reading;
+                document.getElementById('obsidian-roleplay').innerText = missionDataGlobal.roleplay;
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('obsidian-mission-title').innerText = "⚠️ Mission file not found for today's date in _Database_Missoes.";
+            }
+        }
+
+        window.connectToLocalRoom = async function() {
             roomId = document.getElementById('room-id').value.trim() || "global-default";
             myId = document.getElementById('my-name').value.trim();
 
@@ -387,17 +401,14 @@
                 return;
             }
 
+            await fetchObsidianMission();
+
             let state = getStorageRoom();
             let position = Object.keys(state.members).length;
             let assignedSet = (position % 2 === 0) ? "setA" : "setB";
 
             state.members[myId] = { name: myId, level: "A2", roleSet: assignedSet };
             saveStorageRoom(state);
-
-            // Sempre gera ou recupera o framework para o nível A2 padrão
-            if(!state.aiPayload) {
-                generateInitialFramework();
-            }
 
             setInterval(() => {
                 let freshState = getStorageRoom();
@@ -418,58 +429,6 @@
             document.getElementById('inspiring-questions-content').innerHTML = data.questions.map(i => `<div class="asymmetric-item">${i}</div>`).join('');
         }
 
-        async function generateInitialFramework() {
-            const systemPromptInstruction = `You are an expert curriculum builder for professional ESL students.
-            Write a detailed business case study text focusing on technological innovation and human skills. 
-            The length must be between 5 and 6 sentences. The vocabulary must target CEFR Level A2 (clear and easy to read).
-            You must embed exactly 4 professional phrasal verbs or easy idioms inside the text, wrapping them in <b>bold HTML tags</b>.
-            
-            Return a strict JSON format with exactly these two keys:
-            "readingText": "The complete 5-6 sentence story text with bold tags.",
-            "vocabulary": [
-               {"phrase": "Phrasal 1", "def": "easy definition"},
-               {"phrase": "Phrasal 2", "def": "easy definition"},
-               {"phrase": "Phrasal 3", "def": "easy definition"},
-               {"phrase": "Phrasal 4", "def": "easy definition"}
-            ]`;
-
-            try {
-                const response = await fetch(GROQ_API_URL, {
-                    method: "POST",
-                    headers: { "Authorization": `Bearer ${GROQ_KEY}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        model: "llama3-8b-8192",
-                        response_format: { type: "json_object" },
-                        messages: [
-                            { role: "system", content: systemPromptInstruction },
-                            { role: "user", content: `Generate workspace macro context reflection data for A2 level.` }
-                        ],
-                        temperature: 0.5
-                    })
-                });
-
-                const rawJson = await response.json();
-                let payload = JSON.parse(rawJson.choices[0].message.content);
-                
-                let freshState = getStorageRoom();
-                freshState.aiPayload = payload;
-                saveStorageRoom(freshState);
-            } catch (err) {
-                let fallback = {
-                    readingText: "In the year 2040, teams need to <b>think outside the box</b> to build great systems. Engineers must <b>work out</b> a plan to change lives because resources are rare. When a big problem happens, good partners never <b>back down</b>. They always talk to <b>figure out</b> a real solution together.",
-                    vocabulary: [
-                        {"phrase": "think outside the box", "def": "to think in a creative and original way."},
-                        {"phrase": "work out", "def": "to create, calculate, or find a smart solution to a problem."},
-                        {"phrase": "back down", "def": "to stop fighting or give up an argument because it is difficult."},
-                        {"phrase": "figure out", "def": "to understand or find information about something after thinking."}
-                    ]
-                };
-                let freshState = getStorageRoom();
-                freshState.aiPayload = fallback;
-                saveStorageRoom(freshState);
-            }
-        }
-
         function renderRealtimeWorkspace() {
             const data = currentRoomState;
             const members = data.members || {};
@@ -477,13 +436,6 @@
             document.getElementById('mini-squad-list').innerHTML = Object.keys(members).map(k => `
                 <div><i class="fa-solid fa-circle-user"></i> <b>${members[k].name}</b></div>
             `).join('');
-
-            if(data.aiPayload) {
-                document.getElementById('live-reflection-body').innerHTML = data.aiPayload.readingText;
-                document.getElementById('live-reflection-vocab').innerHTML = (data.aiPayload.vocabulary || []).map(v => `
-                    <div style="margin-top:4px;">🔹 <b>${v.phrase}:</b> ${v.def}</div>
-                `).join('');
-            }
 
             let canvas = document.getElementById('mural-canvas-sync');
             canvas.innerHTML = "";
@@ -548,12 +500,20 @@
         window.transitionToFinalReport = function() {
             const data = currentRoomState;
             
-            document.getElementById('hw-meta-lbl').innerText = `Sync Channel Space: ${roomId} | Level A2 Strategic Tracking`;
-            document.getElementById('hw-reading-box').innerHTML = data.aiPayload?.readingText || "No context case generated.";
+            document.getElementById('hw-meta-lbl').innerText = `Sync Channel Space: ${roomId} | Date: ${getFormattedDate()}`;
+            document.getElementById('hw-reading-box').innerHTML = missionDataGlobal.reading;
             
-            document.getElementById('hw-vocab-box').innerHTML = (data.aiPayload?.vocabulary || []).map(v => `
-                <li><strong>${v.phrase}</strong> — ${v.def}</li>
-            `).join('') || "<li>No target terminology items found.</li>";
+            let vocabHtml = "";
+            if (missionDataGlobal.vocabulary) {
+                const lines = missionDataGlobal.vocabulary.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                vocabHtml = lines.map(line => {
+                    let parts = line.split(':');
+                    let word = parts[0] ? parts[0].replace('- ', '') : 'Term';
+                    let def = parts[1] || '';
+                    return `<li><strong>${word}</strong> — ${def}</li>`;
+                }).join('');
+            }
+            document.getElementById('hw-vocab-box').innerHTML = vocabHtml || "<li>No terminology found.</li>";
 
             document.getElementById('hw-ideas-list').innerHTML = (data.stickies || []).map(s => `
                 <li style="margin-bottom:8px; border-bottom:1px dashed #e2e8f0; padding-bottom:4px; color:#334155;">
