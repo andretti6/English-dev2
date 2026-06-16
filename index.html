@@ -41,7 +41,7 @@
         .os-screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+        .card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-0 auto 20px auto; }
         h1 { font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #fff; }
         .subtitle { color: var(--text-muted); font-size: 14px; text-align: center; margin-bottom: 25px; }
 
@@ -363,8 +363,11 @@
 
         async function fetchObsidianMission() {
             const dateStr = getFormattedDate();
-            // Configurado para o padrão estável de arquivos .md normais
-            const path = `Database_Missoes/${dateStr}.md`;
+            
+            // Configurações reais do seu repositório para contornar bloqueios do navegador local
+            const githubUser = "andretti6"; 
+            const githubRepo = "English-dev2";
+            const path = `https://${githubUser}.github.io/${githubRepo}/Database_Missoes/${dateStr}.md`;
 
             try {
                 const response = await fetch(path);
@@ -388,7 +391,7 @@
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('obsidian-mission-title').innerHTML = `⚠️ Mission file (<b>${dateStr}.md</b>) not found inside <b>Database_Missoes</b> folder on GitHub Pages.`;
+                document.getElementById('obsidian-mission-title').innerHTML = `⚠️ Mission file (<b>${dateStr}.md</b>) not found inside <b>Database_Missoes</b> folder.`;
             }
         }
 
