@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Cup Predictor - Speaking Activity</title>
+    <title>World Cup Predictor - Realtime Classroom</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -15,154 +15,76 @@
             --gold: #ffd600;
             --white: #ffffff;
         }
-
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f0f2f5;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #333;
+            font-family: 'Poppins', sans-serif; background-color: #f0f2f5; margin: 0;
+            display: flex; flex-direction: column; align-items: center; color: #333;
         }
-
         header {
-            background-color: var(--dark-blue);
-            color: white;
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            background-color: var(--dark-blue); color: white; width: 100%; padding: 20px;
+            text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-
-        .container {
-            max-width: 1200px;
-            width: 95%;
-            margin: 20px auto;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 20px;
+        .setup-screen {
+            background: white; padding: 30px; border-radius: 15px; margin-top: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;
         }
-
-        /* BANCO DE ITEMS (TEAM & PLAYERS) */
-        .selection-panel {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid #ddd;
-            height: fit-content;
+        input[type="text"] {
+            width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
         }
-
-        .item-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .btn-primary {
+            background: var(--dark-blue); color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%;
         }
-
+        .game-container {
+            max-width: 1200px; width: 95%; margin: 20px auto;
+            display: grid; grid-template-columns: 300px 1fr; gap: 20px; display: none;
+        }
+        .selection-panel { background: white; padding: 20px; border-radius: 15px; border: 2px solid #ddd; height: fit-content; }
+        .item-list { display: flex; flex-direction: column; gap: 10px; min-height: 100px; }
         .draggable {
-            padding: 10px 15px;
-            background: #e3f2fd;
-            border: 1px solid #90caf9;
-            border-radius: 8px;
-            cursor: grab;
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
+            padding: 10px 15px; background: #e3f2fd; border: 1px solid #90caf9; border-radius: 8px;
+            cursor: grab; font-weight: 600; font-size: 14px; transition: all 0.2s;
         }
-
-        .draggable:active { cursor: grabbing; }
-        .draggable i { color: var(--dark-blue); }
         .draggable.player { background: #fff3e0; border-color: #ffb74d; }
-
-        /* CAMPO DE JOGO / DROP ZONES */
-        .prediction-area {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
+        .prediction-area { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .drop-zone {
             background: var(--pitch-green);
-            background-image: 
-                radial-gradient(circle at 50% 50%, var(--pitch-line) 2px, transparent 0),
-                linear-gradient(var(--pitch-line) 2px, transparent 0);
-            background-size: 100% 100%, 50% 50%;
-            border: 3px dashed rgba(255,255,255,0.4);
-            border-radius: 15px;
-            min-height: 200px;
-            padding: 20px;
-            color: white;
-            position: relative;
+            background-image: radial-gradient(circle at 50% 50%, var(--pitch-line) 2px, transparent 0), linear-gradient(var(--pitch-line) 2px, transparent 0);
+            background-size: 100% 100%, 50% 50%; border: 3px dashed rgba(255,255,255,0.4);
+            border-radius: 15px; min-height: 180px; padding: 15px; color: white;
         }
-
-        .drop-zone h3 {
-            margin-top: 0;
-            text-transform: uppercase;
-            font-size: 16px;
-            background: rgba(0,0,0,0.3);
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-
-        .zone-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        /* PHRASES FOR SPEAKING */
-        .useful-phrases {
-            grid-column: 1 / -1;
-            background: var(--gold);
-            padding: 20px;
-            border-radius: 15px;
-            color: #443300;
-        }
-
-        .phrases-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .phrase-card {
-            background: rgba(255,255,255,0.5);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
-        .champion-zone {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, #FFD700, #FDB931);
-            color: #000;
-            min-height: 150px;
-            border: 4px solid #fff;
-        }
-
+        .drop-zone h3 { margin-top: 0; font-size: 15px; background: rgba(0,0,0,0.3); display: inline-block; padding: 5px 15px; border-radius: 20px; }
+        .zone-content { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; min-height: 100px; }
+        .useful-phrases { grid-column: 1 / -1; background: var(--gold); padding: 20px; border-radius: 15px; color: #443300; }
+        .phrases-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 10px; }
+        .phrase-card { background: rgba(255,255,255,0.5); padding: 10px; border-radius: 8px; font-size: 13px; }
+        .champion-zone { grid-column: 1 / -1; background: linear-gradient(135deg, #FFD700, #FDB931); color: #000; border: 4px solid #fff; }
         .champion-zone h3 { background: rgba(255,255,255,0.5); color: #000; }
-
+        .room-tag { background: rgba(255,255,255,0.2); font-size: 12px; padding: 4px 10px; border-radius: 5px; display: inline-block; margin-top: 5px; }
     </style>
 </head>
 <body>
 
     <header>
         <h1>🏆 World Cup Predictor 2026</h1>
-        <p>Who has the best chance to win? Move the teams and players to decide!</p>
+        <p>Realtime Board for Speaking Practice</p>
+        <div id="active-room-display" class="room-tag" style="display:none;"></div>
     </header>
 
-    <div class="container">
+    <!-- TELA 1: LOGIN DA SALA -->
+    <div class="setup-screen" id="setup-screen">
+        <h2 style="margin-top:0;">Enter Arena</h2>
+        <label style="font-size:12px; font-weight:700; text-align:left; display:block;">ZOOM BREAKOUT ROOM CODE</label>
+        <input type="text" id="room-input" value="room-1">
+        <button class="btn-primary" onclick="connectToMatch()">Join Realtime Board ➔</button>
+    </div>
+
+    <!-- TELA 2: QUADRO INTERATIVO -->
+    <div class="container game-container" id="game-container">
         
         <div class="selection-panel">
-            <h2 style="font-size: 18px; margin-bottom: 15px;">Teams & Stars</h2>
-            <div class="item-list">
+            <h2 style="font-size: 16px; margin-bottom: 15px;"><i class="fa-solid fa-layer-group"></i> Bench</h2>
+            <div class="item-list" id="bench" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <div class="draggable" draggable="true" id="bra">🇧🇷 Brazil</div>
                 <div class="draggable" draggable="true" id="fra">🇫🇷 France</div>
                 <div class="draggable" draggable="true" id="arg">🇦🇷 Argentina</div>
@@ -171,9 +93,6 @@
                 <div class="draggable" draggable="true" id="spa">🇪🇸 Spain</div>
                 <div class="draggable" draggable="true" id="por">🇵🇹 Portugal</div>
                 <div class="draggable" draggable="true" id="mar">🇲🇦 Morocco</div>
-                
-                <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
-                
                 <div class="draggable player" draggable="true" id="vini">⭐ Vini Jr.</div>
                 <div class="draggable player" draggable="true" id="mbappe">⭐ Mbappé</div>
                 <div class="draggable player" draggable="true" id="messi">⭐ Messi</div>
@@ -184,28 +103,28 @@
 
         <div class="prediction-area">
             
-            <div class="drop-zone champion-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="drop-zone champion-zone">
                 <h3><i class="fa-solid fa-crown"></i> The Champion</h3>
-                <div class="zone-content"></div>
+                <div class="zone-content" id="champion" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
             </div>
 
-            <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="drop-zone">
                 <h3><i class="fa-solid fa-star"></i> Big Favorites</h3>
-                <div class="zone-content"></div>
+                <div class="zone-content" id="favorites" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
             </div>
 
-            <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="drop-zone">
                 <h3><i class="fa-solid fa-horse"></i> Dark Horses</h3>
-                <div class="zone-content"></div>
+                <div class="zone-content" id="dark-horses" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
             </div>
 
-            <div class="drop-zone" style="background: #1565c0;" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="drop-zone" style="background: #1565c0;">
                 <h3><i class="fa-solid fa-bolt"></i> Tournament MVPs</h3>
-                <div class="zone-content"></div>
+                <div class="zone-content" id="mvps" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
             </div>
 
             <div class="useful-phrases">
-                <h2 style="font-size: 18px;"><i class="fa-solid fa-comment"></i> Speaking Help (A2-B1)</h2>
+                <h2 style="font-size: 16px; margin:0 0 10px;"><i class="fa-solid fa-comment"></i> Useful Discussion Cheat-Sheet (A2-B1)</h2>
                 <div class="phrases-grid">
                     <div class="phrase-card">
                         <strong>Giving Opinions:</strong><br>
@@ -228,35 +147,105 @@
         </div>
     </div>
 
-    <script>
-        // DRAG AND DROP LOGIC
-        const draggables = document.querySelectorAll('.draggable');
-        const zones = document.querySelectorAll('.zone-content');
+    <script type="module">
+        const FIREBASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/worldcup/";
+        let currentRoom = "";
 
-        draggables.forEach(draggable => {
-            draggable.addEventListener('dragstart', (e) => {
+        // Inicializa listeners de arrastar para o HTML local
+        const draggables = document.querySelectorAll('.draggable');
+        draggables.forEach(d => {
+            d.addEventListener('dragstart', (e) => {
                 e.dataTransfer.setData('text/plain', e.target.id);
             });
         });
 
-        function allowDrop(e) {
-            e.preventDefault();
-        }
+        window.allowDrop = function(e) { e.preventDefault(); };
 
-        function drop(e) {
+        // Quando o aluno solta o card, salva a nova posição direto no Firebase
+        window.drop = async function(e) {
             e.preventDefault();
             const id = e.dataTransfer.getData('text/plain');
-            const element = document.getElementById(id);
+            let targetZone = e.target;
             
-            // Localiza a div de conteúdo dentro da drop-zone
-            let target = e.target;
-            if (!target.classList.contains('zone-content')) {
-                target = target.querySelector('.zone-content') || target.closest('.drop-zone').querySelector('.zone-content');
+            if (!targetZone.classList.contains('zone-content') && !targetZone.id === 'bench') {
+                targetZone = targetZone.querySelector('.zone-content') || targetZone.closest('.drop-zone, .selection-panel').querySelector('.zone-content, #bench');
             }
             
-            if (target) {
-                target.appendChild(element);
+            if (targetZone && currentRoom) {
+                const targetZoneId = targetZone.id;
+                // Atualiza o Firebase dizendo para qual zona esse item foi
+                await fetch(`${FIREBASE_URL}${currentRoom}/${id}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(targetZoneId)
+                });
             }
+        };
+
+        // Conecta à sala e monitora mudanças em tempo real
+        window.connectToMatch = function() {
+            const rInput = document.getElementById('room-input').value.trim().toLowerCase();
+            if(!rInput) return alert("Type a room code!");
+            
+            currentRoom = rInput;
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('game-container').style.display = 'grid';
+            document.getElementById('active-room-display').style.display = 'inline-block';
+            document.getElementById('active-room-display').innerText = `LIVE BOARD: ${currentRoom.toUpperCase()}`;
+            
+            // Inicia o pooling de sincronização em tempo real (a cada 1.5 segundos)
+            syncLoop();
+            setInterval(syncLoop, 1500);
+        };
+
+        async function syncLoop() {
+            if(!currentRoom) return;
+            try {
+                const res = await fetch(`${FIREBASE_URL}${currentRoom}.json`);
+                const data = await res.json();
+                
+                if(data) {
+                    // Limpa todas as zonas para re-renderizar o estado vindo do servidor
+                    document.getElementById('bench').innerHTML = '';
+                    document.getElementById('champion').innerHTML = '';
+                    document.getElementById('favorites').innerHTML = '';
+                    document.getElementById('dark-horses').innerHTML = '';
+                    document.getElementById('mvps').innerHTML = '';
+
+                    // Dicionário estático para recriar os elementos no lugar certo
+                    const itemData = {
+                        bra: { txt: "🇧🇷 Brazil", class: "" },
+                        fra: { txt: "🇫🇷 France", class: "" },
+                        arg: { txt: "🇦🇷 Argentina", class: "" },
+                        ger: { txt: "🇩🇪 Germany", class: "" },
+                        eng: { txt: "🏴󠁧󠁢󠁥󠁮󠁧󠁿 England", class: "" },
+                        spa: { txt: "🇪🇸 Spain", class: "" },
+                        por: { txt: "🇵🇹 Portugal", class: "" },
+                        mar: { txt: "🇲🇦 Morocco", class: "" },
+                        vini: { txt: "⭐ Vini Jr.", class: "player" },
+                        mbappe: { txt: "⭐ Mbappé", class: "player" },
+                        messi: { txt: "⭐ Messi", class: "player" },
+                        belling: { txt: "⭐ Bellingham", class: "player" },
+                        yamal: { txt: "⭐ Lamine Yamal", class: "player" }
+                    };
+
+                    // Coloca cada item na zona que está salva no Firebase
+                    Object.keys(itemData).forEach(itemId => {
+                        const targetZone = data[itemId] || "bench"; 
+                        const container = document.getElementById(targetZone);
+                        if(container) {
+                            const div = document.createElement('div');
+                            div.className = `draggable ${itemData[itemId].class}`;
+                            div.id = itemId;
+                            div.draggable = true;
+                            div.innerText = itemData[itemId].txt;
+                            div.addEventListener('dragstart', (e) => {
+                                e.dataTransfer.setData('text/plain', e.target.id);
+                            });
+                            container.appendChild(div);
+                        }
+                    });
+                }
+            } catch (e) { console.error("Sync Error:", e); }
         }
     </script>
 </body>
