@@ -3,1003 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IdeaQuest Hub - AI Edition</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>World Cup Predictor - Speaking Activity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
         :root {
-            --bg-main: #0c0b1e;
-            --bg-panel: #11112b;
-            --bg-card: #16163f;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-white: #ffffff;
-            --text-muted: #8081b3;
-            --neon-blue: #38bdf8;
-            --neon-purple: #c084fc;
-            --neon-pink: #f43f5e;
-            --neon-green: #10b981;
-            --neon-yellow: #fbbf24;
-            --neon-orange: #fb923c;
-            --neon-teal: #2dd4bf;
-            --mentor-accent: #a78bfa;
-            --mentor-bg: rgba(167, 139, 250, 0.06);
-            --mentor-border: rgba(167, 139, 250, 0.25);
+            --pitch-green: #2e7d32;
+            --pitch-line: rgba(255,255,255,0.5);
+            --dark-blue: #1a237e;
+            --gold: #ffd600;
+            --white: #ffffff;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: var(--bg-main); color: var(--text-white);
-            font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
-        }
-
-        .os-header {
-            background: rgba(17, 17, 43, 0.95);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 24px;
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100;
-            backdrop-filter: blur(12px);
-        }
-        .os-logo { font-family: 'Courier Prime', monospace; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: var(--text-white); }
-        .live-tag { background: #ef4444; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px; animation: pulse-live 2s infinite; }
-        @keyframes pulse-live { 0%,100%{opacity:1} 50%{opacity:0.7} }
-
-        .main-container { max-width: 1500px; width: 100%; margin: 0 auto; padding: 20px; flex: 1; }
-        .os-screen { display: none; animation: fadeIn 0.25s ease forwards; }
-        .os-screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-        .setup-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; max-width: 500px; margin: 40px auto; }
-        input[type="text"] {
-            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
-            padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 15px;
-        }
-        input[type="text"]:focus { border-color: var(--neon-blue); outline: none; }
-        .input-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px; }
-
-        .btn-primary { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; font-size: 14px; }
-        .btn-primary:hover { filter: brightness(1.2); transform: translateY(-1px); }
-        .btn-secondary { background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-color); padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 14px; }
-        .btn-danger { background: transparent; color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); padding: 10px 15px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
-
-        .avatar-group { display: flex; align-items: center; gap: 6px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: white; border: 2px solid rgba(255,255,255,0.15); cursor: pointer; transition: transform 0.2s; }
-        .user-avatar:hover { transform: scale(1.1); }
-
-        /* MISSION BAR */
-        .mission-top-bar {
-            background: var(--bg-panel);
-            border: 1px solid rgba(192, 132, 252, 0.2);
-            border-radius: 14px;
-            padding: 20px 24px;
-            margin-bottom: 18px;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
+            color: #333;
+        }
+
+        header {
+            background-color: var(--dark-blue);
+            color: white;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 95%;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
             gap: 20px;
         }
-        .mission-top-bar .mission-icon-big { font-size: 32px; flex-shrink: 0; }
-        .mission-top-bar .mission-text-display { font-size: 19px; font-weight: 700; color: white; line-height: 1.3; }
-        .mission-top-bar .mission-desc { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
-        .section-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-purple); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 
-        /* BOOSTERS - 3 CARDS LADO A LADO */
-        .boosters-top-row { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 14px; 
-            margin-bottom: 18px; 
+        /* BANCO DE ITEMS (TEAM & PLAYERS) */
+        .selection-panel {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #ddd;
+            height: fit-content;
         }
-        .booster-card { 
-            background: var(--bg-panel); 
-            border: 2px solid var(--border-color); 
-            border-radius: 14px; 
-            padding: 20px 22px; 
-            cursor: pointer; 
-            transition: all 0.25s ease; 
-            display: flex; 
+
+        .item-list {
+            display: flex;
             flex-direction: column;
-            align-items: flex-start;
             gap: 10px;
-            min-height: 100px;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
         }
-        .booster-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            transition: all 0.3s ease;
-        }
-        .booster-card:hover { 
-            transform: translateY(-4px); 
-            background: var(--bg-card); 
-            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
-        }
-        .booster-card:hover::before {
-            height: 4px;
-        }
-        .booster-card .booster-icon { 
-            font-size: 28px; 
-            flex-shrink: 0; 
-        }
-        .booster-card .booster-name { 
-            font-size: 13px; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            letter-spacing: 0.8px; 
-        }
-        .booster-card .booster-full-text {
+
+        .draggable {
+            padding: 10px 15px;
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            cursor: grab;
+            font-weight: 600;
             font-size: 14px;
-            color: var(--text-white);
-            line-height: 1.5;
-            font-weight: 500;
-        }
-        .booster-card-science { border-color: rgba(56, 189, 248, 0.3); }
-        .booster-card-science::before { background: var(--neon-blue); }
-        .booster-card-science .booster-name { color: var(--neon-blue); }
-        .booster-card-science:hover { border-color: var(--neon-blue); }
-
-        .booster-card-culture { border-color: rgba(251, 146, 60, 0.3); }
-        .booster-card-culture::before { background: var(--neon-orange); }
-        .booster-card-culture .booster-name { color: var(--neon-orange); }
-        .booster-card-culture:hover { border-color: var(--neon-orange); }
-
-        .booster-card-supply { border-color: rgba(16, 185, 129, 0.3); }
-        .booster-card-supply::before { background: var(--neon-green); }
-        .booster-card-supply .booster-name { color: var(--neon-green); }
-        .booster-card-supply:hover { border-color: var(--neon-green); }
-
-        .booster-alert-screen { 
-            background: rgba(251, 191, 36, 0.06); 
-            border: 1px dashed var(--neon-yellow); 
-            border-radius: 12px; 
-            padding: 16px 20px; 
-            margin-bottom: 18px; 
-            color: #fef08a; 
-            font-size: 14px; 
-            display: none; 
-            line-height: 1.6; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
         }
 
-        /* SPLIT WORKSPACE */
-        .split-workspace {
+        .draggable:active { cursor: grabbing; }
+        .draggable i { color: var(--dark-blue); }
+        .draggable.player { background: #fff3e0; border-color: #ffb74d; }
+
+        /* CAMPO DE JOGO / DROP ZONES */
+        .prediction-area {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 18px;
+            gap: 20px;
         }
 
-        .my-side-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .side-label {
-            font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;
-            padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;
-            margin-bottom: 4px;
-        }
-        .side-label-me { background: rgba(56,189,248,0.1); color: var(--neon-blue); border: 1px solid rgba(56,189,248,0.2); }
-        .side-label-partner { background: var(--mentor-bg); color: var(--mentor-accent); border: 1px solid var(--mentor-border); }
-
-        .workspace-block { background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.07); padding: 16px; border-radius: 12px; }
-        .mural-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .mural-main-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); letter-spacing: 1px; }
-        .vocab-main-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-orange); letter-spacing: 1px; }
-
-        .mural-canvas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; min-height: 60px; }
-        .game-idea-card { border-radius: 10px; padding: 13px; min-height: 110px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s; }
-        .game-idea-card:hover { transform: scale(1.02); }
-        .game-idea-text { font-size: 12.5px; font-weight: 600; color: white; line-height: 1.4; overflow-y: auto; max-height: 65px; word-break: break-word; }
-        .game-idea-author { font-size: 10px; color: rgba(255,255,255,0.65); margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .card-actions { display: flex; gap: 10px; font-size: 11px; }
-        .card-actions i { cursor: pointer; opacity: 0.6; transition: opacity 0.2s; }
-        .card-actions i:hover { opacity: 1; }
-        .like-btn { color: var(--neon-pink); display: inline-flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 700; }
-
-        .card-c1 { background: #7c2d12; border: 1px solid #ea580c; }
-        .card-c2 { background: #4c0519; border: 1px solid #be123c; }
-        .card-c3 { background: #062f4f; border: 1px solid #0284c7; }
-        .card-c4 { background: #064e3b; border: 1px solid #059669; }
-        .card-vocab { background: #2e1c0c; border: 1px solid #d97706; }
-
-        .mural-input-bar { display: flex; gap: 8px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
-        .mural-input-bar input { margin-bottom: 0; font-size: 13px; }
-        .mural-input-bar .btn-primary { padding: 10px 14px; font-size: 12px; white-space: nowrap; }
-
-        .ideas-status-tag { font-size: 10px; font-weight: 700; color: var(--neon-green); }
-
-        .partner-side-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .partner-mural-view {
-            background: var(--mentor-bg);
-            border: 1px solid var(--mentor-border);
-            border-radius: 12px;
-            padding: 16px;
-            flex: 1;
-        }
-        .partner-mural-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--mentor-accent); letter-spacing: 1px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .partner-canvas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-height: 60px; margin-bottom: 10px; }
-        .partner-empty { color: var(--text-muted); font-size: 12px; padding: 20px; text-align: center; grid-column: 1/-1; }
-
-        .secret-mentor-panel {
-            background: linear-gradient(135deg, rgba(109, 40, 217, 0.12), rgba(167, 139, 250, 0.06));
-            border: 1px solid var(--mentor-border);
-            border-radius: 12px;
-            padding: 18px;
-            position: relative;
-            overflow: hidden;
-        }
-        .secret-mentor-panel::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: linear-gradient(90deg, #7c3aed, #a78bfa, #c084fc, #7c3aed);
-            background-size: 200%;
-            animation: shimmer-line 3s linear infinite;
-        }
-        @keyframes shimmer-line { 0%{background-position:0%} 100%{background-position:200%} }
-
-        .mentor-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .mentor-lock-icon { font-size: 16px; color: var(--neon-yellow); }
-        .mentor-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-yellow); }
-        .mentor-subtitle { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
-
-        .mentor-partner-name {
-            font-size: 13px; font-weight: 700; color: var(--mentor-accent);
-            background: rgba(167,139,250,0.1); border-radius: 6px; padding: 6px 10px;
-            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
-        }
-
-        .mentor-checklist { display: flex; flex-direction: column; gap: 10px; }
-        .checklist-item {
-            background: rgba(0,0,0,0.25);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 10px;
-            padding: 13px 14px;
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            cursor: pointer;
-            transition: all 0.2s;
+        .drop-zone {
+            background: var(--pitch-green);
+            background-image: 
+                radial-gradient(circle at 50% 50%, var(--pitch-line) 2px, transparent 0),
+                linear-gradient(var(--pitch-line) 2px, transparent 0);
+            background-size: 100% 100%, 50% 50%;
+            border: 3px dashed rgba(255,255,255,0.4);
+            border-radius: 15px;
+            min-height: 200px;
+            padding: 20px;
+            color: white;
             position: relative;
         }
-        .checklist-item:hover { border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.05); }
-        .checklist-item.done {
-            border-color: rgba(16, 185, 129, 0.3);
-            background: rgba(16, 185, 129, 0.05);
-            opacity: 0.7;
-        }
-        .check-box {
-            width: 20px; height: 20px; border-radius: 5px; border: 2px solid rgba(255,255,255,0.2);
-            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-            font-size: 11px; transition: all 0.2s; margin-top: 1px;
-            background: rgba(0,0,0,0.2);
-        }
-        .checklist-item.done .check-box {
-            background: var(--neon-green); border-color: var(--neon-green); color: white;
-        }
-        .check-content { flex: 1; }
-        .check-action { font-size: 12.5px; font-weight: 600; color: white; line-height: 1.4; margin-bottom: 4px; }
-        .checklist-item.done .check-action { color: var(--neon-green); text-decoration: line-through; opacity: 0.7; }
-        .check-tip { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-        .check-xp { font-size: 10px; font-weight: 700; color: var(--neon-yellow); margin-top: 5px; }
 
-        .mentor-score {
-            margin-top: 14px; padding: 10px 14px; background: rgba(0,0,0,0.2);
-            border-radius: 8px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .mentor-score-label { font-size: 11px; color: var(--text-muted); }
-        .mentor-score-value { font-size: 16px; font-weight: 800; color: var(--neon-yellow); font-family: monospace; }
-
-        .mentor-completed-banner {
-            display: none; margin-top: 12px; padding: 12px; background: rgba(16,185,129,0.1);
-            border: 1px solid rgba(16,185,129,0.3); border-radius: 8px; text-align: center;
-            font-size: 13px; font-weight: 700; color: var(--neon-green);
-        }
-
-        .bottom-bar {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 16px;
-            align-items: center;
-            background: var(--bg-panel);
-            padding: 14px 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-top: 4px;
-        }
-        .bottom-bar-info { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
-        .squad-scores-inline { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-        .squad-player-chip {
-            display: flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
-            border-radius: 20px; padding: 5px 12px; font-size: 12px;
-        }
-        .squad-player-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .squad-player-pts { font-weight: 700; color: var(--neon-purple); font-family: monospace; }
-
-        /* SCREEN 3 - HOMEWORK */
-        .homework-layout-cyber { background: var(--bg-panel); border: 2px solid var(--border-color); border-radius: 16px; padding: 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); margin-top: 10px; }
-        .hw-cyber-title-box { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }
-        .hw-cyber-title-box h2 { font-size: 26px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }
-        .hw-cyber-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
-        .hw-cyber-card h3 { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .hw-sticky-print-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 15px; }
-        .print-sticky { border-radius: 8px; padding: 15px; min-height: 110px; color: white; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        .print-sticky-text { font-size: 13px; font-weight: 600; line-height: 1.4; }
-        .print-sticky-meta { font-size: 10px; opacity: 0.8; text-transform: uppercase; font-family: monospace; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 5px; margin-top: 8px; }
-        .hw-cyber-reading { 
-            font-size: 15px; 
-            color: #e2e8f0; 
-            line-height: 1.8; 
-            background: rgba(0,0,0,0.2); 
-            padding: 20px; 
-            border-radius: 8px; 
-            border: 1px solid rgba(255,255,255,0.05);
-            white-space: pre-line;
-        }
-        .hw-cyber-reading .highlight-word {
+        .drop-zone h3 {
+            margin-top: 0;
+            text-transform: uppercase;
+            font-size: 16px;
+            background: rgba(0,0,0,0.3);
             display: inline-block;
-            background: rgba(251, 191, 36, 0.15);
-            border-bottom: 2px solid var(--neon-yellow);
-            padding: 0 4px;
-            font-weight: 700;
-            color: var(--neon-yellow);
-            cursor: help;
+            padding: 5px 15px;
+            border-radius: 20px;
         }
-        .hw-cyber-reading .highlight-word::after {
-            content: " 📘";
-            font-size: 12px;
-            opacity: 0.7;
-        }
-        .hw-cyber-questions { padding-left: 20px; font-size: 14px; color: #cbd5e1; line-height: 1.8; }
-        .hw-cyber-questions li { margin-bottom: 12px; font-weight: 500; }
-        .ai-loading-placeholder { text-align: center; padding: 20px; color: var(--neon-blue); font-weight: 600; font-size: 14px; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(56,189,248,0.2); border-radius: 50%; border-top-color: var(--neon-blue); animation: spin 1s ease-in-out infinite; margin-right: 10px; vertical-align: middle; }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast {
-            background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 10px;
-            padding: 12px 16px; font-size: 13px; max-width: 300px;
-            animation: toast-in 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        .zone-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
         }
-        .toast.green { border-color: rgba(16,185,129,0.4); color: var(--neon-green); }
-        .toast.yellow { border-color: rgba(251,191,36,0.4); color: var(--neon-yellow); }
-        @keyframes toast-in { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
 
-        @media print {
-            body { background: white !important; color: black !important; }
-            .os-header, .btn-primary, .btn-secondary, #print-actions, .boosters-top-row, .mural-input-bar, .card-actions, .bottom-bar { display: none !important; }
-            .homework-layout-cyber { background: white !important; color: #1e293b !important; border: none !important; padding: 0 !important; box-shadow: none !important; }
-            .hw-cyber-title-box h2 { color: #1e3a8a !important; }
-            .hw-cyber-card { background: transparent !important; border: 1px solid #cbd5e1 !important; color: #1e293b !important; margin-bottom: 30px; page-break-inside: avoid; }
-            .hw-cyber-card h3 { color: #1e3a8a !important; }
-            .hw-cyber-reading { background: #fff !important; color: #334155 !important; border: 1px solid #cbd5e1 !important; }
-            .hw-cyber-questions { color: #334155 !important; }
-            .print-sticky { background: #f8fafc !important; color: #0f172a !important; border: 2px dashed #94a3b8 !important; box-shadow: none !important; page-break-inside: avoid; }
-            .print-sticky-meta { border-top: 1px dashed #cbd5e1 !important; color: #64748b !important; }
-            .hw-cyber-reading .highlight-word { background: #fef9c3 !important; border-bottom: 2px solid #ca8a04 !important; color: #854d0e !important; }
-            .hw-cyber-reading .highlight-word::after { content: "" !important; }
+        /* PHRASES FOR SPEAKING */
+        .useful-phrases {
+            grid-column: 1 / -1;
+            background: var(--gold);
+            padding: 20px;
+            border-radius: 15px;
+            color: #443300;
         }
+
+        .phrases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .phrase-card {
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .champion-zone {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #FFD700, #FDB931);
+            color: #000;
+            min-height: 150px;
+            border: 4px solid #fff;
+        }
+
+        .champion-zone h3 { background: rgba(255,255,255,0.5); color: #000; }
+
     </style>
 </head>
 <body>
-    <div class="toast-container" id="toastContainer"></div>
 
-    <div class="os-header">
-        <div class="os-logo">IDEAQUEST ⬡</div>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="avatar-group" id="header-avatar-container"></div>
-            <div class="live-tag"><span style="width:6px; height:6px; background:#fff; border-radius:50%; display:inline-block;"></span> CLOUD SYNC</div>
+    <header>
+        <h1>🏆 World Cup Predictor 2026</h1>
+        <p>Who has the best chance to win? Move the teams and players to decide!</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="selection-panel">
+            <h2 style="font-size: 18px; margin-bottom: 15px;">Teams & Stars</h2>
+            <div class="item-list">
+                <div class="draggable" draggable="true" id="bra">🇧🇷 Brazil</div>
+                <div class="draggable" draggable="true" id="fra">🇫🇷 France</div>
+                <div class="draggable" draggable="true" id="arg">🇦🇷 Argentina</div>
+                <div class="draggable" draggable="true" id="ger">🇩🇪 Germany</div>
+                <div class="draggable" draggable="true" id="eng">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</div>
+                <div class="draggable" draggable="true" id="spa">🇪🇸 Spain</div>
+                <div class="draggable" draggable="true" id="por">🇵🇹 Portugal</div>
+                <div class="draggable" draggable="true" id="mar">🇲🇦 Morocco</div>
+                
+                <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
+                
+                <div class="draggable player" draggable="true" id="vini">⭐ Vini Jr.</div>
+                <div class="draggable player" draggable="true" id="mbappe">⭐ Mbappé</div>
+                <div class="draggable player" draggable="true" id="messi">⭐ Messi</div>
+                <div class="draggable player" draggable="true" id="belling">⭐ Bellingham</div>
+                <div class="draggable player" draggable="true" id="yamal">⭐ Lamine Yamal</div>
+            </div>
+        </div>
+
+        <div class="prediction-area">
+            
+            <div class="drop-zone champion-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3><i class="fa-solid fa-crown"></i> The Champion</h3>
+                <div class="zone-content"></div>
+            </div>
+
+            <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3><i class="fa-solid fa-star"></i> Big Favorites</h3>
+                <div class="zone-content"></div>
+            </div>
+
+            <div class="drop-zone" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3><i class="fa-solid fa-horse"></i> Dark Horses</h3>
+                <div class="zone-content"></div>
+            </div>
+
+            <div class="drop-zone" style="background: #1565c0;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3><i class="fa-solid fa-bolt"></i> Tournament MVPs</h3>
+                <div class="zone-content"></div>
+            </div>
+
+            <div class="useful-phrases">
+                <h2 style="font-size: 18px;"><i class="fa-solid fa-comment"></i> Speaking Help (A2-B1)</h2>
+                <div class="phrases-grid">
+                    <div class="phrase-card">
+                        <strong>Giving Opinions:</strong><br>
+                        "I think <b>[Team]</b> will win because..." <br>
+                        "In my opinion, they have a strong defense."
+                    </div>
+                    <div class="phrase-card">
+                        <strong>Talking about Players:</strong><br>
+                        "<b>[Player]</b> is in great form lately." <br>
+                        "He can change the game in one minute."
+                    </div>
+                    <div class="phrase-card">
+                        <strong>Comparisons:</strong><br>
+                        "Brazil is <b>stronger than</b> Germany this year."<br>
+                        "France has the <b>best</b> attack in the world."
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div class="main-container">
+    <script>
+        // DRAG AND DROP LOGIC
+        const draggables = document.querySelectorAll('.draggable');
+        const zones = document.querySelectorAll('.zone-content');
 
-        <!-- ===== SCREEN 1: SETUP ===== -->
-        <div id="scr-1" class="os-screen active">
-            <div style="text-align: center; margin-bottom: 25px; margin-top: 20px;">
-                <h1 style="font-size: 32px; font-weight: 800;">Launch Your Co-Creation Arena</h1>
-                <p style="color: var(--text-muted); font-size: 14px; margin-top: 5px;">Input your shared multiplayer room to synchronize devices.</p>
-            </div>
-            <div class="setup-card">
-                <span class="input-label">Multiplayer Room Code</span>
-                <input type="text" id="room-id" value="squad-english-pro">
-                <span class="input-label">Your Player Character Name</span>
-                <input type="text" id="my-name" placeholder="Type your name...">
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                    <button class="btn-primary" style="justify-content:center;" onclick="connectToFirebaseSession()"><i class="fa-solid fa-rocket"></i> Start Game ➔</button>
-                    <button class="btn-danger" style="justify-content:center;" onclick="purgeFirebaseRoom()"><i class="fa-solid fa-trash-can"></i> Force Server Wipe</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== SCREEN 2: MAIN GAME ===== -->
-        <div id="scr-2" class="os-screen">
-
-            <!-- MISSION BAR -->
-            <div class="mission-top-bar">
-                <div class="mission-icon-big">🌐</div>
-                <div style="flex:1;">
-                    <div class="section-tag"><i class="fa-solid fa-earth-americas"></i> Global Mission</div>
-                    <div class="mission-text-display" id="obsidian-quest-title">"Change how humans get their daily nutrients without eating real meat or plants!"</div>
-                    <div class="mission-desc">Generate radical concepts. Place your visions into the mural. Help your partner think further.</div>
-                </div>
-                <div style="text-align:right; flex-shrink:0;">
-                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Ideas Pool</div>
-                    <div style="font-size:28px; font-weight:800; color:var(--neon-green); font-family:monospace;" id="sidebar-counter-big">0</div>
-                    <div style="height:4px; background:rgba(255,255,255,0.05); border-radius:99px; width:80px; margin-top:6px;">
-                        <div style="height:100%; background:var(--neon-green); border-radius:99px; transition: width 0.4s;" id="sidebar-bar-fill"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BOOSTERS - 3 BOTÕES LADO A LADO (FIXOS) -->
-            <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:1px; margin-bottom:10px;"><i class="fa-solid fa-bolt"></i> Topic Boosters — Click to Explore</div>
-            <div class="boosters-top-row" id="boosters-box-row">
-                <!-- Science -->
-                <div class="booster-card booster-card-science" onclick="showBoosterAlert('🧬 Science', 'Will people eat pills, insects, or meat grown in a scientific lab?', 'var(--neon-blue)')">
-                    <div style="display:flex; align-items:center; gap:14px; width:100%;">
-                        <span class="booster-icon">🧬</span>
-                        <div style="flex:1;">
-                            <div class="booster-name">Science</div>
-                            <div class="booster-full-text">Will people eat pills, insects, or meat grown in a scientific lab?</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Culture -->
-                <div class="booster-card booster-card-culture" onclick="showBoosterAlert('🍳 Culture', 'How do we replace the social experience of cooking a traditional dinner?', 'var(--neon-orange)')">
-                    <div style="display:flex; align-items:center; gap:14px; width:100%;">
-                        <span class="booster-icon">🍳</span>
-                        <div style="flex:1;">
-                            <div class="booster-name">Culture</div>
-                            <div class="booster-full-text">How do we replace the social experience of cooking a traditional dinner?</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Supply -->
-                <div class="booster-card booster-card-supply" onclick="showBoosterAlert('🚛 Supply', 'How will supermarkets change if food is printed in 3D at home?', 'var(--neon-green)')">
-                    <div style="display:flex; align-items:center; gap:14px; width:100%;">
-                        <span class="booster-icon">🚛</span>
-                        <div style="flex:1;">
-                            <div class="booster-name">Supply</div>
-                            <div class="booster-full-text">How will supermarkets change if food is printed in 3D at home?</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="booster-alert-screen" id="booster-text-alert"></div>
-
-            <!-- SPLIT WORKSPACE -->
-            <div class="split-workspace">
-
-                <!-- LEFT: MY SIDE -->
-                <div class="my-side-panel">
-                    <div><span class="side-label side-label-me"><i class="fa-solid fa-user"></i> My Workspace</span></div>
-
-                    <div class="workspace-block">
-                        <div class="mural-header-row">
-                            <div class="mural-main-title"><i class="fa-solid fa-lightbulb"></i> My Ideas</div>
-                            <div class="ideas-status-tag" id="mural-ideas-status-tag">0 ideas</div>
-                        </div>
-                        <div class="mural-canvas" id="mural-sync-canvas"></div>
-                        <div class="mural-input-bar">
-                            <input type="text" id="mural-input-text" placeholder="Type a concept or solution...">
-                            <input type="hidden" id="edit-target-id" value="">
-                            <button class="btn-primary" id="mural-submit-btn" onclick="publishStickyToFirebase('idea')"><i class="fa-solid fa-plus"></i> Add</button>
-                        </div>
-                    </div>
-
-                    <div class="workspace-block">
-                        <div class="mural-header-row">
-                            <div class="vocab-main-title"><i class="fa-solid fa-spell-check"></i> My Vocabulary</div>
-                            <div class="ideas-status-tag" style="color:var(--neon-orange);" id="mural-vocab-status-tag">0 words</div>
-                        </div>
-                        <div class="mural-canvas" id="vocab-sync-canvas"></div>
-                        <div class="mural-input-bar" style="border-color: rgba(251, 146, 60, 0.2);">
-                            <input type="text" id="vocab-input-text" placeholder="New words or idioms...">
-                            <input type="hidden" id="vocab-edit-target-id" value="">
-                            <button class="btn-primary" id="vocab-submit-btn" style="background:linear-gradient(135deg, #ea580c, #f97316);" onclick="publishStickyToFirebase('vocab')"><i class="fa-solid fa-book"></i> Save</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RIGHT: PARTNER SIDE -->
-                <div class="partner-side-panel">
-                    <div><span class="side-label side-label-partner"><i class="fa-solid fa-eye"></i> Watching: <span id="partner-side-label-name">Waiting for partner...</span></span></div>
-
-                    <div class="partner-mural-view">
-                        <div class="partner-mural-title">
-                            <span><i class="fa-solid fa-layer-group"></i> Partner's Ideas Live</span>
-                            <span style="font-size:10px; color:var(--text-muted);" id="partner-idea-count">0 ideas</span>
-                        </div>
-                        <div class="partner-canvas" id="partner-idea-canvas">
-                            <div class="partner-empty"><i class="fa-solid fa-hourglass-half"></i><br>Waiting for partner ideas...</div>
-                        </div>
-                    </div>
-
-                    <div class="secret-mentor-panel" id="secret-mentor-panel">
-                        <div class="mentor-header">
-                            <span class="mentor-lock-icon"><i class="fa-solid fa-user-secret"></i></span>
-                            <div>
-                                <div class="mentor-title">Your Secret Mission</div>
-                                <div class="mentor-subtitle">Only you can see this. Help your partner grow — they don't know.</div>
-                            </div>
-                        </div>
-                        <div class="mentor-partner-name" id="mentor-partner-display">
-                            <i class="fa-solid fa-circle-dot" style="color:var(--neon-green); font-size:8px;"></i>
-                            Waiting for a partner to connect...
-                        </div>
-                        <div class="mentor-checklist" id="mentor-checklist-container"></div>
-                        <div class="mentor-score">
-                            <span class="mentor-score-label"><i class="fa-solid fa-star"></i> Mentor XP earned</span>
-                            <span class="mentor-score-value" id="mentor-xp-display">0 XP</span>
-                        </div>
-                        <div class="mentor-completed-banner" id="mentor-completed-banner">
-                            <i class="fa-solid fa-trophy"></i> Mission Complete! You secretly leveled up your partner. 🚀
-                        </div>
-                    </div>
-                </div>
-
-            </div><!-- end split-workspace -->
-
-            <!-- BOTTOM BAR -->
-            <div class="bottom-bar">
-                <div class="bottom-bar-info">
-                    <i class="fa-solid fa-lock-open" style="color:var(--neon-green);"></i>
-                    <span>Realtime sync active.</span>
-                    <div class="squad-scores-inline" id="squad-scores-inline"></div>
-                </div>
-                <button class="btn-primary" style="background:var(--neon-green); color:#052e16; font-weight:800;" onclick="transitionToHomeworkReport()">
-                    Conclude & View Homework ➔
-                </button>
-            </div>
-
-        </div><!-- end scr-2 -->
-
-        <!-- ===== SCREEN 3: HOMEWORK ===== -->
-        <div id="scr-3" class="os-screen">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;" id="print-actions">
-                <button class="btn-secondary" onclick="backToGameWorkspace()"><i class="fa-solid fa-arrow-left"></i> Return to Match Workspace</button>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Homework Page</button>
-                    <button class="btn-danger" onclick="window.location.reload()"><i class="fa-solid fa-door-open"></i> Terminate Connection</button>
-                </div>
-            </div>
-            <div class="homework-layout-cyber">
-                <div class="hw-cyber-title-box">
-                    <h2><i class="fa-solid fa-file-invoice" style="color:var(--neon-blue);"></i> CO-CREATION STRATEGIC MISSION REPORT</h2>
-                    <div style="font-size:12px; color:var(--text-muted); font-family:monospace; margin-top:6px;" id="hw-meta-lbl"></div>
-                </div>
-                <div class="hw-cyber-card">
-                    <h3><i class="fa-solid fa-database"></i> 1. Brainstorm Concepts — Printable Stickies</h3>
-                    <div class="hw-sticky-print-grid" id="hw-ideas-print-container"></div>
-                </div>
-                <div class="hw-cyber-card">
-                    <h3><i class="fa-solid fa-language"></i> 2. Vocabulary Bank — Printable Stickies</h3>
-                    <div class="hw-sticky-print-grid" id="hw-vocab-print-container"></div>
-                </div>
-                <div class="hw-cyber-card">
-                    <h3><i class="fa-solid fa-book-open"></i> 3. Core Reading</h3>
-                    <div class="hw-cyber-reading" id="hw-reading-box">
-                        Global food security demands alternative production models.
-                        Traditional farming is transforming into bio-engineered cellular agriculture to reduce carbon footprints.
-                        Adapting to these dietary shifts will require flexible supply grids and deep cross-border regulations.
-
-                        <br><br>
-                        <span class="highlight-word" title="Food security: access to sufficient, safe, and nutritious food">Food security</span>:
-                        <span class="highlight-word" title="Carbon footprint: total greenhouse gas emissions caused by an activity">Carbon footprint</span>:
-                        <span class="highlight-word" title="Shift: a change or adjustment in behavior or direction">Shift</span>:
-                        <span class="highlight-word" title="Dietary: related to the food that people eat">Dietary</span>:
-                    </div>
-                </div>
-                <div class="hw-cyber-card">
-                    <h3><i class="fa-solid fa-circle-question"></i> 4. Text Interpretation Questions</h3>
-                    <ol class="hw-cyber-questions">
-                        <li>Based on today's text, how do teams apply these future tools to cooperate effectively?</li>
-                        <li>Why is mastering this capacity useful to help groups build complex innovations without breaking workflow?</li>
-                        <li>Give a real-world scenario where the terms learned on your sticky notes would optimize a professional routine.</li>
-                    </ol>
-                </div>
-                <div class="hw-cyber-card">
-                    <h3><i class="fa-solid fa-pen-fancy" style="color:var(--neon-green)"></i> 5. Writing Challenges</h3>
-                    <ol class="hw-cyber-questions" style="color: #a7f3d0;">
-                        <li>If you could amplify your own capacity 10 times today, how would that change your daily teamwork or career?</li>
-                        <li>Choose one idea from your printable cards and explain how it solves the core challenge proposed.</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- end main-container -->
-
-<script>
-    const FIREBASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
-
-    let roomId = "";
-    let myId = "";
-    let globalRoomState = { members: {}, stickies: [] };
-    let partnerIdGlobal = null;
-    let mentorXP = 0;
-    let mentorChecks = {};
-
-    const MENTOR_MISSIONS = [
-        { id: "win_win", icon: "🤝", action: "Get your partner to think about what's BETTER FOR BOTH of you", tip: "Say: \"What if we combined your idea with mine? What do we both gain?\" — wait for them to answer before continuing.", xp: 30 },
-        { id: "ask_why", icon: "🔍", action: "Ask your partner WHY they chose their idea (not what — WHY)", tip: "Try: \"That's interesting — what problem were you thinking about when you came up with that?\" Let them talk.", xp: 20 },
-        { id: "build_on", icon: "🧱", action: "Take your partner's last idea and BUILD on it publicly in the mural", tip: "Add a new sticky starting with: \"[Partner's name]'s idea + ...\" to show you listened and expanded it.", xp: 25 },
-        { id: "challenge_kind", icon: "💬", action: "Kindly challenge one of your partner's ideas with a \"what if it fails?\" question", tip: "Say: \"I love this — but what happens if the technology isn't ready yet? How would we fix that?\"", xp: 20 },
-        { id: "summarize", icon: "📋", action: "Summarize what your partner said back to them to confirm you understood", tip: "Try: \"So if I understood correctly, your idea is basically... [restate it]. Is that right?\" — Wait for confirmation.", xp: 15 }
-    ];
-
-    const avatarColors = ["#a855f7","#06b6d4","#ec4899","#eab308","#10b981","#f97316"];
-    const muralCardSkins = ["card-c1","card-c2","card-c3","card-c4"];
-
-    function getFormattedDate() {
-        const t = new Date();
-        return `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
-    }
-
-    function showToast(msg, type="green") {
-        const c = document.getElementById('toastContainer');
-        const d = document.createElement('div');
-        d.className = `toast ${type}`;
-        d.innerHTML = msg;
-        c.appendChild(d);
-        setTimeout(() => d.remove(), 3500);
-    }
-
-    // ── BOOSTER ALERT ────────────────────────────────────────────────────────
-    window.showBoosterAlert = function(label, question, color) {
-        const alert = document.getElementById('booster-text-alert');
-        alert.style.display = 'block';
-        alert.innerHTML = `
-            <div style="display:flex; align-items:flex-start; gap:14px;">
-                <span style="font-size:28px;">${label.split(' ')[0]}</span>
-                <div>
-                    <strong style="color:${color};">💡 ${label.toUpperCase()} Challenge</strong>
-                    <br>${question}
-                    <br><br>
-                    <span style="font-size:11px; opacity:0.7;">💬 Use this question as a starting point for your ideas below.</span>
-                </div>
-            </div>
-        `;
-    };
-
-    // ── FIREBASE ─────────────────────────────────────────────────────────────
-    async function syncWithFirebase() {
-        try {
-            let res = await fetch(`${FIREBASE_URL}${roomId}.json`);
-            let data = await res.json();
-            if (data) {
-                globalRoomState.members = data.members || {};
-                globalRoomState.stickies = data.stickies
-                    ? Object.entries(data.stickies).map(([id,val]) => ({id,...val}))
-                    : [];
-            } else {
-                globalRoomState = { members:{}, stickies:[] };
-            }
-            renderRealtimeWorkspace();
-            detectPartner();
-        } catch(e) { console.error("Sync Failure:", e); }
-    }
-
-    async function writeMembersToFirebase(membersObj) {
-        await fetch(`${FIREBASE_URL}${roomId}/members.json`, { method:'PUT', body:JSON.stringify(membersObj) });
-    }
-
-    // ── CONNECT ──────────────────────────────────────────────────────────────
-    window.connectToFirebaseSession = async function() {
-        let rInput = document.getElementById('room-id').value.trim();
-        let nInput = document.getElementById('my-name').value.trim();
-        if (!rInput || !nInput) { alert("Please input both room code and your name."); return; }
-        roomId = rInput;
-        myId = nInput.toLowerCase().replace(/\s+/g,'-');
-        await syncWithFirebase();
-        globalRoomState.members[myId] = {
-            name: nInput,
-            color: avatarColors[Object.keys(globalRoomState.members).length % avatarColors.length]
-        };
-        await writeMembersToFirebase(globalRoomState.members);
-        document.getElementById('scr-1').classList.remove('active');
-        document.getElementById('scr-2').classList.add('active');
-        setInterval(syncWithFirebase, 3000);
-    };
-
-    window.purgeFirebaseRoom = async function() {
-        let rInput = document.getElementById('room-id').value.trim();
-        if (!rInput) return;
-        let accessKey = prompt("Teacher area. Valid administrative master key required:");
-        if (accessKey === "admin123") {
-            if (confirm("Confirm action? This completely flushes all shared cards and scoreboards.")) {
-                await fetch(`${FIREBASE_URL}${rInput}.json`, { method:'DELETE' });
-                alert("Server database purged.");
-                window.location.reload();
-            }
-        } else if (accessKey !== null) { alert("Authorization Denied!"); }
-    };
-
-    // ── DETECT PARTNER ───────────────────────────────────────────────────────
-    function detectPartner() {
-        const memberIds = Object.keys(globalRoomState.members).filter(id => id !== myId);
-        if (memberIds.length === 0) {
-            partnerIdGlobal = null;
-            document.getElementById('partner-side-label-name').textContent = "Waiting for partner...";
-            document.getElementById('mentor-partner-display').innerHTML = `<i class="fa-solid fa-circle-dot" style="color:var(--text-muted); font-size:8px;"></i> Waiting for a partner to connect...`;
-            renderPartnerCanvas([]);
-            return;
-        }
-        partnerIdGlobal = memberIds[0];
-        const partnerMember = globalRoomState.members[partnerIdGlobal];
-        if (!partnerMember) return;
-
-        const pName = partnerMember.name;
-        document.getElementById('partner-side-label-name').textContent = pName;
-        document.getElementById('mentor-partner-display').innerHTML =
-            `<i class="fa-solid fa-circle-dot" style="color:var(--neon-green); font-size:8px;"></i> You are secretly mentoring: <strong style="color:white;">${pName}</strong>`;
-
-        const partnerIdeas = globalRoomState.stickies.filter(s => s.authorId === partnerIdGlobal && s.type === 'idea');
-        renderPartnerCanvas(partnerIdeas);
-        renderMentorChecklist(pName);
-    }
-
-    function renderPartnerCanvas(ideas) {
-        const canvas = document.getElementById('partner-idea-canvas');
-        const counter = document.getElementById('partner-idea-count');
-        canvas.innerHTML = "";
-        counter.textContent = `${ideas.length} idea${ideas.length!==1?'s':''}`;
-        if (ideas.length === 0) {
-            canvas.innerHTML = `<div class="partner-empty"><i class="fa-solid fa-hourglass-half"></i><br>Your partner hasn't posted ideas yet...</div>`;
-            return;
-        }
-        ideas.forEach(item => {
-            const card = document.createElement('div');
-            card.className = `game-idea-card ${item.skin || 'card-c3'}`;
-            card.innerHTML = `
-                <div class="game-idea-text">"${item.text}"</div>
-                <div class="game-idea-author">
-                    <span>${item.author}</span>
-                    <span class="like-btn" onclick="likeSticky('${item.id}', ${item.likes||0})">
-                        <i class="fa-solid fa-heart"></i> ${item.likes||0}
-                    </span>
-                </div>
-            `;
-            canvas.appendChild(card);
-        });
-    }
-
-    // ── SECRET MENTOR CHECKLIST ──────────────────────────────────────────────
-    function renderMentorChecklist(partnerName) {
-        const container = document.getElementById('mentor-checklist-container');
-        container.innerHTML = "";
-
-        MENTOR_MISSIONS.forEach(mission => {
-            const isDone = mentorChecks[mission.id] || false;
-            const item = document.createElement('div');
-            item.className = `checklist-item${isDone ? ' done' : ''}`;
-            item.id = `check-${mission.id}`;
-            item.onclick = () => toggleMentorCheck(mission.id, mission.xp);
-            item.innerHTML = `
-                <div class="check-box">${isDone ? '<i class="fa-solid fa-check"></i>' : ''}</div>
-                <div class="check-content">
-                    <div class="check-action">${mission.icon} ${mission.action}</div>
-                    <div class="check-tip">${mission.tip}</div>
-                    <div class="check-xp">+${mission.xp} XP when done</div>
-                </div>
-            `;
-            container.appendChild(item);
-        });
-
-        updateMentorXP();
-    }
-
-    function toggleMentorCheck(checkId, xp) {
-        const wasChecked = mentorChecks[checkId] || false;
-        mentorChecks[checkId] = !wasChecked;
-        if (!wasChecked) {
-            mentorXP += xp;
-            showToast(`<i class="fa-solid fa-star"></i> +${xp} Mentor XP! Keep going 🧠`, 'yellow');
-        } else {
-            mentorXP = Math.max(0, mentorXP - xp);
-        }
-        if (partnerIdGlobal && globalRoomState.members[partnerIdGlobal]) {
-            renderMentorChecklist(globalRoomState.members[partnerIdGlobal].name);
-        }
-        updateMentorXP();
-        checkMentorCompletion();
-    }
-
-    function updateMentorXP() {
-        document.getElementById('mentor-xp-display').textContent = `${mentorXP} XP`;
-    }
-
-    function checkMentorCompletion() {
-        const total = MENTOR_MISSIONS.length;
-        const done = Object.values(mentorChecks).filter(Boolean).length;
-        const banner = document.getElementById('mentor-completed-banner');
-        if (done >= total) {
-            banner.style.display = 'block';
-            showToast(`🏆 All mentor missions complete! You're a collaboration master!`, 'green');
-        } else {
-            banner.style.display = 'none';
-        }
-    }
-
-    // ── PUBLISH STICKY ────────────────────────────────────────────────────────
-    window.publishStickyToFirebase = async function(type) {
-        const inputId = type==='idea' ? 'mural-input-text' : 'vocab-input-text';
-        const targetIdField = type==='idea' ? 'edit-target-id' : 'vocab-edit-target-id';
-        const btnField = type==='idea' ? 'mural-submit-btn' : 'vocab-submit-btn';
-        let text = document.getElementById(inputId).value.trim();
-        let existingId = document.getElementById(targetIdField).value;
-        if (!text) return;
-        let itemData = { text, author: globalRoomState.members[myId].name, authorId: myId, type, likes: 0 };
-        if (existingId) {
-            let old = globalRoomState.stickies.find(s => s.id===existingId);
-            if (old) { itemData.skin = old.skin; itemData.likes = old.likes||0; }
-            await fetch(`${FIREBASE_URL}${roomId}/stickies/${existingId}.json`, { method:'PUT', body:JSON.stringify(itemData) });
-            document.getElementById(targetIdField).value = "";
-            document.getElementById(btnField).innerHTML = type==='idea' ? '<i class="fa-solid fa-plus"></i> Add' : '<i class="fa-solid fa-book"></i> Save';
-        } else {
-            itemData.skin = type==='idea' ? muralCardSkins[Math.floor(Math.random()*muralCardSkins.length)] : 'card-vocab';
-            await fetch(`${FIREBASE_URL}${roomId}/stickies.json`, { method:'POST', body:JSON.stringify(itemData) });
-            if (type==='idea') showToast(`<i class="fa-solid fa-lightbulb"></i> Idea added! Keep going!`, 'green');
-        }
-        document.getElementById(inputId).value = "";
-        await syncWithFirebase();
-    };
-
-    window.editSticky = function(id, text, type) {
-        if (type==='idea') {
-            document.getElementById('mural-input-text').value = text;
-            document.getElementById('edit-target-id').value = id;
-            document.getElementById('mural-submit-btn').innerHTML = '<i class="fa-solid fa-pen"></i> Update';
-            document.getElementById('mural-input-text').focus();
-        } else {
-            document.getElementById('vocab-input-text').value = text;
-            document.getElementById('vocab-edit-target-id').value = id;
-            document.getElementById('vocab-submit-btn').innerHTML = '<i class="fa-solid fa-pen"></i> Update';
-            document.getElementById('vocab-input-text').focus();
-        }
-    };
-
-    window.deleteSticky = async function(id) {
-        if (confirm("Delete this sticky card?")) {
-            await fetch(`${FIREBASE_URL}${roomId}/stickies/${id}.json`, { method:'DELETE' });
-            await syncWithFirebase();
-        }
-    };
-
-    window.likeSticky = async function(id, currentLikes) {
-        let updated = (currentLikes||0) + 1;
-        await fetch(`${FIREBASE_URL}${roomId}/stickies/${id}/likes.json`, { method:'PUT', body:JSON.stringify(updated) });
-        await syncWithFirebase();
-    };
-
-    // ── RENDER WORKSPACE ──────────────────────────────────────────────────────
-    function renderRealtimeWorkspace() {
-        let headerAvatars = document.getElementById('header-avatar-container');
-        headerAvatars.innerHTML = "";
-        let scoreRegistry = {};
-        Object.values(globalRoomState.members).forEach(m => {
-            let av = document.createElement('div');
-            av.className = 'user-avatar';
-            av.style.backgroundColor = m.color;
-            av.innerText = m.name.substring(0,2).toUpperCase();
-            av.title = m.name;
-            headerAvatars.appendChild(av);
-            scoreRegistry[m.name] = { ideas:0, likes:0, color:m.color };
-        });
-
-        let ideaCanvas = document.getElementById('mural-sync-canvas');
-        let vocabCanvas = document.getElementById('vocab-sync-canvas');
-        ideaCanvas.innerHTML = "";
-        vocabCanvas.innerHTML = "";
-        let ideaCount = 0, vocabCount = 0;
-
-        globalRoomState.stickies.forEach(item => {
-            if (scoreRegistry[item.author]) {
-                if (item.type==='idea') scoreRegistry[item.author].ideas++;
-                scoreRegistry[item.author].likes += (item.likes||0);
-            }
-            if (item.authorId !== myId) return;
-
-            let card = document.createElement('div');
-            card.className = `game-idea-card ${item.skin||'card-c1'}`;
-            let actionButtons = `
-                <i class="fa-solid fa-pen" onclick="editSticky('${item.id}',\`${item.text.replace(/`/g,"'")}\`,'${item.type}')" title="Edit"></i>
-                <i class="fa-solid fa-trash-can" onclick="deleteSticky('${item.id}')" title="Delete"></i>
-            `;
-            card.innerHTML = `
-                <div class="game-idea-text">"${item.text}"</div>
-                <div class="game-idea-author">
-                    <span>Me</span>
-                    <div class="card-actions">
-                        ${actionButtons}
-                        <span class="like-btn" onclick="likeSticky('${item.id}',${item.likes||0})">
-                            <i class="fa-solid fa-heart"></i> ${item.likes||0}
-                        </span>
-                    </div>
-                </div>
-            `;
-            if (item.type==='vocab') { vocabCanvas.appendChild(card); vocabCount++; }
-            else { ideaCanvas.appendChild(card); ideaCount++; }
-        });
-
-        document.getElementById('mural-ideas-status-tag').textContent = `${ideaCount} idea${ideaCount!==1?'s':''}`;
-        document.getElementById('mural-vocab-status-tag').textContent = `${vocabCount} word${vocabCount!==1?'s':''}`;
-
-        const totalIdeas = globalRoomState.stickies.filter(s => s.type==='idea').length;
-        document.getElementById('sidebar-counter-big').textContent = totalIdeas;
-        document.getElementById('sidebar-bar-fill').style.width = `${Math.min((totalIdeas/15)*100,100)}%`;
-
-        let scoresEl = document.getElementById('squad-scores-inline');
-        scoresEl.innerHTML = "";
-        Object.entries(scoreRegistry)
-            .sort((a,b) => ((b[1].ideas*10)+(b[1].likes*5)) - ((a[1].ideas*10)+(a[1].likes*5)))
-            .forEach(([name, metrics]) => {
-                let total = (metrics.ideas*10)+(metrics.likes*5);
-                let chip = document.createElement('div');
-                chip.className = 'squad-player-chip';
-                chip.innerHTML = `
-                    <div class="squad-player-dot" style="background:${metrics.color};"></div>
-                    <span>${name}</span>
-                    <span class="squad-player-pts">${total}pts</span>
-                `;
-                scoresEl.appendChild(chip);
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.id);
             });
-    }
+        });
 
-    // ── HOMEWORK ──────────────────────────────────────────────────────────────
-    window.transitionToHomeworkReport = function() {
-        document.getElementById('scr-2').classList.remove('active');
-        document.getElementById('scr-3').classList.add('active');
-        document.getElementById('hw-meta-lbl').innerText = `ROOM: ${roomId.toUpperCase()} | DATE: ${getFormattedDate()} | MENTOR XP: ${mentorXP}`;
-
-        let ideasPrint = document.getElementById('hw-ideas-print-container');
-        ideasPrint.innerHTML = "";
-        let ideaStickies = globalRoomState.stickies.filter(s => s.type!=='vocab');
-        if (ideaStickies.length===0) {
-            ideasPrint.innerHTML = "<p style='color:var(--text-muted);font-size:13px;'>No team concepts logged today.</p>";
-        } else {
-            ideaStickies.forEach(item => {
-                let p = document.createElement('div');
-                p.className = `print-sticky ${item.skin||'card-c1'}`;
-                p.innerHTML = `<div class="print-sticky-text">"${item.text}"</div><div class="print-sticky-meta">By ${item.author}</div>`;
-                ideasPrint.appendChild(p);
-            });
+        function allowDrop(e) {
+            e.preventDefault();
         }
-        let vocabPrint = document.getElementById('hw-vocab-print-container');
-        vocabPrint.innerHTML = "";
-        let vocabStickies = globalRoomState.stickies.filter(s => s.type==='vocab');
-        if (vocabStickies.length===0) {
-            vocabPrint.innerHTML = "<p style='color:var(--text-muted);font-size:13px;'>No vocabulary saved.</p>";
-        } else {
-            vocabStickies.forEach(item => {
-                let p = document.createElement('div');
-                p.className = `print-sticky ${item.skin||'card-vocab'}`;
-                p.innerHTML = `<div class="print-sticky-text"><strong>${item.text}</strong></div><div class="print-sticky-meta">By ${item.author}</div>`;
-                vocabPrint.appendChild(p);
-            });
-        }
-    };
 
-    window.backToGameWorkspace = function() {
-        document.getElementById('scr-3').classList.remove('active');
-        document.getElementById('scr-2').classList.add('active');
-    };
-</script>
+        function drop(e) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            const element = document.getElementById(id);
+            
+            // Localiza a div de conteúdo dentro da drop-zone
+            let target = e.target;
+            if (!target.classList.contains('zone-content')) {
+                target = target.querySelector('.zone-content') || target.closest('.drop-zone').querySelector('.zone-content');
+            }
+            
+            if (target) {
+                target.appendChild(element);
+            }
+        }
+    </script>
 </body>
 </html>
