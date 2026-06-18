@@ -36,7 +36,7 @@
             display: flex; align-items: center; gap: 15px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px;
         }
         .homework-header i { color: var(--purple); font-size: 32px; }
-        .homework-text { line-height: 1.6; font-size: 15px; color: #444; background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid var(--purple); }
+        .homework-text { line-height: 1.6; font-size: 15px; color: #444; background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid var(--purple); white-space: pre-line; }
         .vocab-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .vocab-item { background: #f3e5f5; padding: 10px; border-radius: 6px; font-size: 14px; }
 
@@ -95,29 +95,24 @@
         <div class="homework-header">
             <i class="fa-solid fa-book-open"></i>
             <div>
-                <h2 style="margin:0; color:var(--purple);">After-Class Homework (A2-B1)</h2>
-                <small style="color:#777;">Read the text and prepare your arguments for next class!</small>
+                <h2 style="margin:0; color:var(--purple);" id="hw-main-title">After-Class Homework (A2-B1)</h2>
+                <small style="color:#777;" id="hw-timestamp-lbl">Loading daily target assignment from cloud...</small>
             </div>
         </div>
         
         <h3>📝 Reading Practice</h3>
-        <p class="homework-text">
-            The World Cup is the most prestigious football tournament in the world. Every four years, national teams compete fiercely to win the famous trophy. While traditional giants like Brazil and France are always expected to be contenders, modern sports science and unpredictable strategies allow underdog teams to surprise everyone. Achieving victory requires tactical discipline and exceptional teamwork.
+        <p class="homework-text" id="hw-reading-box">
+            Loading reading assignment text...
         </p>
 
         <h3>💡 Target Vocabulary</h3>
-        <div class="vocab-list">
-            <div class="vocab-item"><b>Prestigious:</b> Highly respected / De prestígio.</div>
-            <div class="vocab-item"><b>Compete fiercely:</b> To play with a lot of strength and passion.</div>
-            <div class="vocab-item"><b>Contenders:</b> Teams with a real chance to win.</div>
-            <div class="vocab-item"><b>Underdog:</b> A team that is not expected to win.</div>
-        </div>
+        <div class="vocab-list" id="hw-vocab-box">
+            </div>
 
         <h3 style="margin-top:25px;">💬 Challenge Questions</h3>
-        <ul style="padding-left: 20px; line-height: 1.8; font-size: 14px;">
-            <li>Which team do you consider the biggest <b>contender</b> for 2026? Why?</li>
-            <li>Can you name a famous <b>underdog</b> team from past World Cups?</li>
-            <li>Write 3 sentences using the phrase "<b>compete fiercely</b>".</li>
+        <ul style="padding-left: 20px; line-height: 1.8; font-size: 14px;" id="hw-questions-box">
+            <li>Based on the reading text above, structure an analytical response highlighting the core strategy.</li>
+            <li>Write 3 custom sentences using the vocabulary cards discovered on this node.</li>
         </ul>
     </div>
 
@@ -227,7 +222,52 @@
             }
         };
 
-        // Porteiro Dinâmico: Gerencia o que exibe na tela baseado no Firebase
+        function getFormattedDate() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        // FUNÇÃO TESTE: Baixa o conteúdo do Obsidian direto do GitHub de acordo com a data de hoje
+        async function fetchObsidianHomework(topicTitle) {
+            const dateStr = getFormattedDate(); // Descobre a data de hoje (ex: 2026-06-18)
+            const rawGitHubPath = `https://raw.githubusercontent.com/andretti6/English-dev2/main/Database_Missoes/${dateStr}.md`;
+            
+            try {
+                const response = await fetch(rawGitHubPath);
+                if (!response.ok) throw new Error("File not logged for today");
+                const rawText = await response.text();
+
+                if (rawText.includes('---### HOMEWORK')) {
+                    const parts = rawText.split('---### HOMEWORK');
+                    const titleText = parts[0].split('\n')[0].replace(/#/g, '').trim();
+                    const homeworkPart = parts[1].trim();
+                    
+                    // Divide os parágrafos do dever de casa
+                    const sections = homeworkPart.split('\n\n').map(s => s.trim()).filter(s => s.length > 0);
+                    
+                    // 1. Injeta o Parágrafo de Leitura
+                    document.getElementById('hw-reading-box').innerText = sections[0] || "No text segment mapped.";
+                    document.getElementById('hw-timestamp-lbl').innerText = `LIVE FILE SYNCED: ${dateStr}.md | TOPIC: ${titleText}`;
+
+                    // 2. Extrai e monta os cards de Vocabulário
+                    let vocabHTML = "";
+                    const vocabLines = sections.slice(1);
+                    vocabLines.forEach(line => {
+                        if (line.includes(':')) {
+                            const chunk = line.split(':');
+                            vocabHTML += `<div class="vocab-item"><b>${chunk[0].trim()}:</b> ${chunk[1].trim()}</div>`;
+                        }
+                    });
+                    if (vocabHTML) {
+                        document.getElementById('hw-vocab-box').innerHTML = vocabHTML;
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not extract live obsidian task, keeping default database framework.", err);
+                document.getElementById('hw-timestamp-lbl').innerText = `Using offline internal backup database. (File ${dateStr}.md not detected)`;
+            }
+        }
+
         async function checkGatekeeper() {
             try {
                 const res = await fetch(`${FIREBASE_BASE}config/status.json`);
@@ -241,7 +281,6 @@
                         document.getElementById('setup-screen').style.display = 'block';
                     }
                 } else {
-                    // MUDANÇA AUTOMÁTICA PARA HOMEWORK
                     isArenaOpen = false;
                     currentRoom = ""; 
                     document.getElementById('setup-screen').style.display = 'none';
@@ -250,6 +289,9 @@
                     
                     document.getElementById('header-subtitle').innerText = "After-Class Homework Zone";
                     document.getElementById('homework-screen').style.display = 'block';
+                    
+                    // Dispara a leitura do Obsidian quando a tela de dever de casa entra em ação
+                    fetchObsidianHomework();
                 }
             } catch (e) { console.error("Gatekeeper error:", e); }
         }
