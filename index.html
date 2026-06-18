@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Cup Predictor - Realtime Classroom</title>
+    <title>World Cup Predictor & Homework</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
@@ -14,6 +14,7 @@
             --dark-blue: #1a237e;
             --gold: #ffd600;
             --white: #ffffff;
+            --purple: #4a148c;
         }
         * { box-sizing: border-box; }
         body {
@@ -24,9 +25,26 @@
             background-color: var(--dark-blue); color: white; width: 100%; padding: 20px;
             text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
+        
+        /* TELA DE HOMEWORK (APARECE QUANDO FECHADO) */
+        .homework-screen {
+            background: white; padding: 35px; border-radius: 15px; margin: 30px auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 95%; max-width: 700px;
+            display: none;
+        }
+        .homework-header {
+            display: flex; align-items: center; gap: 15px; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px;
+        }
+        .homework-header i { color: var(--purple); font-size: 32px; }
+        .homework-text { line-height: 1.6; font-size: 15px; color: #444; background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid var(--purple); }
+        .vocab-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .vocab-item { background: #f3e5f5; padding: 10px; border-radius: 6px; font-size: 14px; }
+
+        /* TELA DE LOGIN (SÓ APARECE SE ESTIVER ABERTO) */
         .setup-screen {
             background: white; padding: 30px; border-radius: 15px; margin-top: 40px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;
+            display: none;
         }
         input[type="text"] {
             width: 100%; padding: 12px; margin: 10px 0 20px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
@@ -35,6 +53,8 @@
             background: var(--dark-blue); color: white; border: none; padding: 12px 24px;
             border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%;
         }
+
+        /* CONTEÚDO PRINCIPAL DO JOGO */
         .game-container {
             max-width: 1200px; width: 95%; margin: 20px auto;
             display: grid; grid-template-columns: 300px 1fr; gap: 20px; display: none;
@@ -66,12 +86,41 @@
 <body>
 
     <header>
-        <h1>🏆 World Cup Predictor 2026</h1>
-        <p>Realtime Board for Speaking Practice</p>
+        <h1>🏆 World Cup Hub 2026</h1>
+        <p id="header-subtitle">Classroom Arena & Homework</p>
         <div id="active-room-display" class="room-tag" style="display:none;"></div>
     </header>
 
-    <!-- TELA 1: LOGIN DA SALA -->
+    <div class="homework-screen" id="homework-screen">
+        <div class="homework-header">
+            <i class="fa-solid fa-book-open"></i>
+            <div>
+                <h2 style="margin:0; color:var(--purple);">After-Class Homework (A2-B1)</h2>
+                <small style="color:#777;">Read the text and prepare your arguments for next class!</small>
+            </div>
+        </div>
+        
+        <h3>📝 Reading Practice</h3>
+        <p class="homework-text">
+            The World Cup is the most prestigious football tournament in the world. Every four years, national teams compete fiercely to win the famous trophy. While traditional giants like Brazil and France are always expected to be contenders, modern sports science and unpredictable strategies allow underdog teams to surprise everyone. Achieving victory requires tactical discipline and exceptional teamwork.
+        </p>
+
+        <h3>💡 Target Vocabulary</h3>
+        <div class="vocab-list">
+            <div class="vocab-item"><b>Prestigious:</b> Highly respected / De prestígio.</div>
+            <div class="vocab-item"><b>Compete fiercely:</b> To play with a lot of strength and passion.</div>
+            <div class="vocab-item"><b>Contenders:</b> Teams with a real chance to win.</div>
+            <div class="vocab-item"><b>Underdog:</b> A team that is not expected to win.</div>
+        </div>
+
+        <h3 style="margin-top:25px;">💬 Challenge Questions</h3>
+        <ul style="padding-left: 20px; line-height: 1.8; font-size: 14px;">
+            <li>Which team do you consider the biggest <b>contender</b> for 2026? Why?</li>
+            <li>Can you name a famous <b>underdog</b> team from past World Cups?</li>
+            <li>Write 3 sentences using the phrase "<b>compete fiercely</b>".</li>
+        </ul>
+    </div>
+
     <div class="setup-screen" id="setup-screen">
         <h2 style="margin-top:0;">Enter Arena</h2>
         <label style="font-size:12px; font-weight:700; text-align:left; display:block;">ZOOM BREAKOUT ROOM CODE</label>
@@ -79,7 +128,6 @@
         <button class="btn-primary" onclick="connectToMatch()">Join Realtime Board ➔</button>
     </div>
 
-    <!-- TELA 2: QUADRO INTERATIVO -->
     <div class="container game-container" id="game-container">
         
         <div class="selection-panel">
@@ -148,10 +196,11 @@
     </div>
 
     <script type="module">
-        const FIREBASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/worldcup/";
+        const FIREBASE_BASE = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
+        const FIREBASE_URL = `${FIREBASE_BASE}worldcup/`;
         let currentRoom = "";
+        let isArenaOpen = false;
 
-        // Inicializa listeners de arrastar para o HTML local
         const draggables = document.querySelectorAll('.draggable');
         draggables.forEach(d => {
             d.addEventListener('dragstart', (e) => {
@@ -161,19 +210,16 @@
 
         window.allowDrop = function(e) { e.preventDefault(); };
 
-        // Quando o aluno solta o card, salva a nova posição direto no Firebase
         window.drop = async function(e) {
             e.preventDefault();
+            if (!isArenaOpen) return;
             const id = e.dataTransfer.getData('text/plain');
             let targetZone = e.target;
-            
             if (!targetZone.classList.contains('zone-content') && !targetZone.id === 'bench') {
                 targetZone = targetZone.querySelector('.zone-content') || targetZone.closest('.drop-zone, .selection-panel').querySelector('.zone-content, #bench');
             }
-            
             if (targetZone && currentRoom) {
                 const targetZoneId = targetZone.id;
-                // Atualiza o Firebase dizendo para qual zona esse item foi
                 await fetch(`${FIREBASE_URL}${currentRoom}/${id}.json`, {
                     method: 'PUT',
                     body: JSON.stringify(targetZoneId)
@@ -181,8 +227,38 @@
             }
         };
 
-        // Conecta à sala e monitora mudanças em tempo real
+        // Porteiro Dinâmico: Gerencia o que exibe na tela baseado no Firebase
+        async function checkGatekeeper() {
+            try {
+                const res = await fetch(`${FIREBASE_BASE}config/status.json`);
+                const status = await res.json();
+                
+                if (status === "open") {
+                    isArenaOpen = true;
+                    document.getElementById('homework-screen').style.display = 'none';
+                    document.getElementById('header-subtitle').innerText = "Classroom Arena";
+                    if (!currentRoom) {
+                        document.getElementById('setup-screen').style.display = 'block';
+                    }
+                } else {
+                    // MUDANÇA AUTOMÁTICA PARA HOMEWORK
+                    isArenaOpen = false;
+                    currentRoom = ""; 
+                    document.getElementById('setup-screen').style.display = 'none';
+                    document.getElementById('game-container').style.display = 'none';
+                    document.getElementById('active-room-display').style.display = 'none';
+                    
+                    document.getElementById('header-subtitle').innerText = "After-Class Homework Zone";
+                    document.getElementById('homework-screen').style.display = 'block';
+                }
+            } catch (e) { console.error("Gatekeeper error:", e); }
+        }
+
+        checkGatekeeper();
+        setInterval(checkGatekeeper, 3000);
+
         window.connectToMatch = function() {
+            if (!isArenaOpen) return;
             const rInput = document.getElementById('room-input').value.trim().toLowerCase();
             if(!rInput) return alert("Type a room code!");
             
@@ -192,26 +268,23 @@
             document.getElementById('active-room-display').style.display = 'inline-block';
             document.getElementById('active-room-display').innerText = `LIVE BOARD: ${currentRoom.toUpperCase()}`;
             
-            // Inicia o pooling de sincronização em tempo real (a cada 1.5 segundos)
             syncLoop();
             setInterval(syncLoop, 1500);
         };
 
         async function syncLoop() {
-            if(!currentRoom) return;
+            if(!currentRoom || !isArenaOpen) return;
             try {
                 const res = await fetch(`${FIREBASE_URL}${currentRoom}.json`);
                 const data = await res.json();
                 
                 if(data) {
-                    // Limpa todas as zonas para re-renderizar o estado vindo do servidor
                     document.getElementById('bench').innerHTML = '';
                     document.getElementById('champion').innerHTML = '';
                     document.getElementById('favorites').innerHTML = '';
                     document.getElementById('dark-horses').innerHTML = '';
                     document.getElementById('mvps').innerHTML = '';
 
-                    // Dicionário estático para recriar os elementos no lugar certo
                     const itemData = {
                         bra: { txt: "🇧🇷 Brazil", class: "" },
                         fra: { txt: "🇫🇷 France", class: "" },
@@ -228,7 +301,6 @@
                         yamal: { txt: "⭐ Lamine Yamal", class: "player" }
                     };
 
-                    // Coloca cada item na zona que está salva no Firebase
                     Object.keys(itemData).forEach(itemId => {
                         const targetZone = data[itemId] || "bench"; 
                         const container = document.getElementById(targetZone);
