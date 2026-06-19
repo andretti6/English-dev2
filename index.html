@@ -124,7 +124,8 @@
 
         /* HOMEWORK */
         .homework-layout-cyber { background: var(--bg-panel); border: 2px solid var(--border-color); border-radius: 16px; padding: 35px; margin-top: 10px; }
-        .hw-cyber-title-box { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }
+        .hw-cyber-title-box { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .hw-cyber-title-box h2 { font-size: 1.5rem; }
         .hw-cyber-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
         .hw-cyber-card h3 { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 15px; }
         .hw-sticky-print-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
@@ -134,6 +135,20 @@
         
         .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
         .toast { background: var(--bg-panel); border: 1px solid var(--neon-green); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #fff; }
+
+        /* Print styles */
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; background: white; color: black; }
+            #print-area .hw-cyber-card { background: #f8f9fa; border: 1px solid #dee2e6; }
+            #print-area .hw-cyber-reading { background: #f1f3f5; color: #212529; }
+            #print-area .highlight-word { background: #fff3cd; border-bottom: 2px solid #ffc107; color: #856404; }
+            #print-area .print-sticky { background: #e9ecef !important; color: #212529 !important; border: 1px solid #ced4da; }
+            #print-area .hw-cyber-title-box { border-bottom: 2px solid #dee2e6; }
+            #print-area .hw-cyber-card h3 { color: #0d6efd; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body>
@@ -255,28 +270,51 @@
         </div>
 
         <div id="scr-3" class="os-screen">
-            <div style="margin-bottom:15px;"><button class="btn-secondary" onclick="toggleScreen(2)"><i class="fa-solid fa-arrow-left"></i> Return to Live Arena</button></div>
-            <div class="homework-layout-cyber">
-                <div class="hw-cyber-title-box">
-                    <h2><i class="fa-solid fa-trophy" style="color:var(--neon-yellow);"></i> MISSION HOMEWORK</h2>
-                </div>
-                <div class="hw-cyber-card">
-                    <h3><i class="fa-solid fa-book-open"></i> Reading Assignment</h3>
-                    <div class="hw-cyber-reading">
-                        The <span class="highlight-word">FIFA World Cup</span> is the biggest international football competition. It happens every four years and brings together the best <span class="highlight-word">national teams</span> from around the world. Millions of <span class="highlight-word">fans</span> watch the matches, <span class="highlight-word">support</span> their countries, and <span class="highlight-word">celebrate</span> different cultures. The tournament also creates opportunities for <span class="highlight-word">tourism</span>, business, and new sports technology inside the <span class="highlight-word">stadium</span>. Who will be the next <span class="highlight-word">champion</span>?
+            <div style="margin-bottom:15px; display: flex; gap: 10px; flex-wrap: wrap;" class="no-print">
+                <button class="btn-secondary" onclick="toggleScreen(2)"><i class="fa-solid fa-arrow-left"></i> Return to Live Arena</button>
+                <button class="btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Homework</button>
+            </div>
+            <div id="print-area">
+                <div class="homework-layout-cyber">
+                    <div class="hw-cyber-title-box">
+                        <h2><i class="fa-solid fa-trophy" style="color:var(--neon-yellow);"></i> MISSION HOMEWORK</h2>
+                        <span style="font-size: 12px; color: var(--text-muted);">Generated from your Arena contributions</span>
                     </div>
-                </div>
-                <div class="hw-cyber-card">
-                    <h3><i class="fa-solid fa-print"></i> Vocabulary Cards to Collect</h3>
-                    <div class="hw-sticky-print-grid">
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Tournament</div></div>
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">National team</div></div>
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Support</div></div>
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Celebrate</div></div>
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Tourism</div></div>
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Stadium</div></div>
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Fans</div></div>
-                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Champion</div></div>
+
+                    <!-- Arena Ideas / Notes section -->
+                    <div class="hw-cyber-card">
+                        <h3><i class="fa-solid fa-lightbulb"></i> Arena Ideas / Notes</h3>
+                        <div class="hw-sticky-print-grid" id="homework-ideas-container">
+                            <div style="grid-column: 1/-1; color: var(--text-muted); font-size: 14px; text-align: center; padding: 20px;">Add ideas in the Live Arena to see them here.</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Vocabulary Builder section -->
+                    <div class="hw-cyber-card">
+                        <h3><i class="fa-solid fa-spell-check"></i> Live Vocabulary Builder</h3>
+                        <div class="hw-sticky-print-grid" id="homework-vocab-container">
+                            <div style="grid-column: 1/-1; color: var(--text-muted); font-size: 14px; text-align: center; padding: 20px;">Add vocabulary in the Live Arena to see them here.</div>
+                        </div>
+                    </div>
+
+                    <div class="hw-cyber-card">
+                        <h3><i class="fa-solid fa-book-open"></i> Reading Assignment</h3>
+                        <div class="hw-cyber-reading">
+                            The <span class="highlight-word">FIFA World Cup</span> is the biggest international football competition. It happens every four years and brings together the best <span class="highlight-word">national teams</span> from around the world. Millions of <span class="highlight-word">fans</span> watch the matches, <span class="highlight-word">support</span> their countries, and <span class="highlight-word">celebrate</span> different cultures. The tournament also creates opportunities for <span class="highlight-word">tourism</span>, business, and new sports technology inside the <span class="highlight-word">stadium</span>. Who will be the next <span class="highlight-word">champion</span>?
+                        </div>
+                    </div>
+                    <div class="hw-cyber-card">
+                        <h3><i class="fa-solid fa-print"></i> Vocabulary Cards to Collect</h3>
+                        <div class="hw-sticky-print-grid">
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">Tournament</div></div>
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">National team</div></div>
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">Support</div></div>
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">Celebrate</div></div>
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">Tourism</div></div>
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">Stadium</div></div>
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">Fans</div></div>
+                            <div class="print-sticky card-vocab"><div style="font-weight:700;">Champion</div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -295,7 +333,6 @@
         let myUsername = "";
         let isTeacherMode = false;
 
-        // Ativa os estados de conexão visual logo ao carregar
         const statusTag = document.getElementById("connection-status-tag");
         statusTag.style.background = "#38bdf8";
         statusTag.innerHTML = `<span style="width:6px; height:6px; background:#fff; border-radius:50%; display:inline-block;"></span> DATABASE LIVE`;
@@ -312,7 +349,6 @@
 
             myUsername = nameInput;
 
-            // Se for Aluno (Student), registra presença no Firebase
             if (!isTeacherMode) {
                 push(ref(db, `${currentRoom}/users`), {
                     name: myUsername,
@@ -320,46 +356,66 @@
                 });
                 document.getElementById("secret-mission-container").style.display = "block";
             } else {
-                // Se for Teacher, esconde o painel de missão secreta para não precisar mentorear ninguém
                 document.getElementById("secret-mission-container").style.display = "none";
             }
 
-            // Exibe o avatar correspondente no cabeçalho
             const avatarContainer = document.getElementById("header-avatar-container");
             const avatarColor = isTeacherMode ? "#d97706" : "#4f46e5";
             const roleTitle = isTeacherMode ? "Teacher" : "Student";
             avatarContainer.innerHTML = `<div class="user-avatar" style="background:${avatarColor};" title="${myUsername} (${roleTitle})">${myUsername.substring(0,2).toUpperCase()}</div>`;
 
-            // Muda de tela
             toggleScreen(2);
             startRealtimeListeners();
         };
 
-        // Escuta e renderiza dados dinâmicos do banco de dados
         function startRealtimeListeners() {
-            // 1. Escuta por IDEAS
+            // Ideas listener
             onValue(ref(db, `${currentRoom}/ideas`), (snapshot) => {
                 const canvas = document.getElementById("ideas-realtime-canvas");
+                const homeworkContainer = document.getElementById("homework-ideas-container");
                 canvas.innerHTML = "";
+                let ideasHTML = "";
+                
                 if(snapshot.exists()) {
                     Object.entries(snapshot.val()).forEach(([key, val]) => {
                         canvas.appendChild(createCardElement(key, val.text, val.author, "card-c1", "ideas"));
+                        ideasHTML += `
+                            <div class="print-sticky" style="background:#062f4f; border:1px solid #0284c7;">
+                                <div style="font-weight:600; font-size:13px;">${val.text}</div>
+                                <div style="font-size:10px; color:rgba(255,255,255,0.6); margin-top:6px;">By: ${val.author}</div>
+                            </div>
+                        `;
                     });
+                    homeworkContainer.innerHTML = ideasHTML;
+                } else {
+                    homeworkContainer.innerHTML = `<div style="grid-column:1/-1; color:var(--text-muted); font-size:14px; text-align:center; padding:20px;">No ideas added yet.</div>`;
                 }
             });
 
-            // 2. Escuta por VOCABULARY
+            // Vocabulary listener
             onValue(ref(db, `${currentRoom}/vocabulary`), (snapshot) => {
                 const canvas = document.getElementById("vocab-realtime-canvas");
+                const homeworkContainer = document.getElementById("homework-vocab-container");
                 canvas.innerHTML = "";
+                let vocabHTML = "";
+
                 if(snapshot.exists()) {
                     Object.entries(snapshot.val()).forEach(([key, val]) => {
                         canvas.appendChild(createCardElement(key, val.text, val.author, "card-vocab", "vocabulary"));
+                        vocabHTML += `
+                            <div class="print-sticky" style="background:#2e1c0c; border:1px solid #d97706;">
+                                <div style="font-weight:600; font-size:13px;">${val.text}</div>
+                                <div style="font-size:10px; color:rgba(255,255,255,0.6); margin-top:6px;">By: ${val.author}</div>
+                            </div>
+                        `;
                     });
+                    homeworkContainer.innerHTML = vocabHTML;
+                } else {
+                    homeworkContainer.innerHTML = `<div style="grid-column:1/-1; color:var(--text-muted); font-size:14px; text-align:center; padding:20px;">No vocabulary added yet.</div>`;
                 }
             });
 
-            // 3. Escuta por USUÁRIOS ONLINE (Exclui professores automaticamente)
+            // Users listener
             onValue(ref(db, `${currentRoom}/users`), (snapshot) => {
                 const chipsRow = document.getElementById("squad-chips-list");
                 const targetDisplay = document.getElementById("secret-target-display");
@@ -377,7 +433,6 @@
                             </div>`;
                     });
 
-                    // Lógica de Missão Secreta Dinâmica (Ignora você mesmo)
                     let availablePartners = dynamicPartnersList.filter(name => name !== myUsername);
                     if(availablePartners.length > 0) {
                         targetDisplay.innerHTML = `<i class="fa-solid fa-bullseye" style="color:var(--neon-pink)"></i> Guide and track <strong>${availablePartners[0]}</strong>'s production!`;
@@ -391,7 +446,6 @@
             });
         }
 
-        // Envia dados (Nota ou Palavra) para o Firebase Realtime Database
         window.sendDataToFirebase = function(path, inputId) {
             const inputField = document.getElementById(inputId);
             const contentText = inputField.value.trim();
@@ -404,15 +458,13 @@
                 timestamp: Date.now()
             });
 
-            inputField.value = ""; // Limpa o campo
+            inputField.value = "";
         };
 
-        // Deleta dados direto no Firebase
         window.deleteFirebaseItem = function(path, key) {
             remove(ref(db, `${currentRoom}/${path}/${key}`));
         };
 
-        // Reseta o servidor completamente caso queira limpar a lousa para a próxima aula
         window.clearServerRoom = function() {
             if(confirm("Are you sure you want to completely erase this room's records?")) {
                 remove(ref(db, currentRoom));
@@ -421,7 +473,6 @@
             }
         };
 
-        // Auxiliar UI
         function createCardElement(key, text, author, cssClass, databasePath) {
             const div = document.createElement("div");
             div.className = `game-idea-card ${cssClass}`;
@@ -436,7 +487,6 @@
     </script>
 
     <script>
-        // Funções de alternar interface visual simples
         function toggleScreen(screenNum) {
             document.querySelectorAll('.os-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(`scr-${screenNum}`).classList.add('active');
