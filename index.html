@@ -1,47 +1,451 @@
-<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>IdeaQuest Hub - AI Edition</title>    <link rel="preconnect" href="https://fonts.googleapis.com">    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">    <style>        :root {            --bg-main: #0c0b1e;            --bg-panel: #11112b;            --bg-card: #16163f;            --border-color: rgba(255, 255, 255, 0.08);            --text-white: #ffffff;            --text-muted: #8081b3;            --neon-blue: #38bdf8;            --neon-purple: #c084fc;            --neon-pink: #f43f5e;            --neon-green: #10b981;            --neon-yellow: #fbbf24;            --neon-orange: #fb923c;            --neon-teal: #2dd4bf;            --mentor-accent: #a78bfa;            --mentor-bg: rgba(167, 139, 250, 0.06);            --mentor-border: rgba(167, 139, 250, 0.25);        }        * { box-sizing: border-box; margin: 0; padding: 0; }        body {            background-color: var(--bg-main); color: var(--text-white);            font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column;        }
-        .os-header {            background: rgba(17, 17, 43, 0.95);            border-bottom: 1px solid var(--border-color);            padding: 12px 24px;            display: flex; justify-content: space-between; align-items: center;            position: sticky; top: 0; z-index: 100;            backdrop-filter: blur(12px);        }        .os-logo { font-family: 'Courier Prime', monospace; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: var(--text-white); }        .live-tag { background: #ef4444; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px; animation: pulse-live 2s infinite; }        @keyframes pulse-live { 0%,100%{opacity:1} 50%{opacity:0.7} }
-        .main-container { max-width: 1500px; width: 100%; margin: 0 auto; padding: 20px; flex: 1; }        .os-screen { display: none; animation: fadeIn 0.25s ease forwards; }        .os-screen.active { display: block; }        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-        .setup-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; max-width: 500px; margin: 40px auto; }        input[type="text"] {            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);            padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 15px;        }        input[type="text"]:focus { border-color: var(--neon-blue); outline: none; }        .input-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px; }
-        .btn-primary { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; font-size: 14px; }        .btn-primary:hover { filter: brightness(1.2); transform: translateY(-1px); }        .btn-secondary { background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-color); padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 14px; }        .btn-danger { background: transparent; color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); padding: 10px 15px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
-        .avatar-group { display: flex; align-items: center; gap: 6px; }        .user-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: white; border: 2px solid rgba(255,255,255,0.15); cursor: pointer; transition: transform 0.2s; }        .user-avatar:hover { transform: scale(1.1); }
-        /* MISSION BAR */        .mission-top-bar {            background: var(--bg-panel);            border: 1px solid rgba(192, 132, 252, 0.2);            border-radius: 14px;            padding: 20px 24px;            margin-bottom: 18px;            display: flex;            align-items: center;            gap: 20px;        }        .mission-top-bar .mission-icon-big { font-size: 32px; flex-shrink: 0; }        .mission-top-bar .mission-text-display { font-size: 19px; font-weight: 700; color: white; line-height: 1.3; }        .mission-top-bar .mission-desc { color: var(--text-muted); font-size: 12px; margin-top: 4px; }        .section-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-purple); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-        /* BOOSTERS */        .boosters-top-row {             display: grid;             grid-template-columns: repeat(3, 1fr);             gap: 14px;             margin-bottom: 18px;         }        .booster-card {             background: var(--bg-panel);             border: 2px solid var(--border-color);             border-radius: 14px;             padding: 20px 22px;             cursor: pointer;             transition: all 0.25s ease;             display: flex;             flex-direction: column;            align-items: flex-start;            gap: 10px;            min-height: 100px;            justify-content: center;            position: relative;            overflow: hidden;        }        .booster-card::before {            content: '';            position: absolute;            top: 0;            left: 0;            right: 0;            height: 3px;            transition: all 0.3s ease;        }        .booster-card:hover {             transform: translateY(-4px);             background: var(--bg-card);             box-shadow: 0 12px 35px rgba(0,0,0,0.4);        }        .booster-card:hover::before {            height: 4px;        }        .booster-card .booster-icon {             font-size: 28px;             flex-shrink: 0;         }        .booster-card .booster-name {             font-size: 13px;             font-weight: 800;             text-transform: uppercase;             letter-spacing: 0.8px;         }        .booster-card .booster-full-text {            font-size: 14px;            color: var(--text-white);            line-height: 1.5;            font-weight: 500;        }        .booster-card-science { border-color: rgba(56, 189, 248, 0.3); }        .booster-card-science::before { background: var(--neon-blue); }        .booster-card-science .booster-name { color: var(--neon-blue); }        .booster-card-science:hover { border-color: var(--neon-blue); }
-        .booster-card-culture { border-color: rgba(251, 146, 60, 0.3); }        .booster-card-culture::before { background: var(--neon-orange); }        .booster-card-culture .booster-name { color: var(--neon-orange); }        .booster-card-culture:hover { border-color: var(--neon-orange); }
-        .booster-card-supply { border-color: rgba(16, 185, 129, 0.3); }        .booster-card-supply::before { background: var(--neon-green); }        .booster-card-supply .booster-name { color: var(--neon-green); }        .booster-card-supply:hover { border-color: var(--neon-green); }
-        .booster-alert-screen {             background: rgba(251, 191, 36, 0.06);             border: 1px dashed var(--neon-yellow);             border-radius: 12px;             padding: 16px 20px;             margin-bottom: 18px;             color: #fef08a;             font-size: 14px;             display: none;             line-height: 1.6;         }
-        /* SPLIT WORKSPACE */        .split-workspace {            display: grid;            grid-template-columns: 1fr 1fr;            gap: 18px;            margin-bottom: 18px;        }
-        .my-side-panel {            display: flex;            flex-direction: column;            gap: 14px;        }        .side-label {            font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;            padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;            margin-bottom: 4px;        }        .side-label-me { background: rgba(56,189,248,0.1); color: var(--neon-blue); border: 1px solid rgba(56,189,248,0.2); }        .side-label-partner { background: var(--mentor-bg); color: var(--mentor-accent); border: 1px solid var(--mentor-border); }
-        .workspace-block { background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.07); padding: 16px; border-radius: 12px; }        .mural-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }        .mural-main-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); letter-spacing: 1px; }        .vocab-main-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-orange); letter-spacing: 1px; }
-        .mural-canvas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; min-height: 60px; }        .game-idea-card { border-radius: 10px; padding: 13px; min-height: 110px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.2s; }        .game-idea-card:hover { transform: scale(1.02); }        .game-idea-text { font-size: 12.5px; font-weight: 600; color: white; line-height: 1.4; overflow-y: auto; max-height: 65px; word-break: break-word; }        .game-idea-author { font-size: 10px; color: rgba(255,255,255,0.65); margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 6px; display: flex; justify-content: space-between; align-items: center; }        .card-actions { display: flex; gap: 10px; font-size: 11px; }        .card-actions i { cursor: pointer; opacity: 0.6; transition: opacity 0.2s; }        .card-actions i:hover { opacity: 1; }        .like-btn { color: var(--neon-pink); display: inline-flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 700; }
-        .card-c1 { background: #7c2d12; border: 1px solid #ea580c; }        .card-c2 { background: #4c0519; border: 1px solid #be123c; }        .card-c3 { background: #062f4f; border: 1px solid #0284c7; }        .card-c4 { background: #064e3b; border: 1px solid #059669; }        .card-vocab { background: #2e1c0c; border: 1px solid #d97706; }
-        .mural-input-bar { display: flex; gap: 8px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }        .mural-input-bar input { margin-bottom: 0; font-size: 13px; }        .mural-input-bar .btn-primary { padding: 10px 14px; font-size: 12px; white-space: nowrap; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdeaQuest Hub - Realtime Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-main: #0c0b1e;
+            --bg-panel: #11112b;
+            --bg-card: #16163f;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-white: #ffffff;
+            --text-muted: #8081b3;
+            --neon-blue: #38bdf8;
+            --neon-purple: #c084fc;
+            --neon-pink: #f43f5e;
+            --neon-green: #10b981;
+            --neon-yellow: #fbbf24;
+            --neon-orange: #fb923c;
+            --neon-teal: #2dd4bf;
+            --mentor-accent: #a78bfa;
+            --mentor-bg: rgba(167, 139, 250, 0.06);
+            --mentor-border: rgba(167, 139, 250, 0.25);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-main); color: var(--text-white);
+            font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column;
+        }
+        .os-header {
+            background: rgba(17, 17, 43, 0.95); border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px);
+        }
+        .os-logo { font-family: 'Courier Prime', monospace; font-size: 15px; font-weight: 800; letter-spacing: 1px; color: var(--text-white); }
+        .live-tag { background: #10b981; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+        .main-container { max-width: 1500px; width: 100%; margin: 0 auto; padding: 20px; flex: 1; }
+        .os-screen { display: none; animation: fadeIn 0.25s ease forwards; }
+        .os-screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .setup-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; max-width: 500px; margin: 40px auto; }
+        input[type="text"] {
+            background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 14px; width: 100%; margin-bottom: 15px;
+        }
+        input[type="text"]:focus { border-color: var(--neon-blue); outline: none; }
+        .input-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px; }
+        .btn-primary { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; font-size: 14px; }
+        .btn-primary:hover { filter: brightness(1.2); transform: translateY(-1px); }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-color); padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; font-size: 14px; }
+        .btn-teacher { background: linear-gradient(135deg, #b45309, #d97706); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; font-family: inherit; font-size: 14px; }
+        .btn-danger { background: transparent; color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.2); padding: 10px 15px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .avatar-group { display: flex; align-items: center; gap: 6px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: white; border: 2px solid rgba(255,255,255,0.15); }
+        
+        /* WORKSPACE STYLES */
+        .mission-top-bar { background: var(--bg-panel); border: 1px solid rgba(192, 132, 252, 0.2); border-radius: 14px; padding: 20px 24px; margin-bottom: 18px; display: flex; align-items: center; gap: 20px; }
+        .mission-icon-big { font-size: 32px; flex-shrink: 0; }
+        .mission-text-display { font-size: 19px; font-weight: 700; color: white; line-height: 1.3; }
+        .mission-desc { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        .section-tag { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-purple); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        
+        .boosters-top-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+        .booster-card { background: var(--bg-panel); border: 2px solid var(--border-color); border-radius: 14px; padding: 20px 22px; cursor: pointer; transition: all 0.25s ease; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 100px; justify-content: center; position: relative; overflow: hidden; }
+        .booster-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+        .booster-card:hover { transform: translateY(-4px); background: var(--bg-card); }
+        .booster-card-science { border-color: rgba(56, 189, 248, 0.3); } .booster-card-science::before { background: var(--neon-blue); }
+        .booster-card-culture { border-color: rgba(251, 146, 60, 0.3); } .booster-card-culture::before { background: var(--neon-orange); }
+        .booster-card-supply { border-color: rgba(16, 185, 129, 0.3); } .booster-card-supply::before { background: var(--neon-green); }
+        .booster-card .booster-icon { font-size: 28px; }
+        .booster-card .booster-name { font-size: 13px; font-weight: 800; text-transform: uppercase; }
+        .booster-card .booster-full-text { font-size: 14px; color: var(--text-white); }
+        .booster-alert-screen { background: rgba(251, 191, 36, 0.06); border: 1px dashed var(--neon-yellow); border-radius: 12px; padding: 16px 20px; margin-bottom: 18px; color: #fef08a; font-size: 14px; display: none; }
+
+        .split-workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+        .my-side-panel { display: flex; flex-direction: column; gap: 14px; }
+        .side-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .side-label-me { background: rgba(56,189,248,0.1); color: var(--neon-blue); border: 1px solid rgba(56,189,248,0.2); }
+        .side-label-partner { background: var(--mentor-bg); color: var(--mentor-accent); border: 1px solid var(--mentor-border); }
+        
+        .workspace-block { background: rgba(255,255,255,0.015); border: 1px solid rgba(255,255,255,0.07); padding: 16px; border-radius: 12px; }
+        .mural-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .mural-main-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); letter-spacing: 1px; }
+        .vocab-main-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-orange); letter-spacing: 1px; }
+        
+        .mural-canvas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; min-height: 60px; }
+        .game-idea-card { border-radius: 10px; padding: 13px; min-height: 110px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .game-idea-text { font-size: 12.5px; font-weight: 600; color: white; line-height: 1.4; overflow-y: auto; max-height: 65px; word-break: break-word; }
+        .game-idea-author { font-size: 10px; color: rgba(255,255,255,0.65); margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 6px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .delete-btn { position: absolute; top: 8px; right: 8px; color: rgba(255,255,255,0.4); cursor: pointer; transition: color 0.2s; font-size: 12px; }
+        .delete-btn:hover { color: #f43f5e; }
+
+        .card-c1 { background: #062f4f; border: 1px solid #0284c7; }
+        .card-vocab { background: #2e1c0c; border: 1px solid #d97706; }
+        
+        .mural-input-bar { display: flex; gap: 8px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); }
+        .mural-input-bar input { margin-bottom: 0; font-size: 13px; }
+        .mural-input-bar .btn-primary { padding: 10px 14px; font-size: 12px; white-space: nowrap; }
         .ideas-status-tag { font-size: 10px; font-weight: 700; color: var(--neon-green); }
-        .partner-side-panel {            display: flex;            flex-direction: column;            gap: 14px;        }
-        .partner-mural-view {            background: var(--mentor-bg);            border: 1px solid var(--mentor-border);            border-radius: 12px;            padding: 16px;            flex: 1;        }        .partner-mural-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--mentor-accent); letter-spacing: 1px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }        .partner-canvas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-height: 60px; margin-bottom: 10px; }        .partner-empty { color: var(--text-muted); font-size: 12px; padding: 20px; text-align: center; grid-column: 1/-1; }
-        .secret-mentor-panel {            background: linear-gradient(135deg, rgba(109, 40, 217, 0.12), rgba(167, 139, 250, 0.06));            border: 1px solid var(--mentor-border);            border-radius: 12px;            padding: 18px;            position: relative;            overflow: hidden;        }        .secret-mentor-panel::before {            content: '';            position: absolute; top: 0; left: 0; right: 0; height: 2px;            background: linear-gradient(90deg, #7c3aed, #a78bfa, #c084fc, #7c3aed);            background-size: 200%;            animation: shimmer-line 3s linear infinite;        }        @keyframes shimmer-line { 0%{background-position:0%} 100%{background-position:200%} }
-        .mentor-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }        .mentor-lock-icon { font-size: 16px; color: var(--neon-yellow); }        .mentor-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-yellow); }        .mentor-subtitle { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
-        .mentor-partner-name {            font-size: 13px; font-weight: 700; color: var(--mentor-accent);            background: rgba(167,139,250,0.1); border-radius: 6px; padding: 6px 10px;            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;        }
-        .mentor-checklist { display: flex; flex-direction: column; gap: 10px; }        .checklist-item {            background: rgba(0,0,0,0.25);            border: 1px solid rgba(255,255,255,0.06);            border-radius: 10px;            padding: 13px 14px;            display: flex;            gap: 12px;            align-items: flex-start;            cursor: pointer;            transition: all 0.2s;            position: relative;        }        .checklist-item:hover { border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.05); }        .checklist-item.done {            border-color: rgba(16, 185, 129, 0.3);            background: rgba(16, 185, 129, 0.05);            opacity: 0.7;        }        .check-box {            width: 20px; height: 20px; border-radius: 5px; border: 2px solid rgba(255,255,255,0.2);            flex-shrink: 0; display: flex; align-items: center; justify-content: center;            font-size: 11px; transition: all 0.2s; margin-top: 1px;            background: rgba(0,0,0,0.2);        }        .checklist-item.done .check-box {            background: var(--neon-green); border-color: var(--neon-green); color: white;        }        .check-content { flex: 1; }        .check-action { font-size: 12.5px; font-weight: 600; color: white; line-height: 1.4; margin-bottom: 4px; }        .checklist-item.done .check-action { color: var(--neon-green); text-decoration: line-through; opacity: 0.7; }        .check-tip { font-size: 11px; color: var(--text-muted); line-height: 1.4; }        .check-xp { font-size: 10px; font-weight: 700; color: var(--neon-yellow); margin-top: 5px; }
-        .mentor-score {            margin-top: 14px; padding: 10px 14px; background: rgba(0,0,0,0.2);            border-radius: 8px; display: flex; justify-content: space-between; align-items: center;        }        .mentor-score-label { font-size: 11px; color: var(--text-muted); }        .mentor-score-value { font-size: 16px; font-weight: 800; color: var(--neon-yellow); font-family: monospace; }
-        .mentor-completed-banner {            display: none; margin-top: 12px; padding: 12px; background: rgba(16,185,129,0.1);            border: 1px solid rgba(16,185,129,0.3); border-radius: 8px; text-align: center;            font-size: 13px; font-weight: 700; color: var(--neon-green);        }
-        .bottom-bar {            display: grid;            grid-template-columns: 1fr auto;            gap: 16px;            align-items: center;            background: var(--bg-panel);            padding: 14px 20px;            border-radius: 12px;            border: 1px solid var(--border-color);            margin-top: 4px;        }        .bottom-bar-info { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }        .squad-scores-inline { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }        .squad-player-chip {            display: flex; align-items: center; gap: 6px;            background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);            border-radius: 20px; padding: 5px 12px; font-size: 12px;        }        .squad-player-dot { width: 8px; height: 8px; border-radius: 50%; }        .squad-player-pts { font-weight: 700; color: var(--neon-purple); font-family: monospace; }
-        /* SCREEN 3 - HOMEWORK */        .homework-layout-cyber { background: var(--bg-panel); border: 2px solid var(--border-color); border-radius: 16px; padding: 35px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); margin-top: 10px; }        .hw-cyber-title-box { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }        .hw-cyber-title-box h2 { font-size: 26px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }        .hw-cyber-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; }        .hw-cyber-card h3 { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); letter-spacing: 1px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }        .hw-sticky-print-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 15px; }        .print-sticky { border-radius: 8px; padding: 12px; min-height: 80px; color: white; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }        .print-sticky-text { font-size: 13px; font-weight: 700; text-align: center; margin: auto 0; }        .print-sticky-meta { font-size: 9px; opacity: 0.8; text-transform: uppercase; font-family: monospace; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 5px; margin-top: 8px; text-align: center; }        .hw-cyber-reading {             font-size: 15px;             color: #e2e8f0;             line-height: 1.8;             background: rgba(0,0,0,0.2);             padding: 20px;             border-radius: 8px;             border: 1px solid rgba(255,255,255,0.05);            white-space: pre-line;        }        .hw-cyber-reading .highlight-word {            display: inline-block;            background: rgba(251, 191, 36, 0.15);            border-bottom: 2px solid var(--neon-yellow);            padding: 0 4px;            font-weight: 700;            color: var(--neon-yellow);            cursor: help;        }        .hw-cyber-reading .highlight-word::after {            content: " 📘";            font-size: 12px;            opacity: 0.7;        }        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }        .toast {            background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 10px;            padding: 12px 16px; font-size: 13px; max-width: 300px;            animation: toast-in 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.4);        }        .toast.green { border-color: rgba(16,185,129,0.4); color: var(--neon-green); }        @keyframes toast-in { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }    </style></head><body>    <div class="toast-container" id="toastContainer"></div>
-    <div class="os-header">        <div class="os-logo">IDEAQUEST ⬡</div>        <div style="display: flex; align-items: center; gap: 15px;">            <div class="avatar-group" id="header-avatar-container"></div>            <div class="live-tag"><span style="width:6px; height:6px; background:#fff; border-radius:50%; display:inline-block;"></span> CLOUD SYNC</div>        </div>    </div>
+        
+        .partner-side-panel { display: flex; flex-direction: column; gap: 14px; }
+        .partner-mural-view { background: var(--mentor-bg); border: 1px solid var(--mentor-border); border-radius: 12px; padding: 16px; flex: 1; }
+        .partner-mural-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--mentor-accent); letter-spacing: 1px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .partner-canvas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-height: 60px; }
+        .partner-empty { color: var(--text-muted); font-size: 12px; padding: 20px; text-align: center; grid-column: 1/-1; }
+        
+        .secret-mentor-panel { background: linear-gradient(135deg, rgba(109, 40, 217, 0.12), rgba(167, 139, 250, 0.06)); border: 1px solid var(--mentor-border); border-radius: 12px; padding: 18px; }
+        .mentor-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .mentor-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--neon-yellow); }
+        .mentor-partner-name { font-size: 13px; font-weight: 700; color: var(--mentor-accent); background: rgba(167,139,250,0.1); border-radius: 6px; padding: 6px 10px; margin-bottom: 14px; }
+        .mentor-score { margin-top: 14px; padding: 10px 14px; background: rgba(0,0,0,0.2); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .mentor-score-value { font-size: 16px; font-weight: 800; color: var(--neon-yellow); font-family: monospace; }
+        
+        .bottom-bar { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; background: var(--bg-panel); padding: 14px 20px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .squad-scores-inline { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .squad-player-chip { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 20px; padding: 5px 12px; font-size: 12px; }
+        .squad-player-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* HOMEWORK */
+        .homework-layout-cyber { background: var(--bg-panel); border: 2px solid var(--border-color); border-radius: 16px; padding: 35px; margin-top: 10px; }
+        .hw-cyber-title-box { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 25px; }
+        .hw-cyber-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .hw-cyber-card h3 { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--neon-blue); margin-bottom: 15px; }
+        .hw-sticky-print-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .print-sticky { border-radius: 8px; padding: 12px; min-height: 80px; text-align: center; color: white; display: flex; flex-direction: column; justify-content: center; }
+        .hw-cyber-reading { font-size: 15px; color: #e2e8f0; line-height: 1.8; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 8px; }
+        .highlight-word { background: rgba(251, 191, 36, 0.15); border-bottom: 2px solid var(--neon-yellow); color: var(--neon-yellow); font-weight: 700; padding: 0 4px; }
+        
+        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; }
+        .toast { background: var(--bg-panel); border: 1px solid var(--neon-green); border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toastContainer"></div>
+    <div class="os-header">
+        <div class="os-logo">IDEAQUEST ⬡</div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="avatar-group" id="header-avatar-container"></div>
+            <div class="live-tag" id="connection-status-tag"><span style="width:6px; height:6px; background:#fff; border-radius:50%; display:inline-block;"></span> CONNECTING...</div>
+        </div>
+    </div>
+
     <div class="main-container">
-        <div id="scr-1" class="os-screen active">            <div style="text-align: center; margin-bottom: 25px; margin-top: 20px;">                <h1 style="font-size: 32px; font-weight: 800;">Launch Your Co-Creation Arena</h1>                <p style="color: var(--text-muted); font-size: 14px; margin-top: 5px;">Input your shared multiplayer room to synchronize devices.</p>            </div>            <div class="setup-card">                <span class="input-label">Multiplayer Room Code</span>                <input type="text" id="room-id" value="squad-english-pro">                <span class="input-label">Your Player Character Name</span>                <input type="text" id="my-name" placeholder="Type your name...">                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">                    <button class="btn-primary" style="justify-content:center;" onclick="connectToFirebaseSession()"><i class="fa-solid fa-rocket"></i> Start Game ➔</button>                    <button class="btn-danger" style="justify-content:center;" onclick="purgeFirebaseRoom()"><i class="fa-solid fa-trash-can"></i> Force Server Wipe</button>                </div>            </div>        </div>
+        <div id="scr-1" class="os-screen active">
+            <div style="text-align: center; margin-bottom: 25px; margin-top: 20px;">
+                <h1 style="font-size: 32px; font-weight: 800;">Launch Your Co-Creation Arena</h1>
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 5px;">Input your room and character name to connect live.</p>
+            </div>
+            <div class="setup-card">
+                <span class="input-label">Multiplayer Room Code</span>
+                <input type="text" id="room-id" value="squad-english-pro">
+                <span class="input-label">Your Character Name</span>
+                <input type="text" id="my-name" placeholder="Type your name...">
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                    <button class="btn-primary" style="justify-content:center;" onclick="connectToArena(false)"><i class="fa-solid fa-rocket"></i> Enter Arena (Student) ➔</button>
+                    <button class="btn-teacher" style="justify-content:center;" onclick="connectToArena(true)"><i class="fa-solid fa-graduation-cap"></i> Enter as Teacher (Invisible)</button>
+                    <button class="btn-danger" style="justify-content:center;" onclick="clearServerRoom()"><i class="fa-solid fa-trash-can"></i> Reset Room Database</button>
+                </div>
+            </div>
+        </div>
+
         <div id="scr-2" class="os-screen">
-            <div class="mission-top-bar">                <div class="mission-icon-big">⚽</div>                <div style="flex:1;">                    <div class="section-tag"><i class="fa-solid fa-earth-americas"></i> Global Mission</div>                    <div class="mission-text-display" id="obsidian-quest-title">"Change how people experience the biggest football tournament in the world!"</div>                    <div class="mission-desc">Generate radical concepts. Place your visions into the mural. Help your partner think further.</div>                </div>                <div style="text-align:right; flex-shrink:0;">                    <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Ideas Pool</div>                    <div style="font-size:28px; font-weight:800; color:var(--neon-green); font-family:monospace;" id="sidebar-counter-big">0</div>                    <div style="height:4px; background:rgba(255,255,255,0.05); border-radius:99px; width:80px; margin-top:6px;">                        <div style="height:100%; background:var(--neon-green); border-radius:99px; transition: width 0.4s;" id="sidebar-bar-fill"></div>                    </div>                </div>            </div>
-            <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:1px; margin-bottom:10px;"><i class="fa-solid fa-bolt"></i> Topic Boosters — Click to Explore</div>            <div class="boosters-top-row" id="boosters-box-row">                <div class="booster-card booster-card-science" onclick="showBoosterAlert('⚽ Sports', 'Will technology, VAR, and AI make the World Cup fairer or less exciting?', 'var(--neon-blue)')">                    <div style="display:flex; align-items:center; gap:14px; width:100%;">                        <span class="booster-icon">⚽</span>                        <div style="flex:1;">                            <div class="booster-name">Sports</div>                            <div class="booster-full-text">Will technology, VAR, and AI make the World Cup fairer or less exciting?</div>                        </div>                    </div>                </div>                <div class="booster-card booster-card-culture" onclick="showBoosterAlert('🌍 Culture', 'How does the World Cup bring people from different countries together?', 'var(--neon-orange)')">                    <div style="display:flex; align-items:center; gap:14px; width:100%;">                        <span class="booster-icon">🌍</span>                        <div style="flex:1;">                            <div class="booster-name">Culture</div>                            <div class="booster-full-text">How does the World Cup bring people from different countries together?</div>                        </div>                    </div>                </div>                <div class="booster-card booster-card-supply" onclick="showBoosterAlert('💰 Business', 'How does hosting the World Cup change a country\'s economy, tourism, and cities?', 'var(--neon-green)')">                    <div style="display:flex; align-items:center; gap:14px; width:100%;">                        <span class="booster-icon">💰</span>                        <div style="flex:1;">                            <div class="booster-name">Business</div>                            <div class="booster-full-text">How does hosting the World Cup change a country's economy, tourism, and cities?</div>                        </div>                    </div>                </div>            </div>
+            <div class="mission-top-bar">
+                <div class="mission-icon-big">⚽</div>
+                <div style="flex:1;">
+                    <div class="section-tag"><i class="fa-solid fa-earth-americas"></i> Global Mission</div>
+                    <div class="mission-text-display">"Change how people experience the biggest football tournament in the world!"</div>
+                </div>
+            </div>
+
+            <div class="boosters-top-row">
+                <div class="booster-card booster-card-science" onclick="showBooster('⚽ Sports', 'Will technology, VAR, and AI make the World Cup fairer or less exciting?')">
+                    <span class="booster-icon">⚽</span>
+                    <div class="booster-name">Sports</div>
+                    <div class="booster-full-text">Will technology, VAR, and AI make the World Cup fairer or less exciting?</div>
+                </div>
+                <div class="booster-card booster-card-culture" onclick="showBooster('🌍 Culture', 'How does the World Cup bring people from different countries together?')">
+                    <span class="booster-icon">🌍</span>
+                    <div class="booster-name">Culture</div>
+                    <div class="booster-full-text">How does the World Cup bring people from different countries together?</div>
+                </div>
+                <div class="booster-card booster-card-supply" onclick="showBooster('💰 Business', 'How does hosting the World Cup change a country\'s economy, tourism, and cities?')">
+                    <span class="booster-icon">💰</span>
+                    <div class="booster-name">Business</div>
+                    <div class="booster-full-text">How does hosting the World Cup change a country's economy, tourism, and cities?</div>
+                </div>
+            </div>
             <div class="booster-alert-screen" id="booster-text-alert"></div>
-            <div class="split-workspace">                <div class="my-side-panel">                    <div><span class="side-label side-label-me"><i class="fa-solid fa-user"></i> My Workspace</span></div>                    <div class="workspace-block">                        <div class="mural-header-row">                            <div class="mural-main-title"><i class="fa-solid fa-lightbulb"></i> My Ideas</div>                            <div class="ideas-status-tag" id="mural-ideas-status-tag">0 ideas</div>                        </div>                        <div class="mural-canvas" id="mural-sync-canvas"></div>                        <div class="mural-input-bar">                            <input type="text" id="mural-input-text" placeholder="Type a concept or solution...">                            <button class="btn-primary" id="mural-submit-btn" onclick="publishStickyToFirebase('idea')"><i class="fa-solid fa-plus"></i> Add</button>                        </div>                    </div>                    <div class="workspace-block">                        <div class="mural-header-row">                            <div class="vocab-main-title"><i class="fa-solid fa-spell-check"></i> My Vocabulary</div>                            <div class="ideas-status-tag" style="color:var(--neon-orange);" id="mural-vocab-status-tag">0 words</div>                        </div>                        <div class="mural-canvas" id="vocab-sync-canvas"></div>                        <div class="mural-input-bar" style="border-color: rgba(251, 146, 60, 0.2);">                            <input type="text" id="vocab-input-text" placeholder="New words or idioms...">                            <button class="btn-primary" id="vocab-submit-btn" style="background:linear-gradient(135deg, #ea580c, #f97316);" onclick="publishStickyToFirebase('vocab')"><i class="fa-solid fa-book"></i> Save</button>                        </div>                    </div>                </div>
-                <div class="partner-side-panel">                    <div><span class="side-label side-label-partner"><i class="fa-solid fa-eye"></i> Watching: <span id="partner-side-label-name">Waiting for partner...</span></span></div>                    <div class="partner-mural-view">                        <div class="partner-mural-title">                            <span><i class="fa-solid fa-layer-group"></i> Partner's Ideas Live</span>                            <span style="font-size:10px; color:var(--text-muted);" id="partner-idea-count">0 ideas</span>                        </div>                        <div class="partner-canvas" id="partner-idea-canvas">                            <div class="partner-empty"><i class="fa-solid fa-hourglass-half"></i><br>Waiting for partner ideas...</div>                        </div>                    </div>
-                    <div class="secret-mentor-panel" id="secret-mentor-panel">                        <div class="mentor-header">                            <span class="mentor-lock-icon"><i class="fa-solid fa-user-secret"></i></span>                            <div>                                <div class="mentor-title">Your Secret Mission</div>                                <div class="mentor-subtitle">Only you can see this. Help your partner grow.</div>                            </div>                        </div>                        <div class="mentor-partner-name" id="mentor-partner-display">                            <i class="fa-solid fa-circle-dot" style="color:var(--neon-green); font-size:8px;"></i> Waiting for a partner...                        </div>                        <div class="mentor-score">                            <span class="mentor-score-label"><i class="fa-solid fa-star"></i> Mentor XP earned</span>                            <span class="mentor-score-value" id="mentor-xp-value">0</span>                        </div>                    </div>                </div>            </div>
-            <div class="bottom-bar">                <div class="bottom-bar-info">                    <button class="btn-secondary" onclick="switchToHomeworkScreen()"><i class="fa-solid fa-file-invoice"></i> View Homework Mission</button>                </div>            </div>        </div>
-        <div id="scr-3" class="os-screen">            <div style="margin-bottom:15px;"><button class="btn-secondary" onclick="switchToGameScreen()"><i class="fa-solid fa-arrow-left"></i> Back to Arena</button></div>            <div class="homework-layout-cyber">                <div class="hw-cyber-title-box">                    <h2><i class="fa-solid fa-trophy" style="color:var(--neon-yellow);"></i> MISSION HOMEWORK</h2>                </div>                <div class="hw-cyber-card">                    <h3><i class="fa-solid fa-book-open"></i> Reading Assignment</h3>                    <div class="hw-cyber-reading">                        The <span class="highlight-word">FIFA World Cup</span> is the biggest international football competition. It happens every four years and brings together the best <span class="highlight-word">national teams</span> from around the world. Millions of <span class="highlight-word">fans</span> watch the matches, <span class="highlight-word">support</span> their countries, and <span class="highlight-word">celebrate</span> different cultures. The tournament also creates opportunities for <span class="highlight-word">tourism</span>, business, and new sports technology inside the <span class="highlight-word">stadium</span>. Who will be the next <span class="highlight-word">champion</span>?                    </div>                </div>                <div class="hw-cyber-card">                    <h3><i class="fa-solid fa-print"></i> Vocabulary Cards to Collect</h3>                    <div class="hw-sticky-print-grid">                        <div class="print-sticky card-vocab"><div class="print-sticky-text">Tournament</div><div class="print-sticky-meta">Target Word</div></div>                        <div class="print-sticky card-vocab"><div class="print-sticky-text">National team</div><div class="print-sticky-meta">Target Word</div></div>                        <div class="print-sticky card-vocab"><div class="print-sticky-text">Support</div><div class="print-sticky-meta">Target Word</div></div>                        <div class="print-sticky card-vocab"><div class="print-sticky-text">Celebrate</div><div class="print-sticky-meta">Target Word</div></div>                        <div class="print-sticky card-vocab"><div class="print-sticky-text">Tourism</div><div class="print-sticky-meta">Target Word</div></div>                        <div class="print-sticky card-vocab"><div class="print-sticky-text">Stadium</div><div class="print-sticky-meta">Target Word</div></div>                        <div class="print-sticky card-vocab"><div class="print-sticky-text">Fans</div><div class="print-sticky-meta">Target Word</div></div>                        <div class="print-sticky card-vocab"><div class="print-sticky-text">Champion</div><div class="print-sticky-meta">Target Word</div></div>                    </div>                </div>            </div>        </div>    </div>
-    <script>        function switchToHomeworkScreen() {            document.getElementById('scr-2').classList.remove('active');            document.getElementById('scr-3').classList.add('active');        }        function switchToGameScreen() {            document.getElementById('scr-3').classList.remove('active');            document.getElementById('scr-2').classList.add('active');        }        function showBoosterAlert(title, text, color) {            const alertBox = document.getElementById('booster-text-alert');            alertBox.style.display = 'block';            alertBox.style.borderColor = color;            alertBox.innerHTML = `<strong>${title}:</strong> ${text}`;        }        function connectToFirebaseSession() {            const name = document.getElementById('my-name').value || 'Player';            
-            // Corrigido: Agora remove ativamente a classe 'active' do scr-1 e põe no scr-2
-            document.getElementById('scr-1').classList.remove('active');            document.getElementById('scr-2').classList.add('active');            
-            // Cria dinamicamente o bonequinho/avatar no cabeçalho para provar que rodou
-            const avatarContainer = document.getElementById('header-avatar-container');            if(avatarContainer) {                avatarContainer.innerHTML = `<div class="user-avatar" style="background:#4f46e5;" title="${name}">${name.substring(0,2).toUpperCase()}</div>`;            }
-            // Mensagem de sucesso na tela
-            const container = document.getElementById('toastContainer');            if(container) {                container.innerHTML = `<div class="toast green">Welcome, ${name}! Connected successfully.</div>`;                setTimeout(() => container.innerHTML = '', 4000);            }        }        function purgeFirebaseRoom() { alert('Simulated Server wipe!'); }        function publishStickyToFirebase(type) { alert('Simulated Add!'); }    </script></body></html>
+
+            <div class="split-workspace">
+                <div class="my-side-panel">
+                    <div><span class="side-label side-label-me"><i class="fa-solid fa-user"></i> Workspace Input Hub</span></div>
+                    
+                    <div class="workspace-block">
+                        <div class="mural-header-row">
+                            <div class="mural-main-title"><i class="fa-solid fa-lightbulb"></i> Arena Ideas / Notes</div>
+                        </div>
+                        <div class="mural-canvas" id="ideas-realtime-canvas"></div>
+                        <div class="mural-input-bar">
+                            <input type="text" id="idea-input" placeholder="Type a concept or idea...">
+                            <button class="btn-primary" onclick="sendDataToFirebase('ideas', 'idea-input')"><i class="fa-solid fa-plus"></i> Add Note</button>
+                        </div>
+                    </div>
+
+                    <div class="workspace-block">
+                        <div class="mural-header-row">
+                            <div class="vocab-main-title"><i class="fa-solid fa-spell-check"></i> Live Vocabulary Builder</div>
+                        </div>
+                        <div class="mural-canvas" id="vocab-realtime-canvas"></div>
+                        <div class="mural-input-bar" style="border-color: rgba(251, 146, 60, 0.2);">
+                            <input type="text" id="vocab-input" placeholder="Type an expression or word...">
+                            <button class="btn-primary" style="background:linear-gradient(135deg, #ea580c, #f97316);" onclick="sendDataToFirebase('vocabulary', 'vocab-input')"><i class="fa-solid fa-book"></i> Save Word</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="partner-side-panel">
+                    <div><span class="side-label side-label-partner"><i class="fa-solid fa-eye"></i> Realtime Sync Feed</span></div>
+                    
+                    <div class="secret-mentor-panel" id="secret-mission-container">
+                        <div class="mentor-header">
+                            <span style="color:var(--neon-yellow); font-size:16px;"><i class="fa-solid fa-user-secret"></i></span>
+                            <div>
+                                <div class="mentor-title">Your Secret Mission</div>
+                                <div style="font-size: 10px; color: var(--text-muted);">Interact and support your designated teammate below:</div>
+                            </div>
+                        </div>
+                        <div class="mentor-partner-name" id="secret-target-display">Looking for standard active users...</div>
+                        <div class="mentor-score">
+                            <span style="font-size:11px; color:var(--text-muted);"><i class="fa-solid fa-star"></i> Engagement Status</span>
+                            <span class="mentor-score-value" style="font-size:12px; color:var(--neon-green);">ACTIVEMULTIPLAYER</span>
+                        </div>
+                    </div>
+
+                    <div class="partner-mural-view">
+                        <div class="partner-mural-title">
+                            <span><i class="fa-solid fa-users"></i> Connected Active Students</span>
+                        </div>
+                        <div id="squad-chips-list" style="display:flex; flex-wrap:wrap; gap:8px;">
+                            <div class="partner-empty">No active student profiles registered in this room code yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-bar">
+                <button class="btn-secondary" onclick="toggleScreen(3)"><i class="fa-solid fa-file-invoice"></i> Switch to Homework View</button>
+            </div>
+        </div>
+
+        <div id="scr-3" class="os-screen">
+            <div style="margin-bottom:15px;"><button class="btn-secondary" onclick="toggleScreen(2)"><i class="fa-solid fa-arrow-left"></i> Return to Live Arena</button></div>
+            <div class="homework-layout-cyber">
+                <div class="hw-cyber-title-box">
+                    <h2><i class="fa-solid fa-trophy" style="color:var(--neon-yellow);"></i> MISSION HOMEWORK</h2>
+                </div>
+                <div class="hw-cyber-card">
+                    <h3><i class="fa-solid fa-book-open"></i> Reading Assignment</h3>
+                    <div class="hw-cyber-reading">
+                        The <span class="highlight-word">FIFA World Cup</span> is the biggest international football competition. It happens every four years and brings together the best <span class="highlight-word">national teams</span> from around the world. Millions of <span class="highlight-word">fans</span> watch the matches, <span class="highlight-word">support</span> their countries, and <span class="highlight-word">celebrate</span> different cultures. The tournament also creates opportunities for <span class="highlight-word">tourism</span>, business, and new sports technology inside the <span class="highlight-word">stadium</span>. Who will be the next <span class="highlight-word">champion</span>?
+                    </div>
+                </div>
+                <div class="hw-cyber-card">
+                    <h3><i class="fa-solid fa-print"></i> Vocabulary Cards to Collect</h3>
+                    <div class="hw-sticky-print-grid">
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Tournament</div></div>
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">National team</div></div>
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Support</div></div>
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Celebrate</div></div>
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Tourism</div></div>
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Stadium</div></div>
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Fans</div></div>
+                        <div class="print-sticky card-vocab"><div style="font-weight:700;">Champion</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = { databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let currentRoom = "squad-english-pro";
+        let myUsername = "";
+        let isTeacherMode = false;
+
+        // Ativa os estados de conexão visual logo ao carregar
+        const statusTag = document.getElementById("connection-status-tag");
+        statusTag.style.background = "#38bdf8";
+        statusTag.innerHTML = `<span style="width:6px; height:6px; background:#fff; border-radius:50%; display:inline-block;"></span> DATABASE LIVE`;
+
+        window.connectToArena = function(teacherModeSelected) {
+            const nameInput = document.getElementById("my-name").value.trim();
+            currentRoom = document.getElementById("room-id").value.trim() || "squad-english-pro";
+            isTeacherMode = teacherModeSelected;
+
+            if(!nameInput) {
+                alert("Please enter a valid Character or Teacher name!");
+                return;
+            }
+
+            myUsername = nameInput;
+
+            // Se for Aluno (Student), registra presença no Firebase
+            if (!isTeacherMode) {
+                push(ref(db, `${currentRoom}/users`), {
+                    name: myUsername,
+                    timestamp: Date.now()
+                });
+                document.getElementById("secret-mission-container").style.display = "block";
+            } else {
+                // Se for Teacher, esconde o painel de missão secreta para não precisar mentorear ninguém
+                document.getElementById("secret-mission-container").style.display = "none";
+            }
+
+            // Exibe o avatar correspondente no cabeçalho
+            const avatarContainer = document.getElementById("header-avatar-container");
+            const avatarColor = isTeacherMode ? "#d97706" : "#4f46e5";
+            const roleTitle = isTeacherMode ? "Teacher" : "Student";
+            avatarContainer.innerHTML = `<div class="user-avatar" style="background:${avatarColor};" title="${myUsername} (${roleTitle})">${myUsername.substring(0,2).toUpperCase()}</div>`;
+
+            // Muda de tela
+            toggleScreen(2);
+            startRealtimeListeners();
+        };
+
+        // Escuta e renderiza dados dinâmicos do banco de dados
+        function startRealtimeListeners() {
+            // 1. Escuta por IDEAS
+            onValue(ref(db, `${currentRoom}/ideas`), (snapshot) => {
+                const canvas = document.getElementById("ideas-realtime-canvas");
+                canvas.innerHTML = "";
+                if(snapshot.exists()) {
+                    Object.entries(snapshot.val()).forEach(([key, val]) => {
+                        canvas.appendChild(createCardElement(key, val.text, val.author, "card-c1", "ideas"));
+                    });
+                }
+            });
+
+            // 2. Escuta por VOCABULARY
+            onValue(ref(db, `${currentRoom}/vocabulary`), (snapshot) => {
+                const canvas = document.getElementById("vocab-realtime-canvas");
+                canvas.innerHTML = "";
+                if(snapshot.exists()) {
+                    Object.entries(snapshot.val()).forEach(([key, val]) => {
+                        canvas.appendChild(createCardElement(key, val.text, val.author, "card-vocab", "vocabulary"));
+                    });
+                }
+            });
+
+            // 3. Escuta por USUÁRIOS ONLINE (Exclui professores automaticamente)
+            onValue(ref(db, `${currentRoom}/users`), (snapshot) => {
+                const chipsRow = document.getElementById("squad-chips-list");
+                const targetDisplay = document.getElementById("secret-target-display");
+                chipsRow.innerHTML = "";
+
+                let dynamicPartnersList = [];
+
+                if(snapshot.exists()) {
+                    Object.values(snapshot.val()).forEach(user => {
+                        dynamicPartnersList.push(user.name);
+                        chipsRow.innerHTML += `
+                            <div class="squad-player-chip">
+                                <span class="squad-player-dot" style="background:var(--neon-blue);"></span>
+                                <span>${user.name}</span>
+                            </div>`;
+                    });
+
+                    // Lógica de Missão Secreta Dinâmica (Ignora você mesmo)
+                    let availablePartners = dynamicPartnersList.filter(name => name !== myUsername);
+                    if(availablePartners.length > 0) {
+                        targetDisplay.innerHTML = `<i class="fa-solid fa-bullseye" style="color:var(--neon-pink)"></i> Guide and track <strong>${availablePartners[0]}</strong>'s production!`;
+                    } else {
+                        targetDisplay.innerHTML = `No other standard students connected yet. Share room code!`;
+                    }
+                } else {
+                    chipsRow.innerHTML = `<div class="partner-empty">No active student profiles registered.</div>`;
+                    targetDisplay.innerHTML = `Waiting for players to log in...`;
+                }
+            });
+        }
+
+        // Envia dados (Nota ou Palavra) para o Firebase Realtime Database
+        window.sendDataToFirebase = function(path, inputId) {
+            const inputField = document.getElementById(inputId);
+            const contentText = inputField.value.trim();
+
+            if(!contentText) return;
+
+            push(ref(db, `${currentRoom}/${path}`), {
+                text: contentText,
+                author: myUsername + (isTeacherMode ? " (Teacher)" : ""),
+                timestamp: Date.now()
+            });
+
+            inputField.value = ""; // Limpa o campo
+        };
+
+        // Deleta dados direto no Firebase
+        window.deleteFirebaseItem = function(path, key) {
+            remove(ref(db, `${currentRoom}/${path}/${key}`));
+        };
+
+        // Reseta o servidor completamente caso queira limpar a lousa para a próxima aula
+        window.clearServerRoom = function() {
+            if(confirm("Are you sure you want to completely erase this room's records?")) {
+                remove(ref(db, currentRoom));
+                alert("Database wipe complete.");
+                location.reload();
+            }
+        };
+
+        // Auxiliar UI
+        function createCardElement(key, text, author, cssClass, databasePath) {
+            const div = document.createElement("div");
+            div.className = `game-idea-card ${cssClass}`;
+            div.innerHTML = `
+                <i class="fa-solid fa-trash-can delete-btn" onclick="deleteFirebaseItem('${databasePath}', '${key}')"></i>
+                <div class="game-idea-text">${text}</div>
+                <div class="game-idea-author">
+                    <span>By: ${author}</span>
+                </div>`;
+            return div;
+        }
+    </script>
+
+    <script>
+        // Funções de alternar interface visual simples
+        function toggleScreen(screenNum) {
+            document.querySelectorAll('.os-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`scr-${screenNum}`).classList.add('active');
+        }
+        function showBooster(title, text) {
+            const alertBox = document.getElementById('booster-text-alert');
+            alertBox.style.display = 'block';
+            alertBox.innerHTML = `<strong>${title}:</strong> ${text}`;
+        }
+    </script>
+</body>
+</html>
