@@ -3,735 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steam Arena Pro - Create Together V5</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght=700&family=Inter:wght=400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>English Presentation - Learning Arena</title>
     <style>
         :root {
-            --steam-dark: #171a21;
-            --steam-card: #1b2838;
-            --steam-blue: #2a475e;
-            --steam-light-blue: #66c0f4;
-            --steam-neon: #4caf50;
-            --bg-app: #121418;
-            --text-main: #c7d5e0;
-            --text-muted: #626366;
-            --brand-pink: #ff4a7d;
-            --brand-purple: #9b5de5;
-            --brand-yellow: #f1c40f;
-            --border-radius-lg: 8px;
-            --border-radius-md: 4px;
-            --transition: all 0.2s ease;
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --primary: #1e3a8a;
+            --accent: #ff6b6b;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --success: #10b981;
+            --disabled: #cbd5e1;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-app); color: var(--text-main); font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body { background-color: var(--bg-color); color: var(--text-dark); padding: 20px; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+
+        header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px dashed #cbd5e1; }
+        header h1 { color: var(--primary); font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .current-phase-title { background-color: var(--primary); color: white; display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-top: 10px; font-size: 14px; }
+
+        /* Setup Screen */
+        #setup-screen { max-width: 500px; margin: 100px auto; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+        #setup-screen h2 { margin-bottom: 20px; color: var(--primary); }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--text-light); }
+        .input-group input { width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 16px; }
+        .input-group input:focus { border-color: var(--primary); outline: none; }
         
-        /* Steam Header */
-        .header { background: var(--steam-dark); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #23262e; }
-        .brand-title { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-        .brand-title span { color: var(--steam-light-blue); }
-
-        /* Neon Mission Banner */
-        .central-mission-banner { background: linear-gradient(90deg, #1d222e, #252f48); border: 1px solid #3b4b74; padding: 18px; border-radius: var(--border-radius-lg); text-align: center; max-width: 800px; width: 95%; margin: 20px auto; box-shadow: 0 0 15px rgba(102, 192, 244, 0.1); position: relative; }
-        .central-mission-banner::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--steam-light-blue); }
-        .mission-tag { font-size: 11px; font-weight: 900; color: var(--steam-light-blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; display: block; }
-        .mission-text { font-size: 18px; font-weight: 700; color: #fff; }
-        .highlight-word { background: rgba(102, 192, 244, 0.15); color: var(--steam-light-blue); padding: 2px 8px; border-radius: var(--border-radius-md); font-weight: 900; border: 1px solid rgba(102, 192, 244, 0.3); }
-
-        /* Navigation Timeline Tabs */
-        .steps-timeline { display: flex; justify-content: center; gap: 4px; padding: 0 20px; background: var(--steam-dark); border-bottom: 1px solid #23262e; }
-        .step-tab { background: transparent; padding: 14px 24px; font-size: 13px; font-weight: 600; color: #8f98a0; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 8px; border-bottom: 3px solid transparent; }
-        .step-tab:hover { color: #fff; background: rgba(255,255,255,0.03); }
-        .step-tab.active { color: #fff; border-bottom-color: var(--steam-light-blue); background: var(--steam-blue); font-weight: 700; }
-
-        /* Workspace Grid Layout */
-        .workspace-grid { max-width: 1600px; width: 100%; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 260px 1fr 320px; gap: 20px; flex: 1; }
-        .panel-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8f98a0; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        /* Main Arena Grid */
+        #arena-screen { display: none; flex-direction: column; height: 100%; flex-grow: 1; justify-content: space-between; }
+        .players-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
         
-        /* The Squad */
-        .squad-box { display: flex; flex-direction: column; gap: 8px; }
-        .student-card { background: var(--steam-card); padding: 12px; border-radius: var(--border-radius-md); border: 1px solid #2a3f5a; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 12px; }
-        .student-card:hover { border-color: var(--steam-light-blue); background: #203043; }
-        .student-card.selected { border-color: var(--steam-light-blue); background: var(--steam-blue); }
-        .avatar-circle { width: 32px; height: 32px; border-radius: 50%; background: #23262e; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-
-        /* Central interaction Arena */
-        .arena-card { background: var(--steam-card); border-radius: var(--border-radius-lg); padding: 24px; border: 1px solid #23262e; display: flex; flex-direction: column; justify-content: space-between; min-height: 540px; position: relative; }
-        .step-content-pane { display: none; }
-        .step-content-pane.active { display: block; }
-
-        /* Time's Up Banner Alert */
-        .times-up-alert-banner { display: none; background: #7f1d1d; border: 1px solid #f43f5e; color: #fff; padding: 10px; border-radius: var(--border-radius-md); text-align: center; font-weight: 700; font-size: 13px; margin-bottom: 15px; animation: pulseRed 1s infinite alternate; }
-        @keyframes pulseRed { from { box-shadow: 0 0 5px #ef4444; } to { box-shadow: 0 0 15px #ef4444; } }
-
-        /* A2 Level Simple Instructions */
-        .instructive-checklist { background: rgba(0, 0, 0, 0.2); border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 20px; border: 1px solid #23262e; }
-        .instructive-checklist p { font-size: 13.5px; color: #cbd5e0; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; line-height: 1.4; }
-        .instructive-checklist p i { color: var(--steam-light-blue); }
-
-        /* Inputs Style */
-        .sticky-input-box { background: rgba(0,0,0,0.4); padding: 10px; border-radius: var(--border-radius-md); display: flex; gap: 8px; border: 1px solid #23262e; margin-bottom: 20px; }
-        .sticky-input-box input { flex: 1; padding: 10px; background: #121418; border: 1px solid #2a3f5a; color: #fff; border-radius: var(--border-radius-md); font-size: 13px; outline: none; }
+        /* Player Panels */
+        .player-card { background: var(--card-bg); border: 4px solid var(--primary); border-radius: 12px; padding: 20px; position: relative; min-height: 380px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .player-name-tag { position: absolute; top: -15px; left: 20px; background: var(--accent); color: white; padding: 3px 15px; font-weight: bold; border-radius: 4px; font-size: 14px; border: 2px solid var(--primary); }
         
-        /* Grid Canvas */
-        .sticky-canvas-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 8px; }
+        .mission-box { border: 3px solid var(--text-dark); border-radius: 8px; padding: 15px; margin-top: 15px; flex-grow: 1; display: flex; flex-direction: column; background: #fafafa; }
+        .mission-title-btn { background: var(--text-dark); color: white; border: none; padding: 10px; font-size: 15px; font-weight: bold; width: 100%; text-align: left; border-radius: 4px; cursor: pointer; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+        .mission-title-btn:hover { background: #4a5568; }
+        .mission-title-btn::after { content: '👉 Reveal'; font-size: 12px; background: var(--accent); padding: 2px 6px; border-radius: 3px; }
+
+        .mission-details { display: none; animation: fadeIn 0.3s ease forwards; flex-grow: 1; }
+        .explanation-section { font-style: italic; color: #4a5568; background: #edf2f7; padding: 10px; border-radius: 4px; margin-bottom: 12px; border-left: 4px solid var(--primary); font-size: 14px; }
+        .task-section { font-weight: bold; color: var(--text-dark); border: 2px dashed var(--accent); padding: 10px; border-radius: 4px; background: #fff5f5; font-size: 14px; }
+
+        .empty-mission-state { color: var(--text-light); text-align: center; margin: auto; font-style: italic; font-weight: bold; }
+
+        /* Action Controls */
+        .card-actions { margin-top: 15px; display: flex; justify-content: flex-end; }
+        .check-btn { background-color: var(--success); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: opacity 0.2s; }
+        .check-btn:hover { opacity: 0.9; }
+
+        /* Next Phase Button Footer (Locked and Unlocked states) */
+        .footer-controls { text-align: center; margin-top: auto; padding: 20px 0; }
+        .next-phase-btn { background-color: var(--primary); color: white; border: 4px solid var(--text-dark); padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 0 var(--text-dark); transition: all 0.1s; }
+        .next-phase-btn:hover { transform: translateY(2px); box-shadow: 0 2px 0 var(--text-dark); }
+        .next-phase-btn:active { transform: translateY(4px); box-shadow: none; }
         
-        /* Interactive Sticky Notes */
-        .sticky-note { background: #1f2a3a; color: #e1e7ee; padding: 12px; border-radius: var(--border-radius-md); border: 1px solid #3b5270; position: relative; font-size: 12px; line-height: 1.4; display: flex; flex-direction: column; justify-content: space-between; min-height: 95px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
-        .sticky-note-actions { position: absolute; top: 6px; right: 6px; display: flex; gap: 8px; }
-        .sticky-note-actions i { cursor: pointer; color: #8f98a0; font-size: 11px; transition: color 0.2s; }
-        .sticky-note-actions i.edit-icon:hover { color: var(--brand-yellow); }
-        .sticky-note-actions i.delete-btn:hover { color: var(--brand-pink); }
-        .sticky-footer-author { font-size: 9px; color: var(--steam-light-blue); margin-top: 6px; font-weight: bold; text-transform: uppercase; }
+        .next-phase-btn:disabled { background-color: var(--disabled); color: #94a3b8; border-color: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
 
-        /* Global Timer Box */
-        .live-timer-badge { background: #3a2226; color: var(--brand-pink); padding: 6px 12px; border-radius: var(--border-radius-md); font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 16px; border: 1px solid rgba(255,74,125,0.2); font-family: 'Courier Prime', monospace; }
-
-        /* Action Controls Buttons */
-        .btn-action { padding: 10px 18px; border-radius: var(--border-radius-md); font-weight: 600; font-family: inherit; font-size: 13px; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: var(--transition); color: #fff; }
-        .btn-purple { background: #476887; }
-        .btn-purple:hover { background: #557c9f; }
-        .btn-success { background: linear-gradient(to bottom, #a4d015 5%, #b6df24 95%); color: #000; font-weight: 700; }
-        .btn-success:hover { background: #b6df24; }
-        .btn-gray { background: #2a3f5a; color: #c7d5e0; }
-
-        /* Right Stats Panel */
-        .metrics-widget-container { background: var(--steam-card); border-radius: var(--border-radius-lg); padding: 16px; border: 1px solid #23262e; display: flex; flex-direction: column; gap: 14px; }
-        .metric-bar-row { display: flex; flex-direction: column; gap: 6px; }
-        .metric-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: #8f98a0; }
-        .metric-track { background: #121418; height: 6px; border-radius: 3px; overflow: hidden; border: 1px solid #23262e; }
-        .metric-fill { height: 100%; transition: width 0.3s ease; }
-
-        /* Periodic Flashing Human Boost Notification */
-        .boost-notification-dock { position: fixed; bottom: 20px; right: 20px; width: 320px; z-index: 2000; display: none; }
-        
-        /* Eye catching neon blinking animation script */
-        .boost-alert-card { background: #1b2838; border: 2px solid var(--brand-yellow); padding: 14px; border-radius: var(--border-radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: var(--transition); }
-        .boost-alert-card.flash-alert { animation: alertGlowNeon 1.2s ease-in-out 3; }
-        @keyframes alertGlowNeon { 0%, 100% { border-color: var(--brand-yellow); box-shadow: 0 10px 30px rgba(0,0,0,0.6); } 50% { border-color: #fff; box-shadow: 0 0 25px var(--brand-yellow); } }
-        
-        /* Sticky Note look when expanded */
-        .boost-alert-card.expanded-sticky { background: #fef08a; color: #1e2937; border-color: #facc15; }
-        .boost-alert-card.expanded-sticky h4 { color: #854d0e; }
-        .boost-alert-card.expanded-sticky p { color: #4b5563; }
-
-        .boost-alert-card h4 { font-size: 12px; font-weight: 900; color: var(--brand-yellow); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-        .boost-expanded-body { display: none; margin-top: 12px; border-top: 1px dashed rgba(0,0,0,0.15); padding-top: 10px; }
-        .boost-select-squad { width: 100%; padding: 6px; background: rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.2); border-radius: var(--border-radius-md); font-size: 11px; margin-bottom: 8px; color: inherit; }
-
-        /* Role Picker Dashboard */
-        .role-picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .role-card-pick { background: #121418; border: 1px solid #2a3f5a; padding: 12px; border-radius: var(--border-radius-md); cursor: pointer; transition: var(--transition); }
-        .role-card-pick:hover { border-color: var(--steam-light-blue); }
-        .role-card-pick.locked { border-left: 4px solid var(--steam-neon); background: rgba(76,175,80,0.05); }
-
-        /* Unified Bottom Live Deck Frame split into panels */
-        .unified-live-dashboard-bottom { margin-top: 25px; background: #121418; border: 1px dashed #2a3f5a; padding: 18px; border-radius: var(--border-radius-lg); }
-        .live-deck-panels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 12px; }
-        .live-deck-panel { background: #171a21; border: 1px solid #23262e; border-radius: var(--border-radius-md); padding: 12px; }
-        .live-deck-panel-title { font-size: 11px; font-weight: 700; color: var(--steam-light-blue); text-transform: uppercase; border-bottom: 1px solid #23262e; padding-bottom: 4px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-
-        /* Report Screen */
-        .end-session-layout { max-width: 1000px; width: 90%; margin: 30px auto; background: var(--steam-card); border-radius: var(--border-radius-lg); padding: 32px; border: 1px solid #23262e; display: none; }
-        .category-frame-block { background: #121418; border: 1px solid #23262e; border-radius: var(--border-radius-lg); padding: 20px; margin-bottom: 20px; }
-        .category-frame-title { font-size: 13px; font-weight: 700; color: var(--steam-light-blue); text-transform: uppercase; border-bottom: 1px solid #23262e; padding-bottom: 6px; margin-bottom: 12px; }
-
-        @media print {
-            body { background: white; color: black; }
-            .end-session-layout { display: block !important; width: 100%; border: none; padding: 0; }
-            .header, .central-mission-banner, .steps-timeline, .workspace-grid, .boost-notification-dock, .btn-action { display: none !important; }
-        }
+        /* Utilities & Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-start { background: var(--primary); color: white; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 15px; width: 100%; }
     </style>
 </head>
 <body>
 
-    <!-- NAV BAR CONSOLE -->
-    <div class="header">
-        <div class="brand-title"><i class="fa-solid fa-layer-group"></i> CREATE TOGETHER <span>// LIVE MATCH</span></div>
-        
-        <div style="background: #121418; border: 1px solid #2a3f5a; padding: 6px 12px; border-radius: var(--border-radius-md); display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 11px; font-weight: 700; color: var(--brand-yellow); text-transform: uppercase;"><i class="fa-solid fa-spell-check"></i> Vocab Builder</span>
-            <input type="text" id="header-vocab-term-input" placeholder="Type a new word..." style="padding: 6px; background: #171a21; border: 1px solid #23262e; color: #fff; border-radius: var(--border-radius-md); font-size: 11px; width: 130px; outline: none;">
-            <button class="btn-action btn-success" style="padding: 4px 10px; font-size:11px;" onclick="addGlobalVocabularyNote()">Post</button>
+    <!-- SCREEN 1: Setup and Names -->
+    <main id="setup-screen">
+        <h2>Enter Player Names</h2>
+        <p style="color: var(--text-light); margin-bottom: 20px; font-size: 14px;">Fill 2 or 3 players to start the rotation training.</p>
+        <div class="input-group">
+            <label for="p1">Player A Name</label>
+            <input type="text" id="p1" placeholder="e.g. Andre" value="Andre">
         </div>
+        <div class="input-group">
+            <label for="p2">Player B Name</label>
+            <input type="text" id="p2" placeholder="e.g. Ana" value="Ana">
+        </div>
+        <div class="input-group">
+            <label for="p3">Player C Name (Optional)</label>
+            <input type="text" id="p3" placeholder="e.g. Miguel">
+        </div>
+        <button class="btn-start" onclick="startArena()">Start Training Arena</button>
+    </main>
+
+    <!-- SCREEN 2: The Learning Arena -->
+    <div id="arena-screen">
+        <header>
+            <h1>Dynamic Learning Arena</h1>
+            <div class="current-phase-title" id="phase-title">PHASE: LOADING</div>
+        </header>
+
+        <!-- Dynamic Content Rows for Players -->
+        <section class="players-container" id="players-grid">
+            <!-- Programmatically Injected via JS -->
+        </section>
+
+        <!-- Footer Control centered below -->
+        <footer class="footer-controls">
+            <button class="next-phase-btn" id="next-phase-btn" onclick="goToNextPhase()" disabled>Complete all items to unlock Next Phase &rarr;</button>
+        </footer>
     </div>
 
-    <!-- CHALLENGE BANNER -->
-    <div class="central-mission-banner">
-        <span class="mission-tag"><i class="fa-solid fa-bullseye"></i> Goal Strategy Target</span>
-        <div class="mission-text">
-            <span class="highlight-word">Change</span> how people <span class="highlight-word">experience</span> the World Cup!
-        </div>
-    </div>
-
-    <!-- MAIN CO-CREATION NAV TIMELINE -->
-    <div class="steps-timeline">
-        <div class="step-tab active" id="tab-0" onclick="switchAbaActive(0)"><i class="fa-solid fa-users"></i> Who Are We</div>
-        <div class="step-tab" id="tab-1" onclick="switchAbaActive(1)"><i class="fa-solid fa-lightbulb"></i> Big Idea</div>
-        <div class="step-tab" id="tab-2" onclick="switchAbaActive(2)"><i class="fa-solid fa-gears"></i> Make It Real</div>
-        <div class="step-tab" id="tab-3" onclick="switchAbaActive(3)"><i class="fa-solid fa-masks-theater"></i> Role Play</div>
-        <div class="step-tab" id="tab-4" onclick="switchAbaActive(4)"><i class="fa-solid fa-earth-americas"></i> Think Bigger</div>
-    </div>
-
-    <!-- CENTRAL WORKSPACE GRID -->
-    <div class="workspace-grid" id="main-application-engine-view">
-        
-        <!-- COLUMN 1: SQUAD INDEX -->
-        <div class="left-pane-column">
-            <div class="panel-title"><i class="fa-solid fa-gamepad"></i> Players Online</div>
-            <div class="squad-box" id="squad-members-render-list"></div>
-        </div>
-
-        <!-- COLUMN 2: ACTIVE CONTROL PLATFORM -->
-        <div class="center-pane-column">
-            <div class="arena-card">
-                
-                <!-- ALERTS SYSTEM INJECTOR -->
-                <div class="times-up-alert-banner" id="phase-timeout-message-banner">
-                    ⚠️ Time's up! Go to the next phase!
-                </div>
-
-                <!-- PHASE 0: WHO ARE WE -->
-                <div class="step-content-pane active" id="pane-0">
-                    <div class="live-timer-badge"><i class="fa-solid fa-clock"></i> Phase Timer: <span class="timer-display" id="clock-0">05:00</span></div>
-                    <div class="instructive-checklist">
-                        <p><i class="fa-solid fa-user-group"></i> Talk to your squad on Zoom. Introduce yourself!</p>
-                        <p><i class="fa-solid fa-bolt"></i> Share your unique power. What can you do very well?</p>
-                    </div>
-                    <div class="sticky-input-box">
-                        <input type="text" id="input-note-0" placeholder="Type a superpower or skill description...">
-                        <button class="btn-action btn-purple" onclick="generateStickyNoteFromInput(0, 'input-note-0', 'Who Are We')">Post</button>
-                    </div>
-                </div>
-
-                <!-- PHASE 1: BIG IDEA -->
-                <div class="step-content-pane" id="pane-1">
-                    <div class="live-timer-badge"><i class="fa-solid fa-clock"></i> Phase Timer: <span class="timer-display" id="clock-1">05:00</span></div>
-                    <div class="instructive-checklist">
-                        <p><i class="fa-solid fa-wand-magic-sparkles"></i> Create your main project idea. What makes it special?</p>
-                        <p><i class="fa-solid fa-star"></i> Write features that will make the World Cup incredible.</p>
-                    </div>
-                    <div class="sticky-input-box">
-                        <input type="text" id="input-note-1" placeholder="Type a feature or concept element...">
-                        <button class="btn-action btn-purple" onclick="generateStickyNoteFromInput(1, 'input-note-1', 'Big Idea')">Post</button>
-                    </div>
-                </div>
-
-                <!-- PHASE 2: MAKE IT REAL -->
-                <div class="step-content-pane" id="pane-2">
-                    <div class="live-timer-badge"><i class="fa-solid fa-clock"></i> Phase Timer: <span class="timer-display" id="clock-2">05:00</span></div>
-                    <div class="instructive-checklist">
-                        <p><i class="fa-solid fa-screwdriver-wrench"></i> Think about action steps. How do you build this idea?</p>
-                        <p><i class="fa-solid fa-mobile-screen-button"></i> What applications, tools, or objects do you need?</p>
-                    </div>
-                    <div class="sticky-input-box">
-                        <input type="text" id="input-note-2" placeholder="Type an execution action or asset requirement...">
-                        <button class="btn-action btn-purple" onclick="generateStickyNoteFromInput(2, 'input-note-2', 'Make It Real')">Post</button>
-                    </div>
-                </div>
-
-                <!-- PHASE 3: ROLE PLAY -->
-                <div class="step-content-pane" id="pane-3">
-                    <div class="live-timer-badge"><i class="fa-solid fa-clock"></i> Phase Timer: <span class="timer-display" id="clock-3">05:00</span></div>
-                    <div class="instructive-checklist">
-                        <p><i class="fa-solid fa-people-arrows"></i> Choose your simulation role below to test the solution!</p>
-                    </div>
-                    
-                    <div class="role-picker-grid">
-                        <div class="role-card-pick" id="role-enthusiast" onclick="lockSquadUserRole('role-enthusiast', 'The Fanatic Enthusiast')">
-                            <strong style="font-size:12px; color:var(--brand-pink);"><i class="fa-solid fa-face-smile-beam"></i> The Big Fanatic</strong>
-                            <p style="font-size:11px; color:#8f98a0; margin-top:4px;">Tell the squad why this project fixes all your problems.</p>
-                        </div>
-                        <div class="role-card-pick" id="role-skeptic" onclick="lockSquadUserRole('role-skeptic', 'The Critical Skeptic')">
-                            <strong style="font-size:12px; color:var(--steam-light-blue);"><i class="fa-solid fa-face-rolling-eyes"></i> The Critical Skeptic</strong>
-                            <p style="font-size:11px; color:#8f98a0; margin-top:4px;">Find real problems, slow parts, or bugs in the plan.</p>
-                        </div>
-                    </div>
-
-                    <div class="panel-title" style="font-size:10px;"><i class="fa-solid fa-circle-exclamation"></i> Improvements Needed</div>
-                    <div class="sticky-input-box">
-                        <input type="text" id="input-note-3" placeholder="Type an improvement requirement discovered...">
-                        <button class="btn-action btn-purple" onclick="generateStickyNoteFromInput(3, 'input-note-3', 'Role Play')">Post</button>
-                    </div>
-                </div>
-
-                <!-- PHASE 4: THINK BIGGER -->
-                <div class="step-content-pane" id="pane-4">
-                    <div class="live-timer-badge"><i class="fa-solid fa-clock"></i> Phase Timer: <span class="timer-display" id="clock-4">05:00</span></div>
-                    <div class="instructive-checklist">
-                        <p><i class="fa-solid fa-earth-americas"></i> Grow your idea! How can this help people worldwide?</p>
-                        <p><i class="fa-solid fa-hand-holding-heart"></i> Think about schools, poor areas, or remote local communities.</p>
-                    </div>
-                    
-                    <div style="text-align: center; margin: 10px 0; color: #2a475e; font-size: 36px;">
-                        <i class="fa-solid fa-globe-americas"></i>
-                    </div>
-
-                    <div class="sticky-input-box">
-                        <input type="text" id="input-note-4" placeholder="Type a global update or human metric impact...">
-                        <button class="btn-action btn-purple" onclick="generateStickyNoteFromInput(4, 'input-note-4', 'Think Bigger')">Post</button>
-                    </div>
-                </div>
-
-                <!-- MAIN CONTROL BUTTONS BOTTOM ACTION HORIZON -->
-                <div style="display: flex; justify-content: space-between; align-items: center; border-top:1px solid #23262e; padding-top:16px; margin-top:16px;">
-                    <button class="btn-action btn-gray" onclick="navigateAbaOffset(-1)"><i class="fa-solid fa-angle-left"></i> Back</button>
-                    
-                    <button class="btn-action btn-purple" id="footer-next-phase-btn" onclick="navigateAbaOffset(1)">Next Phase <i class="fa-solid fa-angle-right"></i></button>
-                    
-                    <button class="btn-action btn-success" id="footer-finalize-activity-btn" style="display:none;" onclick="finishActiveCoCreationSession()"><i class="fa-solid fa-flag-checkered"></i> Finish Match</button>
-                </div>
-
-                <!-- UNIFIED LIVE HORIZONTAL NOTE CANVAS DISPLAY (SEPARATED BY CATEGORY PANELS) -->
-                <div class="unified-live-dashboard-bottom">
-                    <div class="panel-title" style="margin-bottom:6px;"><i class="fa-solid fa-box-archive"></i> Live Deck Frame Notes (All Phases Matrix)</div>
-                    
-                    <div class="live-deck-panels-grid">
-                        <!-- Panel 0 -->
-                        <div class="live-deck-panel">
-                            <div class="live-deck-panel-title"><i class="fa-solid fa-users"></i> Who Are We</div>
-                            <div class="sticky-canvas-container" id="panel-canvas-0"></div>
-                        </div>
-                        <!-- Panel 1 -->
-                        <div class="live-deck-panel">
-                            <div class="live-deck-panel-title"><i class="fa-solid fa-lightbulb"></i> Big Idea</div>
-                            <div class="sticky-canvas-container" id="panel-canvas-1"></div>
-                        </div>
-                        <!-- Panel 2 -->
-                        <div class="live-deck-panel">
-                            <div class="live-deck-panel-title"><i class="fa-solid fa-gears"></i> Make It Real</div>
-                            <div class="sticky-canvas-container" id="panel-canvas-2"></div>
-                        </div>
-                        <!-- Panel 3 -->
-                        <div class="live-deck-panel">
-                            <div class="live-deck-panel-title"><i class="fa-solid fa-masks-theater"></i> Role Play</div>
-                            <div class="sticky-canvas-container" id="panel-canvas-3"></div>
-                        </div>
-                        <!-- Panel 4 -->
-                        <div class="live-deck-panel">
-                            <div class="live-deck-panel-title"><i class="fa-solid fa-earth-americas"></i> Think Bigger</div>
-                            <div class="sticky-canvas-container" id="panel-canvas-4"></div>
-                        </div>
-                        <!-- Panel Vocabulary -->
-                        <div class="live-deck-panel">
-                            <div class="live-deck-panel-title"><i class="fa-solid fa-spell-check"></i> Vocabulary</div>
-                            <div class="sticky-canvas-container" id="panel-canvas-99"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- COLUMN 3: STATS ENGINE -->
-        <div class="right-pane-column">
-            <div class="metrics-widget-container">
-                <div class="panel-title" style="margin:0;"><i class="fa-solid fa-chart-simple"></i> Match Stats</div>
-                
-                <div class="metric-bar-row">
-                    <div class="metric-meta"><span>❤️ Encouragement</span><span id="ui-txt-encourage">30%</span></div>
-                    <div class="metric-track"><div class="metric-fill" id="ui-bar-encourage" style="background:var(--brand-pink); width:30%;"></div></div>
-                </div>
-                <div class="metric-bar-row">
-                    <div class="metric-meta"><span>🤝 Collaboration</span><span id="ui-txt-collab">25%</span></div>
-                    <div class="metric-track"><div class="metric-fill" id="ui-bar-collab" style="background:var(--brand-purple); width:25%;"></div></div>
-                </div>
-                <div class="metric-bar-row">
-                    <div class="metric-meta"><span>🧠 Curiosity</span><span id="ui-txt-curiosity">20%</span></div>
-                    <div class="metric-track"><div class="metric-fill" id="ui-bar-curiosity" style="background:var(--steam-light-blue); width:20%;"></div></div>
-                </div>
-                <div class="metric-bar-row">
-                    <div class="metric-meta"><span>🌍 Global Thinking</span><span id="ui-txt-global">15%</span></div>
-                    <div class="metric-track"><div class="metric-fill" id="ui-bar-global" style="background:var(--brand-yellow); width:15%;"></div></div>
-                </div>
-                <div class="metric-bar-row">
-                    <div class="metric-meta"><span>✨ Hidden Talents</span><span id="ui-txt-talents">10%</span></div>
-                    <div class="metric-track"><div class="metric-fill" id="ui-bar-talents" style="background:#e9d5ff; width:10%;"></div></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- REPORT DECK -->
-    <div class="end-session-layout" id="final-session-summary-screen">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #23262e; padding-bottom:15px; margin-bottom:25px;">
-            <div>
-                <h1 style="font-size:28px; color:#fff; font-weight:900;">🏆 MATCH REPORT & HOMEWORK</h1>
-                <p style="color:#8f98a0; font-size:13px;">Print your mission notes and read the special bonus text cards below.</p>
-            </div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-action btn-gray" onclick="rewindToActiveWorkspace()"><i class="fa-solid fa-arrow-rotate-left"></i> Change Data</button>
-                <button class="btn-action btn-success" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Homework</button>
-            </div>
-        </div>
-
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:30px;">
-            <div style="background:#121418; border:1px solid #2a3f5a; padding:16px; border-radius:var(--border-radius-lg);">
-                <span style="background:#2a3f5a; color:var(--steam-light-blue); font-size:10px; font-weight:700; padding:2px 6px; border-radius:3px;">💡 OBSIDIAN LESSON</span>
-                <h3 style="margin:6px 0; font-size:15px; color:#fff;">Negotiation Tips in Practice</h3>
-                <p style="font-size:13px; color:#cbd5e0; line-height:1.5;">When you negotiate, listen to the other person first. Ask: <em>"What do you need?"</em> Next, show your ideas using clear numbers. Do not say your plan is the best. Just show how it saves time or money.</p>
-            </div>
-            <div style="background:#121418; border:1px solid #2a3f5a; padding:16px; border-radius:var(--border-radius-lg);">
-                <span style="background:#3a2f12; color:var(--brand-yellow); font-size:10px; font-weight:700; padding:2px 6px; border-radius:3px;">⚛️ ESSENTIALS CORNER</span>
-                <h3 style="margin:6px 0; font-size:15px; color:#fff;">What is Zero Distance?</h3>
-                <p style="font-size:13px; color:#cbd5e0; line-height:1.5;">Zero Distance means two connected things react together at the exact same moment. It does not matter if they are millions of kilometers apart. Space is not a problem because they work as one team without any delay.</p>
-            </div>
-        </div>
-
-        <div style="background:#1b2838; border:1px solid #2a3f5a; padding:20px; border-radius:var(--border-radius-lg); margin-bottom:30px;">
-            <h3 style="font-size:13px; text-transform:uppercase; color:#fff; margin-bottom:15px;"><i class="fa-solid fa-chart-line"></i> Final Synergy Tracker Index</h3>
-            <div style="display:flex; flex-direction:column; gap:12px;" id="homework-synergy-bars-container"></div>
-        </div>
-
-        <h3 style="font-size:14px; text-transform:uppercase; margin-bottom:15px; color:#fff;"><i class="fa-solid fa-box-open"></i> Collected Outputs Dashboard</h3>
-        <div id="homework-separated-frames-output"></div>
-    </div>
-
-    <!-- FLOATING TIMED EXPANDABLE NOTIFICATION GRID -->
-    <div class="boost-notification-dock" id="dynamic-boost-dock-frame">
-        <div class="boost-alert-card" id="active-boost-card" onclick="toggleBoostCardState()">
-            <h4 id="boost-header-title-bar">
-                <span><i class="fa-solid fa-bolt"></i> <span id="boost-title-label">Loading Trigger...</span></span>
-                <i class="fa-solid fa-chevron-up" id="boost-chevron-icon"></i>
-            </h4>
-            <div class="boost-expanded-body" id="boost-expanded-body-node">
-                <p id="boost-description-label">...</p>
-                <label style="font-size:10px; display:block; margin-bottom:4px; font-weight:bold;">Send this action link to:</label>
-                <select class="boost-select-squad" id="boost-target-member-select" onclick="event.stopPropagation()">
-                    <!-- Squad users options -->
-                </select>
-                <div style="display:flex; justify-content:flex-end; margin-top:8px;">
-                    <button class="btn-action btn-success" style="padding:4px 10px; font-size:11px;" onclick="dispatchCurrentBoostNotification(event)">Send Trigger</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CONTROLLER SCRIPTS LOGIC -->
     <script>
-        const squadMembers = [
-            { id: "eu", name: "Me (User)", avatar: "👨&zwj;🏫" },
-            { id: "ana", name: "Ana", avatar: "👩&zwj;💻" },
-            { id: "marcela", name: "Marcela", avatar: "👩&zwj;🎨" }
-        ];
-
-        const humanBoostPromptsPool = [
-            { title: "🧠 Culture Mission: Smart Query", text: 'Ask a friend on Zoom: "What is the weak part of our plan? Let\'s fix it!"', metric: "curiosity" },
-            { title: "⚡ Inspire your Friend!", text: 'Send this to a classmate: "Imagine a child using this! Use your imagination to make it real!"', metric: "encourage" },
-            { title: "❤️ Compliment a Teammate", text: 'Say to a classmate: "I really like how you explained that idea!"', metric: "encourage" },
-            { title: "🌍 Culture Mission: Think Big", text: 'Ask a friend: "How can someone in a small, poor town use our project?"', metric: "global" }
-        ];
-
-        let activeAbaIndex = 0;
-        let stickyNotesCollection = [];
-        let performanceMetrics = { encourage: 30, collab: 25, curiosity: 20, global: 15, talents: 10 };
-        let timerStates = [300, 300, 300, 300, 300]; 
-        let currentPromptObject = null;
-        let isBoostCardExpanded = false;
-
-        window.onload = function() {
-            renderSquadCards();
-            initializeGlobalCountdownEngine();
-            renderAllStickyPanelsMatrix();
-            
-            setTimeout(() => triggerNewBoostArrivalUI(), 3000);
-            setInterval(() => runVisualNeonBlinkCycle(), 10000);
+        const database = {
+            "CONFIDENCE": [
+                { item: "Use your intuition", def: "Trust your brain and speak without fear.", ex: "When you want to say something, don't overthink. Just open your mouth and start." },
+                { item: "Think in English (Dictionaries, Audios, Texts)", def: "Do not translate to Portuguese. Connect words directly to objects.", ex: "Look at a table and think 'table', do not look and think 'mesa -> table'." },
+                { item: "Trial and Error Mindset", def: "The cycle is: Try -> Learn -> Adjust -> Repeat.", ex: "Mistakes are good! Making mistakes means you are trying and actively learning." }
+            ],
+            "EARS": [
+                { item: "Audio, audio, audio -> well trained ears!", def: "Listen to English every day to change your brain habits.", ex: "Play English audios in your house when you make coffee or wash dishes." },
+                { item: "Create the image in your mind", def: "See the concept in your head like a picture instead of letters.", ex: "When you hear 'beach', visualize blue water, sun, and sand immediately." },
+                { item: "Get the main idea first", def: "Understand the general context. Do not stop for unknown words.", ex: "If a person talks about a trip, understand they are happy, even if you miss details." },
+                { item: "Get details as much as you can", def: "After the main idea, start capturing specific small facts.", ex: "Listen for numbers, colors, times, or places mentioned in the conversation." },
+                { item: "Get your conclusion", def: "Use your logical thinking to discover the final message.", ex: "If the speaker says 'I forgot my jacket and it's raining', your conclusion is: they are cold." },
+                { item: "Listen to different accents & topics", def: "Listen to real people from different countries and industries.", ex: "Listen to British podcasts, Indian tech videos, or Australian vlogs to adapt." },
+                { item: "Use every possible resource", def: "Combine your hobbies with language practice.", ex: "Watch your favorite series, gaming streams, movies, or music with lyrics." }
+            ],
+            "WORDS": [
+                { item: "Learn the word root and patterns", def: "Look at the central block of the word to know its family.", ex: "If you know 'Connect', you can understand 'Disconnect' and 'Connection'." },
+                { item: "Learn the Latin influence", def: "Use the gift of cognates! Many academic words look like Portuguese.", ex: "Words like 'Conclusion', 'Different', and 'Symptom' are easy to guess." },
+                { item: "Write them down and create sentences", def: "Do not just look at a word. Use it right away in practice.", ex: "Write the new word on a sticky note and make a sentence about your day." },
+                { item: "Use mnemonics whenever possible", def: "Create funny connections or shortcuts to memorize formulas.", ex: "To remember 'Because', think 'Big Elephants Can Always Understand Small Elephants'." },
+                { item: "Learn idioms and phrasals", def: "This is your superpower advantage to sound very natural.", ex: "Use 'Check out' instead of 'Look at' to blend in with native speakers." },
+                { item: "Learn to spell the words and basics", def: "Master numbers, dates, months, and seasons correctly.", ex: "Practice spelling your email or reading out loud numbers like 2026." }
+            ],
+            "SPEAKING": [
+                { item: "Improvise -> make it simple", def: "Do not try to speak like a book. Use simple words to explain big concepts.", ex: "If you don't know the word 'refrigerator', say 'the cold box for food'." },
+                { item: "Ask for help: 'What's the word for...?'", def: "Use active rescue phrases when your vocabulary stops.", ex: "If you forget a word, ask: 'Hey, what's the word for the object to write?'" },
+                { item: "Ask for clarification: 'Did you say...?'", def: "Confirm information immediately to avoid communication errors.", ex: "If the speaker says a number too fast, ask: 'Excuse me, did you say fifteen or fifty?'" },
+                { item: "Confirm ideas: 'Are you saying...?'", def: "Repeat what you understood to validate with the listener.", ex: "Say: 'Are you saying we need to complete the task before tomorrow?'" },
+                { item: "Always observe and imitate", def: "Look at native speakers and mimic their music and facial expressions.", ex: "Watch how characters in series say 'Oh my god' and copy the tone exactly." },
+                { item: "Stick to people with better English", def: "Be around advanced speakers. They are an infinite source of knowledge.", ex: "Join advanced groups or talk to people who push your boundaries." }
+            ],
+            "READING": [
+                { item: "Mix reading levels starting from yours", def: "Read easy texts first, then pick challenging ones.", ex: "Start with A2 children stories, then move to tech blogs or news articles." },
+                { item: "Look around the word for definitions", def: "Use context clues. Do not jump to a dictionary instantly.", ex: "In 'The sky was dark and gloomy before the storm', 'gloomy' clearly means bad/gray weather." },
+                { item: "Practice leads to perfection", def: "Consistency is better than intensity. Read a little every day.", ex: "Read 2 pages of an English book every morning instead of 50 pages on Sunday." }
+            ],
+            "WRITING": [
+                { item: "Write without support first, then check", def: "Write completely from your head, then use AI or a teacher to fix.", ex: "Compose an email manually. Then paste it in ChatGPT to review mistakes." },
+                { item: "Follow Sequence: Intro -> Details -> Conclusion", def: "Organize your paragraphs with a clean, classic logical pipeline.", ex: "Start with 'I am writing to...', add facts in the middle, end with 'Best regards'." },
+                { item: "Read and listen to write well", def: "Input feeds output. Your intuition remembers sentence shapes.", ex: "If you read many emails, you will automatically write good emails." }
+            ],
+            "PRONUNCIATION": [
+                { item: "Sounds / Linking / Intonation", def: "Connect words together and understand the music of sentences.", ex: "Don't say 'Not / at / all'. Say it connected like 'Not-at-all'." },
+                { item: "Listen and repeat out loud", def: "You must hear your own voice speaking to adjust the muscle memory.", ex: "Read an English quote loudly in your room to train your mouth muscles." },
+                { item: "Record your voice & Sing!", def: "Use your smartphone to capture your voice or copy songs.", ex: "Sing your favorite rock or pop music while reading the lyrics line by line." }
+            ],
+            "GRAMMAR": [
+                { item: "Learn basics starting from Verb Tenses", def: "Master Past, Present, and Future perfectly before complex rules.", ex: "Know exactly how to use 'I worked', 'I work', and 'I will work' first." },
+                { item: "Understand Why it exists vs How it works", def: "Learn the practical objective first, then the strict technical mechanics.", ex: "Why use Present Perfect? To talk about experiences! How? 'I have been to...'." },
+                { item: "Cult language vs Spoken language", def: "Real people don't speak like rigid grammar books.", ex: "Books say 'Whom did you see?'. Real people always say 'Who did you see?'." }
+            ]
         };
 
-        function renderSquadCards() {
-            const container = document.getElementById("squad-members-render-list");
-            container.innerHTML = squadMembers.map(s => `
-                <div class="student-card" id="card-${s.id}" onclick="selectSquadMemberCard('${s.id}')">
-                    <div class="avatar-circle">${s.avatar}</div>
-                    <div>
-                        <h4 style="font-size:13px; font-weight:700; color:#fff;">${s.name}</h4>
-                        <p style="font-size:11px; color:var(--steam-neon);">● Live</p>
-                    </div>
-                </div>
-            `).join("");
+        const phases = Object.keys(database);
+        let currentPhaseIndex = 0;
+        let players = [];
+        let currentPhaseMissions = [];
+        let activeMissionsCount = 0;
+
+        function startArena() {
+            const p1 = document.getElementById('p1').value.trim();
+            const p2 = document.getElementById('p2').value.trim();
+            const p3 = document.getElementById('p3').value.trim();
+
+            if (!p1 || !p2) {
+                alert("Please enter at least Player A and Player B names.");
+                return;
+            }
+
+            players = [p1, p2];
+            if (p3) players.push(p3);
+
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('arena-screen').style.display = 'flex';
+
+            loadPhase(0);
         }
 
-        function selectSquadMemberCard(id) {
-            document.querySelectorAll(".student-card").forEach(c => c.classList.remove("selected"));
-            const card = document.getElementById(`card-${id}`);
-            if(card) card.classList.add("selected");
-        }
+        function loadPhase(index) {
+            if (index >= phases.length) {
+                alert("🏆 Training Completed! Excellent teamwork!");
+                return;
+            }
 
-        function switchAbaActive(index) {
-            document.querySelectorAll(".step-tab").forEach(t => t.classList.remove("active"));
-            document.querySelectorAll(".step-content-pane").forEach(p => p.classList.remove("active"));
+            currentPhaseIndex = index;
+            const phaseName = phases[index];
+            document.getElementById('phase-title').innerText = `PHASE: ${phaseName}`;
+
+            // Reset UI lock elements
+            const nextBtn = document.getElementById('next-phase-btn');
+            nextBtn.disabled = true;
+            nextBtn.innerText = "Complete all items to unlock Next Phase 🔒";
+
+            // Load original topics stack data
+            currentPhaseMissions = JSON.parse(JSON.stringify(database[phaseName]));
+            activeMissionsCount = players.length; // Each player starts with 1 slot active
             
-            activeAbaIndex = index;
-            document.getElementById(`tab-${index}`).classList.add("active");
-            document.getElementById(`pane-${index}`).classList.add("active");
-
-            if(activeAbaIndex === 4) {
-                document.getElementById("footer-next-phase-btn").style.display = "none";
-                document.getElementById("footer-finalize-activity-btn").style.display = "inline-flex";
-            } else {
-                document.getElementById("footer-next-phase-btn").style.display = "inline-flex";
-                document.getElementById("footer-finalize-activity-btn").style.display = "none";
-            }
-
-            document.getElementById("phase-timeout-message-banner").style.display = (timerStates[activeAbaIndex] <= 0) ? "block" : "none";
+            distributeMissions();
         }
 
-        function navigateAbaOffset(offset) {
-            let target = activeAbaIndex + offset;
-            if (target >= 0 && target <= 4) {
-                switchAbaActive(target);
-            }
-        }
+        function distributeMissions() {
+            const grid = document.getElementById('players-grid');
+            grid.innerHTML = '';
 
-        function generateStickyNoteFromInput(stepId, inputFieldId, categoryName) {
-            const field = document.getElementById(inputFieldId);
-            const val = field.value.trim();
-            if(!val) return;
-
-            stickyNotesCollection.push({
-                id: "stick_" + Date.now(),
-                step: stepId,
-                category: categoryName,
-                content: val,
-                author: "Squad Note"
-            });
-
-            field.value = "";
-            boostMetricScore("collab", 8);
-            renderAllStickyPanelsMatrix();
-        }
-
-        function addGlobalVocabularyNote() {
-            const field = document.getElementById("header-vocab-term-input");
-            const val = field.value.trim();
-            if(!val) return;
-
-            stickyNotesCollection.push({
-                id: "stick_" + Date.now(),
-                step: 99, 
-                category: "Live Vocabulary Builder",
-                content: "📚 " + val,
-                author: "Vocab Log"
-            });
-
-            field.value = "";
-            boostMetricScore("curiosity", 10);
-            renderAllStickyPanelsMatrix();
-            alert(`"${val}" saved into your Vocabulary base!`);
-        }
-
-        function deleteStickyNoteItem(id) {
-            stickyNotesCollection = stickyNotesCollection.filter(n => n.id !== id);
-            renderAllStickyPanelsMatrix();
-        }
-
-        function editStickyNoteItem(id) {
-            const item = stickyNotesCollection.find(n => n.id === id);
-            if(!item) return;
-
-            const updatedText = prompt("Update your note content:", item.content);
-            if(updatedText !== null && updatedText.trim() !== "") {
-                item.content = updatedText.trim();
-                renderAllStickyPanelsMatrix();
-            }
-        }
-
-        /* RENDERS ALL 6 PANELS IN REAL-TIME AT THE BOTTOM */
-        function renderAllStickyPanelsMatrix() {
-            const panelsIds = [0, 1, 2, 3, 4, 99];
-            
-            panelsIds.forEach(stepId => {
-                const box = document.getElementById(`panel-canvas-${stepId}`);
-                if(!box) return;
-                box.innerHTML = "";
-
-                const subset = stickyNotesCollection.filter(n => n.step === stepId);
+            players.forEach((player, pIdx) => {
+                const card = document.createElement('div');
+                card.className = 'player-card';
+                card.id = `player-slot-${pIdx}`;
                 
-                if(subset.length === 0) {
-                    box.innerHTML = `<p style="font-size:11px; color:var(--text-muted); padding:4px;">Empty slot.</p>`;
-                    return;
-                }
+                let nextPlayerName = players[(pIdx + 1) % players.length];
+                const currentMission = currentPhaseMissions.shift();
 
-                subset.forEach(n => {
-                    box.innerHTML += `
-                        <div class="sticky-note">
-                            <div class="sticky-note-actions">
-                                <i class="fa-solid fa-pen edit-icon" onclick="editStickyNoteItem('${n.id}')"></i>
-                                <i class="fa-solid fa-circle-xmark delete-btn" onclick="deleteStickyNoteItem('${n.id}')"></i>
+                let missionHTML = '';
+                if (currentMission) {
+                    missionHTML = `
+                        <div class="mission-box">
+                            <button class="mission-title-btn" onclick="toggleReveal(this)">
+                                ${currentMission.item}
+                            </button>
+                            <div class="mission-details">
+                                <div class="explanation-section">
+                                    <strong>Definition:</strong> ${currentMission.def}<br><br>
+                                    <strong>Example:</strong> ${currentMission.ex}
+                                </div>
+                                <div class="task-section">
+                                    👉 <strong>YOUR TASK:</strong><br>
+                                    1. Explain this strategy using your own words or personal experience.<br>
+                                    2. Then, ask <strong>${nextPlayerName}</strong> to think of or give you a new example about it!
+                                </div>
                             </div>
-                            <div>${n.content}</div>
-                            <div class="sticky-footer-author">${n.author}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="check-btn" onclick="completeMission(${pIdx})">✓ Clear Task</button>
                         </div>
                     `;
-                });
-            });
-        }
-
-        function lockSquadUserRole(cardId, roleName) {
-            document.querySelectorAll(".role-card-pick").forEach(c => c.classList.remove("locked"));
-            document.getElementById(cardId).classList.add("locked");
-            boostMetricScore("talents", 15);
-            alert(`You locked your role as: ${roleName}! Discuss your view with the crew.`);
-        }
-
-        function boostMetricScore(metric, points) {
-            performanceMetrics[metric] = Math.min(performanceMetrics[metric] + points, 100);
-            const fill = document.getElementById(`ui-bar-${metric}`);
-            const txt = document.getElementById(`ui-txt-${metric}`);
-            if(fill) fill.style.width = performanceMetrics[metric] + "%";
-            if(txt) txt.innerText = performanceMetrics[metric] + "%";
-        }
-
-        function triggerNewBoostArrivalUI() {
-            currentPromptObject = humanBoostPromptsPool[Math.floor(Math.random() * humanBoostPromptsPool.length)];
-            
-            document.getElementById("boost-title-label").innerText = currentPromptObject.title;
-            document.getElementById("boost-description-label").innerText = currentPromptObject.text;
-            
-            const select = document.getElementById("boost-target-member-select");
-            select.innerHTML = squadMembers.map(m => `<option value="${m.name}">${m.name}</option>`).join("");
-            
-            const dock = document.getElementById("dynamic-boost-dock-frame");
-            dock.style.display = "block";
-            
-            collapseBoostCardState();
-            runVisualNeonBlinkCycle();
-        }
-
-        function runVisualNeonBlinkCycle() {
-            const card = document.getElementById("active-boost-card");
-            if(card && !isBoostCardExpanded) {
-                card.classList.add("flash-alert");
-                setTimeout(() => card.classList.remove("flash-alert"), 4000);
-            }
-        }
-
-        function toggleBoostCardState() {
-            if(isBoostCardExpanded) {
-                collapseBoostCardState();
-            } else {
-                expandBoostCardState();
-            }
-        }
-
-        function expandBoostCardState() {
-            isBoostCardExpanded = true;
-            const card = document.getElementById("active-boost-card");
-            const body = document.getElementById("boost-expanded-body-node");
-            const chevron = document.getElementById("boost-chevron-icon");
-            
-            card.classList.add("expanded-sticky");
-            body.style.display = "block";
-            chevron.className = "fa-solid fa-chevron-down";
-        }
-
-        function collapseBoostCardState() {
-            isBoostCardExpanded = false;
-            const card = document.getElementById("active-boost-card");
-            const body = document.getElementById("boost-expanded-body-node");
-            const chevron = document.getElementById("boost-chevron-icon");
-            
-            card.classList.remove("expanded-sticky");
-            body.style.display = "none";
-            chevron.className = "fa-solid fa-chevron-up";
-        }
-
-        function dispatchCurrentBoostNotification(event) {
-            event.stopPropagation();
-            const targetUser = document.getElementById("boost-target-member-select").value;
-            
-            alert(`Dispatched! ${targetUser} received the strategy task link directly.`);
-            boostMetricScore(currentPromptObject.metric, 15);
-            
-            document.getElementById("dynamic-boost-dock-frame").style.display = "none";
-            setTimeout(() => triggerNewBoostArrivalUI(), 120000);
-        }
-
-        function initializeGlobalCountdownEngine() {
-            setInterval(() => {
-                if (timerStates[activeAbaIndex] > 0) {
-                    timerStates[activeAbaIndex]--;
-                    refreshTimerDisplayUI();
-                    
-                    if(timerStates[activeAbaIndex] <= 0) {
-                        document.getElementById("phase-timeout-message-banner").style.display = "block";
-                    }
-                }
-            }, 1000);
-        }
-
-        function refreshTimerDisplayUI() {
-            let activeTime = timerStates[activeAbaIndex];
-            let mins = Math.floor(activeTime / 60).toString().padStart(2, '0');
-            let secs = (activeTime % 60).toString().padStart(2, '0');
-            
-            const clockEl = document.getElementById(`clock-${activeAbaIndex}`);
-            if(clockEl) clockEl.innerText = `${mins}:${secs}`;
-        }
-
-        function finishActiveCoCreationSession() {
-            document.getElementById("main-application-engine-view").style.display = "none";
-            document.getElementById("final-session-summary-screen").style.display = "block";
-            
-            const synergyContainer = document.getElementById("homework-synergy-bars-container");
-            synergyContainer.innerHTML = `
-                <div>
-                    <p style="font-size:12.5px; color:#cbd5e0; margin-bottom:4px;">❤️ <strong>Encouragement Level (${performanceMetrics.encourage}%):</strong> You helped your friends and said nice things about their ideas.</p>
-                    <div class="metric-track"><div class="metric-fill" style="background:var(--brand-pink); width:${performanceMetrics.encourage}%;"></div></div>
-                </div>
-                <div>
-                    <p style="font-size:12.5px; color:#cbd5e0; margin-bottom:4px;">🤝 <strong>Collaboration Level (${performanceMetrics.collab}%):</strong> Your team worked as one to mix and connect different plans.</p>
-                    <div class="metric-track"><div class="metric-fill" style="background:var(--brand-purple); width:${performanceMetrics.collab}%;"></div></div>
-                </div>
-                <div>
-                    <p style="font-size:12.5px; color:#cbd5e0; margin-bottom:4px;">🧠 <strong>Curiosity Index (${performanceMetrics.curiosity}%):</strong> You asked clever questions to understand the challenge better.</p>
-                    <div class="metric-track"><div class="metric-fill" style="background:var(--steam-light-blue); width:${performanceMetrics.curiosity}%;"></div></div>
-                </div>
-                <div>
-                    <p style="font-size:12.5px; color:#cbd5e0; margin-bottom:4px;">🌍 <strong>Global Thinking (${performanceMetrics.global}%):</strong> You planned how to scale your idea to help poor or distant communities.</p>
-                    <div class="metric-track"><div class="metric-fill" style="background:var(--brand-yellow); width:${performanceMetrics.global}%;"></div></div>
-                </div>
-            `;
-
-            const categories = ["Who Are We", "Big Idea", "Make It Real", "Role Play", "Think Bigger", "Live Vocabulary Builder"];
-            const framesContainer = document.getElementById("homework-separated-frames-output");
-            framesContainer.innerHTML = "";
-
-            categories.forEach(cat => {
-                let stepNotes = [];
-                if(cat === "Live Vocabulary Builder") {
-                    stepNotes = stickyNotesCollection.filter(n => n.step === 99);
                 } else {
-                    let stepMapping = {"Who Are We":0, "Big Idea":1, "Make It Real":2, "Role Play":3, "Think Bigger":4};
-                    stepNotes = stickyNotesCollection.filter(n => n.step === stepMapping[cat]);
+                    activeMissionsCount--; // Fallback if cards < players count
+                    missionHTML = `
+                        <div class="empty-mission-state">
+                            No initial cards left. Help your colleagues!
+                        </div>
+                    `;
                 }
 
-                let notesHTML = stepNotes.map(n => `
-                    <div class="sticky-note" style="min-height:auto; background:#1b2838; border-color:#2a3f5a;">
-                        <div>${n.content}</div>
-                    </div>
-                `).join("");
+                card.innerHTML = `
+                    <div class="player-name-tag">${player}</div>
+                    ${missionHTML}
+                `;
+                grid.appendChild(card);
+            });
+            
+            checkPhaseStatus();
+        }
 
-                if(stepNotes.length === 0) {
-                    notesHTML = `<p style="font-size:12px; color:var(--text-muted);">No notes saved in this category slot.</p>`;
-                }
+        function toggleReveal(button) {
+            const details = button.nextElementSibling;
+            details.style.display = (details.style.display === 'block') ? 'none' : 'block';
+        }
 
-                framesContainer.innerHTML += `
-                    <div class="category-frame-block">
-                        <div class="category-frame-title">${cat}</div>
-                        <div class="sticky-canvas-container">${notesHTML}</div>
+        function completeMission(playerIndex) {
+            const card = document.getElementById(`player-slot-${playerIndex}`);
+            
+            if (currentPhaseMissions.length > 0) {
+                // Pull next item and renew dashboard slot
+                const nextMission = currentPhaseMissions.shift();
+                let nextPlayerName = players[(playerIndex + 1) % players.length];
+
+                const mBox = card.querySelector('.mission-box');
+                mBox.innerHTML = `
+                    <button class="mission-title-btn" onclick="toggleReveal(this)">
+                        ${nextMission.item}
+                    </button>
+                    <div class="mission-details">
+                        <div class="explanation-section">
+                            <strong>Definition:</strong> ${nextMission.def}<br><br>
+                            <strong>Example:</strong> ${nextMission.ex}
+                        </div>
+                        <div class="task-section">
+                            👉 <strong>YOUR TASK:</strong><br>
+                            1. Explain this strategy using your own words or personal experience.<br>
+                            2. Then, ask <strong>${nextPlayerName}</strong> to think of or give you a new example about it!
+                        </div>
                     </div>
                 `;
-            });
+            } else {
+                // No items left in database stack, kill this active slot tracker
+                activeMissionsCount--;
+                card.innerHTML = `
+                    <div class="player-name-tag">${players[playerIndex]}</div>
+                    <div class="empty-mission-state">✓ Done! Support your remaining teammates.</div>
+                `;
+                
+                checkPhaseStatus();
+            }
         }
 
-        function rewindToActiveWorkspace() {
-            document.getElementById("final-session-summary-screen").style.display = "none";
-            document.getElementById("main-application-engine-view").style.display = "grid";
-            renderAllStickyPanelsMatrix();
+        function checkPhaseStatus() {
+            // Unlocks button only if current stack is empty AND all active boards are cleared
+            if (currentPhaseMissions.length === 0 && activeMissionsCount <= 0) {
+                const nextBtn = document.getElementById('next-phase-btn');
+                nextBtn.disabled = false;
+                nextBtn.innerText = "Next Phase &rarr;";
+            }
+        }
+
+        function goToNextPhase() {
+            loadPhase(currentPhaseIndex + 1);
         }
     </script>
 </body>
