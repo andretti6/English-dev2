@@ -165,7 +165,7 @@
             border-left: 4px solid var(--accent-purple);
         }
 
-        /* Interactive Question Cards (New!) */
+        /* Interactive Question Cards */
         .questions-list {
             list-style: none;
             display: flex;
@@ -197,7 +197,6 @@
             color: #e2e8f0;
         }
 
-        /* State when question is revealed */
         .question-item.revealed {
             background: rgba(15, 23, 42, 0.9);
             border: 2px solid var(--accent-purple);
@@ -357,14 +356,12 @@
         <p>Complete the missions and earn your stars!</p>
     </header>
 
-    <!-- Progress Stars -->
     <div class="progress-container">
         <span class="star-slot" id="star-1">⭐</span>
         <span class="star-slot" id="star-2">⭐</span>
         <span class="star-slot" id="star-3">⭐</span>
     </div>
 
-    <!-- Navigation Map -->
     <div class="adventure-map">
         <button class="mission-btn" onclick="openMission('sports')"><span>⚽</span> Sports</button>
         <button class="mission-btn" onclick="openMission('food')"><span>🍕</span> Food</button>
@@ -372,10 +369,8 @@
         <button class="mission-btn" id="final-nav-btn" style="border-color: var(--accent-pink); display: none;" onclick="openMission('final')"><span>🏆</span> Final Challenge</button>
     </div>
 
-    <!-- Cards Display Arena -->
     <div class="card-container">
 
-        <!-- SPORTS CARD -->
         <div id="card-sports" class="mission-card">
             <span class="mission-badge">Mission 1</span>
             <div class="card-header">⚽ Sports Adventure</div>
@@ -416,7 +411,6 @@
             <button class="next-btn" onclick="completeMission(1, 'food')">Next Mission ➡️</button>
         </div>
 
-        <!-- FOOD CARD -->
         <div id="card-food" class="mission-card">
             <span class="mission-badge">Mission 2</span>
             <div class="card-header">🍕 Food Adventure</div>
@@ -459,7 +453,6 @@
             <button class="next-btn" onclick="completeMission(2, 'school')">Next Mission ➡️</button>
         </div>
 
-        <!-- SCHOOL CARD -->
         <div id="card-school" class="mission-card">
             <span class="mission-badge">Mission 3</span>
             <div class="card-header">🏫 School Adventure</div>
@@ -490,7 +483,7 @@
                     <span class="chip" onclick="toggleChip(this)">math 🔢</span>
                     <span class="chip" onclick="toggleChip(this)">English 🔤</span>
                     <span class="chip" onclick="toggleChip(this)">science 🧪</span>
-                    <span class="chip" onclick="toggleChip(this).">break 🍎</span>
+                    <span class="chip" onclick="toggleChip(this)">break 🍎</span>
                 </div>
             </div>
 
@@ -501,7 +494,6 @@
             <button class="next-btn" onclick="completeMission(3, 'final')">Unlock Final Challenge 🏆</button>
         </div>
 
-        <!-- FINAL CHALLENGE CARD -->
         <div id="card-final" class="mission-card">
             <span class="mission-badge" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">Boss Level</span>
             <div class="card-header">🎉 Congratulations!</div>
@@ -525,7 +517,6 @@
 
     </div>
 
-    <!-- Audio API setup and App Logic -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -552,6 +543,105 @@
                 osc.stop(audioCtx.currentTime + 0.15);
             } else if (type === 'star') {
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); //Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
+                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); 
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'alarm') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            }
+        }
+
+        // Card management logic
+        function openMission(topic) {
+            playSound('click');
+            document.querySelectorAll('.mission-card').forEach(card => card.style.display = 'none');
+            const targetCard = document.getElementById(`card-${topic}`);
+            if(targetCard) targetCard.style.display = 'block';
+        }
+
+        function revealQuestion(element, text) {
+            if (!element.classList.contains('revealed')) {
+                playSound('reveal');
+                element.classList.add('revealed');
+                element.innerHTML = `💬 ${text}`;
+            }
+        }
+
+        function toggleChip(chip) {
+            playSound('click');
+            chip.classList.toggle('clicked');
+        }
+
+        function completeMission(stepNumber, nextTopic) {
+            playSound('star');
+            document.getElementById(`star-${stepNumber}`).classList.add('active');
+            
+            const currentBtn = document.querySelectorAll('.mission-btn')[stepNumber - 1];
+            currentBtn.classList.add('completed');
+            currentBtn.innerHTML = `✅ ${currentBtn.innerText}`;
+
+            if(stepNumber === 3) {
+                document.getElementById('final-nav-btn').style.display = 'flex';
+            }
+
+            openMission(nextTopic);
+        }
+
+        function selectFinalTopic(element) {
+            playSound('click');
+            document.querySelectorAll('.topic-select').forEach(t => t.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        // Timer Logic
+        let timerInterval;
+        let timeLeft = 60;
+        let timerRunning = false;
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-control-btn');
+            const display = document.getElementById('timer-display');
+
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                btn.innerText = "Resume Timer ⏱️";
+                display.classList.remove('running');
+                timerRunning = false;
+            } else {
+                timerRunning = true;
+                btn.innerText = "Pause Timer ⏸️";
+                display.classList.add('running');
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    display.innerText = timeLeft;
+                    playSound('click');
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        playSound('alarm');
+                        display.classList.remove('running');
+                        btn.innerText = "Time's Up! 🎉";
+                        timerRunning = false;
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetAdventure() {
+            location.reload();
+        }
+
+        openMission('sports');
+    </script>
+</body>
+</html>
