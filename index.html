@@ -1,562 +1,557 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Idea Arena — Clean & Focused</title>
-<style>
-:root{
-  --bg:#090a0f;
-  --panel:#12141c;
-  --panel-2:#1a1d29;
-  --border:#242838;
-  --text:#e3e6ed;
-  --muted:#7e869c;
-  --accent:#ffd23f;
-  --green:#3ecf8e;
-  --blue:#4d9fff;
-  --purple:#a78bfa;
-  --radius:14px;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Adventure 🌟</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-pink: #ec4899;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --star-gold: #eab308;
+        }
 
-/* SETUP SCREEN */
-#setup-screen {
-  position: fixed; inset: 0; background: var(--bg); z-index: 999;
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-.setup-card {
-  background: var(--panel); border: 1px solid var(--border); padding: 32px;
-  border-radius: var(--radius); max-width: 400px; width: 100%; text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.setup-card h2 { color: var(--accent); margin: 0 0 8px 0; font-size: 24px; }
-.setup-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-.setup-input {
-  width: 100%; background: var(--panel-2); border: 1px solid var(--border);
-  color: var(--text); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 15px;
-  outline: none; transition: 0.2s;
-}
-.setup-input:focus { border-color: var(--accent); }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-/* MAIN APP INTERFACE */
-#app-main { display: none; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
 
-.header{
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 100;
-}
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 24px; max-width: 1000px; margin: 0 auto;
-}
-.brand { font-size: 14px; font-weight: 700; letter-spacing: .05em; color: var(--muted); }
-.brand span { color: var(--accent); }
-.avatar {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #ff9248);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; color: #000; font-size: 13px;
-}
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
-/* UX NAVIGATION TABS */
-.nav-tabs {
-  display: flex; gap: 8px; padding: 0 24px; max-width: 1000px; margin: 0 auto;
-}
-.tab-btn {
-  background: none; border: none; color: var(--muted); padding: 12px 16px;
-  font-size: 14px; font-weight: 600; cursor: pointer; position: relative;
-  transition: 0.2s;
-}
-.tab-btn.active { color: var(--text); }
-.tab-btn.active::after {
-  content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 3px;
-  background: var(--accent); border-radius: 2px;
-}
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
 
-/* MAIN CONTAINER LAYER */
-.main-container {
-  max-width: 760px; margin: 24px auto 80px auto; padding: 0 24px;
-}
-.view-section { display: none; }
-.view-section.active { display: block; animation: fadeIn 0.3s ease; }
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+        /* Progress Tracker */
+        .progress-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-/* CLEAN UI CARDS */
-.card {
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
-}
+        .star-slot {
+            font-size: 2rem;
+            color: #334155;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
 
-/* CENTRAL MISSION ELEMENT */
-.mission-box {
-  text-align: center; background: radial-gradient(circle at 50% 0%, #171b2a, var(--panel));
-  padding-bottom: 18px;
-}
-.mission-box h5 { color: var(--accent); margin: 0 0 6px 0; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
-.mission-box h1 { font-size: 22px; margin: 0 0 16px 0; line-height: 1.4; font-weight: 700; }
-.edit-btn {
-  background: none; border: 1px dashed var(--border); color: var(--muted);
-  border-radius: 20px; padding: 6px 14px; font-size: 11px; cursor: pointer; transition: 0.2s;
-}
-.edit-btn:hover { border-color: var(--muted); color: var(--text); }
+        .star-slot.active {
+            color: var(--star-gold);
+            transform: scale(1.2);
+            text-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+        }
 
-/* LIVE AVATARS STACK DESIGN */
-.team-live-bar {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05);
-}
-.avatar-stack { display: flex; flex-direction: row-reverse; justify-content: flex-end; }
-.stack-member {
-  width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2);
-  border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 700; color: var(--accent); margin-left: -8px; transition: 0.2s;
-}
-.stack-member:last-child { margin-left: 0; }
-.live-status-text { font-size: 12px; color: var(--muted); }
+        /* Map Buttons */
+        .adventure-map {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 900px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
 
-/* THE STEPPER STEP BY STEP LINK */
-.cycle-stepper {
-  display: flex; justify-content: space-between; margin-bottom: 24px; position: relative;
-  background: var(--panel-2); padding: 8px; border-radius: 12px; border: 1px solid var(--border);
-}
-.step-node {
-  flex: 1; text-align: center; background: none; border: none; padding: 10px 6px;
-  color: var(--muted); cursor: pointer; border-radius: 8px; transition: 0.2s;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-}
-.step-node .s-emoji { font-size: 16px; }
-.step-node .s-name { font-size: 11px; font-weight: 700; }
-.step-node.active { background: var(--panel); color: var(--text); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-.step-node.active .s-name { color: var(--accent); }
+        .mission-btn {
+            background: var(--card-bg);
+            border: 3px solid #334155;
+            border-radius: 24px;
+            padding: 1.5rem 2rem;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 200px;
+            transition: all 0.2s ease;
+        }
 
-/* QUESTIONS AREA CONTAINER */
-.questions-pane {
-  background: var(--panel-2); border-radius: 12px; padding: 16px; border-left: 4px solid var(--accent);
-  margin-bottom: 24px;
-}
-.questions-pane h4 { margin: 0 0 8px 0; font-size: 13px; color: var(--muted); letter-spacing: 0.05em; }
-.questions-pane ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: var(--text); }
+        .mission-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3);
+        }
 
-/* STICKY NOTES LIST */
-.sticky-row-list { display: flex; flex-direction: column; gap: 10px; }
-.mini-note {
-  background: #252216; border: 1px solid #3d351d; color: #ffe596;
-  padding: 12px 16px; border-radius: 10px; font-size: 13px; line-height: 1.4;
-}
+        .mission-btn.completed {
+            border-color: var(--accent-green);
+        }
 
-/* TARGET PROGRESSION HABITS */
-.target-list { display: flex; flex-direction: column; gap: 2px; }
-.target-item {
-  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: flex-start; gap: 12px;
-}
-.target-item:last-child { border-bottom: none; }
-.target-item input[type=checkbox] { accent-color: var(--green); width: 18px; height: 18px; margin-top: 1px; cursor: pointer; }
-.target-item .label { font-size: 14px; line-height: 1.4; color: var(--text); }
+        /* Mission Cards */
+        .card-container {
+            width: 100%;
+            max-width: 700px;
+            perspective: 1000px;
+        }
 
-/* IDEAS MATRIX (RASCUNHO INSPIRED) */
-.ideas-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;
-}
-.student-arena-card {
-  background: var(--panel); border: 3px solid var(--border); border-radius: var(--radius);
-  padding: 18px; min-height: 220px; display: flex; flex-direction: column; position: relative;
-}
-.student-arena-card .student-name {
-  font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 10px;
-}
-.student-arena-card .focus-badge {
-  background: none; border: 3px solid var(--text); color: var(--text);
-  font-size: 14px; font-weight: 800; padding: 6px 12px; display: inline-block;
-  align-self: flex-start; margin-bottom: 14px; letter-spacing: 0.05em;
-}
-.student-arena-card .notes-body {
-  font-size: 14px; color: var(--muted); font-family: monospace; line-height: 1.5; white-space: pre-line; flex: 1;
-}
+        .mission-card {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 2.5rem;
+            display: none;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 2px solid #334155;
+        }
 
-/* LARGE MAIN PRIMARY BUTTONS */
-.action-trigger-btn {
-  width: 100%; background: var(--panel-2); border: 2px dashed var(--border);
-  color: var(--muted); padding: 16px; border-radius: 12px; font-size: 14px;
-  font-weight: 600; cursor: pointer; text-align: center; transition: 0.2s;
-  margin-bottom: 20px;
-}
-.action-trigger-btn:hover { border-color: var(--accent); color: var(--accent); }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
 
-/* MODALS LAYOUT */
-.modal-bg {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
-  display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px;
-}
-.modal-bg.show { display: flex; }
-.modal {
-  background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 24px; width: 100%; max-width: 400px;
-}
-.modal h3 { margin: 0 0 16px 0; font-size: 16px; }
-.modal input[type=text], .modal textarea {
-  width: 100%; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text); padding: 12px; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 12px;
-}
-.modal textarea { resize: none; }
-.modal input:focus, .modal textarea:focus { border-color: var(--accent); }
-.modal .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
-.btn { border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
-.btn-primary { background: var(--accent); color: #000; }
-.btn-ghost { background: none; border: 1px solid var(--border); color: var(--text); }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 1rem;
+        }
 
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: var(--panel-2); border: 1px solid var(--accent); color: var(--text);
-  padding: 10px 20px; border-radius: 30px; font-size: 13px; z-index: 300; opacity: 0; transition: 0.2s; pointer-events: none;
-}
-.toast.show { opacity: 1; }
-</style>
+        .mission-badge {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            padding: 0.25rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .instruction {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        /* Interactive Question Cards (New!) */
+        .questions-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .question-item {
+            background: #0f172a;
+            padding: 1.2rem;
+            border-radius: 14px;
+            cursor: pointer;
+            border: 2px dashed #475569;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .question-item:hover {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.05);
+            color: #e2e8f0;
+        }
+
+        /* State when question is revealed */
+        .question-item.revealed {
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid var(--accent-purple);
+            color: var(--text-light);
+            font-weight: normal;
+            justify-content: flex-start;
+            cursor: default;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.98); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Chips / Vocab */
+        .vocab-section {
+            margin-bottom: 2rem;
+        }
+
+        .vocab-section h4 {
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .chip {
+            background: #334155;
+            color: #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .chip:hover {
+            background: var(--accent-purple);
+            transform: scale(1.05);
+        }
+
+        .chip.clicked {
+            background: #475569;
+            color: #64748b;
+            text-decoration: line-through;
+        }
+
+        /* Action Buttons */
+        .next-btn, .finish-btn {
+            width: 100%;
+            background: var(--accent-green);
+            color: #0f172a;
+            border: none;
+            padding: 1.25rem;
+            border-radius: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .next-btn:hover, .finish-btn:hover {
+            background: #34d399;
+            transform: translateY(-2px);
+        }
+
+        /* Final Challenge Card Specifics */
+        #final-card .card-header {
+            color: var(--star-gold);
+        }
+
+        .timer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .timer-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-pink);
+            transition: border-color 0.3s;
+        }
+
+        .timer-circle.running {
+            border-color: var(--accent-pink);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.03); }
+        }
+
+        .timer-btn {
+            margin-top: 1rem;
+            background: var(--accent-pink);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .topic-selectors {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .topic-select {
+            flex: 1;
+            padding: 1rem;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .topic-select.selected {
+            border-color: var(--star-gold);
+            background: rgba(234, 179, 8, 0.1);
+        }
+
+    </style>
 </head>
 <body>
 
-<div id="setup-screen">
-  <div class="setup-card">
-    <h2>Welcome to Live Arena</h2>
-    <p>Type your name to connect to the global workspace:</p>
-    <input type="text" id="usernameInput" class="setup-input" placeholder="Your Name (e.g. Andre or Guto)" autofocus>
-    <button class="btn btn-primary" style="width:100%; padding:14px; font-size:14px;" onclick="connectUser()">Enter Live Session</button>
-  </div>
-</div>
- 
-<div id="app-main">
-  <div class="header">
-    <div class="topbar">
-      <div class="brand">LEARNING <span>ARENA</span></div>
-      <div class="avatar" id="userAvatar">ME</div>
-    </div>
-    <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchView('session', this)">🎯 Session</button>
-      <button class="tab-btn" onclick="switchView('ideas', this)">💡 Ideas Board</button>
-    </div>
-  </div>
+    <header>
+        <h1>🎤 Let's Talk!</h1>
+        <p>Complete the missions and earn your stars!</p>
+    </header>
 
-  <div class="main-container">
-    
-    <div id="view-session" class="view-section active">
-      <div class="card mission-box">
-        <h5>Today's Main Challenge</h5>
-        <h1 id="missionText">How can we help a friend speak English with total confidence?</h1>
-        <button class="edit-btn" onclick="openMissionModal()">Change Challenge Quest</button>
-        
-        <div class="team-live-bar">
-          <div class="avatar-stack" id="avatarStackBox"></div>
-          <div class="live-status-text" id="liveStatusText">Connecting...</div>
+    <!-- Progress Stars -->
+    <div class="progress-container">
+        <span class="star-slot" id="star-1">⭐</span>
+        <span class="star-slot" id="star-2">⭐</span>
+        <span class="star-slot" id="star-3">⭐</span>
+    </div>
+
+    <!-- Navigation Map -->
+    <div class="adventure-map">
+        <button class="mission-btn" onclick="openMission('sports')"><span>⚽</span> Sports</button>
+        <button class="mission-btn" onclick="openMission('food')"><span>🍕</span> Food</button>
+        <button class="mission-btn" onclick="openMission('school')"><span>🏫</span> School</button>
+        <button class="mission-btn" id="final-nav-btn" style="border-color: var(--accent-pink); display: none;" onclick="openMission('final')"><span>🏆</span> Final Challenge</button>
+    </div>
+
+    <!-- Cards Display Arena -->
+    <div class="card-container">
+
+        <!-- SPORTS CARD -->
+        <div id="card-sports" class="mission-card">
+            <span class="mission-badge">Mission 1</span>
+            <div class="card-header">⚽ Sports Adventure</div>
+            <div class="instruction">🎯 <strong>Mission:</strong> Click on a mystery card to reveal the question!</div>
+            
+            <ul class="questions-list">
+                <li class="question-item" onclick="revealQuestion(this, 'What is your favorite team?')">❓ Click to unlock question 1</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Why do you like this team?')">❓ Click to unlock question 2</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Who is your favorite player?')">❓ Click to unlock question 3</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What position does he play?')">❓ Click to unlock question 4</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Does your team win many games?')">❓ Click to unlock question 5</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Do you watch games with your family?')">❓ Click to unlock question 6</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Where do you watch games?')">❓ Click to unlock question 7</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What colors does your team have?')">❓ Click to unlock question 8</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Do you play soccer too?')">❓ Click to unlock question 9</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Would you like to visit the stadium?')">❓ Click to unlock question 10</li>
+            </ul>
+
+            <div class="vocab-section">
+                <h4>💡 Helpful Words (Click to use)</h4>
+                <div class="chips-container">
+                    <span class="chip" onclick="toggleChip(this)">team ⚽</span>
+                    <span class="chip" onclick="toggleChip(this)">player 🏆</span>
+                    <span class="chip" onclick="toggleChip(this)">goal 🥅</span>
+                    <span class="chip" onclick="toggleChip(this)">fan ❤️</span>
+                    <span class="chip" onclick="toggleChip(this)">coach 👕</span>
+                    <span class="chip" onclick="toggleChip(this)">stadium 🏟️</span>
+                    <span class="chip" onclick="toggleChip(this)">win 🎉</span>
+                    <span class="chip" onclick="toggleChip(this)">lose 😢</span>
+                    <span class="chip" onclick="toggleChip(this)">match 🎮</span>
+                </div>
+            </div>
+
+            <div class="instruction" style="border-left-color: var(--accent-green); margin-bottom: 2rem;">
+                🔥 <strong>Mini Challenge:</strong> Tell me 3 things about your favorite team.
+            </div>
+
+            <button class="next-btn" onclick="completeMission(1, 'food')">Next Mission ➡️</button>
         </div>
-      </div>
 
-      <div class="card" style="padding: 16px 20px;">
-        <h3 style="margin: 0 0 8px 0; font-size:13px; text-transform:uppercase; color:var(--muted)">🎯 Your Goals Today</h3>
-        <div id="targetsList" class="target-list"></div>
-      </div>
+        <!-- FOOD CARD -->
+        <div id="card-food" class="mission-card">
+            <span class="mission-badge">Mission 2</span>
+            <div class="card-header">🍕 Food Adventure</div>
+            <div class="instruction">🎯 <strong>Mission:</strong> Click on a mystery card to reveal the question!</div>
+            
+            <ul class="questions-list">
+                <li class="question-item" onclick="revealQuestion(this, 'What is your favorite food?')">❓ Click to unlock question 1</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Why do you like it?')">❓ Click to unlock question 2</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Who cooks it?')">❓ Click to unlock question 3</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Can you cook it?')">❓ Click to unlock question 4</li>
+                <li class="question-item" onclick="revealQuestion(this, 'When do you eat it?')">❓ Click to unlock question 5</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Where do you usually eat it?')">❓ Click to unlock question 6</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What food don\'t you like?')">❓ Click to unlock question 7</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What do you eat for breakfast?')">❓ Click to unlock question 8</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What do you drink?')">❓ Click to unlock question 9</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What is your favorite dessert?')">❓ Click to unlock question 10</li>
+            </ul>
 
-      <div class="cycle-stepper" id="stepperElement"></div>
+            <div class="vocab-section">
+                <h4>💡 Helpful Words (Click to use)</h4>
+                <div class="chips-container">
+                    <span class="chip" onclick="toggleChip(this)">pizza 🍕</span>
+                    <span class="chip" onclick="toggleChip(this)">burger 🍔</span>
+                    <span class="chip" onclick="toggleChip(this)">fries 🍟</span>
+                    <span class="chip" onclick="toggleChip(this)">dessert 🍰</span>
+                    <span class="chip" onclick="toggleChip(this)">drink 🥤</span>
+                    <span class="chip" onclick="toggleChip(this)">cook 🍳</span>
+                    <span class="chip" onclick="toggleChip(this)">restaurant 🍽️</span>
+                    <span class="chip" onclick="toggleChip(this)">delicious 😋</span>
+                    <span class="chip" onclick="toggleChip(this)">breakfast 🌅</span>
+                    <span class="chip" onclick="toggleChip(this)">lunch ☀️</span>
+                    <span class="chip" onclick="toggleChip(this)">dinner 🌌</span>
+                </div>
+            </div>
 
-      <div class="questions-pane">
-        <h4>💡 QUESTIONS GUIDELINE FOR THIS STAGE:</h4>
-        <ul id="questionsList"></ul>
-      </div>
+            <div class="instruction" style="border-left-color: var(--accent-green); margin-bottom: 2rem;">
+                🔥 <strong>Mini Challenge:</strong> Describe your perfect dinner.
+            </div>
 
-      <button class="action-trigger-btn" onclick="openNotesModal()">+ Click to type a fast session note / trick</button>
-      
-      <div class="sticky-row-list" id="miniStickyList"></div>
+            <button class="next-btn" onclick="completeMission(2, 'school')">Next Mission ➡️</button>
+        </div>
+
+        <!-- SCHOOL CARD -->
+        <div id="card-school" class="mission-card">
+            <span class="mission-badge">Mission 3</span>
+            <div class="card-header">🏫 School Adventure</div>
+            <div class="instruction">🎯 <strong>Mission:</strong> Click on a mystery card to reveal the question!</div>
+            
+            <ul class="questions-list">
+                <li class="question-item" onclick="revealQuestion(this, 'What is your favorite subject?')">❓ Click to unlock question 1</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Why do you like it?')">❓ Click to unlock question 2</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Who is your favorite teacher?')">❓ Click to unlock question 3</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What time does school start?')">❓ Click to unlock question 4</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What do you do during recess?')">❓ Click to unlock question 5</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Who is your best friend?')">❓ Click to unlock question 6</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Do you like homework?')">❓ Click to unlock question 7</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What do you study today?')">❓ Click to unlock question 8</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What do you learn in English?')">❓ Click to unlock question 9</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What subject is difficult?')">❓ Click to unlock question 10</li>
+            </ul>
+
+            <div class="vocab-section">
+                <h4>💡 Helpful Words (Click to use)</h4>
+                <div class="chips-container">
+                    <span class="chip" onclick="toggleChip(this)">school 🏫</span>
+                    <span class="chip" onclick="toggleChip(this)">teacher 👩‍🏫</span>
+                    <span class="chip" onclick="toggleChip(this)">student 🎒</span>
+                    <span class="chip" onclick="toggleChip(this)">friends 👫</span>
+                    <span class="chip" onclick="toggleChip(this)">homework 📝</span>
+                    <span class="chip" onclick="toggleChip(this)">study 📖</span>
+                    <span class="chip" onclick="toggleChip(this)">math 🔢</span>
+                    <span class="chip" onclick="toggleChip(this)">English 🔤</span>
+                    <span class="chip" onclick="toggleChip(this)">science 🧪</span>
+                    <span class="chip" onclick="toggleChip(this).">break 🍎</span>
+                </div>
+            </div>
+
+            <div class="instruction" style="border-left-color: var(--accent-green); margin-bottom: 2rem;">
+                🔥 <strong>Mini Challenge:</strong> Tell me 5 things about your school.
+            </div>
+
+            <button class="next-btn" onclick="completeMission(3, 'final')">Unlock Final Challenge 🏆</button>
+        </div>
+
+        <!-- FINAL CHALLENGE CARD -->
+        <div id="card-final" class="mission-card">
+            <span class="mission-badge" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">Boss Level</span>
+            <div class="card-header">🎉 Congratulations!</div>
+            <div class="instruction" style="border-left-color: var(--star-gold);">
+                👑 <strong>Final Challenge:</strong> Choose <strong>one</strong> topic and speak for 1 minute without stopping!
+            </div>
+
+            <div class="topic-selectors">
+                <div class="topic-select" onclick="selectFinalTopic(this)">⚽ Sports</div>
+                <div class="topic-select" onclick="selectFinalTopic(this)">🍕 Food</div>
+                <div class="topic-select" onclick="selectFinalTopic(this)">🏫 School</div>
+            </div>
+
+            <div class="timer-container">
+                <div class="timer-circle" id="timer-display">60</div>
+                <button class="timer-btn" id="timer-control-btn" onclick="toggleTimer()">Start Timer ⏱️</button>
+            </div>
+
+            <button class="finish-btn" style="background: var(--accent-pink); color: white;" onclick="resetAdventure()">Play Again! 🔄</button>
+        </div>
+
     </div>
 
-    <div id="view-ideas" class="view-section">
-      <button class="action-trigger-btn" style="border-color: var(--accent); color: var(--accent);" onclick="openIdeaModal()">+ Drop/Update My Card on Board</button>
-      <div class="ideas-grid" id="ideasGrid"></div>
-    </div>
+    <!-- Audio API setup and App Logic -->
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-  </div>
-</div>
+        function playSound(type) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
 
-<div class="modal-bg" id="missionModal">
-  <div class="modal">
-    <h3>✨ Edit Current Quest</h3>
-    <textarea id="missionInput" rows="3"></textarea>
-    <div class="actions">
-      <button class="btn btn-ghost" onclick="closeModal('missionModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitMission()">Save Mission</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-bg" id="notesModal">
-  <div class="modal">
-    <h3>📝 Drop a Live Note</h3>
-    <textarea id="notesInput" placeholder="Type a quick observation, thought, or lesson learned..." rows="3"></textarea>
-    <div class="actions">
-      <button class="btn btn-ghost" onclick="closeModal('notesModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitNote()">Add Note</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-bg" id="ideaModal">
-  <div class="modal">
-    <h3>💡 Publish/Update Your Arena Card</h3>
-    <input type="text" id="ideaFocusInput" placeholder="Main Topic Tag (e.g. EAR DEV! or ACCENTS)">
-    <textarea id="ideaNotesInput" placeholder="Your details / observations / bullet points..." rows="5"></textarea>
-    <div class="actions">
-      <button class="btn btn-ghost" onclick="closeModal('ideaModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitIdea()">Publish Card</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toastElement"></div>
-
-<script>
-/* =========================================================
-   REAL-TIME APP STATE MANAGEMENT ENGINE
-========================================================= */
-const FIREBASE_DB_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
-let currentUser = localStorage.getItem('arena_user_v5') || '';
-let currentStepIdx = 0;
-
-const cycleData = [
-  {emoji:'👀', name:'OBSERVE', q:['What is stopping them from speaking?', 'When do they feel fear?', 'What can we improve first?']},
-  {emoji:'❓', name:'ASK', q:['Why do they freeze?', 'What if we use a fun game loop?', 'How can we hide grammar mistakes?']},
-  {emoji:'💡', name:'CREATE', q:['Think about a 1-minute simple rule.', 'Write down basic steps.', 'Make it feel like a playground.']},
-  {emoji:'🧪', name:'TEST', q:['Did you practice this with someone?', 'What went wrong?', 'Did they laugh or get stressed?']},
-  {emoji:'🚀', name:'IMPROVE', q:['What did we find out today?', 'How can we make it faster?', 'What is the next upgrade loop?']}
-];
-
-const targetHabits = [
-  {label: '❓ Ask 3 simple questions to your partner'},
-  {label: '💡 Post 1 dynamic card on the Ideas Board'},
-  {label: '🤝 Help or add a tip to a friend\'s idea'},
-  {label: '⏱️ Explain your idea in 1 minute (Pitch style!)'}
-];
-
-let globalState = { mission: '', stickies: [], ideas: [], team: {} };
-
-if(currentUser) {
-  bypassLoginScreen();
-}
-
-function connectUser() {
-  const name = document.getElementById('usernameInput').value.trim();
-  if(!name) { alert("Please type your name."); return; }
-  currentUser = name;
-  localStorage.setItem('arena_user_v5', currentUser);
-  bypassLoginScreen();
-}
-
-function bypassLoginScreen() {
-  document.getElementById('setup-screen').style.display = 'none';
-  document.getElementById('app-main').style.display = 'block';
-  document.getElementById('userAvatar').textContent = currentUser.slice(0,2).toUpperCase();
-  initializeSync();
-}
-
-async function initializeSync() {
-  await fetch(`${FIREBASE_DB_URL}/team/${currentUser}.json`, {
-    method: 'PUT',
-    body: JSON.stringify({ name: currentUser, ping: true })
-  });
-
-  fetchDatabaseState();
-  setInterval(fetchDatabaseState, 3000);
-  buildStepper();
-  renderActiveStepQuestions();
-  renderFixedTargets();
-}
-
-async function fetchDatabaseState() {
-  try {
-    const resM = await fetch(`${FIREBASE_DB_URL}/mission.json`);
-    const missionData = await resM.json();
-    globalState.mission = missionData || "How can we help a friend speak English with total confidence?";
-
-    const resS = await fetch(`${FIREBASE_DB_URL}/miniStickies.json`);
-    const stickiesData = await resS.json();
-    globalState.stickies = stickiesData ? Object.values(stickiesData).reverse() : [];
-
-    const resI = await fetch(`${FIREBASE_DB_URL}/ideas.json`);
-    const ideasData = await resI.json();
-    globalState.ideas = ideasData ? Object.values(ideasData) : [];
-
-    const resT = await fetch(`${FIREBASE_DB_URL}/team.json`);
-    const teamData = await resT.json();
-    globalState.team = teamData || {};
-
-    renderUIComponents();
-  } catch(err) { console.log("Data connection issue: ", err); }
-}
-
-/* =========================================================
-   UI VIEW AND ELEMENT RENDER CONTROL PIPELINE
-========================================================= */
-function switchView(viewId, btnToken) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-  
-  btnToken.classList.add('active');
-  document.getElementById(`view-${viewId}`).classList.add('active');
-}
-
-function buildStepper() {
-  const container = document.getElementById('stepperElement');
-  container.innerHTML = cycleData.map((step, idx) => `
-    <button class="step-node ${idx === currentStepIdx ? 'active' : ''}" onclick="selectStep(${idx})">
-      <span class="s-emoji">${step.emoji}</span>
-      <span class="s-name">${step.name}</span>
-    </button>
-  `).join('');
-}
-
-function selectStep(idx) {
-  currentStepIdx = idx;
-  buildStepper();
-  renderActiveStepQuestions();
-}
-
-function renderActiveStepQuestions() {
-  const container = document.getElementById('questionsList');
-  container.innerHTML = cycleData[currentStepIdx].q.map(question => `<li>${question}</li>`).join('');
-}
-
-function renderFixedTargets() {
-  const targetsBox = document.getElementById('targetsList');
-  targetsBox.innerHTML = targetHabits.map((h, i) => `
-    <div class="target-item">
-      <input type="checkbox" id="chk-${i}" onchange="triggerTargetFeedback(this)">
-      <div class="label">${h.label}</div>
-    </div>
-  `).join('');
-}
-
-function renderUIComponents() {
-  document.getElementById('missionText').textContent = globalState.mission;
-
-  const stickiesBox = document.getElementById('miniStickyList');
-  stickiesBox.innerHTML = globalState.stickies.map(s => `<div class="mini-note">${escapeOutput(s)}</div>`).join('');
-
-  // RENDER DYNAMIC IDEAS ACCORDING TO YOUR MOCKUP SKELETON RASCUNHO
-  const ideasBox = document.getElementById('ideasGrid');
-  if (globalState.ideas.length === 0) {
-    ideasBox.innerHTML = `<p style="color:var(--muted); font-size:14px; grid-column: 1/-1; text-align:center; padding:20px;">No cards posted yet. Be the first!</p>`;
-  } else {
-    ideasBox.innerHTML = globalState.ideas.map(idea => `
-      <div class="student-arena-card">
-        <div class="student-name">${escapeOutput(idea.author)}</div>
-        <div class="focus-badge">${escapeOutput(idea.focus || 'IDEA')}</div>
-        <div class="notes-body">${escapeOutput(idea.notes || '')}</div>
-      </div>
-    `).join('');
-  }
-
-  // RENDER LIVE AVATARS MIDDLEBAR STACK
-  const members = Object.values(globalState.team);
-  const stackBox = document.getElementById('avatarStackBox');
-  stackBox.innerHTML = members.map(m => `
-    <div class="stack-member" title="${m.name}">${m.name.slice(0,2).toUpperCase()}</div>
-  `).join('');
-
-  const statusText = document.getElementById('liveStatusText');
-  if(members.length <= 1) {
-    statusText.textContent = "You are training alone right now";
-  } else {
-    const names = members.map(m => m.name).filter(n => n !== currentUser);
-    statusText.textContent = `${names.join(', ')} and you are training live!`;
-  }
-}
-
-/* =========================================================
-   TRANSACTION WRITE DISPATCHERS (FIREBASE BACKEND)
-========================================================= */
-function openMissionModal() {
-  document.getElementById('missionInput').value = globalState.mission;
-  toggleModalOverlay('missionModal', true);
-}
-async function submitMission() {
-  const text = document.getElementById('missionInput').value.trim();
-  if(!text) return;
-  await fetch(`${FIREBASE_DB_URL}/mission.json`, { method: 'PUT', body: JSON.stringify(text) });
-  toggleModalOverlay('missionModal', false);
-  triggerToastNotification("Mission updated across live ecosystem!");
-  fetchDatabaseState();
-}
-
-function openNotesModal() {
-  document.getElementById('notesInput').value = '';
-  toggleModalOverlay('notesModal', true);
-}
-async function submitNote() {
-  const noteText = document.getElementById('notesInput').value.trim();
-  if(!noteText) return;
-  const styledText = `[${currentUser}]: ${noteText}`;
-  await fetch(`${FIREBASE_DB_URL}/miniStickies.json`, { method: 'POST', body: JSON.stringify(styledText) });
-  toggleModalOverlay('notesModal', false);
-  triggerToastNotification("Note captured live!");
-  fetchDatabaseState();
-}
-
-function openIdeaModal() {
-  // Autofill with existing data if user already has a card saved
-  const myExistingCard = globalState.ideas.find(i => i.author === currentUser);
-  document.getElementById('ideaFocusInput').value = myExistingCard ? myExistingCard.focus : '';
-  document.getElementById('ideaNotesInput').value = myExistingCard ? myExistingCard.notes : '';
-  toggleModalOverlay('ideaModal', true);
-}
-async function submitIdea() {
-  const focusText = document.getElementById('ideaFocusInput').value.trim();
-  const notesText = document.getElementById('ideaNotesInput').value.trim();
-  if(!focusText && !notesText) return;
-  
-  const item = { focus: focusText || 'FOCUS', notes: notesText || '', author: currentUser };
-  // Save using the student's name as key so each student owns exactly one card
-  await fetch(`${FIREBASE_DB_URL}/ideas/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(item) });
-  toggleModalOverlay('ideaModal', false);
-  triggerToastNotification("Card published successfully to Ideas Board!");
-  fetchDatabaseState();
-}
-
-/* =========================================================
-   UX DESIGN UTILITY HELPERS
-========================================================= */
-function toggleModalOverlay(id, open) {
-  const element = document.getElementById(id);
-  if(open) element.classList.add('show'); else element.classList.remove('show');
-}
-function closeModal(id) { toggleModalOverlay(id, false); }
-
-function triggerToastNotification(msg) {
-  const container = document.getElementById('toastElement');
-  container.textContent = msg;
-  container.classList.add('show');
-  setTimeout(() => container.classList.remove('show'), 2500);
-}
-
-function triggerTargetFeedback(checkboxToken) {
-  if(checkboxToken.checked) {
-    triggerToastNotification("Goal achieved! Keep going! 🚀");
-  }
-}
-
-function escapeOutput(str) {
-  const parser = document.createElement('div');
-  parser.textContent = str;
-  return parser.innerHTML;
-}
-</script>
-</body>
-</html>
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } else if (type === 'reveal') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'star') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); //Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
