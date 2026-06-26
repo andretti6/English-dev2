@@ -1,11 +1,562 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Arena Simulator — The Beatles Effect</title><style>:root{  --bg:#090a0f;  --panel:#12141c;  --panel-2:#1a1d29;  --border:#242838;  --text:#e3e6ed;  --muted:#7e869c;  --accent:#ffd23f;  --green:#3ecf8e;  --blue:#4d9fff;  --purple:#a78bfa;  --postit:#fff275;  --radius:14px;}*{box-sizing:border-box;}body{  margin:0;  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;  background:var(--bg);  color:var(--text);  -webkit-font-smoothing:antialiased;}/* ACCESS SCREEN */#setup-screen {  position: fixed; inset: 0; background: var(--bg); z-index: 999;  display: flex; align-items: center; justify-content: center; padding: 20px;}.setup-card {  background: var(--panel); border: 1px solid var(--border); padding: 32px;  border-radius: var(--radius); max-width: 400px; width: 100%; text-align: center;}.setup-input {  width: 100%; background: var(--panel-2); border: 1px solid var(--border);  color: var(--text); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 15px; outline: none; text-align: center;}/* PANELS ARCHITECTURE */#app-main, #homework-screen { display: none; }.header { background: var(--panel); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }.topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; max-width: 800px; margin: 0 auto; }.brand { font-size: 14px; font-weight: 700; letter-spacing: .05em; color: var(--muted); }.brand span { color: var(--accent); }.main-container { max-width: 800px; margin: 24px auto 80px auto; padding: 0 24px; }.card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }/* GLOBAL MISSION CARD */.mission-box { text-align: center; background: radial-gradient(circle at 50% 0%, #171b2a, var(--panel)); }.mission-box h5 { color: var(--accent); margin: 0 0 6px 0; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }.mission-box h1 { font-size: 24px; margin: 0 0 16px 0; font-weight: 800; }.team-live-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05); }.avatar-stack { display: flex; flex-direction: row-reverse; justify-content: flex-end; }.stack-member { width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2); border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); margin-left: -8px; }.live-status-text { font-size: 12px; color: var(--muted); }/* MAIN ROLE SELECTOR GRID */.main-role-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; }.role-btn {  background: var(--panel-2); border: 2px solid var(--border); padding: 12px;  border-radius: 10px; color: var(--muted); cursor: pointer; text-align: center; font-weight: 700; font-size: 13px; transition: 0.2s;}.role-btn.active[data-r="A"] { border-color: var(--blue); color: var(--blue); background: #111a2e; }.role-btn.active[data-r="B"] { border-color: var(--green); color: var(--green); background: #10241b; }.role-btn.active[data-r="C"] { border-color: var(--purple); color: var(--purple); background: #20132e; }/* ACCORDIONS SYSTEM */.stage-accordion { border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); margin-bottom: 12px; overflow: hidden; }.stage-header {  background: var(--panel-2); padding: 16px; font-size: 14px; font-weight: 700;  cursor: pointer; display: flex; justify-content: space-between; align-items: center;  user-select: none; border-bottom: 1px solid transparent;}.stage-accordion.open .stage-header { border-bottom-color: var(--border); }.stage-content { padding: 20px; display: none; }.stage-accordion.open .stage-content { display: block; }.toggle-icon { font-size: 12px; color: var(--muted); }/* TRACK CONFIGS */.role-track { display: none; }.role-track.active-track { display: block; }.btn-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }.k-btn { background: var(--panel-2); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }.k-btn:hover { border-color: var(--accent); }.definition-box { background: #1c2030; border-left: 3px solid var(--accent); padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.4; margin-bottom: 14px; display: none; color: #cbd5e1; }.task-list { display: flex; flex-direction: column; gap: 10px; }.task-item { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #cbd5e1; }.task-item input { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; cursor: pointer; }.behavior-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }/* SIGNATURE HUB SYSTEM */.signature-wall { background: #141824; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; }.sig-badge-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }.sig-btn {  background: var(--panel-2); border: 1px solid var(--border); padding: 10px 16px; border-radius: 30px;  color: var(--muted); font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s;}.sig-btn.signed { border-color: var(--green); color: var(--green); background: #11261e; }/* 3M YELLOW STICKY NOTE DESIGN */.sticky-workspace { margin-top: 24px; display: flex; flex-direction: column; align-items: center; }.sticky-note-pad {  background: var(--postit); color: #222; width: 220px; min-height: 220px; padding: 20px;  box-shadow: 5px 5px 15px rgba(0,0,0,0.4); border-radius: 1px; position: relative; display: flex; flex-direction: column;}.sticky-note-pad::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 12px; background: rgba(0,0,0,0.06); }.sticky-note-pad textarea {  width: 100%; flex: 1; background: none; border: none; resize: none; font-family: 'Courier New', monospace;  font-size: 14px; font-weight: 700; color: #111; outline: none; padding-top: 4px;}.sticky-footer { font-size: 11px; font-weight: 800; opacity: 0.6; text-transform: uppercase; margin-top: 8px; text-align: right; }.btn-send-sticky { background: var(--panel-2); border: 1px dashed var(--border); color: var(--muted); padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 14px; }.btn-send-sticky:hover { border-color: var(--accent); color: var(--text); }.sticky-wall-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; width: 100%; margin-top: 20px; }.live-wall-note { background: var(--postit); color: #111; padding: 16px; min-height: 80px; box-shadow: 3px 3px 10px rgba(0,0,0,0.3); font-family: 'Courier New', monospace; font-weight: 700; font-size: 13px; position: relative; }.live-wall-note .author-tag { font-size: 10px; opacity: 0.5; margin-top: 10px; text-align: right; font-weight: 800; }/* NEW WORDS TEACHER CONTAINER */.teacher-word-box { background: #16222f; border-left: 4px solid var(--blue); padding: 12px; border-radius: 6px; font-size: 13px; margin-bottom: 10px; }.new-words-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; width: 100%; }/* HOMEWORK ENGINE STYLING */.homework-container { max-width: 700px; margin: 30px auto; background: #fff; color: #111; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }.homework-container h1, .homework-container h2, .homework-container h3 { color: #000; margin-top: 0; }.hw-section { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px dashed #ccc; }.hw-meta-tag { display: inline-block; background: #f0f0f0; padding: 4px 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 4px; margin-bottom: 10px; }.hw-highlight-text { font-size: 15px; line-height: 1.6; background: #fbfbfb; padding: 16px; border-left: 4px solid #111; }.hw-nav-btn-row { display: flex; justify-content: center; gap: 12px; margin-top: 30px; }/* GENERIC BUTTONS */.btn { border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }.btn-primary { background: var(--accent); color: #000; }.btn-success { background: var(--green); color: #000; width: 100%; padding: 14px; font-size: 15px; margin-top: 16px; transition: 0.2s; }.btn-success:disabled { background: #1a2e25; color: #555; cursor: not-allowed; opacity: 0.5; border: 1px solid #10241b; }.btn-ghost { background: none; border: 1px solid var(--border); color: var(--text); }.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--panel-2); border: 1px solid var(--accent); color: var(--text); padding: 10px 20px; border-radius: 30px; font-size: 13px; z-index: 300; opacity: 0; transition: 0.2s; pointer-events: none; }.toast.show { opacity: 1; }@media print {  body { background: #fff; color: #000; }  .hw-nav-btn-row, .header { display: none !important; }  .homework-container { box-shadow: none; padding: 0; margin: 0; }}</style></head><body><div id="setup-screen">  <div class="setup-card">    <h2 style="color:var(--accent); margin:0 0 4px 0;">Enter Live Arena</h2>    <p style="color:var(--muted); font-size:13px; margin:0 0 20px 0;">Type your name (or "teacher" for Dashboard Tools)</p>    <input type="text" id="usernameInput" class="setup-input" placeholder="Your Name" autofocus>    <button class="btn btn-primary" style="width:100%; padding:14px;" onclick="connectUser()">Connect Room</button>  </div></div><div id="app-main">  <div class="header">    <div class="topbar">      <div class="brand">LEARNING <span>ARENA</span></div>      <div style="font-size:13px; font-weight:600; color:var(--muted);" id="userLocalBadge">Connecting...</div>    </div>  </div>  <div class="main-container">        <div class="card mission-box">      <h5>🎯 1. MISSION OF TODAY</h5>      <h1 id="bhagDisplay">The Beatles Effect: Transform a city's history into a global tourist magnet!</h1>      <div class="team-live-bar">        <div class="avatar-stack" id="avatarStackBox"></div>        <div class="live-status-text" id="liveStatusText">Syncing arena network loop...</div>      </div>    </div>    <div class="card" style="padding-bottom: 14px;" id="roleSelectorCard">      <div class="behavior-title">💡 Select Your Role Live (Coordinate with your team)</div>      <div class="main-role-selector">        <button class="role-btn" id="roleBtnA" data-r="A" onclick="changeRole('A')">Player A<br><span style="font-size:10px; font-weight:normal;">Local Leader 1</span></button>        <button class="role-btn" id="roleBtnB" data-r="B" onclick="changeRole('B')">Player B<br><span style="font-size:10px; font-weight:normal;">Local Leader 2</span></button>        <button class="role-btn" id="roleBtnC" data-r="C" onclick="changeRole('C')">Player C<br><span style="font-size:10px; font-weight:normal;">Global Journalist</span></button>      </div>    </div>
-    <!-- STAGE 2: CO-CREATE -->    <div class="stage-accordion open" id="stg1">      <div class="stage-header" onclick="toggleAccordion('stg1')">        <span>🤝 2. CO-CREATE: Design the Project</span>        <span class="toggle-icon">▼</span>      </div>      <div class="stage-content">        <p style="margin:0 0 14px 0; font-size:14px; color:var(--muted);">Click to check definitions of key ideas:</p>        <div class="btn-row">          <button class="k-btn" onclick="showDef('def-magnet')">Tourist Magnet</button>          <button class="k-btn" onclick="showDef('def-legacy')">Cultural Legacy</button>        </div>        <div class="definition-box" id="def-magnet"><strong>Tourist Magnet:</strong> A place that attracts thousands of people from all over the world because it is unique and exciting.</div>        <div class="definition-box" id="def-legacy"><strong>Cultural Legacy:</strong> The history, music, or stories that old generations left behind. We use this to inspire new people.</div>                <div class="role-track track-a track-b">          <div class="behavior-title" style="color:var(--blue);">Tasks for Local Leaders (A & B)</div>          <div class="task-list">            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Decide: What is the name of your new place or event?</span></div>            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Decide: Why is this place special? What music or history do you show?</span></div>            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Decide: What can tourists buy there? (Souvenirs, special food?)</span></div>          </div>        </div>        <div class="role-track track-c">          <div class="behavior-title" style="color:var(--purple);">Tasks for the Global Journalist</div>          <div class="task-list">            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Listen to Player A and B. Prepare 3 questions about their project.</span></div>          </div>        </div>      </div>    </div>
-    <!-- STAGE 3: ROLE PLAY -->    <div class="stage-accordion" id="stg2">      <div class="stage-header" onclick="toggleAccordion('stg2')">        <span>🎬 3. ROLEPLAY: The Global Interview</span>        <span class="toggle-icon">►</span>      </div>      <div class="stage-content">        <div class="role-track track-a track-b">          <div class="task-list">            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Answer the Journalist with passion. Show confidence!</span></div>            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Say: "This project will bring people and money to our city because..."</span></div>          </div>        </div>        <div class="role-track track-c">          <div class="task-list">            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Start the interview! Say: "Hello! I am a journalist. Tell the world about your new project!"</span></div>            <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Ask: "How will this help the local citizens?"</span></div>          </div>        </div>      </div>    </div>
-    <!-- STAGE 4: IMPROVE -->    <div class="stage-accordion" id="stg3">      <div class="stage-header" onclick="toggleAccordion('stg3')">        <span>🚀 4. IMPROVE: Make it Perfect</span>        <span class="toggle-icon">►</span>      </div>      <div class="stage-content">        <div class="behavior-card" style="background:#171a26; padding:12px; border-radius:6px; margin-bottom:14px;">          <div class="behavior-title" style="color:var(--accent);">⚠️ The Problem to Fix</div>          <p style="margin:0; font-size:14px; color:#cbd5e1;">The project is great, but some neighbors think it will be too noisy and crowded. How can you improve it?</p>        </div>        <div class="task-list">          <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Co-create a solution to make the place clean, safe, and organized for the neighbors.</span></div>          <div class="task-item"><input type="checkbox" onchange="triggerFeedback(this)"> <span>Write the final improved plan on the yellow 3M note below.</span></div>        </div>      </div>    </div>
-    <!-- STICKY WALL WORKSPACE -->    <div id="studentStickyPanel" class="sticky-workspace">      <div class="behavior-title" style="align-self: flex-start;">💡 Live 3M Sticky Wall (Type your final city plan here)</div>      <div class="sticky-note-pad">        <textarea id="stickyInput" placeholder="Type here (Example: A music museum that closes at 9 PM to protect the neighbors)..." maxlength="120"></textarea>        <div class="sticky-footer" id="stickyAuthorTag">By Anonymous</div>      </div>      <button class="btn-send-sticky" onclick="publishLiveSticky()">Post Sticky Note to Wall</button>    </div>
-    <div id="teacherWordsPanel" class="card" style="display:none; margin-top:24px;">      <div class="behavior-title" style="color:var(--blue);">👨‍🏫 Teacher Dashboard: New Vocabulary Input</div>      <div style="display:flex; gap:10px;">        <input type="text" id="teacherWordInput" class="setup-input" style="margin-bottom:0;" placeholder="Type new word + brief definition...">        <button class="btn btn-primary" onclick="publishTeacherWord()">Add Word</button>      </div>    </div>
-    <div style="margin-top:20px;">      <div class="behavior-title">📚 Board Workspace State</div>      <div class="sticky-wall-grid" id="stickyWall"></div>      <div class="new-words-list" id="teacherWordsContainer"></div>    </div>
-    <div class="signature-wall" style="margin-top:30px;">      <div class="behavior-title">✍️ Team Alignment Verification (Click your name to agree)</div>      <div class="sig-badge-row" id="signatureRowContainer"></div>      <button class="btn btn-success" id="btnCompleteProject" onclick="goToHomeworkPage()" disabled>Complete Project & Generate Homework</button>    </div>  </div></div>
-<!-- HOMEWORK ENGINE SCREEN --><div id="homework-screen" style="padding: 10px 20px;">  <div class="homework-container">        <div class="hw-section" style="text-align:center;">      <span class="hw-meta-tag">Learning Arena Portfolio</span>      <h1>City Transformation Accomplished!</h1>      <p style="color:#555; font-size:14px; margin:4px 0 0 0;">Review your developed human capabilities and assignments below.</p>    </div>    <div class="hw-section">      <h3>🎯 Core Mission Accomplished</h3>      <div class="hw-highlight-text" style="font-weight:700;">The Beatles Effect: Transform a city's history into a global tourist magnet!</div>    </div>    <div class="hw-section">      <h3>🧠 Skills Developed Today</h3>      <ul style="padding-left:20px; font-size:14px; line-height:1.6;">        <li><strong>Cultural Innovation:</strong> Transforming local history into value for the world.</li>        <li><strong>Media Communication:</strong> Answering a journalist live with confidence and clear ideas.</li>        <li><strong>Problem Solving:</strong> Improving ideas to help both tourists and local neighbors.</li>      </ul>    </div>    <div class="hw-section">      <h3>📌 Collective 3M Ideas Captured</h3>      <div id="hwStickyWallSummary" style="display:flex; flex-direction:column; gap:8px; font-size:14px; font-family:monospace; color:#333;"></div>    </div>    <div class="hw-section" id="hwNewWordsBlock">      <h3>✍️ Classroom Vocabulary Highlights</h3>      <div id="hwVocabularySummary" style="display:flex; flex-direction:column; gap:6px; font-size:14px;"></div>    </div>    <div class="hw-section">      <h3>📝 Homework Task (Level A2)</h3>      <p style="font-size:14px; line-height:1.5; color:#333;">        Write a short paragraph (50-70 words) about a famous singer or band from your country.         Imagine you want to create a museum for them. Where is the museum? Why will tourists love it?      </p>            <h4 style="margin:20px 0 6px 0; color:#444;">💡 Grammar Focus: Using "Because" to give strong reasons</h4>      <div class="hw-highlight-text" style="font-size:13px; font-style:italic;">        Example: Tourits will visit our city <strong>because</strong> the new music museum is very interactive and fun. <br>        Rule: Use 'because' to connect your project to a benefit!      </div>    </div>    <div class="hw-nav-btn-row">      <button class="btn btn-ghost" style="border-color:#ccc; color:#333;" onclick="returnToArenaMain()">← Back to Arena</button>      <button class="btn btn-primary" onclick="window.print()">🖨️ Print Homework</button>      <button class="btn" style="background:#f04444; color:#fff;" onclick="resetEntireSystem()">Exit & Finish Activity</button>    </div>  </div></div><div class="toast" id="toastElement"></div>
-<script>const FIREBASE_DB_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";let currentUser = '';let currentRole = 'A';let isTeacher = false;let unlockTriggered = false;let globalState = { stickies: [], team: {}, vocabulary: [], signatures: {} };function connectUser() {  const name = document.getElementById('usernameInput').value.trim();  if(!name) { alert("Please type your name."); return; }    currentUser = name;  if(currentUser.toLowerCase() === 'teacher') {    isTeacher = true;    currentUser = 'Teacher';  }  document.getElementById('setup-screen').style.display = 'none';  document.getElementById('app-main').style.display = 'block';    if(isTeacher) {    document.getElementById('roleSelectorCard').style.display = 'none';    document.getElementById('studentStickyPanel').style.display = 'none';    document.getElementById('teacherWordsPanel').style.display = 'block';    document.getElementById('userLocalBadge').textContent = "👨‍🏫 Teacher Mode";  } else {    document.getElementById('stickyAuthorTag').textContent = `By ${currentUser}`;    changeRole('A');  }  initializeSync();}async function changeRole(roleToken) {  if(isTeacher) return;  currentRole = roleToken;    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));  document.getElementById(`roleBtn${roleToken}`).classList.add('active');  document.getElementById('userLocalBadge').textContent = `${currentUser} (Player ${currentRole})`;  document.querySelectorAll('.role-track').forEach(t => t.classList.remove('active-track'));  document.querySelectorAll(`.track-${roleToken.toLowerCase()}`).forEach(t => t.classList.add('active-track'));  await fetch(`${FIREBASE_DB_URL}/team/${currentUser}.json`, {    method: 'PUT',    body: JSON.stringify({ name: currentUser, role: currentRole })  });}function initializeSync() {  fetchState();  setInterval(fetchState, 3000);}async function fetchState() {  try {    const resS = await fetch(`${FIREBASE_DB_URL}/wallStickies.json`);    const sData = await resS.json();    globalState.stickies = sData ? Object.values(sData).reverse() : [];    const resT = await fetch(`${FIREBASE_DB_URL}/team.json`);    const tData = await resT.json();    globalState.team = tData || {};    const resV = await fetch(`${FIREBASE_DB_URL}/vocabulary.json`);    const vData = await resV.json();    globalState.vocabulary = vData ? Object.values(vData).reverse() : [];    const resSign = await fetch(`${FIREBASE_DB_URL}/signatures.json`);    globalState.signatures = await resSign.json() || {};    renderDashboard();  } catch(e) { console.log("Sync error...", e); }}function renderDashboard() {  const wall = document.getElementById('stickyWall');  wall.innerHTML = globalState.stickies.map(s => `    <div class="live-wall-note">      <div>${escapeOutput(s.text)}</div>      <div class="author-tag">by ${escapeOutput(s.author)}</div>    </div>  `).join('');  const wordsContainer = document.getElementById('teacherWordsContainer');  wordsContainer.innerHTML = globalState.vocabulary.map(v => `    <div class="teacher-word-box">⭐ <strong>New Word:</strong> ${escapeOutput(v.text)}</div>  `).join('');  const members = Object.values(globalState.team);  const stack = document.getElementById('avatarStackBox');  stack.innerHTML = members.map(m => {    let color = 'var(--blue)';    if(m.role === 'B') color = 'var(--green)';    if(m.role === 'C') color = 'var(--purple)';    return `<div class="stack-member" style="border-color:${color}" title="${m.name}">${m.name.slice(0,2).toUpperCase()}</div>`;  }).join('');  document.getElementById('liveStatusText').textContent = `${members.length} participants active in this loop.`;  const sigContainer = document.getElementById('signatureRowContainer');  sigContainer.innerHTML = members.map(m => {    const hasSigned = globalState.signatures[m.name] ? 'signed' : '';    const label = globalState.signatures[m.name] ? `✓ ${m.name} Agreed` : m.name;    return `<button class="sig-btn ${hasSigned}" onclick="toggleLocalSignature('${m.name}')">${escapeOutput(label)}</button>`;  }).join('');  const btnComplete = document.getElementById('btnCompleteProject');  if (unlockTriggered) {    btnComplete.disabled = false;  } else if (members.length > 0) {    const allSigned = members.every(m => globalState.signatures[m.name] === true);    btnComplete.disabled = !allSigned;  } else {    btnComplete.disabled = true;  }}async function toggleLocalSignature(targetName) {  if(isTeacher) return;  if(targetName !== currentUser) {    triggerToast("You can only sign your own agreement status badge!");    return;  }  const newState = !globalState.signatures[currentUser];  await fetch(`${FIREBASE_DB_URL}/signatures/${currentUser}.json`, {    method: 'PUT',    body: JSON.stringify(newState ? true : null)  });  fetchState();}function toggleAccordion(id) {  const el = document.getElementById(id);  const icon = el.querySelector('.toggle-icon');  if(el.classList.contains('open')) {    el.classList.remove('open');    icon.textContent = '►';  } else {    el.classList.add('open');    icon.textContent = '▼';  }}function showDef(id) {  const box = document.getElementById(id);  box.style.display = (box.style.display === 'block') ? 'none' : 'block';}async function publishLiveSticky() {  const txt = document.getElementById('stickyInput').value.trim();  if(!txt) return;  await fetch(`${FIREBASE_DB_URL}/wallStickies.json`, { method: 'POST', body: JSON.stringify({ text: txt, author: currentUser }) });  document.getElementById('stickyInput').value = '';  triggerToast("Sticky posted to the live wall! 💡");  fetchState();}async function publishTeacherWord() {  const txt = document.getElementById('teacherWordInput').value.trim();  if(!txt) return;  await fetch(`${FIREBASE_DB_URL}/vocabulary.json`, { method: 'POST', body: JSON.stringify({ text: txt }) });  document.getElementById('teacherWordInput').value = '';  triggerToast("Vocabulary update pushed! ⭐");  fetchState();}function goToHomeworkPage() {  unlockTriggered = true;  document.getElementById('app-main').style.display = 'none';  document.getElementById('homework-screen').style.display = 'block';  const hwSticky = document.getElementById('hwStickyWallSummary');  if(globalState.stickies.length === 0) {    hwSticky.innerHTML = "<div>No ideas recorded on the board today.</div>";  } else {    hwSticky.innerHTML = globalState.stickies.map(s => `• "${s.text}" (by ${s.author})`).join('<br>');  }
-  const hwVocab = document.getElementById('hwVocabularySummary');  if(globalState.vocabulary.length === 0) {    document.getElementById('hwNewWordsBlock').style.display = 'none';  } else {    document.getElementById('hwNewWordsBlock').style.display = 'block';    hwVocab.innerHTML = globalState.vocabulary.map(v => `• <strong>${v.text}</strong>`).join('<br>');  }}function returnToArenaMain() {  document.getElementById('homework-screen').style.display = 'none';  document.getElementById('app-main').style.display = 'block';}async function resetEntireSystem() {  if(currentUser && !isTeacher) {    await fetch(`${FIREBASE_DB_URL}/team/${currentUser}.json`, { method: 'DELETE' });    await fetch(`${FIREBASE_DB_URL}/signatures/${currentUser}.json`, { method: 'DELETE' });  }  window.location.reload();}function triggerToast(msg) {  const t = document.getElementById('toastElement');  t.textContent = msg;  t.classList.add('show');  setTimeout(() => t.classList.remove('show'), 2000);}function triggerFeedback(chk) {  if(chk.checked) triggerToast("Behavior target met successfully! 🚀");}function escapeOutput(str) {  const p = document.createElement('div');  p.textContent = str;  return p.innerHTML;}</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idea Arena — Clean & Focused</title>
+<style>
+:root{
+  --bg:#090a0f;
+  --panel:#12141c;
+  --panel-2:#1a1d29;
+  --border:#242838;
+  --text:#e3e6ed;
+  --muted:#7e869c;
+  --accent:#ffd23f;
+  --green:#3ecf8e;
+  --blue:#4d9fff;
+  --purple:#a78bfa;
+  --radius:14px;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* SETUP SCREEN */
+#setup-screen {
+  position: fixed; inset: 0; background: var(--bg); z-index: 999;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.setup-card {
+  background: var(--panel); border: 1px solid var(--border); padding: 32px;
+  border-radius: var(--radius); max-width: 400px; width: 100%; text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.setup-card h2 { color: var(--accent); margin: 0 0 8px 0; font-size: 24px; }
+.setup-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+.setup-input {
+  width: 100%; background: var(--panel-2); border: 1px solid var(--border);
+  color: var(--text); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 15px;
+  outline: none; transition: 0.2s;
+}
+.setup-input:focus { border-color: var(--accent); }
+
+/* MAIN APP INTERFACE */
+#app-main { display: none; }
+
+.header{
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 24px; max-width: 1000px; margin: 0 auto;
+}
+.brand { font-size: 14px; font-weight: 700; letter-spacing: .05em; color: var(--muted); }
+.brand span { color: var(--accent); }
+.avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #ff9248);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: #000; font-size: 13px;
+}
+
+/* UX NAVIGATION TABS */
+.nav-tabs {
+  display: flex; gap: 8px; padding: 0 24px; max-width: 1000px; margin: 0 auto;
+}
+.tab-btn {
+  background: none; border: none; color: var(--muted); padding: 12px 16px;
+  font-size: 14px; font-weight: 600; cursor: pointer; position: relative;
+  transition: 0.2s;
+}
+.tab-btn.active { color: var(--text); }
+.tab-btn.active::after {
+  content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 3px;
+  background: var(--accent); border-radius: 2px;
+}
+
+/* MAIN CONTAINER LAYER */
+.main-container {
+  max-width: 760px; margin: 24px auto 80px auto; padding: 0 24px;
+}
+.view-section { display: none; }
+.view-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* CLEAN UI CARDS */
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+}
+
+/* CENTRAL MISSION ELEMENT */
+.mission-box {
+  text-align: center; background: radial-gradient(circle at 50% 0%, #171b2a, var(--panel));
+  padding-bottom: 18px;
+}
+.mission-box h5 { color: var(--accent); margin: 0 0 6px 0; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
+.mission-box h1 { font-size: 22px; margin: 0 0 16px 0; line-height: 1.4; font-weight: 700; }
+.edit-btn {
+  background: none; border: 1px dashed var(--border); color: var(--muted);
+  border-radius: 20px; padding: 6px 14px; font-size: 11px; cursor: pointer; transition: 0.2s;
+}
+.edit-btn:hover { border-color: var(--muted); color: var(--text); }
+
+/* LIVE AVATARS STACK DESIGN */
+.team-live-bar {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05);
+}
+.avatar-stack { display: flex; flex-direction: row-reverse; justify-content: flex-end; }
+.stack-member {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2);
+  border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--accent); margin-left: -8px; transition: 0.2s;
+}
+.stack-member:last-child { margin-left: 0; }
+.live-status-text { font-size: 12px; color: var(--muted); }
+
+/* THE STEPPER STEP BY STEP LINK */
+.cycle-stepper {
+  display: flex; justify-content: space-between; margin-bottom: 24px; position: relative;
+  background: var(--panel-2); padding: 8px; border-radius: 12px; border: 1px solid var(--border);
+}
+.step-node {
+  flex: 1; text-align: center; background: none; border: none; padding: 10px 6px;
+  color: var(--muted); cursor: pointer; border-radius: 8px; transition: 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.step-node .s-emoji { font-size: 16px; }
+.step-node .s-name { font-size: 11px; font-weight: 700; }
+.step-node.active { background: var(--panel); color: var(--text); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+.step-node.active .s-name { color: var(--accent); }
+
+/* QUESTIONS AREA CONTAINER */
+.questions-pane {
+  background: var(--panel-2); border-radius: 12px; padding: 16px; border-left: 4px solid var(--accent);
+  margin-bottom: 24px;
+}
+.questions-pane h4 { margin: 0 0 8px 0; font-size: 13px; color: var(--muted); letter-spacing: 0.05em; }
+.questions-pane ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: var(--text); }
+
+/* STICKY NOTES LIST */
+.sticky-row-list { display: flex; flex-direction: column; gap: 10px; }
+.mini-note {
+  background: #252216; border: 1px solid #3d351d; color: #ffe596;
+  padding: 12px 16px; border-radius: 10px; font-size: 13px; line-height: 1.4;
+}
+
+/* TARGET PROGRESSION HABITS */
+.target-list { display: flex; flex-direction: column; gap: 2px; }
+.target-item {
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: flex-start; gap: 12px;
+}
+.target-item:last-child { border-bottom: none; }
+.target-item input[type=checkbox] { accent-color: var(--green); width: 18px; height: 18px; margin-top: 1px; cursor: pointer; }
+.target-item .label { font-size: 14px; line-height: 1.4; color: var(--text); }
+
+/* IDEAS MATRIX (RASCUNHO INSPIRED) */
+.ideas-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;
+}
+.student-arena-card {
+  background: var(--panel); border: 3px solid var(--border); border-radius: var(--radius);
+  padding: 18px; min-height: 220px; display: flex; flex-direction: column; position: relative;
+}
+.student-arena-card .student-name {
+  font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 10px;
+}
+.student-arena-card .focus-badge {
+  background: none; border: 3px solid var(--text); color: var(--text);
+  font-size: 14px; font-weight: 800; padding: 6px 12px; display: inline-block;
+  align-self: flex-start; margin-bottom: 14px; letter-spacing: 0.05em;
+}
+.student-arena-card .notes-body {
+  font-size: 14px; color: var(--muted); font-family: monospace; line-height: 1.5; white-space: pre-line; flex: 1;
+}
+
+/* LARGE MAIN PRIMARY BUTTONS */
+.action-trigger-btn {
+  width: 100%; background: var(--panel-2); border: 2px dashed var(--border);
+  color: var(--muted); padding: 16px; border-radius: 12px; font-size: 14px;
+  font-weight: 600; cursor: pointer; text-align: center; transition: 0.2s;
+  margin-bottom: 20px;
+}
+.action-trigger-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* MODALS LAYOUT */
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 24px; width: 100%; max-width: 400px;
+}
+.modal h3 { margin: 0 0 16px 0; font-size: 16px; }
+.modal input[type=text], .modal textarea {
+  width: 100%; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); padding: 12px; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 12px;
+}
+.modal textarea { resize: none; }
+.modal input:focus, .modal textarea:focus { border-color: var(--accent); }
+.modal .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
+.btn { border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.btn-primary { background: var(--accent); color: #000; }
+.btn-ghost { background: none; border: 1px solid var(--border); color: var(--text); }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--panel-2); border: 1px solid var(--accent); color: var(--text);
+  padding: 10px 20px; border-radius: 30px; font-size: 13px; z-index: 300; opacity: 0; transition: 0.2s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div id="setup-screen">
+  <div class="setup-card">
+    <h2>Welcome to Live Arena</h2>
+    <p>Type your name to connect to the global workspace:</p>
+    <input type="text" id="usernameInput" class="setup-input" placeholder="Your Name (e.g. Andre or Guto)" autofocus>
+    <button class="btn btn-primary" style="width:100%; padding:14px; font-size:14px;" onclick="connectUser()">Enter Live Session</button>
+  </div>
+</div>
+ 
+<div id="app-main">
+  <div class="header">
+    <div class="topbar">
+      <div class="brand">LEARNING <span>ARENA</span></div>
+      <div class="avatar" id="userAvatar">ME</div>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchView('session', this)">🎯 Session</button>
+      <button class="tab-btn" onclick="switchView('ideas', this)">💡 Ideas Board</button>
+    </div>
+  </div>
+
+  <div class="main-container">
+    
+    <div id="view-session" class="view-section active">
+      <div class="card mission-box">
+        <h5>Today's Main Challenge</h5>
+        <h1 id="missionText">How can we help a friend speak English with total confidence?</h1>
+        <button class="edit-btn" onclick="openMissionModal()">Change Challenge Quest</button>
+        
+        <div class="team-live-bar">
+          <div class="avatar-stack" id="avatarStackBox"></div>
+          <div class="live-status-text" id="liveStatusText">Connecting...</div>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 16px 20px;">
+        <h3 style="margin: 0 0 8px 0; font-size:13px; text-transform:uppercase; color:var(--muted)">🎯 Your Goals Today</h3>
+        <div id="targetsList" class="target-list"></div>
+      </div>
+
+      <div class="cycle-stepper" id="stepperElement"></div>
+
+      <div class="questions-pane">
+        <h4>💡 QUESTIONS GUIDELINE FOR THIS STAGE:</h4>
+        <ul id="questionsList"></ul>
+      </div>
+
+      <button class="action-trigger-btn" onclick="openNotesModal()">+ Click to type a fast session note / trick</button>
+      
+      <div class="sticky-row-list" id="miniStickyList"></div>
+    </div>
+
+    <div id="view-ideas" class="view-section">
+      <button class="action-trigger-btn" style="border-color: var(--accent); color: var(--accent);" onclick="openIdeaModal()">+ Drop/Update My Card on Board</button>
+      <div class="ideas-grid" id="ideasGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-bg" id="missionModal">
+  <div class="modal">
+    <h3>✨ Edit Current Quest</h3>
+    <textarea id="missionInput" rows="3"></textarea>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="closeModal('missionModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitMission()">Save Mission</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="notesModal">
+  <div class="modal">
+    <h3>📝 Drop a Live Note</h3>
+    <textarea id="notesInput" placeholder="Type a quick observation, thought, or lesson learned..." rows="3"></textarea>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="closeModal('notesModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNote()">Add Note</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="ideaModal">
+  <div class="modal">
+    <h3>💡 Publish/Update Your Arena Card</h3>
+    <input type="text" id="ideaFocusInput" placeholder="Main Topic Tag (e.g. EAR DEV! or ACCENTS)">
+    <textarea id="ideaNotesInput" placeholder="Your details / observations / bullet points..." rows="5"></textarea>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="closeModal('ideaModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitIdea()">Publish Card</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toastElement"></div>
+
+<script>
+/* =========================================================
+   REAL-TIME APP STATE MANAGEMENT ENGINE
+========================================================= */
+const FIREBASE_DB_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
+let currentUser = localStorage.getItem('arena_user_v5') || '';
+let currentStepIdx = 0;
+
+const cycleData = [
+  {emoji:'👀', name:'OBSERVE', q:['What is stopping them from speaking?', 'When do they feel fear?', 'What can we improve first?']},
+  {emoji:'❓', name:'ASK', q:['Why do they freeze?', 'What if we use a fun game loop?', 'How can we hide grammar mistakes?']},
+  {emoji:'💡', name:'CREATE', q:['Think about a 1-minute simple rule.', 'Write down basic steps.', 'Make it feel like a playground.']},
+  {emoji:'🧪', name:'TEST', q:['Did you practice this with someone?', 'What went wrong?', 'Did they laugh or get stressed?']},
+  {emoji:'🚀', name:'IMPROVE', q:['What did we find out today?', 'How can we make it faster?', 'What is the next upgrade loop?']}
+];
+
+const targetHabits = [
+  {label: '❓ Ask 3 simple questions to your partner'},
+  {label: '💡 Post 1 dynamic card on the Ideas Board'},
+  {label: '🤝 Help or add a tip to a friend\'s idea'},
+  {label: '⏱️ Explain your idea in 1 minute (Pitch style!)'}
+];
+
+let globalState = { mission: '', stickies: [], ideas: [], team: {} };
+
+if(currentUser) {
+  bypassLoginScreen();
+}
+
+function connectUser() {
+  const name = document.getElementById('usernameInput').value.trim();
+  if(!name) { alert("Please type your name."); return; }
+  currentUser = name;
+  localStorage.setItem('arena_user_v5', currentUser);
+  bypassLoginScreen();
+}
+
+function bypassLoginScreen() {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('app-main').style.display = 'block';
+  document.getElementById('userAvatar').textContent = currentUser.slice(0,2).toUpperCase();
+  initializeSync();
+}
+
+async function initializeSync() {
+  await fetch(`${FIREBASE_DB_URL}/team/${currentUser}.json`, {
+    method: 'PUT',
+    body: JSON.stringify({ name: currentUser, ping: true })
+  });
+
+  fetchDatabaseState();
+  setInterval(fetchDatabaseState, 3000);
+  buildStepper();
+  renderActiveStepQuestions();
+  renderFixedTargets();
+}
+
+async function fetchDatabaseState() {
+  try {
+    const resM = await fetch(`${FIREBASE_DB_URL}/mission.json`);
+    const missionData = await resM.json();
+    globalState.mission = missionData || "How can we help a friend speak English with total confidence?";
+
+    const resS = await fetch(`${FIREBASE_DB_URL}/miniStickies.json`);
+    const stickiesData = await resS.json();
+    globalState.stickies = stickiesData ? Object.values(stickiesData).reverse() : [];
+
+    const resI = await fetch(`${FIREBASE_DB_URL}/ideas.json`);
+    const ideasData = await resI.json();
+    globalState.ideas = ideasData ? Object.values(ideasData) : [];
+
+    const resT = await fetch(`${FIREBASE_DB_URL}/team.json`);
+    const teamData = await resT.json();
+    globalState.team = teamData || {};
+
+    renderUIComponents();
+  } catch(err) { console.log("Data connection issue: ", err); }
+}
+
+/* =========================================================
+   UI VIEW AND ELEMENT RENDER CONTROL PIPELINE
+========================================================= */
+function switchView(viewId, btnToken) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+  
+  btnToken.classList.add('active');
+  document.getElementById(`view-${viewId}`).classList.add('active');
+}
+
+function buildStepper() {
+  const container = document.getElementById('stepperElement');
+  container.innerHTML = cycleData.map((step, idx) => `
+    <button class="step-node ${idx === currentStepIdx ? 'active' : ''}" onclick="selectStep(${idx})">
+      <span class="s-emoji">${step.emoji}</span>
+      <span class="s-name">${step.name}</span>
+    </button>
+  `).join('');
+}
+
+function selectStep(idx) {
+  currentStepIdx = idx;
+  buildStepper();
+  renderActiveStepQuestions();
+}
+
+function renderActiveStepQuestions() {
+  const container = document.getElementById('questionsList');
+  container.innerHTML = cycleData[currentStepIdx].q.map(question => `<li>${question}</li>`).join('');
+}
+
+function renderFixedTargets() {
+  const targetsBox = document.getElementById('targetsList');
+  targetsBox.innerHTML = targetHabits.map((h, i) => `
+    <div class="target-item">
+      <input type="checkbox" id="chk-${i}" onchange="triggerTargetFeedback(this)">
+      <div class="label">${h.label}</div>
+    </div>
+  `).join('');
+}
+
+function renderUIComponents() {
+  document.getElementById('missionText').textContent = globalState.mission;
+
+  const stickiesBox = document.getElementById('miniStickyList');
+  stickiesBox.innerHTML = globalState.stickies.map(s => `<div class="mini-note">${escapeOutput(s)}</div>`).join('');
+
+  // RENDER DYNAMIC IDEAS ACCORDING TO YOUR MOCKUP SKELETON RASCUNHO
+  const ideasBox = document.getElementById('ideasGrid');
+  if (globalState.ideas.length === 0) {
+    ideasBox.innerHTML = `<p style="color:var(--muted); font-size:14px; grid-column: 1/-1; text-align:center; padding:20px;">No cards posted yet. Be the first!</p>`;
+  } else {
+    ideasBox.innerHTML = globalState.ideas.map(idea => `
+      <div class="student-arena-card">
+        <div class="student-name">${escapeOutput(idea.author)}</div>
+        <div class="focus-badge">${escapeOutput(idea.focus || 'IDEA')}</div>
+        <div class="notes-body">${escapeOutput(idea.notes || '')}</div>
+      </div>
+    `).join('');
+  }
+
+  // RENDER LIVE AVATARS MIDDLEBAR STACK
+  const members = Object.values(globalState.team);
+  const stackBox = document.getElementById('avatarStackBox');
+  stackBox.innerHTML = members.map(m => `
+    <div class="stack-member" title="${m.name}">${m.name.slice(0,2).toUpperCase()}</div>
+  `).join('');
+
+  const statusText = document.getElementById('liveStatusText');
+  if(members.length <= 1) {
+    statusText.textContent = "You are training alone right now";
+  } else {
+    const names = members.map(m => m.name).filter(n => n !== currentUser);
+    statusText.textContent = `${names.join(', ')} and you are training live!`;
+  }
+}
+
+/* =========================================================
+   TRANSACTION WRITE DISPATCHERS (FIREBASE BACKEND)
+========================================================= */
+function openMissionModal() {
+  document.getElementById('missionInput').value = globalState.mission;
+  toggleModalOverlay('missionModal', true);
+}
+async function submitMission() {
+  const text = document.getElementById('missionInput').value.trim();
+  if(!text) return;
+  await fetch(`${FIREBASE_DB_URL}/mission.json`, { method: 'PUT', body: JSON.stringify(text) });
+  toggleModalOverlay('missionModal', false);
+  triggerToastNotification("Mission updated across live ecosystem!");
+  fetchDatabaseState();
+}
+
+function openNotesModal() {
+  document.getElementById('notesInput').value = '';
+  toggleModalOverlay('notesModal', true);
+}
+async function submitNote() {
+  const noteText = document.getElementById('notesInput').value.trim();
+  if(!noteText) return;
+  const styledText = `[${currentUser}]: ${noteText}`;
+  await fetch(`${FIREBASE_DB_URL}/miniStickies.json`, { method: 'POST', body: JSON.stringify(styledText) });
+  toggleModalOverlay('notesModal', false);
+  triggerToastNotification("Note captured live!");
+  fetchDatabaseState();
+}
+
+function openIdeaModal() {
+  // Autofill with existing data if user already has a card saved
+  const myExistingCard = globalState.ideas.find(i => i.author === currentUser);
+  document.getElementById('ideaFocusInput').value = myExistingCard ? myExistingCard.focus : '';
+  document.getElementById('ideaNotesInput').value = myExistingCard ? myExistingCard.notes : '';
+  toggleModalOverlay('ideaModal', true);
+}
+async function submitIdea() {
+  const focusText = document.getElementById('ideaFocusInput').value.trim();
+  const notesText = document.getElementById('ideaNotesInput').value.trim();
+  if(!focusText && !notesText) return;
+  
+  const item = { focus: focusText || 'FOCUS', notes: notesText || '', author: currentUser };
+  // Save using the student's name as key so each student owns exactly one card
+  await fetch(`${FIREBASE_DB_URL}/ideas/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(item) });
+  toggleModalOverlay('ideaModal', false);
+  triggerToastNotification("Card published successfully to Ideas Board!");
+  fetchDatabaseState();
+}
+
+/* =========================================================
+   UX DESIGN UTILITY HELPERS
+========================================================= */
+function toggleModalOverlay(id, open) {
+  const element = document.getElementById(id);
+  if(open) element.classList.add('show'); else element.classList.remove('show');
+}
+function closeModal(id) { toggleModalOverlay(id, false); }
+
+function triggerToastNotification(msg) {
+  const container = document.getElementById('toastElement');
+  container.textContent = msg;
+  container.classList.add('show');
+  setTimeout(() => container.classList.remove('show'), 2500);
+}
+
+function triggerTargetFeedback(checkboxToken) {
+  if(checkboxToken.checked) {
+    triggerToastNotification("Goal achieved! Keep going! 🚀");
+  }
+}
+
+function escapeOutput(str) {
+  const parser = document.createElement('div');
+  parser.textContent = str;
+  return parser.innerHTML;
+}
+</script>
+</body>
+</html>
