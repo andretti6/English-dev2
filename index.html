@@ -1,560 +1,629 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Idea Arena — Clean & Focused</title>
-<style>
-:root{
-  --bg:#090a0f;
-  --panel:#12141c;
-  --panel-2:#1a1d29;
-  --border:#242838;
-  --text:#e3e6ed;
-  --muted:#7e869c;
-  --accent:#ffd23f;
-  --green:#3ecf8e;
-  --blue:#4d9fff;
-  --purple:#a78bfa;
-  --radius:14px;
-}
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaking Adventure: Dashboard</title>
 
-/* SETUP SCREEN */
-#setup-screen {
-  position: fixed; inset: 0; background: var(--bg); z-index: 999;
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-.setup-card {
-  background: var(--panel); border: 1px solid var(--border); padding: 32px;
-  border-radius: var(--radius); max-width: 400px; width: 100%; text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.setup-card h2 { color: var(--accent); margin: 0 0 8px 0; font-size: 24px; }
-.setup-card p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-.setup-input {
-  width: 100%; background: var(--panel-2); border: 1px solid var(--border);
-  color: var(--text); padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 15px;
-  outline: none; transition: 0.2s;
-}
-.setup-input:focus { border-color: var(--accent); }
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #10b981;
+            --accent-purple: #a78bfa;
+            --accent-amber: #f59e0b;
+            --accent-pink: #f472b6;
+            --accent-orange: #fb923c;
+        }
 
-/* MAIN APP INTERFACE */
-#app-main { display: none; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-.header{
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 100;
-}
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 24px; max-width: 1000px; margin: 0 auto;
-}
-.brand { font-size: 14px; font-weight: 700; letter-spacing: .05em; color: var(--muted); }
-.brand span { color: var(--accent); }
-.avatar {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #ff9248);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; color: #000; font-size: 13px;
-}
+        .container {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 25px;
+            max-width: 650px;
+            width: 100%;
+            border: 1px solid var(--border-color);
+        }
 
-/* UX NAVIGATION TABS */
-.nav-tabs {
-  display: flex; gap: 8px; padding: 0 24px; max-width: 1000px; margin: 0 auto;
-}
-.tab-btn {
-  background: none; border: none; color: var(--muted); padding: 12px 16px;
-  font-size: 14px; font-weight: 600; cursor: pointer; position: relative;
-  transition: 0.2s;
-}
-.tab-btn.active { color: var(--text); }
-.tab-btn.active::after {
-  content: ''; position: absolute; bottom: 0; left: 16px; right: 16px; height: 3px;
-  background: var(--accent); border-radius: 2px;
-}
+        h1 {
+            color: var(--accent-blue);
+            text-align: center;
+            margin-top: 0;
+            font-size: 22px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
 
-/* MAIN CONTAINER LAYER */
-.main-container {
-  max-width: 760px; margin: 24px auto 80px auto; padding: 0 24px;
-}
-.view-section { display: none; }
-.view-section.active { display: block; animation: fadeIn 0.3s ease; }
+        .screen { display: none; }
+        .active { display: block; }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; color: var(--text-muted); font-weight: 600; }
+        input, select, textarea {
+            width: 100%; padding: 12px; background-color: var(--bg-main);
+            border: 2px solid var(--border-color); border-radius: 6px;
+            color: white; font-size: 15px; box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent-blue); outline: none; }
 
-/* CLEAN UI CARDS */
-.card {
-  background: var(--panel); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
-}
+        .btn {
+            background-color: var(--accent-blue); color: white; border: none;
+            padding: 12px 20px; font-size: 15px; font-weight: bold;
+            border-radius: 6px; cursor: pointer; width: 100%; transition: background 0.2s;
+            margin-bottom: 10px;
+        }
+        .btn:hover { background-color: #0284c7; }
+        .btn-success { background-color: var(--accent-green); }
+        .btn-success:hover { background-color: #059669; }
+        .btn-warning { background-color: var(--accent-amber); color: #1e293b; }
+        .btn-warning:hover { background-color: #d97706; }
+        .btn-print { background-color: #475569; border: 1px solid #64748b; }
+        .btn-print:hover { background-color: #64748b; }
+        .btn-pink { background-color: var(--accent-pink); color: #1e293b; }
+        .btn-pink:hover { background-color: #ec4899; }
 
-/* CENTRAL MISSION ELEMENT */
-.mission-box {
-  text-align: center; background: radial-gradient(circle at 50% 0%, #171b2a, var(--panel));
-  padding-bottom: 18px;
-}
-.mission-box h5 { color: var(--accent); margin: 0 0 6px 0; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
-.mission-box h1 { font-size: 22px; margin: 0 0 16px 0; line-height: 1.4; font-weight: 700; }
-.edit-btn {
-  background: none; border: 1px dashed var(--border); color: var(--muted);
-  border-radius: 20px; padding: 6px 14px; font-size: 11px; cursor: pointer; transition: 0.2s;
-}
-.edit-btn:hover { border-color: var(--muted); color: var(--text); }
+        .box {
+            background-color: var(--bg-main); border-left: 4px solid var(--accent-blue);
+            padding: 15px; border-radius: 4px; margin-bottom: 15px;
+            display: none;
+        }
+        .box.visible { display: block; }
+        .box h3 { margin-top: 0; font-size: 14px; text-transform: uppercase; color: var(--accent-blue); }
+        .box p { margin: 0; font-size: 14px; line-height: 1.5; color: #cbd5e1; }
 
-/* LIVE AVATARS STACK DESIGN */
-.team-live-bar {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.05);
-}
-.avatar-stack { display: flex; flex-direction: row-reverse; justify-content: flex-end; }
-.stack-member {
-  width: 28px; height: 28px; border-radius: 50%; background: var(--panel-2);
-  border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 700; color: var(--accent); margin-left: -8px; transition: 0.2s;
-}
-.stack-member:last-child { margin-left: 0; }
-.live-status-text { font-size: 12px; color: var(--muted); }
+        .step-indicator {
+            background: #334155; padding: 8px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: bold; color: var(--accent-blue);
+            display: inline-block; margin-bottom: 15px; text-transform: uppercase;
+        }
 
-/* THE STEPPER STEP BY STEP LINK */
-.cycle-stepper {
-  display: flex; justify-content: space-between; margin-bottom: 24px; position: relative;
-  background: var(--panel-2); padding: 8px; border-radius: 12px; border: 1px solid var(--border);
-}
-.step-node {
-  flex: 1; text-align: center; background: none; border: none; padding: 10px 6px;
-  color: var(--muted); cursor: pointer; border-radius: 8px; transition: 0.2s;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-}
-.step-node .s-emoji { font-size: 16px; }
-.step-node .s-name { font-size: 11px; font-weight: 700; }
-.step-node.active { background: var(--panel); color: var(--text); box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-.step-node.active .s-name { color: var(--accent); }
+        .tool-btn {
+            background-color: #334155; color: #38bdf8; border: 1px solid var(--accent-blue);
+            padding: 8px 14px; font-size: 13px; border-radius: 4px;
+            margin-right: 5px; margin-top: 10px; cursor: pointer; font-weight: bold;
+        }
+        .tool-btn:hover { background-color: #243242; }
 
-/* QUESTIONS AREA CONTAINER */
-.questions-pane {
-  background: var(--panel-2); border-radius: 12px; padding: 16px; border-left: 4px solid var(--accent);
-  margin-bottom: 24px;
-}
-.questions-pane h4 { margin: 0 0 8px 0; font-size: 13px; color: var(--muted); letter-spacing: 0.05em; }
-.questions-pane ul { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: var(--text); }
+        .tooltip-text {
+            display: none; background-color: #273549; padding: 10px;
+            border-radius: 4px; font-size: 13px; margin-top: 8px; color: #e2e8f0;
+            border: 1px solid var(--border-color);
+        }
 
-/* STICKY NOTES LIST */
-.sticky-row-list { display: flex; flex-direction: column; gap: 10px; }
-.mini-note {
-  background: #252216; border: 1px solid #3d351d; color: #ffe596;
-  padding: 12px 16px; border-radius: 10px; font-size: 13px; line-height: 1.4;
-}
+        .expand-btn {
+            background: none; border: none; color: var(--accent-amber); 
+            cursor: pointer; font-weight: bold; font-size: 13px; padding: 0; margin-top: 10px;
+            display: block; text-decoration: underline;
+        }
 
-/* TARGET PROGRESSION HABITS */
-.target-list { display: flex; flex-direction: column; gap: 2px; }
-.target-item {
-  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: flex-start; gap: 12px;
-}
-.target-item:last-child { border-bottom: none; }
-.target-item input[type=checkbox] { accent-color: var(--green); width: 18px; height: 18px; margin-top: 1px; cursor: pointer; }
-.target-item .label { font-size: 14px; line-height: 1.4; color: var(--text); }
+        .sticky-container {
+            background: #fef08a; color: #1e293b; padding: 20px; padding-top: 10px;
+            border-radius: 0 0 30px 0/0 0 5px 0; box-shadow: 5px 5px 15px rgba(0,0,0,0.4);
+            margin-bottom: 22px; transform: rotate(-0.5deg); display: none;
+        }
+        .sticky-container.visible { display: block; }
+        .sticky-container label { color: #475569; font-weight: 800; letter-spacing: 1px; }
+        .sticky-note {
+            width: 100%; height: 100px; background: transparent; border: none;
+            color: #1e293b; font-family: 'Courier New', Courier, monospace;
+            font-size: 15px; font-weight: bold; resize: none; padding: 0; line-height: 1.5;
+        }
+        .sticky-note:focus { outline: none; }
 
-/* IDEAS MATRIX (RASCUNHO INSPIRED) */
-.ideas-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px;
-}
-.student-arena-card {
-  background: var(--panel); border: 3px solid var(--border); border-radius: var(--radius);
-  padding: 18px; min-height: 220px; display: flex; flex-direction: column; position: relative;
-}
-.student-arena-card .student-name {
-  font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 10px;
-}
-.student-arena-card .focus-badge {
-  background: none; border: 3px solid var(--text); color: var(--text);
-  font-size: 14px; font-weight: 800; padding: 6px 12px; display: inline-block;
-  align-self: flex-start; margin-bottom: 14px; letter-spacing: 0.05em;
-}
-.student-arena-card .notes-body {
-  font-size: 14px; color: var(--muted); font-family: monospace; line-height: 1.5; white-space: pre-line; flex: 1;
-}
+        .sig-container { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .sig-btn {
+            flex: 1; background-color: #334155; color: var(--text-muted);
+            border: 2px dashed var(--border-color); padding: 12px; font-weight: bold;
+            border-radius: 6px; text-align: center; font-size: 13px; min-width: 80px;
+        }
+        .sig-btn.my-turn { border-color: var(--accent-blue); color: var(--accent-blue); cursor: pointer; }
+        .sig-btn.signed {
+            background-color: rgba(16, 185, 129, 0.2); border-color: var(--accent-green); color: var(--accent-green);
+            cursor: default;
+        }
 
-/* LARGE MAIN PRIMARY BUTTONS */
-.action-trigger-btn {
-  width: 100%; background: var(--panel-2); border: 2px dashed var(--border);
-  color: var(--muted); padding: 16px; border-radius: 12px; font-size: 14px;
-  font-weight: 600; cursor: pointer; text-align: center; transition: 0.2s;
-  margin-bottom: 20px;
-}
-.action-trigger-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .stars { color: var(--accent-amber); font-size: 20px; }
+        .role-indicator { font-weight: bold; color: var(--accent-amber); text-align: center; margin-bottom: 10px; }
 
-/* MODALS LAYOUT */
-.modal-bg {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
-  display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px;
-}
-.modal-bg.show { display: flex; }
-.modal {
-  background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 24px; width: 100%; max-width: 400px;
-}
-.modal h3 { margin: 0 0 16px 0; font-size: 16px; }
-.modal input[type=text], .modal textarea {
-  width: 100%; background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text); padding: 12px; font-size: 14px; font-family: inherit; outline: none; margin-bottom: 12px;
-}
-.modal textarea { resize: none; }
-.modal input:focus, .modal textarea:focus { border-color: var(--accent); }
-.modal .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; }
-.btn { border: none; border-radius: 8px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; }
-.btn-primary { background: var(--accent); color: #000; }
-.btn-ghost { background: none; border: 1px solid var(--border); color: var(--text); }
+        /* ===== ROLE PLAY CARD SIMPLIFICADO ===== */
+        .rp-card {
+            background: linear-gradient(135deg, #1a2332, #0f172a);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 10px 0;
+            border: 2px solid var(--border-color);
+        }
+        .rp-card .rp-emoji { font-size: 28px; display: block; margin-bottom: 4px; }
+        .rp-card .rp-title { font-size: 16px; font-weight: 800; color: var(--accent-blue); }
+        .rp-card .rp-goal { font-size: 13px; color: var(--accent-amber); margin: 4px 0 8px 0; }
+        .rp-card .rp-do { font-size: 13px; color: #cbd5e1; line-height: 1.6; }
+        .rp-card .rp-do strong { color: var(--accent-green); }
+        .rp-card .rp-tip {
+            background: #1e293b;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent-pink);
+        }
+        .rp-card .rp-tip strong { color: var(--accent-pink); }
 
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: var(--panel-2); border: 1px solid var(--accent); color: var(--text);
-  padding: 10px 20px; border-radius: 30px; font-size: 13px; z-index: 300; opacity: 0; transition: 0.2s; pointer-events: none;
-}
-.toast.show { opacity: 1; }
-</style>
+        @media print {
+            body { background-color: #fff; color: #000; }
+            .container { box-shadow: none; border: none; background: #fff; max-width: 100%; }
+            .btn, .tool-btn, .role-indicator, .step-indicator, .expand-btn { display: none !important; }
+            .box { background: #fff; border-left: 4px solid #000; color: #000; display: block !important; }
+            .box p { color: #000; }
+            .sticky-container { display: block !important; background: #fff; box-shadow: none; }
+            .rp-card { background: #f1f5f9; border-color: #ccc; }
+            .rp-card .rp-do { color: #1e293b; }
+        }
+    </style>
 </head>
 <body>
 
-<div id="setup-screen">
-  <div class="setup-card">
-    <h2>Welcome to Live Arena</h2>
-    <p>Type your name to connect to the global workspace:</p>
-    <input type="text" id="usernameInput" class="setup-input" placeholder="Your Name (e.g. Andre or Guto)" autofocus>
-    <button class="btn btn-primary" style="width:100%; padding:14px; font-size:14px;" onclick="connectUser()">Enter Live Session</button>
-  </div>
-</div>
-
-<div id="app-main">
-  <div class="header">
-    <div class="topbar">
-      <div class="brand">LEARNING <span>ARENA</span></div>
-      <div class="avatar" id="userAvatar">ME</div>
-    </div>
-    <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchView('session', this)">🎯 Session</button>
-      <button class="tab-btn" onclick="switchView('ideas', this)">💡 Ideas Board</button>
-    </div>
-  </div>
-
-  <div class="main-container">
-
-    <div id="view-session" class="view-section active">
-      <div class="card mission-box">
-        <h5>Today's Main Challenge</h5>
-        <h1 id="missionText">The Hotel Nightmare: Negotiate a solution for a broken hotel room!</h1>
-        <button class="edit-btn" onclick="openMissionModal()">Change Challenge Quest</button>
-
-        <div class="team-live-bar">
-          <div class="avatar-stack" id="avatarStackBox"></div>
-          <div class="live-status-text" id="liveStatusText">Connecting...</div>
+<div class="container">
+    <!-- TELA 1: LOGIN -->
+    <div id="screen1" class="screen active">
+        <h1>🎯 Speaking Adventure</h1>
+        <div class="form-group">
+            <label for="username">Your Name:</label>
+            <input type="text" id="username" placeholder="Type your name...">
         </div>
-      </div>
-
-      <div class="card" style="padding: 16px 20px;">
-        <h3 style="margin: 0 0 8px 0; font-size:13px; text-transform:uppercase; color:var(--muted)">🎯 Your Goals Today</h3>
-        <div id="targetsList" class="target-list"></div>
-      </div>
-
-      <div class="cycle-stepper" id="stepperElement"></div>
-
-      <div class="questions-pane">
-        <h4>💡 QUESTIONS GUIDELINE FOR THIS STAGE:</h4>
-        <ul id="questionsList"></ul>
-      </div>
-
-      <button class="action-trigger-btn" onclick="openNotesModal()">+ Click to type a fast session note / trick</button>
-
-      <div class="sticky-row-list" id="miniStickyList"></div>
+        <div class="form-group">
+            <label for="roomSelect">Select your Breakout Room:</label>
+            <select id="roomSelect">
+                <option value="room1">🏨 Room 1: Airport Hotel</option>
+                <option value="room2">🛍️ Room 2: Ghost Mall</option>
+                <option value="room3">📞 Room 3: Customer Service</option>
+            </select>
+        </div>
+        <button class="btn" onclick="checkLogin()">🚀 Start Mission</button>
     </div>
 
-    <div id="view-ideas" class="view-section">
-      <button class="action-trigger-btn" style="border-color: var(--accent); color: var(--accent);" onclick="openIdeaModal()">+ Drop/Update My Card on Board</button>
-      <div class="ideas-grid" id="ideasGrid"></div>
+    <!-- TELA 2: MISSÃO -->
+    <div id="screen2" class="screen">
+        <div style="text-align: center;">
+            <div id="stepBadg" class="step-indicator">📝 Step 1: Prep</div>
+        </div>
+        <h1 id="gameTitle">🧩 Mission: Loading...</h1>
+        <div id="roleInd" class="role-indicator">🎭 Assigning role...</div>
+
+        <!-- MISSÃO GLOBAL -->
+        <div id="globalBox" class="box visible" style="border-left-color: var(--accent-green);">
+            <h3 style="color: var(--accent-green);">🎯 Mission</h3>
+            <p id="globalMissionText">Loading instructions...</p>
+        </div>
+
+        <!-- PASSO 1: PREP -->
+        <div id="shareBox" class="box" style="border-left-color: var(--accent-purple);">
+            <h3 style="color: var(--accent-purple);">🔒 Your Secret Tools</h3>
+            <p style="margin-bottom: 10px;">Click to learn about your secret weapons:</p>
+            <button class="tool-btn" id="kwBtn1" onclick="toggleTooltip('tool1')">Loading...</button>
+            <button class="tool-btn" id="kwBtn2" onclick="toggleTooltip('tool2')">Loading...</button>
+            <div id="tool1" class="tooltip-text"></div>
+            <div id="tool2" class="tooltip-text"></div>
+            
+            <button class="expand-btn" id="toggleInvestigatorBtn" onclick="toggleInvestigator()">+ Show Investigator Task</button>
+            
+            <div id="investigatorSubBox" style="display: none; margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 12px;">
+                <h4 style="color: var(--accent-amber); margin: 0 0 5px 0; font-size: 13px; text-transform: uppercase;">🔍 Investigator Task</h4>
+                <p id="skillText" style="font-size: 14px; color: #cbd5e1;"></p>
+            </div>
+
+            <button class="btn btn-success" style="margin-top: 18px; font-size: 14px;" onclick="nextStep(2)">✅ Ready! Start Role Play (Step 2)</button>
+        </div>
+
+        <!-- NOTA AMARELA -->
+        <div id="ideasBox" class="sticky-container">
+            <label for="ideasInput">📝 FINAL PLAN (Write your solution here):</label>
+            <textarea id="ideasInput" class="sticky-note" placeholder="Write your team's final plan here..." oninput="updateLiveIdeas(this.value)"></textarea>
+        </div>
+
+        <!-- PASSO 2: ROLE PLAY SIMPLIFICADO -->
+        <div id="debateBox" class="box" style="border-left-color: var(--accent-blue);">
+            <h3 style="color: var(--accent-blue);">🎭 Role Play Time!</h3>
+            
+            <!-- CARD DE ROLE PLAY - SIMPLES E DIVERTIDO -->
+            <div id="rpCardContainer" class="rp-card">
+                <span class="rp-emoji" id="rpEmoji">🎭</span>
+                <div class="rp-title" id="rpTitle">Your Role</div>
+                <div class="rp-goal" id="rpGoal">🎯 Your Goal:</div>
+                <div class="rp-do" id="rpDo">
+                    <strong>✅ DO:</strong> <span id="rpDoText">Loading...</span>
+                </div>
+                <div class="rp-tip" id="rpTip">
+                    💡 <strong>Tip:</strong> <span id="rpTipText">Loading...</span>
+                </div>
+            </div>
+
+            <!-- WORDS BOX -->
+            <div class="form-group" style="margin-top: 18px;">
+                <label for="newWordsInput">📚 New Words:</label>
+                <input type="text" id="newWordsInput" placeholder="Save new vocabulary here (use commas)...">
+            </div>
+
+            <!-- SIGNATURAS -->
+            <label style="margin-top: 15px;">✍️ Everyone must sign to finish:</label>
+            <div class="sig-container">
+                <div id="sigA" class="sig-btn">Player A</div>
+                <div id="sigB" class="sig-btn">Player B</div>
+                <div id="sigC" class="sig-btn">Player C</div>
+            </div>
+
+            <button class="btn btn-success" id="doneBtn" onclick="goToHomework()" disabled style="opacity: 0.5;">🏆 Mission Done! Get Homework</button>
+            <button class="btn btn-warning" onclick="nextStep(1)">⬅️ Back to Prep</button>
+        </div>
     </div>
 
-  </div>
+    <!-- TELA 3: HOMEWORK -->
+    <div id="screen3" class="screen">
+        <h1>🏡 Homework</h1>
+        <div class="box visible" style="border-left-color: var(--accent-green);">
+            <h3>🚀 Your Solution</h3>
+            <p id="hwIdeas" style="font-style: italic; color: #e2e8f0; font-weight: bold;"></p>
+        </div>
+        <div class="box visible" style="border-left-color: var(--accent-amber);">
+            <h3>⭐ Skills Trained</h3>
+            <p id="hwSkills" style="font-weight: bold;"></p>
+            <div class="stars">★★★★★</div>
+        </div>
+        <div class="box visible">
+            <h3>📝 Grammar Focus</h3>
+            <p id="hwGrammar"></p>
+        </div>
+        <div class="box visible" style="border-left-color: var(--accent-blue);">
+            <h3>📚 Vocabulary</h3>
+            <p id="hwVocab"></p>
+        </div>
+        <button class="btn btn-print" onclick="window.print()">🖨️ Print</button>
+        <button class="btn" onclick="clearDatabaseAndRestart()">🔄 Exit & Reset</button>
+    </div>
 </div>
-
-<div class="modal-bg" id="missionModal">
-  <div class="modal">
-    <h3>✨ Edit Current Quest</h3>
-    <textarea id="missionInput" rows="3"></textarea>
-    <div class="actions">
-      <button class="btn btn-ghost" onclick="closeModal('missionModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitMission()">Save Mission</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-bg" id="notesModal">
-  <div class="modal">
-    <h3>📝 Drop a Live Note</h3>
-    <textarea id="notesInput" placeholder="Type a quick observation, thought, or lesson learned..." rows="3"></textarea>
-    <div class="actions">
-      <button class="btn btn-ghost" onclick="closeModal('notesModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitNote()">Add Note</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-bg" id="ideaModal">
-  <div class="modal">
-    <h3>💡 Publish/Update Your Arena Card</h3>
-    <input type="text" id="ideaFocusInput" placeholder="Main Topic Tag (e.g. EAR DEV! or ACCENTS)">
-    <textarea id="ideaNotesInput" placeholder="Your details / observations / bullet points..." rows="5"></textarea>
-    <div class="actions">
-      <button class="btn btn-ghost" onclick="closeModal('ideaModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="submitIdea()">Publish Card</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toastElement"></div>
 
 <script>
-/* =========================================================
-   REAL-TIME APP STATE MANAGEMENT ENGINE
-========================================================= */
-const FIREBASE_DB_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
-let currentUser = localStorage.getItem('arena_user_v5') || '';
-let currentStepIdx = 0;
+    const MAIN_DB_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/";
+    
+    let myName = "";
+    let myRole = ""; 
+    let selectedRoom = "room1";
+    let checkInterval = null;
+    let currentStep = 1;
 
-// CICLOS DE APRENDIZADO PARA O HOTEL NIGHTMARE
-const cycleData = [
-  {emoji:'👀', name:'OBSERVE', q:['What is the problem in the hotel room?', 'Who is responsible for the damage?', 'What does the guest want?']},
-  {emoji:'❓', name:'ASK', q:['What are the hotel policies?', 'Can we offer a free night or upgrade?', 'How can we make the guest happy?']},
-  {emoji:'💡', name:'CREATE', q:['Think of a compensation plan.', 'Write down your negotiation strategy.', 'Make it fair for both sides.']},
-  {emoji:'🧪', name:'TEST', q:['Practice the conversation with a partner.', 'What objections might arise?', 'How can you handle them?']},
-  {emoji:'🚀', name:'IMPROVE', q:['What did you learn from the negotiation?', 'How can you improve the hotel service?', 'What is your final proposal?']}
-];
+    // ===== MISSIONS DATABASE =====
+    const roomMissionsDB = {
+        "room1": {
+            title: "🏨 The Nightmare Airport Hotel",
+            grammar: "Use conditionals: 'If we install...', 'We could...', 'This will allow guests to...'",
+            globalMission: "❌ PROBLEM: 1-star reviews! Guests complain about airplane noise, cold food at 3 AM, and long check-in lines. SAVE THE HOTEL!",
+            A: {
+                role: "The Hotel Owner 💰",
+                emoji: "💼",
+                goal: "Save money! You're worried about costs.",
+                do: "Argue against expensive ideas. Only accept solutions that are CHEAP and EFFECTIVE.",
+                tip: "Ask: 'How much will this cost?' and 'Will it really fix the problem?'",
+                kw1: "Acoustic Insulation",
+                t1: "Special walls & windows that block airplane noise.",
+                kw2: "Digital Key",
+                t2: "Skip the lobby! Unlock your room with your phone.",
+                skill: "Interview Player B: 'What's the BEST thing about your tech?'"
+            },
+            B: {
+                role: "The Tech Consultant 🤖",
+                emoji: "🤖",
+                goal: "Convince everyone that TECHNOLOGY is the answer!",
+                do: "Push for robots, automation, and high-tech solutions. Fight against old-school ideas.",
+                tip: "Say: 'This will save money in the long run!' and 'It's the future!'",
+                kw1: "24/7 Hot Kitchen",
+                t1: "Automated buffet that works all night for late arrivals.",
+                kw2: "Luxury Pods",
+                t2: "Small, super-comfortable soundproof sleeping capsules.",
+                skill: "Interview Player C: 'How does your idea work with mine?'"
+            },
+            C: {
+                role: "The Customer Expert ❤️",
+                emoji: "❤️",
+                goal: "Make sure guests are HAPPY and STRESS-FREE!",
+                do: "Fight for the guest experience. Challenge ideas that feel cold or complicated.",
+                tip: "Say: 'But will the guest like this?' and 'Is it easy to use?'",
+                kw1: "Shuttle Automation",
+                t1: "Robot vans that track flights and pick up guests instantly.",
+                kw2: "Pre-Order App",
+                t2: "App where guests order breakfast before they land.",
+                skill: "Interview Player A: 'How does your idea help tired guests?'"
+            }
+        },
+        "room2": {
+            title: "🛍️ The Ghost Town Mall",
+            grammar: "Use future predictions: 'This will attract...', 'If we transform...', 'We might consider...'",
+            globalMission: "❌ PROBLEM: 60% of stores are empty! The mall is dying. BRING PEOPLE BACK!",
+            A: {
+                role: "The Mall Owner 🏢",
+                emoji: "🏢",
+                goal: "Keep it traditional! You like stable, long-term stores.",
+                do: "Push for normal retail. Be skeptical of 'weird' modern ideas.",
+                tip: "Say: 'Will this really bring more customers?' and 'What about rent?'",
+                kw1: "Anchor Tenants",
+                t1: "Big, well-known stores that attract crowds.",
+                kw2: "Lease Incentives",
+                t2: "Discounts to bring in high-quality stores.",
+                skill: "Interview Player B: 'Will your idea actually bring people here?'"
+            },
+            B: {
+                role: "The Entertainment Director 🎮",
+                emoji: "🎮",
+                goal: "Make the mall FUN! Shopping is boring.",
+                do: "Push for VR arenas, food halls, concerts, and experiences.",
+                tip: "Say: 'People want experiences, not just shopping!'",
+                kw1: "VR Gaming Arena",
+                t1: "Immersive virtual reality park with multiplayer games.",
+                kw2: "Gastronomic Hub",
+                t2: "Trendy food hall with live music and local chefs.",
+                skill: "Interview Player C: 'Can your pop-ups match my energy?'"
+            },
+            C: {
+                role: "The Pop-Up Expert 🎪",
+                emoji: "🎪",
+                goal: "Bridge online and physical shopping!",
+                do: "Push for short-term pop-ups and digital showrooms.",
+                tip: "Say: 'Keep it fresh! Change stores every 30 days!'",
+                kw1: "Flash Showrooms",
+                t1: "Temporary stores where you try products and buy online.",
+                kw2: "Click & Collect Hub",
+                t2: "Fast pickup center for online orders inside the mall.",
+                skill: "Interview Player A: 'Why is rotation better than long contracts?'"
+            }
+        },
+        "room3": {
+            title: "📞 The Customer Service Sabotage",
+            grammar: "Use modals: 'We must...', 'We should...', 'We could...'",
+            globalMission: "❌ PROBLEM: 45-minute phone waits! Useless AI bots! Technicians miss appointments! FIX IT!",
+            A: {
+                role: "The Call Center Director 😫",
+                emoji: "😫",
+                goal: "Reduce incoming calls! Your team is exhausted.",
+                do: "Push for systems that PREVENT calls. Be wary of complex tech.",
+                tip: "Say: 'Will my team be able to learn this?' and 'Will it reduce calls?'",
+                kw1: "Tiered Support",
+                t1: "Simple problems get fast answers. Complex issues get experts.",
+                kw2: "First-Contact Resolution",
+                t2: "Solve every problem on the FIRST call.",
+                skill: "Interview Player B: 'Will your AI understand angry customers?'"
+            },
+            B: {
+                role: "The AI Engineer 💻",
+                emoji: "💻",
+                goal: "Replace humans with AI! Bots are faster.",
+                do: "Push for voice bots, smart routing, and automation.",
+                tip: "Say: 'AI never gets tired!' and 'It handles 10,000 calls at once!'",
+                kw1: "Conversational LLM",
+                t1: "Advanced AI that talks like a human.",
+                kw2: "Predictive Routing",
+                t2: "AI detects anger and matches to the perfect technician.",
+                skill: "Interview Player C: 'Can my AI handle empathy better than a human?'"
+            },
+            C: {
+                role: "The Customer Ombudsman 🤗",
+                emoji: "🤗",
+                goal: "Protect the customer! Make them feel heard.",
+                do: "Fight for empathy, transparency, and compensation.",
+                tip: "Say: 'But will the customer feel valued?' and 'What if the tech fails?'",
+                kw1: "Empathy Protocol",
+                t1: "Training for real emotional connection and apology.",
+                kw2: "SLA Vouchers",
+                t2: "Automatic discounts when service is delayed.",
+                skill: "Interview Player A: 'How do we help non-tech users?'"
+            }
+        }
+    };
 
-// METAS ADAPTADAS PARA O HOTEL
-const targetHabits = [
-  {label: '❓ Ask 3 questions about the hotel problem'},
-  {label: '💡 Post 1 solution card on the Ideas Board'},
-  {label: '🤝 Help a classmate improve their negotiation'},
-  {label: '⏱️ Present your solution in 1 minute (Pitch style!)'}
-];
+    async function checkLogin() {
+        myName = document.getElementById('username').value.trim();
+        selectedRoom = document.getElementById('roomSelect').value;
+        if (!myName) return alert("Please type your name.");
 
-let globalState = { mission: '', stickies: [], ideas: [], team: {} };
+        try {
+            let response = await fetch(`${MAIN_DB_URL}${selectedRoom}/players.json`);
+            let players = await response.json() || { A: "", B: "", C: "" };
+            let assigned = Object.keys(players).find(k => players[k].toLowerCase() === myName.toLowerCase());
+            
+            if (assigned) { myRole = assigned; } 
+            else if (!players.A) { myRole = "A"; players.A = myName; }
+            else if (!players.B) { myRole = "B"; players.B = myName; }
+            else if (!players.C) { myRole = "C"; players.C = myName; }
+            else { myRole = "Viewer"; }
 
-if(currentUser) {
-  bypassLoginScreen();
-}
+            await fetch(`${MAIN_DB_URL}${selectedRoom}/players.json`, { method: 'PUT', body: JSON.stringify(players) });
+            enterGame();
+        } catch (err) { alert("Database error. Contact teacher."); }
+    }
 
-function connectUser() {
-  const name = document.getElementById('usernameInput').value.trim();
-  if(!name) { alert("Please type your name."); return; }
-  currentUser = name;
-  localStorage.setItem('arena_user_v5', currentUser);
-  bypassLoginScreen();
-}
+    function enterGame() {
+        document.getElementById('screen1').classList.remove('active');
+        document.getElementById('screen2').classList.add('active');
+        renderMissionData();
+        setupSignaturesUI();
+        nextStep(1);
+        checkInterval = setInterval(syncDatabase, 1500);
+    }
 
-function bypassLoginScreen() {
-  document.getElementById('setup-screen').style.display = 'none';
-  document.getElementById('app-main').style.display = 'block';
-  document.getElementById('userAvatar').textContent = currentUser.slice(0,2).toUpperCase();
-  initializeSync();
-}
+    function nextStep(stepNum) {
+        currentStep = stepNum;
+        document.getElementById('shareBox').classList.remove('visible');
+        document.getElementById('ideasBox').classList.remove('visible');
+        document.getElementById('debateBox').classList.remove('visible');
 
-async function initializeSync() {
-  await fetch(`${FIREBASE_DB_URL}/team/${currentUser}.json`, {
-    method: 'PUT',
-    body: JSON.stringify({ name: currentUser, ping: true })
-  });
+        if (stepNum === 1) {
+            document.getElementById('stepBadg').innerText = "📝 Step 1: Prep";
+            document.getElementById('shareBox').classList.add('visible');
+            document.getElementById('ideasBox').classList.add('visible');
+        } else if (stepNum === 2) {
+            document.getElementById('stepBadg').innerText = "🎭 Step 2: Role Play";
+            document.getElementById('ideasBox').classList.add('visible');
+            document.getElementById('debateBox').classList.add('visible');
+        }
+    }
 
-  fetchDatabaseState();
-  setInterval(fetchDatabaseState, 3000);
-  buildStepper();
-  renderActiveStepQuestions();
-  renderFixedTargets();
-}
+    function toggleInvestigator() {
+        const subBox = document.getElementById('investigatorSubBox');
+        const btn = document.getElementById('toggleInvestigatorBtn');
+        if (subBox.style.display === 'none') {
+            subBox.style.display = 'block';
+            btn.innerText = "- Hide Investigator Task";
+        } else {
+            subBox.style.display = 'none';
+            btn.innerText = "+ Show Investigator Task";
+        }
+    }
 
-async function fetchDatabaseState() {
-  try {
-    const resM = await fetch(`${FIREBASE_DB_URL}/mission.json`);
-    const missionData = await resM.json();
-    globalState.mission = missionData || "The Hotel Nightmare: Negotiate a solution for a broken hotel room!";
+    function renderMissionData() {
+        const activeMission = roomMissionsDB[selectedRoom];
+        if (!activeMission) return;
+        
+        document.getElementById('gameTitle').innerText = `🧩 ${activeMission.title}`;
+        document.getElementById('globalMissionText').innerText = activeMission.globalMission;
+        document.getElementById('roleInd').innerText = `🎭 Room: ${selectedRoom.toUpperCase()} | Your Role: Player ${myRole}`;
+        
+        if (myRole !== 'Viewer') {
+            const currentContent = activeMission[myRole];
+            
+            // Tools
+            document.getElementById('kwBtn1').innerText = currentContent.kw1;
+            document.getElementById('kwBtn2').innerText = currentContent.kw2;
+            document.getElementById('tool1').innerHTML = currentContent.t1;
+            document.getElementById('tool2').innerHTML = currentContent.t2;
+            document.getElementById('skillText').innerHTML = currentContent.skill;
+            
+            // ROLE PLAY CARD - SIMPLIFICADO
+            document.getElementById('rpEmoji').innerText = currentContent.emoji;
+            document.getElementById('rpTitle').innerText = `Your Role: ${currentContent.role}`;
+            document.getElementById('rpGoal').innerHTML = `🎯 Your Goal: ${currentContent.goal}`;
+            document.getElementById('rpDoText').innerHTML = currentContent.do;
+            document.getElementById('rpTipText').innerHTML = currentContent.tip;
+        }
+    }
 
-    const resS = await fetch(`${FIREBASE_DB_URL}/miniStickies.json`);
-    const stickiesData = await resS.json();
-    globalState.stickies = stickiesData ? Object.values(stickiesData).reverse() : [];
+    function setupSignaturesUI() {
+        ['A', 'B', 'C'].forEach(r => {
+            const el = document.getElementById(`sig${r}`);
+            if (myRole === r) {
+                el.classList.add('my-turn');
+                el.innerText = `✍️ Sign (Player ${r})`;
+                el.onclick = () => sendSignature(r);
+            } else {
+                el.innerText = `Player ${r}`;
+                el.classList.remove('my-turn', 'signed');
+                el.onclick = null;
+            }
+        });
+    }
 
-    const resI = await fetch(`${FIREBASE_DB_URL}/ideas.json`);
-    const ideasData = await resI.json();
-    globalState.ideas = ideasData ? Object.values(ideasData) : [];
+    async function updateLiveIdeas(val) {
+        if (myRole === "Viewer") return;
+        await fetch(`${MAIN_DB_URL}${selectedRoom}/ideas.json`, { method: 'PUT', body: JSON.stringify(val) });
+    }
 
-    const resT = await fetch(`${FIREBASE_DB_URL}/team.json`);
-    const teamData = await resT.json();
-    globalState.team = teamData || {};
+    async function sendSignature(role) {
+        await fetch(`${MAIN_DB_URL}${selectedRoom}/signed${role}.json`, { method: 'PUT', body: JSON.stringify(true) });
+        document.getElementById(`sig${role}`).classList.add('signed');
+        document.getElementById(`sig${role}`).innerText = `✅ Player ${role} Signed`;
+    }
 
-    renderUIComponents();
-  } catch(err) { console.log("Data connection issue: ", err); }
-}
+    async function syncDatabase() {
+        try {
+            let resPlayers = await fetch(`${MAIN_DB_URL}${selectedRoom}/players.json`);
+            let players = await resPlayers.json() || {A:"", B:"", C:""};
 
-/* =========================================================
-   UI VIEW AND ELEMENT RENDER CONTROL PIPELINE
-========================================================= */
-function switchView(viewId, btnToken) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            let resIdeas = await fetch(`${MAIN_DB_URL}${selectedRoom}/ideas.json`);
+            let ideas = await resIdeas.json() || "";
 
-  btnToken.classList.add('active');
-  document.getElementById(`view-${viewId}`).classList.add('active');
-}
+            let resSignedA = await fetch(`${MAIN_DB_URL}${selectedRoom}/signedA.json`); let sA = await resSignedA.json() || false;
+            let resSignedB = await fetch(`${MAIN_DB_URL}${selectedRoom}/signedB.json`); let sB = await resSignedB.json() || false;
+            let resSignedC = await fetch(`${MAIN_DB_URL}${selectedRoom}/signedC.json`); let sC = await resSignedC.json() || false;
 
-function buildStepper() {
-  const container = document.getElementById('stepperElement');
-  container.innerHTML = cycleData.map((step, idx) => `
-    <button class="step-node ${idx === currentStepIdx ? 'active' : ''}" onclick="selectStep(${idx})">
-      <span class="s-emoji">${step.emoji}</span>
-      <span class="s-name">${step.name}</span>
-    </button>
-  `).join('');
-}
+            if (document.activeElement !== document.getElementById('ideasInput')) {
+                document.getElementById('ideasInput').value = ideas;
+            }
 
-function selectStep(idx) {
-  currentStepIdx = idx;
-  buildStepper();
-  renderActiveStepQuestions();
-}
+            const signatures = {A: sA, B: sB, C: sC};
+            ['A', 'B', 'C'].forEach(r => {
+                const btn = document.getElementById(`sig${r}`);
+                if (signatures[r]) {
+                    btn.className = "sig-btn signed";
+                    btn.innerText = `✅ Player ${r} Signed`;
+                    btn.onclick = null;
+                } else if (myRole === r && !signatures[r]) {
+                    btn.className = "sig-btn my-turn";
+                    btn.innerText = `✍️ Sign (Player ${r})`;
+                    btn.onclick = () => sendSignature(r);
+                } else {
+                    btn.className = "sig-btn";
+                    btn.innerText = players[r] ? `Player ${r} (${players[r]})` : `Player ${r}`;
+                    btn.onclick = null;
+                }
+            });
 
-function renderActiveStepQuestions() {
-  const container = document.getElementById('questionsList');
-  container.innerHTML = cycleData[currentStepIdx].q.map(question => `<li>${question}</li>`).join('');
-}
+            const playerCExists = players.C && players.C !== "";
+            let allRequiredSigned = playerCExists ? (sA && sB && sC) : (sA && sB);
+            
+            if (!playerCExists) {
+                document.getElementById('sigC').innerText = "Player C (Not here)";
+                document.getElementById('sigC').style.opacity = "0.3";
+            } else {
+                document.getElementById('sigC').style.opacity = "1";
+            }
 
-function renderFixedTargets() {
-  const targetsBox = document.getElementById('targetsList');
-  targetsBox.innerHTML = targetHabits.map((h, i) => `
-    <div class="target-item">
-      <input type="checkbox" id="chk-${i}" onchange="triggerTargetFeedback(this)">
-      <div class="label">${h.label}</div>
-    </div>
-  `).join('');
-}
+            if (allRequiredSigned) {
+                const doneBtn = document.getElementById('doneBtn');
+                doneBtn.disabled = false;
+                doneBtn.style.opacity = "1";
+            }
+        } catch (err) { console.log("Sync...", err); }
+    }
 
-function renderUIComponents() {
-  document.getElementById('missionText').textContent = globalState.mission;
+    function toggleTooltip(id) {
+        const tooltip = document.getElementById(id);
+        tooltip.style.display = (tooltip.style.display === 'block') ? 'none' : 'block';
+    }
 
-  const stickiesBox = document.getElementById('miniStickyList');
-  stickiesBox.innerHTML = globalState.stickies.map(s => `<div class="mini-note">${escapeOutput(s)}</div>`).join('');
+    function goToHomework() {
+        clearInterval(checkInterval);
+        document.getElementById('screen2').classList.remove('active');
+        document.getElementById('screen3').classList.add('active');
 
-  const ideasBox = document.getElementById('ideasGrid');
-  if (globalState.ideas.length === 0) {
-    ideasBox.innerHTML = `<p style="color:var(--muted); font-size:14px; grid-column: 1/-1; text-align:center; padding:20px;">No cards posted yet. Be the first!</p>`;
-  } else {
-    ideasBox.innerHTML = globalState.ideas.map(idea => `
-      <div class="student-arena-card">
-        <div class="student-name">${escapeOutput(idea.author)}</div>
-        <div class="focus-badge">${escapeOutput(idea.focus || 'IDEA')}</div>
-        <div class="notes-body">${escapeOutput(idea.notes || '')}</div>
-      </div>
-    `).join('');
-  }
+        const activeMission = roomMissionsDB[selectedRoom];
+        document.getElementById('hwIdeas').innerText = document.getElementById('ideasInput').value || "No solution saved.";
+        document.getElementById('hwSkills').innerText = `✅ Role Play completed in ${selectedRoom.toUpperCase()}`;
+        document.getElementById('hwGrammar').innerHTML = activeMission.grammar;
+        
+        const vocabInput = document.getElementById('newWordsInput').value;
+        document.getElementById('hwVocab').innerText = vocabInput ? vocabInput : "No vocabulary added.";
+    }
 
-  const members = Object.values(globalState.team);
-  const stackBox = document.getElementById('avatarStackBox');
-  stackBox.innerHTML = members.map(m => `
-    <div class="stack-member" title="${m.name}">${m.name.slice(0,2).toUpperCase()}</div>
-  `).join('');
-
-  const statusText = document.getElementById('liveStatusText');
-  if(members.length <= 1) {
-    statusText.textContent = "You are training alone right now";
-  } else {
-    const names = members.map(m => m.name).filter(n => n !== currentUser);
-    statusText.textContent = `${names.join(', ')} and you are training live!`;
-  }
-}
-
-/* =========================================================
-   TRANSACTION WRITE DISPATCHERS (FIREBASE BACKEND)
-========================================================= */
-function openMissionModal() {
-  document.getElementById('missionInput').value = globalState.mission;
-  toggleModalOverlay('missionModal', true);
-}
-async function submitMission() {
-  const text = document.getElementById('missionInput').value.trim();
-  if(!text) return;
-  await fetch(`${FIREBASE_DB_URL}/mission.json`, { method: 'PUT', body: JSON.stringify(text) });
-  toggleModalOverlay('missionModal', false);
-  triggerToastNotification("Mission updated across live ecosystem!");
-  fetchDatabaseState();
-}
-
-function openNotesModal() {
-  document.getElementById('notesInput').value = '';
-  toggleModalOverlay('notesModal', true);
-}
-async function submitNote() {
-  const noteText = document.getElementById('notesInput').value.trim();
-  if(!noteText) return;
-  const styledText = `[${currentUser}]: ${noteText}`;
-  await fetch(`${FIREBASE_DB_URL}/miniStickies.json`, { method: 'POST', body: JSON.stringify(styledText) });
-  toggleModalOverlay('notesModal', false);
-  triggerToastNotification("Note captured live!");
-  fetchDatabaseState();
-}
-
-function openIdeaModal() {
-  const myExistingCard = globalState.ideas.find(i => i.author === currentUser);
-  document.getElementById('ideaFocusInput').value = myExistingCard ? myExistingCard.focus : '';
-  document.getElementById('ideaNotesInput').value = myExistingCard ? myExistingCard.notes : '';
-  toggleModalOverlay('ideaModal', true);
-}
-async function submitIdea() {
-  const focusText = document.getElementById('ideaFocusInput').value.trim();
-  const notesText = document.getElementById('ideaNotesInput').value.trim();
-  if(!focusText && !notesText) return;
-
-  const item = { focus: focusText || 'FOCUS', notes: notesText || '', author: currentUser };
-  await fetch(`${FIREBASE_DB_URL}/ideas/${currentUser}.json`, { method: 'PUT', body: JSON.stringify(item) });
-  toggleModalOverlay('ideaModal', false);
-  triggerToastNotification("Card published successfully to Ideas Board!");
-  fetchDatabaseState();
-}
-
-/* =========================================================
-   UX DESIGN UTILITY HELPERS
-========================================================= */
-function toggleModalOverlay(id, open) {
-  const element = document.getElementById(id);
-  if(open) element.classList.add('show'); else element.classList.remove('show');
-}
-function closeModal(id) { toggleModalOverlay(id, false); }
-
-function triggerToastNotification(msg) {
-  const container = document.getElementById('toastElement');
-  container.textContent = msg;
-  container.classList.add('show');
-  setTimeout(() => container.classList.remove('show'), 2500);
-}
-
-function triggerTargetFeedback(checkboxToken) {
-  if(checkboxToken.checked) {
-    triggerToastNotification("Goal achieved! Keep going! 🚀");
-  }
-}
-
-function escapeOutput(str) {
-  const parser = document.createElement('div');
-  parser.textContent = str;
-  return parser.innerHTML;
-}
+    async function clearDatabaseAndRestart() {
+        try {
+            await fetch(`${MAIN_DB_URL}${selectedRoom}.json`, { method: 'DELETE' });
+        } catch (err) { console.error(err); }
+        location.reload();
+    }
 </script>
 </body>
 </html>
