@@ -68,4 +68,5 @@
             if (timerRunning) {                clearInterval(timerInterval);                btn.innerText = "Resume Presentation ⏱️";                display.classList.remove('running');                timerRunning = false;            } else {                timerRunning = true;                btn.innerText = "Pause ⏸️";                display.classList.add('running');                                timerInterval = setInterval(() => {                    timeLeft--;                    display.innerText = timeLeft;
                     if (timeLeft <= 0) {                        clearInterval(timerInterval);                        display.classList.remove('running');                        btn.innerText = "Time's up! 🏢";                        timerRunning = false;                    }                }, 1000);            }        }
         function resetAdventure() {            location.reload();        }
-        // Initialize first section        openMission('bribery');    </script></body></html>
+        // Initialize first section        openMission('bribery');    
+    </script></body></html>
