@@ -1,72 +1,801 @@
-<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Veloce Compliance Training 💼</title>    <style>        :root {            --bg-color: #060b11;            --card-bg: #0f1922;            --accent-pitch: #22c55e;            --accent-gold: #eab308;            --accent-blue: #38bdf8;            --text-light: #f8fafc;            --text-muted: #64748b;            --border-color: #1e2e3d;        }
-        * {            box-sizing: border-box;            margin: 0;            padding: 0;            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;        }
-        body {            background-color: var(--bg-color);            color: var(--text-light);            min-height: 100vh;            display: flex;            flex-direction: column;            align-items: center;            padding: 2rem;        }
-        header {            text-align: center;            margin-bottom: 2rem;        }
-        header h1 {            font-size: 2.2rem;            color: var(--text-light);            margin-bottom: 0.5rem;            letter-spacing: 0.05em;        }
-        header p {            color: var(--accent-pitch);            font-size: 1.1rem;            text-transform: uppercase;            letter-spacing: 0.1em;            font-weight: bold;        }
-        /* Progress Tracker */        .progress-container {            display: flex;            gap: 1.5rem;            margin-bottom: 2rem;            background: var(--card-bg);            padding: 0.8rem 2.5rem;            border-radius: 50px;            border: 1px solid var(--border-color);        }
-        .milestone {            font-size: 1rem;            font-weight: bold;            color: #334155;            transition: all 0.3s ease;        }
-        .milestone.active {            color: var(--accent-pitch);            text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);        }
-        /* Strategy Modules */        .adventure-map {            display: flex;            gap: 1rem;            justify-content: center;            flex-wrap: wrap;            max-width: 1000px;            width: 100%;            margin-bottom: 2rem;        }
-        .mission-btn {            background: var(--card-bg);            border: 2px solid var(--border-color);            border-radius: 14px;            padding: 1.2rem;            color: white;            font-size: 1.1rem;            font-weight: 600;            cursor: pointer;            display: flex;            flex-direction: column;            align-items: center;            gap: 0.5rem;            flex: 1;            min-width: 220px;            transition: all 0.2s ease;        }
-        .mission-btn:hover {            transform: translateY(-3px);            border-color: var(--accent-pitch);            box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.15);        }
-        .mission-btn.completed {            border-color: var(--accent-blue);            color: #cbd5e1;        }
-        /* Cards Display Area */        .card-container {            width: 100%;            max-width: 750px;        }
-        .mission-card {            background: var(--card-bg);            border-radius: 24px;            padding: 2.5rem;            display: none;            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;            border: 1px solid var(--border-color);            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);        }
-        @keyframes slideUp {            from { transform: translateY(20px); opacity: 0; }            to { transform: translateY(0); opacity: 1; }        }
-        .card-header {            font-size: 1.8rem;            font-weight: 700;            margin-bottom: 1rem;            border-bottom: 1px solid var(--border-color);            padding-bottom: 1rem;            color: #fff;        }
-        .mission-badge {            background: rgba(34, 197, 94, 0.1);            color: var(--accent-pitch);            padding: 0.3rem 0.8rem;            border-radius: 6px;            font-size: 0.8rem;            display: inline-block;            margin-bottom: 1rem;            text-transform: uppercase;            font-weight: bold;            border: 1px solid rgba(34, 197, 94, 0.2);        }
-        .instruction {            font-size: 1.1rem;            color: #cbd5e1;            margin-bottom: 1.5rem;            background: rgba(255,255,255,0.02);            padding: 1rem;            border-radius: 12px;            border-left: 4px solid var(--accent-pitch);        }
-        /* Interactive Prompts / Questions */        .questions-list {            list-style: none;            display: flex;            flex-direction: column;            gap: 0.8rem;            margin-bottom: 2rem;        }
-        .question-item {            background: #070c12;            padding: 1.2rem;            border-radius: 10px;            cursor: pointer;            border: 1px dashed #334155;            font-size: 1.05rem;            display: flex;            align-items: center;            justify-content: center;            gap: 0.75rem;            transition: all 0.25s ease;            color: var(--text-muted);            user-select: none;        }
-        .question-item:hover {            border-color: var(--accent-gold);            background: rgba(234, 179, 8, 0.03);            color: #e2e8f0;        }
-        .question-item.revealed {            background: rgba(7, 12, 18, 0.8);            border: 1px solid var(--accent-gold);            color: var(--text-light);            justify-content: flex-start;            cursor: default;            animation: popIn 0.3s ease;        }
-        @keyframes popIn {            0% { transform: scale(0.99); opacity: 0.9; }            100% { transform: scale(1); opacity: 1; }        }
-        /* Vocabulary Chips */        .vocab-section {            margin-bottom: 2rem;        }
-        .vocab-section h4 {            color: var(--text-muted);            margin-bottom: 0.8rem;            text-transform: uppercase;            font-size: 0.85rem;            letter-spacing: 0.05em;        }
-        .chips-container {            display: flex;            flex-wrap: wrap;            gap: 0.5rem;        }
-        .chip {            background: #192633;            color: #cbd5e1;            padding: 0.5rem 1rem;            border-radius: 6px;            font-size: 0.9rem;            cursor: pointer;            transition: all 0.2s;            border: 1px solid var(--border-color);            user-select: none;        }
-        .chip:hover {            border-color: var(--accent-pitch);            background: rgba(34, 197, 94, 0.05);        }
-        .chip.clicked {            background: #0a1118;            color: #475569;            border-color: #192633;            text-decoration: line-through;        }
-        /* Actions */        .next-btn, .finish-btn {            width: 100%;            background: var(--accent-pitch);            color: #060b11;            border: none;            padding: 1.1rem;            border-radius: 10px;            font-size: 1.1rem;            font-weight: bold;            cursor: pointer;            transition: all 0.2s;            display: flex;            justify-content: center;            align-items: center;            gap: 0.5rem;        }
-        .next-btn:hover, .finish-btn:hover {            background: #4ade80;            transform: translateY(-1px);        }
-        /* Timer Section */        .timer-container {            display: flex;            flex-direction: column;            align-items: center;            margin: 2rem 0;        }
-        .timer-circle {            width: 110px;            height: 110px;            border-radius: 50%;            border: 4px solid var(--border-color);            display: flex;            align-items: center;            justify-content: center;            font-size: 2.2rem;            font-weight: bold;            color: var(--accent-blue);        }
-        .timer-circle.running {            border-color: var(--accent-blue);            animation: pulse 1s infinite alternate;        }
-        @keyframes pulse {            from { transform: scale(1); }            to { transform: scale(1.02); }        }
-        .timer-btn {            margin-top: 1rem;            background: transparent;            border: 1px solid var(--accent-blue);            color: var(--accent-blue);            padding: 0.5rem 1.5rem;            border-radius: 6px;            font-weight: bold;            cursor: pointer;            transition: all 0.2s;        }
-        .timer-btn:hover {            background: rgba(56, 189, 248, 0.1);        }
-        .topic-selectors {            display: flex;            gap: 1rem;            margin-bottom: 2rem;            width: 100%;        }
-        .topic-select {            flex: 1;            padding: 1rem;            background: #070c12;            border: 1px solid var(--border-color);            border-radius: 10px;            color: white;            font-size: 1rem;            cursor: pointer;            text-align: center;        }
-        .topic-select.selected {            border-color: var(--accent-pitch);            background: rgba(34, 197, 94, 0.05);        }    </style></head><body>
-    <header>        <h1>💼 Veloce Compliance Practice</h1>        <p>Talk about Business Rules & Company Ethics</p>    </header>
-    <!-- Progress Milestones -->    <div class="progress-container">        <span class="milestone" id="star-1">PART 1: GIFTS & BRIBES</span>        <span class="milestone" id="star-2">PART 2: PRIVATE DATA</span>        <span class="milestone" id="star-3">PART 3: REPORTING PROBLEMS</span>    </div>
-    <!-- Navigation Map -->    <div class="adventure-map">        <button class="mission-btn" onclick="openMission('bribery')">🤝 1. Gifts & Bribes</button>        <button class="mission-btn" onclick="openMission('privacy')">🔒 2. Private Data</button>        <button class="mission-btn" onclick="openMission('crisis')">🚨 3. Reporting Problems</button>        <button class="mission-btn" id="final-nav-btn" style="border-color: var(--accent-blue); display: none;" onclick="openMission('final')">🏁 Final Presentation</button>    </div>
-    <!-- Cards Arena -->    <div class="card-container">
-        <!-- MODULE 1: ANTI-BRIBERY & GIFTS -->        <div id="card-bribery" class="mission-card">            <span class="mission-badge">Module 1</span>            <div class="card-header">Gifts & Conflict of Interest</div>            <div class="instruction">🎯 <strong>Case Brief:</strong> Click to see a problem at Veloce. Explain how to follow the company rules and protect Veloce.</div>                        <ul class="questions-list">                <li class="question-item" onclick="revealQuestion(this, 'A new vendor offers a very expensive weekend trip to a Veloce manager before a big contract negotiation. Can the manager accept this gift? What should they do?')">📜 Click to reveal Case File 1</li>                <li class="question-item" onclick="revealQuestion(this, 'A local manager wants to pay extra cash to a government officer to make a delivery faster. Is this allowed under Veloce anti-bribery rules?')">📜 Click to reveal Case File 2</li>                <li class="question-item" onclick="revealQuestion(this, 'A director at Veloce wants to hire a software company. The company belongs to the director\'s husband. What is the problem here?')">📜 Click to reveal Case File 3</li>                <li class="question-item" onclick="revealQuestion(this, 'A new client asks Veloce for a discount, but they want the money sent to a private bank account in another country. Why is this dangerous?')">📜 Click to reveal Case File 4</li>                <li class="question-item" onclick="revealQuestion(this, 'The sales team wants to hire a helper who is a close friend of a local politician to win a contract. What must Veloce check first?')">📜 Click to reveal Case File 5</li>            </ul>
-            <div class="vocab-section">                <h4>💡 Helpful Words (Click to use)</h4>                <div class="chips-container">                    <span class="chip" onclick="toggleChip(this)">Conflict of interest</span>                    <span class="chip" onclick="toggleChip(this)">Company gift policy</span>                    <span class="chip" onclick="toggleChip(this)">To accept a bribe</span>                    <span class="chip" onclick="toggleChip(this)">To check the background</span>                    <span class="chip" onclick="toggleChip(this)">To report a problem</span>                    <span class="chip" onclick="toggleChip(this)">Fair competition</span>                    <span class="chip" onclick="toggleChip(this)">Wrong behavior</span>                </div>            </div>
-            <button class="next-btn" onclick="completeMission(1, 'privacy')">Go to Private Data ➡️</button>        </div>
-        <!-- MODULE 2: DATA PRIVACY & GDPR -->        <div id="card-privacy" class="mission-card">            <span class="mission-badge">Module 2</span>            <div class="card-header">Data Privacy & Security</div>            <div class="instruction">🎯 <strong>Privacy Briefing:</strong> Click to see a data protection problem. Explain how to keep customer information safe.</div>                        <ul class="questions-list">                <li class="question-item" onclick="revealQuestion(this, 'The marketing team wants to send the Veloce customer email list to another company without asking the customers. Is this a good idea? Why?')">🌍 Click to reveal Regulations Prompt 1</li>                <li class="question-item" onclick="revealQuestion(this, 'An employee downloads secret Veloce project plans to a personal USB drive and leaves the company. What should the IT team do?')">🌍 Click to reveal Regulations Prompt 2</li>                <li class="question-item" onclick="revealQuestion(this, 'A hacker steals some customer phone numbers from Veloce. Who do we need to inform, and how fast?')">🌍 Click to reveal Regulations Prompt 3</li>                <li class="question-item" onclick="revealQuestion(this, 'An internal check shows that employee medical documents are on a public folder. Anyone in Veloce can see them. How do we fix this?')">🌍 Click to reveal Regulations Prompt 4</li>                <li class="question-item" onclick="revealQuestion(this, 'A past customer calls Veloce and says: \'Please delete all my personal information from your computers.\' Do we have to do it?')">🌍 Click to reveal Regulations Prompt 5</li>            </ul>
-            <div class="vocab-section">                <h4>💡 Data Protection Words (Click to use)</h4>                <div class="chips-container">                    <span class="chip" onclick="toggleChip(this)">Personal information</span>                    <span class="chip" onclick="toggleChip(this)">Data leak</span>                    <span class="chip" onclick="toggleChip(this)">Secret documents</span>                    <span class="chip" onclick="toggleChip(this)">To give permission</span>                    <span class="chip" onclick="toggleChip(this)">To delete data</span>                    <span class="chip" onclick="toggleChip(this)">Password protected</span>                    <span class="chip" onclick="toggleChip(this)">Privacy rules</span>                </div>            </div>
-            <button class="next-btn" onclick="completeMission(2, 'crisis')">Go to Reporting Problems ➡️</button>        </div>
-        <!-- MODULE 3: WHISTLEBLOWING & INVESTIGATION -->        <div id="card-crisis" class="mission-card">            <span class="mission-badge">Module 3</span>            <div class="card-header">Reporting Problems & Investigations</div>            <div class="instruction">🎯 <strong>Crisis Trigger:</strong> Click to read an anonymous report about bad behavior inside the company.</div>                        <ul class="questions-list">                <li class="question-item" onclick="revealQuestion(this, 'An anonymous message says a manager is changing the financial numbers of the company. How can Veloce check if this is true?')">🚨 Click to reveal Crisis File 1</li>                <li class="question-item" onclick="revealQuestion(this, 'An employee reports a safety problem, and then their boss treats them badly. How does Veloce protect this employee?')">🚨 Click to reveal Crisis File 2</li>                <li class="question-item" onclick="revealQuestion(this, 'During an internal investigation, a witness is afraid and does not want to speak. How can you make them feel safe to help?')">🚨 Click to reveal Crisis File 3</li>                <li class="question-item" onclick="revealQuestion(this, 'A government inspector arrives at Veloce unexpectedly and asks to see all communication logs. What is the correct protocol?')">🚨 Click to reveal Crisis File 4</li>                <li class="question-item" onclick="revealQuestion(this, 'We discover that some employees are shouting at team members and HR did nothing for months. What is your action plan?')">🚨 Click to reveal Crisis File 5</li>            </ul>
-            <div class="vocab-section">                <h4>💡 Investigation Words (Click to use)</h4>                <div class="chips-container">                    <span class="chip" onclick="toggleChip(this)">Anonymous hotline</span>                    <span class="chip" onclick="toggleChip(this)">To protect the worker</span>                    <span class="chip" onclick="toggleChip(this)">To check the facts</span>                    <span class="chip" onclick="toggleChip(this)">Internal investigation</span>                    <span class="chip" onclick="toggleChip(this)">Bad treatment</span>                    <span class="chip" onclick="toggleChip(this)">To find proof</span>                    <span class="chip" onclick="toggleChip(this)">Company ethics</span>                </div>            </div>
-            <button class="next-btn" onclick="completeMission(3, 'final')">Unlock Final Challenge 🏆</button>        </div>
-        <!-- FINAL BOARD CHALLENGE -->        <div id="card-final" class="mission-card">            <span class="mission-badge" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.3);">Compliance Manager</span>            <div class="card-header">🏁 Presentation for Veloce Directors</div>            <div class="instruction" style="border-left-color: var(--accent-blue);">                👨‍💼 <strong>The Directors are listening:</strong> Choose one topic. Speak for 1 or 2 minutes and give a simple solution to the problem.            </div>
-            <div class="topic-selectors">                <div class="topic-select" onclick="selectFinalTopic(this)">💸 Stop Bribes Plan</div>                <div class="topic-select" onclick="selectFinalTopic(this)">🔒 Fix Data Security</div>                <div class="topic-select" onclick="selectFinalTopic(this)">🚨 Better Hotline for Staff</div>            </div>
-            <div class="timer-container">                <div class="timer-circle" id="timer-display">60</div>                <button class="timer-btn" id="timer-control-btn" onclick="toggleTimer()">Start Timer ⏱️</button>            </div>
-            <button class="finish-btn" onclick="resetAdventure()">Restart Training 🔄</button>        </div>    </div>
-    <!-- App Logic -->    <script>        function openMission(topic) {            document.querySelectorAll('.mission-card').forEach(card => card.style.display = 'none');            const targetCard = document.getElementById(`card-${topic}`);            if(targetCard) targetCard.style.display = 'block';        }
-        function revealQuestion(element, text) {            if (!element.classList.contains('revealed')) {                element.classList.add('revealed');                element.innerHTML = `⚖️ <strong>Compliance Situation:</strong> &nbsp; ${text}`;            }        }
-        function toggleChip(chip) {            chip.classList.toggle('clicked');        }
-        function completeMission(stepNumber, nextTopic) {            document.getElementById(`star-${stepNumber}`).classList.add('active');                        const currentBtn = document.querySelectorAll('.mission-btn')[stepNumber - 1];            currentBtn.classList.add('completed');            currentBtn.innerHTML = `✅ ${currentBtn.innerText}`;
-            if(stepNumber === 3) {                document.getElementById('final-nav-btn').style.display = 'flex';            }
-            openMission(nextTopic);        }
-        function selectFinalTopic(element) {            document.querySelectorAll('.topic-select').forEach(t => t.classList.remove('selected'));            element.classList.add('selected');        }
-        // Timer Logic        let timerInterval;        let timeLeft = 60;        let timerRunning = false;
-        function toggleTimer() {            const btn = document.getElementById('timer-control-btn');            const display = document.getElementById('timer-display');
-            if (timerRunning) {                clearInterval(timerInterval);                btn.innerText = "Resume Presentation ⏱️";                display.classList.remove('running');                timerRunning = false;            } else {                timerRunning = true;                btn.innerText = "Pause ⏸️";                display.classList.add('running');                                timerInterval = setInterval(() => {                    timeLeft--;                    display.innerText = timeLeft;
-                    if (timeLeft <= 0) {                        clearInterval(timerInterval);                        display.classList.remove('running');                        btn.innerText = "Time's up! 🏢";                        timerRunning = false;                    }                }, 1000);            }        }
-        function resetAdventure() {            location.reload();        }
-        // Initialize first section        openMission('bribery');    
-    </script></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essentials Radar 2040 - MultiRoom</title>
+    <style>
+        :root {
+            --bg-dark: #121214;
+            --card-dark: #1e1e22;
+            --primary: #8257e5;
+            --green: #00b37e;
+            --amber: #ffcd00;
+            --text-main: #e1e1e6;
+            --text-sub: #a8a8b3;
+            --lock-color: #f75a68;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* SCREENS */
+        .screen { display: none; flex-direction: column; gap: 20px; }
+        .screen.active { display: flex; }
+
+        /* SCREEN: LOGIN */
+        #screen-login { text-align: center; padding: 30px 10px; }
+        #screen-login h1 { color: var(--green); font-size: 1.8rem; margin: 0; }
+        
+        .login-card {
+            background: var(--card-dark);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #323238;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .login-card label { font-size: 1rem; font-weight: bold; color: var(--text-sub); }
+        .login-card input, .login-card select {
+            background: var(--bg-dark);
+            border: 1px solid #323238;
+            color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .start-btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* SCREEN: LOBBY LOUNGE */
+        .lounge-box { background: var(--card-dark); border: 1px solid var(--primary); border-radius: 8px; padding: 15px; text-align: center; }
+        .warmup-box { background: #1a1a24; border-left: 4px solid var(--amber); padding: 15px; border-radius: 0 8px 8px 0; text-align: left; font-size: 0.95rem; line-height: 1.5; }
+        .warmup-box h3 { margin: 0 0 10px 0; color: var(--amber); font-size: 1.1rem; }
+        .warmup-box ul { margin: 10px 0 0 0; padding-left: 20px; color: var(--text-main); }
+        .warmup-box li { margin-bottom: 8px; }
+
+        /* HEADER */
+        header { text-align: center; }
+        header h1 { font-size: 1.3rem; color: var(--green); margin: 0 0 5px 0; text-transform: uppercase; }
+        .user-badge {
+            background: #29292e;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--amber);
+            display: inline-block;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        /* WHEEL STRUCTURE */
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #29292e 0deg 90deg, 
+                #222226 90deg 180deg, 
+                #29292e 180deg 270deg, 
+                #222226 270deg 360deg
+            );
+            border: 2px solid var(--card-dark);
+            position: absolute;
+        }
+
+        .wheel-line { position: absolute; width: 100%; height: 2px; background-color: #323238; }
+        .line-v { transform: rotate(90deg); }
+
+        .area-btn {
+            position: absolute;
+            background: var(--card-dark);
+            border: 1px solid var(--primary);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .area-btn.locked { border-color: #323238; color: #7c7c8a; opacity: 0.5; cursor: not-allowed; }
+        .btn-ai { top: 20%; left: 25%; }
+        .btn-robots { top: 20%; right: 20%; }
+        .btn-surgeries { bottom: 25%; right: 15%; }
+        .btn-diagnostics { bottom: 25%; left: 15%; }
+        .wheel-center {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-dark);
+            border: 3px solid var(--green);
+            border-radius: 50%;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: var(--green);
+        }
+
+        /* INPUT SECTIONS */
+        .inputs-section {
+            background: var(--card-dark);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #323238;
+            min-height: 170px;
+        }
+
+        .input-group { display: none; flex-direction: column; gap: 8px; }
+        .input-group.active { display: flex; }
+        .input-group label { font-size: 0.9rem; color: var(--amber); font-weight: bold; }
+
+        .essentials-pill {
+            background: #1a1a24;
+            border-left: 4px solid var(--primary);
+            padding: 10px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            line-height: 1.4;
+        }
+
+        .extra-tip { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #323238; color: var(--green); font-size: 0.8rem; }
+        textarea { background: var(--bg-dark); border: 1px solid #323238; border-radius: 6px; color: #fff; padding: 10px; font-size: 0.9rem; resize: none; height: 70px; }
+        #msg-locked { display: none; color: var(--lock-color); font-size: 0.9rem; text-align: center; padding: 40px 10px; }
+
+        .teacher-words-pill {
+            background: rgba(0, 179, 126, 0.1);
+            border: 1px solid var(--green);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #fff;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* DECKS */
+        .deck-title { font-size: 0.8rem; text-transform: uppercase; color: var(--text-sub); margin-bottom: 8px; }
+        .button-deck { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .trigger-btn {
+            background: linear-gradient(135deg, #29292e, #1e1e22);
+            border: 1px solid #323238;
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .trigger-btn:disabled { opacity: 0.2; cursor: not-allowed; }
+
+        #action-next-phase { display: none; margin-top: 10px; width: 100%; background: var(--green); animation: pulse 1.5s infinite; }
+
+        /* SCREEN: SIMULATION ARENA */
+        .arena-card { background: var(--card-dark); border-radius: 12px; padding: 20px; border: 1px solid #323238; text-align: center; }
+        .characters-box { display: flex; justify-content: space-around; margin: 20px 0; }
+        .character { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .char-avatar { font-size: 3rem; background: #29292e; width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; border-radius: 50%; border: 2px solid var(--primary); }
+        .char-name { font-size: 0.85rem; font-weight: bold; color: var(--text-main); }
+        .vs-badge { font-size: 1rem; color: var(--lock-color); font-weight: bold; align-self: center; }
+
+        .timer-display { font-size: 3.5rem; font-weight: bold; color: var(--amber); font-variant-numeric: tabular-nums; margin: 10px 0; }
+        .timer-controls { display: flex; gap: 15px; justify-content: center; }
+        .timer-btn { background: #29292e; border: 1px solid #323238; color: #fff; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .timer-btn.active-play { background: var(--green); border-color: var(--green); }
+
+        .cheat-sheet { background: var(--bg-dark); border-radius: 8px; padding: 12px; text-align: left; margin-top: 20px; max-height: 140px; overflow-y: auto; font-size: 0.85rem; border: 1px solid #323238; }
+        .cheat-sheet h4 { color: var(--green); margin: 0 0 8px 0; text-transform: uppercase; font-size: 0.8rem; }
+        .cheat-item { margin-bottom: 8px; color: var(--text-sub); border-bottom: 1px solid #222; padding-bottom: 4px; }
+
+        /* TEACHER COMPONENT STYLES */
+        .teacher-monitor-card { background: var(--card-dark); border: 1px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .monitor-box { background: var(--bg-dark); padding: 10px; border-radius: 6px; font-size: 0.85rem; color: #fff; min-height: 40px; margin-top: 5px; margin-bottom: 12px; border: 1px solid #323238; white-space: pre-wrap; }
+        .student-row { display: flex; justify-content: space-between; align-items: center; background: #29292e; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 0.9rem; }
+        .student-row select { background: var(--bg-dark); color: #fff; border: 1px solid #444; padding: 4px; border-radius: 4px; font-size: 0.8rem; }
+
+        /* HOMEWORK PRINT LAYER */
+        .homework-layout { background: #fff; color: #000; padding: 25px; border-radius: 12px; text-align: left; max-width: 500px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; gap: 20px; }
+        .homework-layout h2 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin: 0; }
+        .hw-section { background: #f4f4f6; padding: 12px; border-radius: 6px; border-left: 5px solid #323238; }
+        .hw-section h4 { margin: 0 0 5px 0; color: #222; text-transform: uppercase; font-size: 0.85rem; }
+        .reading-box { font-size: 0.95rem; line-height: 1.5; color: #333; font-style: italic; background: #fff8e7; padding: 15px; border-radius: 6px; border: 1px solid var(--amber); }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); box-shadow: 0 0 15px rgba(0, 179, 126, 0.4); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="main-container">
+
+    <!-- SCREEN 1: LOGIN -->
+    <div id="screen-login" class="screen active">
+        <header>
+            <h1>Hospitals 2040</h1>
+            <p style="color: var(--text-sub); font-size: 0.9rem;">No Doctors Game!</p>
+        </header>
+        <div class="login-card">
+            <label for="username">Type Your Name:</label>
+            <input type="text" id="username" placeholder="Your name here..." autocomplete="off">
+        </div>
+        <button class="start-btn" onclick="checkLoginFlow()">Let's Play! 🚀</button>
+    </div>
+
+    <!-- SCREEN: LOBBY LOUNGE (AQUECIMENTO DO ALUNO) -->
+    <div id="screen-lobby" class="screen">
+        <header>
+            <h1>Mission Control Room</h1>
+            <div id="lobby-user-badge" class="user-badge">Waiting...</div>
+        </header>
+        <div class="lounge-box">
+            <p style="color: var(--amber); font-weight: bold; margin-top: 0;">⏳ Please wait in the lounge...</p>
+            <p style="font-size:0.9rem; color: var(--text-sub);">Teacher André is setting up your target team and custom simulation room right now!</p>
+        </div>
+        
+        <div class="warmup-box">
+            <h3>📖 Warm-up Briefing (Level B1):</h3>
+            <p><strong>Hospitals 2040: The "No-Doctors" Evolution</strong></p>
+            <p>Imagine a world where hospitals do not have human doctors inside the building. Advanced Artificial Intelligence models select medicines, specialized mechanical units perform complex robotic operations, and patients run automated blood tests directly at home. Is this setup highly effective or extremely risky?</p>
+            <p><strong>🤔 Questions to ponder while you wait:</strong></p>
+            <ul>
+                <li>Would you honestly trust an automated robotic unit to perform a surgical procedure on you today? Why?</li>
+                <li>What is the ultimate fatal vulnerability if an entire community hospital depends completely on an active internet network?</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: MAIN GAME RADAR -->
+    <div id="screen-game" class="screen">
+        <header>
+            <h1>Hospitals 2040</h1>
+            <div id="player-badge" class="user-badge">Loading...</div>
+        </header>
+
+        <div id="student-vocab-board" class="teacher-words-pill"></div>
+
+        <div class="wheel-container">
+            <div class="wheel"></div>
+            <div class="wheel-line line-h"></div>
+            <div class="wheel-line line-v"></div>
+            
+            <button id="wheel-ai" class="area-btn btn-ai" onclick="selectArea('ai')">🧠 AI</button>
+            <button id="wheel-robots" class="area-btn btn-robots" onclick="selectArea('robots')">🤖 Robots</button>
+            <button id="wheel-surgeries" class="area-btn btn-surgeries" onclick="selectArea('surgeries')">🔒 Surgeries</button>
+            <button id="wheel-diagnostics" class="area-btn btn-diagnostics" onclick="selectArea('diagnostics')">🔒 Check-ups</button>
+
+            <div class="wheel-center">NO<br>DOCTORS</div>
+        </div>
+
+        <div class="inputs-section">
+            <div id="msg-locked">
+                🔒 This is your partner's zone. Listen to their question, give your ideas, and they will write it!
+            </div>
+
+            <div id="zone-ai" class="input-group">
+                <label>Your Zone: Artificial Intelligence (AI)</label>
+                <div class="essentials-pill">
+                    <strong>Ask your partner:</strong> "How does the computer choose the medicine if the internet stops?" Listen and type.
+                </div>
+                <textarea id="text-ai" placeholder="Type your partner's ideas here..." oninput="saveText('ai')"></textarea>
+            </div>
+
+            <div id="zone-robots" class="input-group">
+                <label>Your Zone: Robots</label>
+                <div class="essentials-pill">
+                    <strong>Ask your partner:</strong> "Who cleans and fixes the robots if there are no humans?" Listen and type.
+                </div>
+                <textarea id="text-robots" placeholder="Type your partner's ideas here..." oninput="saveText('robots')"></textarea>
+            </div>
+
+            <div id="zone-surgeries" class="input-group">
+                <label>Your Zone: Robot Surgeries</label>
+                <div class="essentials-pill">
+                    <strong>Ask your partner:</strong> "How can we make an old grandfather trust a robot machine for a surgery?" Listen and type.
+                </div>
+                <textarea id="text-surgeries" placeholder="Type your partner's ideas here..." oninput="saveText('surgeries')"></textarea>
+            </div>
+
+            <div id="zone-diagnostics" class="input-group">
+                <label>Your Zone: Home Check-ups</label>
+                <div class="essentials-pill">
+                    <strong>Ask your partner:</strong> "Can you tell me step-by-step how a normal person does a blood test alone at home?" Listen and type.
+                </div>
+                <textarea id="text-diagnostics" placeholder="Type your partner's ideas here..." oninput="saveText('diagnostics')"></textarea>
+            </div>
+        </div>
+
+        <div>
+            <div class="deck-title">Your Action Deck (Talk to your Friend)</div>
+            <div class="button-deck">
+                <button id="deck-ai" class="trigger-btn" onclick="selectArea('ai')">🧠 Ask AI</button>
+                <button id="deck-robots" class="trigger-btn" onclick="selectArea('robots')">🤖 Ask Robots</button>
+                <button id="deck-surgeries" class="trigger-btn" onclick="selectArea('surgeries')">🔒 Locked</button>
+                <button id="deck-diagnostics" class="trigger-btn" onclick="selectArea('diagnostics')">🔒 Locked</button>
+            </div>
+            <button id="action-next-phase" class="start-btn" onclick="goToSimulationScreen()">GO TO SIMULATION! 🚀</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: SIMULATION ARENA -->
+    <div id="screen-simulation" class="screen">
+        <header>
+            <h1>Simulation Arena</h1>
+            <p style="color:var(--amber); margin:0; font-weight:bold; font-size:0.9rem;">Talk and defend your points!</p>
+        </header>
+
+        <div class="arena-card">
+            <p style="font-size:0.95rem; margin:0 0 15px 0; color:var(--text-main); line-height:1.4;">
+                📣 <strong>The Mission:</strong> You are on a Live TV Show. Present your futuristic Hospital ideas to the world!
+            </p>
+
+            <div class="characters-box">
+                <div class="character">
+                    <div class="char-avatar">👦</div>
+                    <div id="simulation-name-A" class="char-name">Player A</div>
+                </div>
+                <div class="vs-badge">VS</div>
+                <div class="character">
+                    <div class="char-avatar">👧</div>
+                    <div id="simulation-name-B" class="char-name">Player B</div>
+                </div>
+            </div>
+
+            <div class="timer-display" id="timer-box">03:00</div>
+            <div class="timer-controls">
+                <button id="timer-start" class="timer-btn active-play" onclick="startTimer()">START</button>
+                <button id="timer-pause" class="timer-btn" onclick="pauseTimer()">PAUSE</button>
+            </div>
+
+            <div class="cheat-sheet">
+                <h4>📋 Your Ideas Cheat-Sheet:</h4>
+                <div id="cheat-list">Loading your notes...</div>
+            </div>
+        </div>
+
+        <button class="start-btn" style="background:var(--green);" onclick="openHomeworkView()">PRINT HOMEWORK 📄</button>
+        <button class="start-btn" style="background:#29292e;" onclick="resetWholeGame()">Reset Game 🔄</button>
+    </div>
+
+    <!-- SCREEN 4: TEACHER HUB CONTROLLER -->
+    <div id="screen-teacher" class="screen">
+        <header>
+            <h1>Teacher Command Center</h1>
+            <p style="color: var(--amber); font-size:0.85rem; margin:0;">Zoom-Style Live Breakout Room Distribution</p>
+        </header>
+
+        <!-- 1. MANAGEMENT LOBBY -->
+        <div class="teacher-monitor-card">
+            <h4 style="margin:0 0 10px 0; color: var(--green);">👥 Manage Active Class & Rooms:</h4>
+            <div id="teacher-students-lobby-list">
+                <p style="font-size:0.85rem; color:var(--text-sub);">No students online in the lounge yet...</p>
+            </div>
+        </div>
+
+        <!-- 2. ROOM SELECTED DATA MONITOR -->
+        <div class="teacher-monitor-card">
+            <label for="teacher-room-view-select">🔎 <strong>Monitor Room Live Feed:</strong></label>
+            <select id="teacher-room-view-select" onchange="changeMonitoredRoom(this.value)" style="width:100%; padding:8px; margin-top:5px; background:var(--bg-dark); color:#fff; border:1px solid #444;">
+                <option value="Room 1">Room 1</option>
+                <option value="Room 2">Room 2</option>
+                <option value="Room 3">Room 3</option>
+            </select>
+        </div>
+
+        <div class="login-card" style="margin:0;">
+            <label style="color:var(--green);">⚡ Send Vocabulary Feedback to Current Selected Room:</label>
+            <textarea id="teacher-vocab-input" placeholder="Type target vocabulary words..." style="height: 55px;"></textarea>
+            <button class="start-btn" style="background: var(--green); padding:10px;" onclick="sendTeacherVocabulary()">Send Target Words 📡</button>
+        </div>
+
+        <h3 style="margin:10px 0 0 0; font-size:0.9rem; text-transform:uppercase; color:var(--text-sub);">Room Live Content Notebook:</h3>
+        <div class="teacher-monitor-card">
+            <strong>🧠 AI Solutions:</strong> <div id="view-ai" class="monitor-box"></div>
+            <strong>🤖 Robot Solutions:</strong> <div id="view-robots" class="monitor-box"></div>
+            <strong>🔒 Surgery Solutions:</strong> <div id="view-surgeries" class="monitor-box"></div>
+            <strong>🔒 Check-up Solutions:</strong> <div id="view-diagnostics" class="monitor-box"></div>
+        </div>
+
+        <button class="start-btn" style="background:#f75a68;" onclick="resetWholeGame()">Complete Database Wipe 🔄</button>
+    </div>
+
+</div>
+
+<!-- SCREEN 5: STANDALONE HOMEWORK PRINT LAYER -->
+<div id="homework-print-screen" class="homework-layout">
+    <h2>Essentials Mission Report</h2>
+    <p><strong>Topic:</strong> Hospitals 2040 - The "No Doctors" Evolution</p>
+    
+    <div class="hw-section">
+        <h4>🎯 The Solutions We Generated:</h4>
+        <div id="hw-solutions-inject" style="font-size: 0.9rem; line-height: 1.4; color: #444;"></div>
+    </div>
+
+    <div class="hw-section" style="border-color: var(--green);">
+        <h4>🧠 New Vocabulary Shared:</h4>
+        <div id="hw-vocab-inject" style="font-size: 0.9rem; color: #111; font-weight: bold;"></div>
+    </div>
+
+    <div class="hw-section" style="border-color: var(--amber);">
+        <h4>📖 Essentials Knowledge Block (Level B1):</h4>
+        <div class="reading-box">
+            "In the year 2040, healthcare will experience a magnificent structural transformation. Medical systems will transition from human-centric models to distributed artificial networks. While deep technology handles automated procedures, human developers focus on creative systems. True autonomy means creating platforms where critical thinking rules over memorization. The core of this progression is community learning—building resilient answers together rather than relying on an individual database."
+        </div>
+    </div>
+
+    <button class="start-btn" style="background:#222; width:100%; color:#fff;" onclick="window.print()">Print / Save as PDF 🖨️</button>
+    <button class="start-btn" style="background:#888; width:100%; color:#fff; margin-top:-10px;" onclick="closeHomeworkView()">Go Back ↩</button>
+</div>
+
+<script>
+// Base Firebase Node Update for global scale
+const BASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub.json";
+
+let myRole = ''; 
+let myName = '';
+let myAssignedRoom = '';
+let currentSelectedTeacherRoom = 'Room 1';
+
+const myZones = { 'A': ['ai', 'robots'], 'B': ['surgeries', 'diagnostics'] };
+let countdownTimer;
+let timeLeft = 180; 
+let timerRunning = false;
+
+function checkLoginFlow() {
+    const nameInput = document.getElementById('username').value.trim();
+    if (!nameInput) { alert("Please write your name first!"); return; }
+
+    if (nameInput.toLowerCase() === 'teacher') {
+        const pass = prompt("Enter Teacher Password:");
+        if (pass === 'admin123') {
+            myRole = 'teacher';
+            switchScreen('screen-teacher');
+            setInterval(syncTeacherDashboard, 2000);
+        } else { alert("Wrong password!"); }
+        return;
+    }
+    
+    // Student Logic
+    myName = nameInput;
+    enterLobbyLounge();
+}
+
+function enterLobbyLounge() {
+    switchScreen('screen-lobby');
+    document.getElementById('lobby-user-badge').innerText = myName;
+
+    // Register into the global lobby node
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${myName}.json`, {
+        method: 'PUT',
+        body: JSON.stringify({ assigned_room: "Lobby", role: "" })
+    })
+    .then(() => {
+        // Start live cycle watching when the teacher moves them
+        setInterval(watchLobbyStatus, 2000);
+    });
+}
+
+function watchLobbyStatus() {
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${myName}.json`)
+    .then(res => res.json())
+    .then(statusData => {
+        if (statusData && statusData.assigned_room !== "Lobby" && statusData.role !== "") {
+            myAssignedRoom = statusData.assigned_room;
+            myRole = statusData.role;
+
+            // Transicione to active gameplay mapping node
+            switchScreen('screen-game');
+            document.getElementById('player-badge').innerText = `${myName} (${myAssignedRoom} - Player ${myRole})`;
+            setupVisualLocks();
+            selectArea(myZones[myRole][0]);
+
+            // Shift tracking to active game loops
+            setInterval(syncDataFromServer, 2000);
+            // Break loop execution
+            watchLobbyStatus = function(){};
+        }
+    });
+}
+
+function setupVisualLocks() {
+    const allAreas = ['ai', 'robots', 'surgeries', 'diagnostics'];
+    allAreas.forEach(id => {
+        const isAllowed = myZones[myRole].includes(id);
+        const wheelBtn = document.getElementById('wheel-' + id);
+        const deckBtn = document.getElementById('deck-' + id);
+
+        if (!isAllowed) {
+            wheelBtn.classList.add('locked');
+            wheelBtn.innerText = '🔒 ' + wheelBtn.innerText.replace(/[^a-zA-Z ]/g, "").trim();
+            deckBtn.disabled = true;
+            deckBtn.innerText = '🔒 Locked';
+        } else {
+            wheelBtn.classList.remove('locked');
+            deckBtn.disabled = false;
+        }
+    });
+}
+
+function selectArea(idArea) {
+    const groups = document.querySelectorAll('.input-group');
+    groups.forEach(g => g.classList.remove('active'));
+    document.getElementById('msg-locked').style.display = 'none';
+
+    if (!myZones[myRole].includes(idArea)) {
+        document.getElementById('msg-locked').style.display = 'block';
+        return;
+    }
+    document.getElementById('zone-' + idArea).classList.add('active');
+}
+
+function saveText(idArea) {
+    const textValue = document.getElementById('text-' + idArea).value;
+    const dataToSend = {};
+    dataToSend[idArea] = textValue;
+
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`, { 
+        method: 'PATCH', 
+        body: JSON.stringify(dataToSend) 
+    });
+}
+
+function syncDataFromServer() {
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`)
+    .then(response => response.json())
+    .then(data => {
+        if (!data) return;
+        
+        const allAreas = ['ai', 'robots', 'surgeries', 'diagnostics'];
+        let missingContent = false;
+
+        allAreas.forEach(id => {
+            const textarea = document.getElementById('text-' + id);
+            if (data[id] !== undefined && document.activeElement !== textarea) {
+                textarea.value = data[id];
+            }
+            if (!data[id] || data[id].trim() === "") missingContent = true;
+        });
+
+        const nextBtn = document.getElementById('action-next-phase');
+        if (!missingContent) nextBtn.style.display = 'block';
+
+        const vocabPill = document.getElementById('student-vocab-board');
+        if (data.teacher_words && data.teacher_words.trim() !== "") {
+            vocabPill.innerHTML = `🍏 <strong>Teacher's Notes:</strong> ${data.teacher_words}`;
+            vocabPill.style.display = 'block';
+        } else { vocabPill.style.display = 'none'; }
+
+        if (data.current_phase === 'simulation') switchScreen('screen-simulation');
+
+        // Dynamic simulation panel tags update
+        if(data.player_A) document.getElementById('simulation-name-A').innerText = data.player_A;
+        if(data.player_B) document.getElementById('simulation-name-B').innerText = data.player_B;
+
+        let sheetHTML = '';
+        allAreas.forEach(id => {
+            const val = data[id] ? data[id] : 'No inputs yet...';
+            sheetHTML += `<div class="cheat-item"><strong>${id.toUpperCase()}:</strong> ${val}</div>`;
+        });
+        document.getElementById('cheat-list').innerHTML = sheetHTML;
+    });
+}
+
+/* TEACHER PANEL SYSTEM PROCESSING FUNCTIONS */
+function syncTeacherDashboard() {
+    // 1. Fetch Lobby Status
+    fetch("https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby.json")
+    .then(res => res.json())
+    .then(lobbyData => {
+        const listContainer = document.getElementById('teacher-students-lobby-list');
+        if(!lobbyData) {
+            listContainer.innerHTML = `<p style="font-size:0.85rem; color:var(--text-sub);">No students online...</p>`;
+            return;
+        }
+
+        let htmlBuilder = '';
+        Object.keys(lobbyData).forEach(studentName => {
+            const currentObj = lobbyData[studentName];
+            const currentSelectionText = currentObj.assigned_room !== 'Lobby' ? `${currentObj.assigned_room} - P.${currentObj.role}` : 'Lobby';
+            
+            htmlBuilder += `
+                <div class="student-row">
+                    <strong>⚡ ${studentName}</strong>
+                    <select onchange="moveStudentFromDashboard('${studentName}', this.value)">
+                        <option value="Lobby" ${currentObj.assigned_room === 'Lobby' ? 'selected' : ''}>Lounge (Waiting)</option>
+                        <option value="Room 1:A" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'A' ? 'selected' : ''}>Room 1 - Player A</option>
+                        <option value="Room 1:B" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'B' ? 'selected' : ''}>Room 1 - Player B</option>
+                        <option value="Room 2:A" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'A' ? 'selected' : ''}>Room 2 - Player A</option>
+                        <option value="Room 2:B" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'B' ? 'selected' : ''}>Room 2 - Player B</option>
+                        <option value="Room 3:A" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'A' ? 'selected' : ''}>Room 3 - Player A</option>
+                        <option value="Room 3:B" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'B' ? 'selected' : ''}>Room 3 - Player B</option>
+                    </select>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = htmlBuilder;
+    });
+
+    // 2. Fetch Selected Monitoring Room Content Node
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${currentSelectedTeacherRoom}.json`)
+    .then(res => res.json())
+    .then(roomData => {
+        const fields = ['ai', 'robots', 'surgeries', 'diagnostics'];
+        fields.forEach(f => {
+            document.getElementById('view-' + f).innerText = (roomData && roomData[f]) ? roomData[f] : '(Empty input)';
+        });
+    });
+}
+
+function moveStudentFromDashboard(targetStudent, compoundValue) {
+    if(compoundValue === 'Lobby') {
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${targetStudent}.json`, {
+            method: 'PUT',
+            body: JSON.stringify({ assigned_room: "Lobby", role: "" })
+        });
+        return;
+    }
+
+    const splitted = compoundValue.split(':'); // ["Room 1", "A"]
+    const targetRoom = splitted[0];
+    const targetRole = splitted[1];
+
+    // Update individual user node flag
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${targetStudent}.json`, {
+        method: 'PUT',
+        body: JSON.stringify({ assigned_room: targetRoom, role: targetRole })
+    })
+    .then(() => {
+        // Tie identity inside room architecture tree structure object node directly
+        const roomUpdate = {};
+        roomUpdate['player_' + targetRole] = targetStudent;
+        return fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${targetRoom}.json`, {
+            method: 'PATCH',
+            body: JSON.stringify(roomUpdate)
+        });
+    });
+}
+
+function changeMonitoredRoom(val) {
+    currentSelectedTeacherRoom = val;
+    document.getElementById('teacher-vocab-input').value = '';
+    syncTeacherDashboard();
+}
+
+function sendTeacherVocabulary() {
+    const txt = document.getElementById('teacher-vocab-input').value;
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${currentSelectedTeacherRoom}.json`, {
+        method: 'PATCH',
+        body: JSON.stringify({ teacher_words: txt })
+    }).then(() => alert(`Target words pushed to ${currentSelectedTeacherRoom}!`));
+}
+
+function goToSimulationScreen() {
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`, { 
+        method: 'PATCH', 
+        body: JSON.stringify({ current_phase: 'simulation' }) 
+    })
+    .then(() => { switchScreen('screen-simulation'); });
+}
+
+function switchScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+}
+
+function openHomeworkView() {
+    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`)
+    .then(res => res.json())
+    .then(data => {
+        if(!data) return;
+        document.getElementById('main-container').style.display = 'none';
+        const hwContainer = document.getElementById('homework-print-screen');
+        hwContainer.style.display = 'flex';
+
+        let solutionBuild = '';
+        ['ai','robots','surgeries','diagnostics'].forEach(id => {
+            solutionBuild += `<p><strong>${id.toUpperCase()}:</strong> ${data[id] || 'N/A'}</p>`;
+        });
+        document.getElementById('hw-solutions-inject').innerHTML = solutionBuild;
+        document.getElementById('hw-vocab-inject').innerText = data.teacher_words || 'No specific target words logged.';
+    });
+}
+
+function closeHomeworkView() {
+    document.getElementById('homework-print-screen').style.display = 'none';
+    document.getElementById('main-container').style.display = 'flex';
+}
+
+function resetWholeGame() {
+    fetch("https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub.json", { method: 'DELETE' })
+    .then(() => { window.location.reload(); });
+}
+
+/* TIMER */
+function startTimer() {
+    if (timerRunning) return;
+    timerRunning = true;
+    document.getElementById('timer-start').classList.add('active-play');
+    document.getElementById('timer-pause').classList.remove('active-play');
+
+    countdownTimer = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(countdownTimer);
+            timerRunning = false;
+            alert("Time is up! Beautiful execution team! 🏁");
+            return;
+        }
+        timeLeft--;
+        updateTimerDisplay();
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(countdownTimer);
+    timerRunning = false;
+    document.getElementById('timer-start').classList.remove('active-play');
+    document.getElementById('timer-pause').classList.add('active-play');
+}
+
+function updateTimerDisplay() {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+    document.getElementById('timer-box').innerText = `${minutes}:${seconds}`;
+}
+</script>
+
+</body>
+</html>
