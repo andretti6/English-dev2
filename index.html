@@ -1,623 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Law & World Cup Executive - Pitch Prep ⚽⚖️</title>
-    <style>
-        :root {
-            --bg-color: #060b11;
-            --card-bg: #0f1922;
-            --accent-pitch: #22c55e;
-            --accent-gold: #eab308;
-            --accent-blue: #38bdf8;
-            --text-light: #f8fafc;
-            --text-muted: #64748b;
-            --border-color: #1e2e3d;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        header h1 {
-            font-size: 2.2rem;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.05em;
-        }
-
-        header p {
-            color: var(--accent-pitch);
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: bold;
-        }
-
-        /* Progress Tracker */
-        .progress-container {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-            background: var(--card-bg);
-            padding: 0.8rem 2.5rem;
-            border-radius: 50px;
-            border: 1px solid var(--border-color);
-        }
-
-        .milestone {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #334155;
-            transition: all 0.3s ease;
-        }
-
-        .milestone.active {
-            color: var(--accent-pitch);
-            text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
-        }
-
-        /* Strategy Modules */
-        .adventure-map {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            max-width: 1000px;
-            width: 100%;
-            margin-bottom: 2rem;
-        }
-
-        .mission-btn {
-            background: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.2rem;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            flex: 1;
-            min-width: 220px;
-            transition: all 0.2s ease;
-        }
-
-        .mission-btn:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-pitch);
-            box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.15);
-        }
-
-        .mission-btn.completed {
-            border-color: var(--accent-blue);
-            color: #cbd5e1;
-        }
-
-        /* Cards Display Area */
-        .card-container {
-            width: 100%;
-            max-width: 750px;
-        }
-
-        .mission-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 2.5rem;
-            display: none;
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .card-header {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1rem;
-            color: #fff;
-        }
-
-        .mission-badge {
-            background: rgba(34, 197, 94, 0.1);
-            color: var(--accent-pitch);
-            padding: 0.3rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            font-weight: bold;
-            border: 1px solid rgba(34, 197, 94, 0.2);
-        }
-
-        .instruction {
-            font-size: 1.1rem;
-            color: #cbd5e1;
-            margin-bottom: 1.5rem;
-            background: rgba(255,255,255,0.02);
-            padding: 1rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--accent-pitch);
-        }
-
-        /* Interactive Prompts / Questions */
-        .questions-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-bottom: 2rem;
-        }
-
-        .question-item {
-            background: #070c12;
-            padding: 1.2rem;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 1px dashed #334155;
-            font-size: 1.05rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            transition: all 0.25s ease;
-            color: var(--text-muted);
-            user-select: none;
-        }
-
-        .question-item:hover {
-            border-color: var(--accent-gold);
-            background: rgba(234, 179, 8, 0.03);
-            color: #e2e8f0;
-        }
-
-        .question-item.revealed {
-            background: rgba(7, 12, 18, 0.8);
-            border: 1px solid var(--accent-gold);
-            color: var(--text-light);
-            justify-content: flex-start;
-            cursor: default;
-            animation: popIn 0.3s ease;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.99); opacity: 0.9; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Vocabulary Chips */
-        .vocab-section {
-            margin-bottom: 2rem;
-        }
-
-        .vocab-section h4 {
-            color: var(--text-muted);
-            margin-bottom: 0.8rem;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
-        }
-
-        .chips-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .chip {
-            background: #192633;
-            color: #cbd5e1;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--border-color);
-            user-select: none;
-        }
-
-        .chip:hover {
-            border-color: var(--accent-pitch);
-            background: rgba(34, 197, 94, 0.05);
-        }
-
-        .chip.clicked {
-            background: #0a1118;
-            color: #475569;
-            border-color: #192633;
-            text-decoration: line-through;
-        }
-
-        /* Actions */
-        .next-btn, .finish-btn {
-            width: 100%;
-            background: var(--accent-pitch);
-            color: #060b11;
-            border: none;
-            padding: 1.1rem;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .next-btn:hover, .finish-btn:hover {
-            background: #4ade80;
-            transform: translateY(-1px);
-        }
-
-        /* Timer Section */
-        .timer-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 2rem 0;
-        }
-
-        .timer-circle {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            border: 4px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: var(--accent-blue);
-        }
-
-        .timer-circle.running {
-            border-color: var(--accent-blue);
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.02); }
-        }
-
-        .timer-btn {
-            margin-top: 1rem;
-            background: transparent;
-            border: 1px solid var(--accent-blue);
-            color: var(--accent-blue);
-            padding: 0.5rem 1.5rem;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .timer-btn:hover {
-            background: rgba(56, 189, 248, 0.1);
-        }
-
-        .topic-selectors {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            width: 100%;
-        }
-
-        .topic-select {
-            flex: 1;
-            padding: 1rem;
-            background: #070c12;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            text-align: center;
-        }
-
-        .topic-select.selected {
-            border-color: var(--accent-pitch);
-            background: rgba(34, 197, 94, 0.05);
-        }
-
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>⚽ Sports Law & World Cup Master</h1>
-        <p>Football Regulations & Contract Argumentation Training</p>
-    </header>
-
-    <!-- Progress Milestones -->
-    <div class="progress-container">
-        <span class="milestone" id="star-1">PART 1: PLAYER CONTRACTS</span>
-        <span class="milestone" id="star-2">PART 2: FIFA & WORLD CUP</span>
-        <span class="milestone" id="star-3">PART 3: SPORTS CRISIS</span>
-    </div>
-
-    <!-- Navigation Map -->
-    <div class="adventure-map">
-        <button class="mission-btn" onclick="openMission('contracts')">📜 1. Player Contracts & Transfers</button>
-        <button class="mission-btn" onclick="openMission('fifa')">🌍 2. FIFA Regulations & World Cup</button>
-        <button class="mission-btn" onclick="openMission('crisis')">🚨 3. CAS Disputes & Doping Crisis</button>
-        <button class="mission-btn" id="final-nav-btn" style="border-color: var(--accent-blue); display: none;" onclick="openMission('final')">🏁 CAS Tribunal Defense</button>
-    </div>
-
-    <!-- Cards Arena -->
-    <div class="card-container">
-
-        <!-- MODULE 1: PLAYER CONTRACTS & TRANSFERS -->
-        <div id="card-contracts" class="mission-card">
-            <span class="mission-badge">Module 1</span>
-            <div class="card-header">Player Contracts & Transfer Law</div>
-            <div class="instruction">🎯 <strong>Case Brief:</strong> Click to reveal a negotiation roadblock. Argue how to legalise or protect the club's and player's interests.</div>
-            
-            <ul class="questions-list">
-                <li class="question-item" onclick="revealQuestion(this, 'A superstar player wants to terminate their contract early due to lack of playtime. How do you enforce or negotiate the release clause?')">📜 Click to reveal Case File 1</li>
-                <li class="question-item" onclick="revealQuestion(this, 'How do you structure a player contract to separate image rights from regular employment salary legally?')">📜 Click to reveal Case File 2</li>
-                <li class="question-item" onclick="revealQuestion(this, 'A 17-year-old wonderkid is being signed by an international club. What are the FIFA restrictions on transferring minors?')">📜 Click to reveal Case File 3</li>
-                <li class="question-item" onclick="revealQuestion(this, 'How do sell-on clauses and solidarity mechanisms protect smaller clubs when a player is resold for millions?')">📜 Click to reveal Case File 4</li>
-                <li class="question-item" onclick="revealQuestion(this, 'A player signs a sponsorship deal with a brand that directly competes with the club\'s main sponsor. How do you settle this conflict?')">📜 Click to reveal Case File 5</li>
-            </ul>
-
-            <div class="vocab-section">
-                <h4>💡 Core Football & Legal Vocabulary (Click to use)</h4>
-                <div class="chips-container">
-                    <span class="chip" onclick="toggleChip(this)">Release clause</span>
-                    <span class="chip" onclick="toggleChip(this)">Image rights</span>
-                    <span class="chip" onclick="toggleChip(this)">Solidarity mechanism</span>
-                    <span class="chip" onclick="toggleChip(this)">Breach of contract</span>
-                    <span class="chip" onclick="toggleChip(this)">Transfer window</span>
-                    <span class="chip" onclick="toggleChip(this)">Sponsorship agreement</span>
-                    <span class="chip" onclick="toggleChip(this)">Buyout option</span>
-                </div>
-            </div>
-
-            <button class="next-btn" onclick="completeMission(1, 'fifa')">Proceed to FIFA & World Cup Regulations ➡️</button>
-        </div>
-
-        <!-- MODULE 2: FIFA & WORLD CUP REGULATIONS -->
-        <div id="card-fifa" class="mission-card">
-            <span class="mission-badge">Module 2</span>
-            <div class="card-header">FIFA Framework & World Cup Host Duties</div>
-            <div class="instruction">🎯 <strong>FIFA Briefing:</strong> Click to reveal an international regulatory or World Cup organization challenge.</div>
-            
-            <ul class="questions-list">
-                <li class="question-item" onclick="revealQuestion(this, 'A country hosting the World Cup wants to change tax laws exclusively for FIFA partners during the tournament. How do you defend this legally?')">🌍 Click to reveal Regulations Prompt 1</li>
-                <li class="question-item" onclick="revealQuestion(this, 'Explain how the Financial Fair Play (FFP) regulations prevent billionaire owners from overspending on new players.')">🌍 Click to reveal Regulations Prompt 2</li>
-                <li class="question-item" onclick="revealQuestion(this, 'During a World Cup, a player wears a shirt with a political message hidden under their jersey. What are the FIFA legal disciplinary actions?')">🌍 Click to reveal Regulations Prompt 3</li>
-                <li class="question-item" onclick="revealQuestion(this, 'How does FIFA handle ambush marketing from brands trying to advertise inside the stadium without paying for sponsorship?')">🌍 Click to reveal Regulations Prompt 4</li>
-                <li class="question-item" onclick="revealQuestion(this, 'A club refuses to release its top player for the World Cup because the national team matches are outside the official international calendar. Who wins the dispute?')">🌍 Click to reveal Regulations Prompt 5</li>
-            </ul>
-
-            <div class="vocab-section">
-                <h4>💡 Governing Bodies & Tournament Vocabulary (Click to use)</h4>
-                <div class="chips-container">
-                    <span class="chip" onclick="toggleChip(this)">Financial Fair Play (FFP)</span>
-                    <span class="chip" onclick="toggleChip(this)">Ambush marketing</span>
-                    <span class="chip" onclick="toggleChip(this)">Disciplinary committee</span>
-                    <span class="chip" onclick="toggleChip(this)">Host country agreement</span>
-                    <span class="chip" onclick="toggleChip(this)">International match calendar</span>
-                    <span class="chip" onclick="toggleChip(this)">Governing body</span>
-                    <span class="chip" onclick="toggleChip(this)">Commercial rights</span>
-                </div>
-            </div>
-
-            <button class="next-btn" onclick="completeMission(2, 'crisis')">Proceed to Disputes & Crisis ➡️</button>
-        </div>
-
-        <!-- MODULE 3: CAS DISPUTES & CRISIS MANAGEMENT -->
-        <div id="card-crisis" class="mission-card">
-            <span class="mission-badge">Module 3</span>
-            <div class="card-header">CAS Appeals & Integrity Crisis</div>
-            <div class="instruction">🎯 <strong>Crisis Trigger:</strong> Click to open an appeal file at the Court of Arbitration for Sport (CAS).</div>
-            
-            <ul class="questions-list">
-                <li class="question-item" onclick="revealQuestion(this, 'A player tests positive for a banned substance right before the World Cup semi-final. Present an immediate defense arguing contamination.')">🚨 Click to reveal Crisis File 1</li>
-                <li class="question-item" onclick="revealQuestion(this, 'A club is accused of match-fixing by a referee report. How do you structure the appeal to avoid relegation?')">🚨 Click to reveal Crisis File 2</li>
-                <li class="question-item" onclick="revealQuestion(this, 'What is the standard procedure to appeal a heavy multi-match FIFA suspension at the Court of Arbitration for Sport (CAS)?')">🚨 Click to reveal Crisis File 3</li>
-                <li class="question-item" onclick="revealQuestion(this, 'A national team fan base causes a massive stadium riot during a tournament. Explain how strict liability affects the Football Association.')">🚨 Click to reveal Crisis File 4</li>
-                <li class="question-item" onclick="revealQuestion(this, 'A referee makes a clear technical error (not a field-of-play decision). Can a club legally demand a match replay?')">🚨 Click to reveal Crisis File 5</li>
-            </ul>
-
-            <div class="vocab-section">
-                <h4>💡 Court & Integrity Terminology (Click to use)</h4>
-                <div class="chips-container">
-                    <span class="chip" onclick="toggleChip(this)">Court of Arbitration for Sport (CAS)</span>
-                    <span class="chip" onclick="toggleChip(this)">Strict liability</span>
-                    <span class="chip" onclick="toggleChip(this)">Banned substance</span>
-                    <span class="chip" onclick="toggleChip(this)">To file an appeal</span>
-                    <span class="chip" onclick="toggleChip(this)">Match-fixing allegation</span>
-                    <span class="chip" onclick="toggleChip(this)">Provisional suspension</span>
-                    <span class="chip" onclick="toggleChip(this)">Burden of proof</span>
-                </div>
-            </div>
-
-            <button class="next-btn" onclick="completeMission(3, 'final')">Unlock CAS Tribunal Challenge 🏆</button>
-        </div>
-
-        <!-- FINAL CAS TRIBUNAL CHALLENGE -->
-        <div id="card-final" class="mission-card">
-            <span class="mission-badge" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.3);">Arbitrator Level</span>
-            <div class="card-header">🏁 CAS Supreme Hearing</div>
-            <div class="instruction" style="border-left-color: var(--accent-blue);">
-                👨‍⚖️ <strong>The Panel of Arbitrators is listening:</strong> Select a high-stakes sport case. The student must present their closing legal pitch or counter-argue a FIFA sanction for 1 or 2 minutes.
-            </div>
-
-            <div class="topic-selectors">
-                <div class="topic-select" onclick="selectFinalTopic(this)">⚽ Transfer Ban Appeal</div>
-                <div class="topic-select" onclick="selectFinalTopic(this)">🌍 World Cup Disqualification</div>
-                <div class="topic-select" onclick="selectFinalTopic(this)">🚨 Anti-Doping Violation Hearing</div>
-            </div>
-
-            <div class="timer-container">
-                <div class="timer-circle" id="timer-display">60</div>
-                <button class="timer-btn" id="timer-control-btn" onclick="toggleTimer()">Start Hearing Timer ⏱️</button>
-            </div>
-
-            <button class="finish-btn" onclick="resetAdventure()">Restart Training Session 🔄</button>
-        </div>
-
-    </div>
-
-    <!-- Audio API and App Logic -->
-    <script>
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        function playSound(type) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            if (type === 'click') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(450, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.05);
-            } else if (type === 'reveal') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(350, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(650, audioCtx.currentTime + 0.12);
-                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.12);
-            } else if (type === 'star') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(440, audioCtx.currentTime); 
-                osc.frequency.setValueAtTime(554.37, audioCtx.currentTime + 0.08); 
-                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.16); 
-                gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.35);
-            } else if (type === 'alarm') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.4);
-            }
-        }
-
-        function openMission(topic) {
-            playSound('click');
-            document.querySelectorAll('.mission-card').forEach(card => card.style.display = 'none');
-            const targetCard = document.getElementById(`card-${topic}`);
-            if(targetCard) targetCard.style.display = 'block';
-        }
-
-        function revealQuestion(element, text) {
-            if (!element.classList.contains('revealed')) {
-                playSound('reveal');
-                element.classList.add('revealed');
-                element.innerHTML = `🏁 <strong>Legal Dispute:</strong> &nbsp; ${text}`;
-            }
-        }
-
-        function toggleChip(chip) {
-            playSound('click');
-            chip.classList.toggle('clicked');
-        }
-
-        function completeMission(stepNumber, nextTopic) {
-            playSound('star');
-            document.getElementById(`star-${stepNumber}`).classList.add('active');
-            
-            const currentBtn = document.querySelectorAll('.mission-btn')[stepNumber - 1];
-            currentBtn.classList.add('completed');
-            currentBtn.innerHTML = `✅ ${currentBtn.innerText}`;
-
-            if(stepNumber === 3) {
-                document.getElementById('final-nav-btn').style.display = 'flex';
-            }
-
-            openMission(nextTopic);
-        }
-
-        function selectFinalTopic(element) {
-            playSound('click');
-            document.querySelectorAll('.topic-select').forEach(t => t.classList.remove('selected'));
-            element.classList.add('selected');
-        }
-
-        // Timer Logic
-        let timerInterval;
-        let timeLeft = 60;
-        let timerRunning = false;
-
-        function toggleTimer() {
-            const btn = document.getElementById('timer-control-btn');
-            const display = document.getElementById('timer-display');
-
-            if (timerRunning) {
-                clearInterval(timerInterval);
-                btn.innerText = "Resume Hearing Defense ⏱️";
-                display.classList.remove('running');
-                timerRunning = false;
-            } else {
-                timerRunning = true;
-                btn.innerText = "Pause ⏸️";
-                display.classList.add('running');
-                
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    display.innerText = timeLeft;
-                    playSound('click');
-
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        playSound('alarm');
-                        display.classList.remove('running');
-                        btn.innerText = "Hearing Time Limit Reached! ⚽";
-                        timerRunning = false;
-                    }
-                }, 1000);
-            }
-        }
-
-        function resetAdventure() {
-            location.reload();
-        }
-
-        // Initialize first section
-        openMission('contracts');
-    </script>
-</body>
-</html>
+<!DOCTYPE html><html lang="en"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Corporate Compliance & Ethics Training 💼⚖️</title>    <style>        :root {            --bg-color: #060b11;            --card-bg: #0f1922;            --accent-pitch: #22c55e;            --accent-gold: #eab308;            --accent-blue: #38bdf8;            --text-light: #f8fafc;            --text-muted: #64748b;            --border-color: #1e2e3d;        }
+        * {            box-sizing: border-box;            margin: 0;            padding: 0;            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;        }
+        body {            background-color: var(--bg-color);            color: var(--text-light);            min-height: 100vh;            display: flex;            flex-direction: column;            align-items: center;            padding: 2rem;        }
+        header {            text-align: center;            margin-bottom: 2rem;        }
+        header h1 {            font-size: 2.2rem;            color: var(--text-light);            margin-bottom: 0.5rem;            letter-spacing: 0.05em;        }
+        header p {            color: var(--accent-pitch);            font-size: 1.1rem;            text-transform: uppercase;            letter-spacing: 0.1em;            font-weight: bold;        }
+        /* Progress Tracker */        .progress-container {            display: flex;            gap: 1.5rem;            margin-bottom: 2rem;            background: var(--card-bg);            padding: 0.8rem 2.5rem;            border-radius: 50px;            border: 1px solid var(--border-color);        }
+        .milestone {            font-size: 1rem;            font-weight: bold;            color: #334155;            transition: all 0.3s ease;        }
+        .milestone.active {            color: var(--accent-pitch);            text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);        }
+        /* Strategy Modules */        .adventure-map {            display: flex;            gap: 1rem;            justify-content: center;            flex-wrap: wrap;            max-width: 1000px;            width: 100%;            margin-bottom: 2rem;        }
+        .mission-btn {            background: var(--card-bg);            border: 2px solid var(--border-color);            border-radius: 14px;            padding: 1.2rem;            color: white;            font-size: 1.1rem;            font-weight: 600;            cursor: pointer;            display: flex;            flex-direction: column;            align-items: center;            gap: 0.5rem;            flex: 1;            min-width: 220px;            transition: all 0.2s ease;        }
+        .mission-btn:hover {            transform: translateY(-3px);            border-color: var(--accent-pitch);            box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.15);        }
+        .mission-btn.completed {            border-color: var(--accent-blue);            color: #cbd5e1;        }
+        /* Cards Display Area */        .card-container {            width: 100%;            max-width: 750px;        }
+        .mission-card {            background: var(--card-bg);            border-radius: 24px;            padding: 2.5rem;            display: none;            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;            border: 1px solid var(--border-color);            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);        }
+        @keyframes slideUp {            from { transform: translateY(20px); opacity: 0; }            to { transform: translateY(0); opacity: 1; }        }
+        .card-header {            font-size: 1.8rem;            font-weight: 700;            margin-bottom: 1rem;            border-bottom: 1px solid var(--border-color);            padding-bottom: 1rem;            color: #fff;        }
+        .mission-badge {            background: rgba(34, 197, 94, 0.1);            color: var(--accent-pitch);            padding: 0.3rem 0.8rem;            border-radius: 6px;            font-size: 0.8rem;            display: inline-block;            margin-bottom: 1rem;            text-transform: uppercase;            font-weight: bold;            border: 1px solid rgba(34, 197, 94, 0.2);        }
+        .instruction {            font-size: 1.1rem;            color: #cbd5e1;            margin-bottom: 1.5rem;            background: rgba(255,255,255,0.02);            padding: 1rem;            border-radius: 12px;            border-left: 4px solid var(--accent-pitch);        }
+        /* Interactive Prompts / Questions */        .questions-list {            list-style: none;            display: flex;            flex-direction: column;            gap: 0.8rem;            margin-bottom: 2rem;        }
+        .question-item {            background: #070c12;            padding: 1.2rem;            border-radius: 10px;            cursor: pointer;            border: 1px dashed #334155;            font-size: 1.05rem;            display: flex;            align-items: center;            justify-content: center;            gap: 0.75rem;            transition: all 0.25s ease;            color: var(--text-muted);            user-select: none;        }
+        .question-item:hover {            border-color: var(--accent-gold);            background: rgba(234, 179, 8, 0.03);            color: #e2e8f0;        }
+        .question-item.revealed {            background: rgba(7, 12, 18, 0.8);            border: 1px solid var(--accent-gold);            color: var(--text-light);            justify-content: flex-start;            cursor: default;            animation: popIn 0.3s ease;        }
+        @keyframes popIn {            0% { transform: scale(0.99); opacity: 0.9; }            100% { transform: scale(1); opacity: 1; }        }
+        /* Vocabulary Chips */        .vocab-section {            margin-bottom: 2rem;        }
+        .vocab-section h4 {            color: var(--text-muted);            margin-bottom: 0.8rem;            text-transform: uppercase;            font-size: 0.85rem;            letter-spacing: 0.05em;        }
+        .chips-container {            display: flex;            flex-wrap: wrap;            gap: 0.5rem;        }
+        .chip {            background: #192633;            color: #cbd5e1;            padding: 0.5rem 1rem;            border-radius: 6px;            font-size: 0.9rem;            cursor: pointer;            transition: all 0.2s;            border: 1px solid var(--border-color);            user-select: none;        }
+        .chip:hover {            border-color: var(--accent-pitch);            background: rgba(34, 197, 94, 0.05);        }
+        .chip.clicked {            background: #0a1118;            color: #475569;            border-color: #192633;            text-decoration: line-through;        }
+        /* Actions */        .next-btn, .finish-btn {            width: 100%;            background: var(--accent-pitch);            color: #060b11;            border: none;            padding: 1.1rem;            border-radius: 10px;            font-size: 1.1rem;            font-weight: bold;            cursor: pointer;            transition: all 0.2s;            display: flex;            justify-content: center;            align-items: center;            gap: 0.5rem;        }
+        .next-btn:hover, .finish-btn:hover {            background: #4ade80;            transform: translateY(-1px);        }
+        /* Timer Section */        .timer-container {            display: flex;            flex-direction: column;            align-items: center;            margin: 2rem 0;        }
+        .timer-circle {            width: 110px;            height: 110px;            border-radius: 50%;            border: 4px solid var(--border-color);            display: flex;            align-items: center;            justify-content: center;            font-size: 2.2rem;            font-weight: bold;            color: var(--accent-blue);        }
+        .timer-circle.running {            border-color: var(--accent-blue);            animation: pulse 1s infinite alternate;        }
+        @keyframes pulse {            from { transform: scale(1); }            to { transform: scale(1.02); }        }
+        .timer-btn {            margin-top: 1rem;            background: transparent;            border: 1px solid var(--accent-blue);            color: var(--accent-blue);            padding: 0.5rem 1.5rem;            border-radius: 6px;            font-weight: bold;            cursor: pointer;            transition: all 0.2s;        }
+        .timer-btn:hover {            background: rgba(56, 189, 248, 0.1);        }
+        .topic-selectors {            display: flex;            gap: 1rem;            margin-bottom: 2rem;            width: 100%;        }
+        .topic-select {            flex: 1;            padding: 1rem;            background: #070c12;            border: 1px solid var(--border-color);            border-radius: 10px;            color: white;            font-size: 1rem;            cursor: pointer;            text-align: center;        }
+        .topic-select.selected {            border-color: var(--accent-pitch);            background: rgba(34, 197, 94, 0.05);        }    </style></head><body>
+    <header>        <h1>💼 Corporate Compliance & Ethics Master</h1>        <p>Risk Mitigation & Anti-Corruption Argumentation Training</p>    </header>
+    <!-- Progress Milestones -->    <div class="progress-container">        <span class="milestone" id="star-1">PART 1: ANTI-BRIBERY & GIFTS</span>        <span class="milestone" id="star-2">PART 2: DATA PRIVACY & GDPR</span>        <span class="milestone" id="star-3">PART 3: WHISTLEBLOWING & CRISIS</span>    </div>
+    <!-- Navigation Map -->    <div class="adventure-map">        <button class="mission-btn" onclick="openMission('bribery')">🤝 1. Anti-Bribery & Gifts</button>        <button class="mission-btn" onclick="openMission('privacy')">🔒 2. Data Privacy & GDPR</button>        <button class="mission-btn" onclick="openMission('crisis')">🚨 3. Whistleblowing & Investigation</button>        <button class="mission-btn" id="final-nav-btn" style="border-color: var(--accent-blue); display: none;" onclick="openMission('final')">🏁 Ethics Committee Pitch</button>    </div>
+    <!-- Cards Arena -->    <div class="card-container">
+        <!-- MODULE 1: ANTI-BRIBERY & GIFTS -->        <div id="card-bribery" class="mission-card">            <span class="mission-badge">Module 1</span>            <div class="card-header">Anti-Bribery & Conflict of Interest</div>            <div class="instruction">🎯 <strong>Case Brief:</strong> Click to reveal a compliance roadblock. Propose how to protect the organization and maintain transparent business relationships.</div>                        <ul class="questions-list">                <li class="question-item" onclick="revealQuestion(this, 'A prospective vendor offers an expensive all-expenses-paid weekend trip to your procurement team right before a major contract bidding closure. How do you handle this corporate gift policy breach?')">📜 Click to reveal Case File 1</li>                <li class="question-item" onclick="revealQuestion(this, 'A high-performing regional manager requests approval for cash facilitation payments to expedite customs clearance in a foreign jurisdiction. What is your response based on the FCPA?')">📜 Click to reveal Case File 2</li>                <li class="question-item" onclick="revealQuestion(this, 'A senior executive recommends a software company owned by their spouse for an enterprise-level contract without disclosures. How do you mitigate this conflict of interest?')">📜 Click to reveal Case File 3</li>                <li class="question-item" onclick="revealQuestion(this, 'An international client requests a significant discount structured as a rebate paid directly into a third-party offshore bank account. How do you evaluate the money laundering risk?')">📜 Click to reveal Case File 4</li>                <li class="question-item" onclick="revealQuestion(this, 'Your sales director suggests hiring a politically connected consultant to help secure a government tender. What due diligence frameworks must you implement?')">📜 Click to reveal Case File 5</li>            </ul>
+            <div class="vocab-section">                <h4>💡 Core Compliance Vocabulary (Click to use)</h4>                <div class="chips-container">                    <span class="chip" onclick="toggleChip(this)">Conflict of interest</span>                    <span class="chip" onclick="toggleChip(this)">Facilitation payment</span>                    <span class="chip" onclick="toggleChip(this)">Due diligence</span>                    <span class="chip" onclick="toggleChip(this)">Gift and hospitality policy</span>                    <span class="chip" onclick="toggleChip(this)">FCPA compliance</span>                    <span class="chip" onclick="toggleChip(this)">Third-party vetting</span>                    <span class="chip" onclick="toggleChip(this)">Transparency register</span>                </div>            </div>
+            <button class="next-btn" onclick="completeMission(1, 'privacy')">Proceed to Data Privacy & GDPR ➡️</button>        </div>
+        <!-- MODULE 2: DATA PRIVACY & GDPR -->        <div id="card-privacy" class="mission-card">            <span class="mission-badge">Module 2</span>            <div class="card-header">Data Governance & Regulatory Risks</div>            <div class="instruction">🎯 <strong>Privacy Briefing:</strong> Click to reveal a global data protection or security challenge.</div>                        <ul class="questions-list">                <li class="question-item" onclick="revealQuestion(this, 'The marketing department wants to share the company\'s historical customer database with a third-party AI analytics partner without explicit user consent. How do you intervene legally under GDPR?')">🌍 Click to reveal Regulations Prompt 1</li>                <li class="question-item" onclick="revealQuestion(this, 'A disgruntled employee downloads confidential proprietary product blueprints onto a personal USB drive before resigning. What are the immediate security and asset protection steps?')">🌍 Click to reveal Regulations Prompt 2</li>                <li class="question-item" onclick="revealQuestion(this, 'An IT system breach exposes unencrypted personally identifiable information (PII) of European clients. How do you structure the mandatory 72-hour regulatory notification?')">🌍 Click to reveal Regulations Prompt 3</li>                <li class="question-item" onclick="revealQuestion(this, 'An internal audit reveals that employee medical data is being stored in shared server folders accessible by unrestricted personnel. What remediation strategy do you enforce?')">🌍 Click to reveal Regulations Prompt 4</li>                <li class="question-item" onclick="revealQuestion(this, 'A customer submits a formal request demanding the immediate deletion of all their transactional history based on the Right to Be Forgotten. When can you legally refuse this?')">🌍 Click to reveal Regulations Prompt 5</li>            </ul>
+            <div class="vocab-section">                <h4>💡 Data Protection Vocabulary (Click to use)</h4>                <div class="chips-container">                    <span class="chip" onclick="toggleChip(this)">Personally Identifiable Information (PII)</span>                    <span class="chip" onclick="toggleChip(this)">Data breach notification</span>                    <span class="chip" onclick="toggleChip(this)">Data minimization</span>                    <span class="chip" onclick="toggleChip(this)">Consent management</span>                    <span class="chip" onclick="toggleChip(this)">Right to be forgotten</span>                    <span class="chip" onclick="toggleChip(this)">Non-disclosure agreement (NDA)</span>                    <span class="chip" onclick="toggleChip(this)">Data Processor vs Controller</span>                </div>            </div>
+            <button class="next-btn" onclick="completeMission(2, 'crisis')">Proceed to Whistleblowing & Crisis ➡️</button>        </div>
+        <!-- MODULE 3: WHISTLEBLOWING & INVESTIGATION -->        <div id="card-crisis" class="mission-card">            <span class="mission-badge">Module 3</span>            <div class="card-header">Whistleblower Channels & Investigation Integrity</div>            <div class="instruction">🎯 <strong>Crisis Trigger:</strong> Click to handle an anonymous escalation or institutional misconduct report.</div>                        <ul class="questions-list">                <li class="question-item" onclick="revealQuestion(this, 'An anonymous report via the corporate hotline accuses a senior vice president of systematically altering quarterly financial statements. How do you initiate an objective audit?')">🚨 Click to reveal Crisis File 1</li>                <li class="question-item" onclick="revealQuestion(this, 'A whistleblower claims their immediate supervisor stripped them of responsibilities after reporting an environmental hazard. How do you enforce anti-retaliation policies?')">🚨 Click to reveal Crisis File 2</li>                <li class="question-item" onclick="revealQuestion(this, 'During an internal fraud investigation, a key witness refuses to cooperate, citing personal fear of reputational harm. How do you protect the chain of evidence and interview integrity?')">🚨 Click to reveal Crisis File 3</li>                <li class="question-item" onclick="revealQuestion(this, 'An regulatory inspector arrives unexpectedly at corporate headquarters demanding immediate access to operational logs without a subpoena. What protocol do you trigger?')">🚨 Click to reveal Crisis File 4</li>                <li class="question-item" onclick="revealQuestion(this, 'Internal emails reveal systemic workplace harassment issues that were consciously ignored by human resources for over a year. Draft the urgent corrective action plan.')">🚨 Click to reveal Crisis File 5</li>            </ul>
+            <div class="vocab-section">                <h4>💡 Investigation & Integrity Terminology (Click to use)</h4>                <div class="chips-container">                    <span class="chip" onclick="toggleChip(this)">Anonymous hotline</span>                    <span class="chip" onclick="toggleChip(this)">Anti-retaliation policy</span>                    <span class="chip" onclick="toggleChip(this)">Chain of custody</span>                    <span class="chip" onclick="toggleChip(this)">Forensic accounting</span>                    <span class="chip" onclick="toggleChip(this)">Corrective action plan</span>                    <span class="chip" onclick="toggleChip(this)">Regulatory inspection</span>                    <span class="chip" onclick="toggleChip(this)">Attorney-client privilege</span>                </div>            </div>
+            <button class="next-btn" onclick="completeMission(3, 'final')">Unlock Board Committee Challenge 🏆</button>        </div>
+        <!-- FINAL BOARD CHALLENGE -->        <div id="card-final" class="mission-card">            <span class="mission-badge" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.3);">Chief Compliance Officer</span>            <div class="card-header">🏁 Board of Directors Presentation</div>            <div class="instruction" style="border-left-color: var(--accent-blue);">                👨‍💼 <strong>The Ethics Committee is listening:</strong> Select a high-stakes scenario. Present your risk mitigation strategy or defend an enterprise compliance remediation plan for 1 to 2 minutes.            </div>
+            <div class="topic-selectors">                <div class="topic-select" onclick="selectFinalTopic(this)">💸 Anti-Bribery Clean-up Plan</div>                <div class="topic-select" onclick="selectFinalTopic(this)">🔒 Global GDPR Breach Mitigation</div>                <div class="topic-select" onclick="selectFinalTopic(this)">🚨 Institutional Whistleblower Overhaul</div>            </div>
+            <div class="timer-container">                <div class="timer-circle" id="timer-display">60</div>                <button class="timer-btn" id="timer-control-btn" onclick="toggleTimer()">Start Presentation Timer ⏱️</button>            </div>
+            <button class="finish-btn" onclick="resetAdventure()">Restart Training Session 🔄</button>        </div>    </div>
+    <!-- App Logic -->    <script>        function openMission(topic) {            document.querySelectorAll('.mission-card').forEach(card => card.style.display = 'none');            const targetCard = document.getElementById(`card-${topic}`);            if(targetCard) targetCard.style.display = 'block';        }
+        function revealQuestion(element, text) {            if (!element.classList.contains('revealed')) {                element.classList.add('revealed');                element.innerHTML = `⚖️ <strong>Compliance Incident:</strong> &nbsp; ${text}`;            }        }
+        function toggleChip(chip) {            chip.classList.toggle('clicked');        }
+        function completeMission(stepNumber, nextTopic) {            document.getElementById(`star-${stepNumber}`).classList.add('active');                        const currentBtn = document.querySelectorAll('.mission-btn')[stepNumber - 1];            currentBtn.classList.add('completed');            currentBtn.innerHTML = `✅ ${currentBtn.innerText}`;
+            if(stepNumber === 3) {                document.getElementById('final-nav-btn').style.display = 'flex';            }
+            openMission(nextTopic);        }
+        function selectFinalTopic(element) {            document.querySelectorAll('.topic-select').forEach(t => t.classList.remove('selected'));            element.classList.add('selected');        }
+        // Timer Logic        let timerInterval;        let timeLeft = 60;        let timerRunning = false;
+        function toggleTimer() {            const btn = document.getElementById('timer-control-btn');            const display = document.getElementById('timer-display');
+            if (timerRunning) {                clearInterval(timerInterval);                btn.innerText = "Resume Strategy Pitch ⏱️";                display.classList.remove('running');                timerRunning = false;            } else {                timerRunning = true;                btn.innerText = "Pause ⏸️";                display.classList.add('running');                                timerInterval = setInterval(() => {                    timeLeft--;                    display.innerText = timeLeft;
+                    if (timeLeft <= 0) {                        clearInterval(timerInterval);                        display.classList.remove('running');                        btn.innerText = "Time Limit Reached! 🏢";                        timerRunning = false;                    }                }, 1000);            }        }
+        function resetAdventure() {            location.reload();        }
+        // Initialize first section        openMission('bribery');    </script></body></html>
