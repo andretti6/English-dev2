@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Cup Travel Chat - A1 English Questions ⚽✈️</title>
+    <title>Sports Law & World Cup Executive - Pitch Prep ⚽⚖️</title>
     <style>
         :root {
             --bg-color: #060b11;
@@ -15,12 +15,14 @@
             --text-muted: #64748b;
             --border-color: #1e2e3d;
         }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-light);
@@ -30,16 +32,19 @@
             align-items: center;
             padding: 2rem;
         }
+
         header {
             text-align: center;
             margin-bottom: 2rem;
         }
+
         header h1 {
             font-size: 2.2rem;
             color: var(--text-light);
             margin-bottom: 0.5rem;
             letter-spacing: 0.05em;
         }
+
         header p {
             color: var(--accent-pitch);
             font-size: 1.1rem;
@@ -47,6 +52,7 @@
             letter-spacing: 0.1em;
             font-weight: bold;
         }
+
         /* Progress Tracker */
         .progress-container {
             display: flex;
@@ -57,16 +63,19 @@
             border-radius: 50px;
             border: 1px solid var(--border-color);
         }
+
         .milestone {
             font-size: 1rem;
             font-weight: bold;
             color: #334155;
             transition: all 0.3s ease;
         }
+
         .milestone.active {
             color: var(--accent-pitch);
             text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
         }
+
         /* Strategy Modules */
         .adventure-map {
             display: flex;
@@ -77,6 +86,7 @@
             width: 100%;
             margin-bottom: 2rem;
         }
+
         .mission-btn {
             background: var(--card-bg);
             border: 2px solid var(--border-color);
@@ -94,20 +104,24 @@
             min-width: 220px;
             transition: all 0.2s ease;
         }
+
         .mission-btn:hover {
             transform: translateY(-3px);
             border-color: var(--accent-pitch);
             box-shadow: 0 10px 20px -5px rgba(34, 197, 94, 0.15);
         }
+
         .mission-btn.completed {
             border-color: var(--accent-blue);
             color: #cbd5e1;
         }
+
         /* Cards Display Area */
         .card-container {
             width: 100%;
             max-width: 750px;
         }
+
         .mission-card {
             background: var(--card-bg);
             border-radius: 24px;
@@ -117,10 +131,12 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
+
         @keyframes slideUp {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+
         .card-header {
             font-size: 1.8rem;
             font-weight: 700;
@@ -129,6 +145,7 @@
             padding-bottom: 1rem;
             color: #fff;
         }
+
         .mission-badge {
             background: rgba(34, 197, 94, 0.1);
             color: var(--accent-pitch);
@@ -141,6 +158,7 @@
             font-weight: bold;
             border: 1px solid rgba(34, 197, 94, 0.2);
         }
+
         .instruction {
             font-size: 1.1rem;
             color: #cbd5e1;
@@ -150,48 +168,57 @@
             border-radius: 12px;
             border-left: 4px solid var(--accent-pitch);
         }
-        
-        /* New Random Generator Box Styling */
-        .generator-box {
-            background: #070c12;
-            border: 2px dashed #334155;
-            border-radius: 14px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            margin-bottom: 2rem;
-            min-height: 140px;
+
+        /* Interactive Prompts / Questions */
+        .questions-list {
+            list-style: none;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 1.2rem;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
         }
-        .generated-question {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--text-light);
-            line-height: 1.4;
-        }
-        .roll-btn {
-            background: var(--accent-gold);
-            color: #060b11;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 8px;
-            font-weight: bold;
+
+        .question-item {
+            background: #070c12;
+            padding: 1.2rem;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: transform 0.1s, background 0.2s;
+            border: 1px dashed #334155;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.25s ease;
+            color: var(--text-muted);
+            user-select: none;
         }
-        .roll-btn:hover {
-            transform: scale(1.02);
-            background: #facc15;
+
+        .question-item:hover {
+            border-color: var(--accent-gold);
+            background: rgba(234, 179, 8, 0.03);
+            color: #e2e8f0;
+        }
+
+        .question-item.revealed {
+            background: rgba(7, 12, 18, 0.8);
+            border: 1px solid var(--accent-gold);
+            color: var(--text-light);
+            justify-content: flex-start;
+            cursor: default;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.99); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         /* Vocabulary Chips */
         .vocab-section {
             margin-bottom: 2rem;
         }
+
         .vocab-section h4 {
             color: var(--text-muted);
             margin-bottom: 0.8rem;
@@ -199,11 +226,13 @@
             font-size: 0.85rem;
             letter-spacing: 0.05em;
         }
+
         .chips-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
         }
+
         .chip {
             background: #192633;
             color: #cbd5e1;
@@ -215,16 +244,19 @@
             border: 1px solid var(--border-color);
             user-select: none;
         }
+
         .chip:hover {
             border-color: var(--accent-pitch);
             background: rgba(34, 197, 94, 0.05);
         }
+
         .chip.clicked {
             background: #0a1118;
             color: #475569;
             border-color: #192633;
             text-decoration: line-through;
         }
+
         /* Actions */
         .next-btn, .finish-btn {
             width: 100%;
@@ -242,10 +274,12 @@
             align-items: center;
             gap: 0.5rem;
         }
+
         .next-btn:hover, .finish-btn:hover {
             background: #4ade80;
             transform: translateY(-1px);
         }
+
         /* Timer Section */
         .timer-container {
             display: flex;
@@ -253,6 +287,7 @@
             align-items: center;
             margin: 2rem 0;
         }
+
         .timer-circle {
             width: 110px;
             height: 110px;
@@ -265,14 +300,17 @@
             font-weight: bold;
             color: var(--accent-blue);
         }
+
         .timer-circle.running {
             border-color: var(--accent-blue);
             animation: pulse 1s infinite alternate;
         }
+
         @keyframes pulse {
             from { transform: scale(1); }
             to { transform: scale(1.02); }
         }
+
         .timer-btn {
             margin-top: 1rem;
             background: transparent;
@@ -284,15 +322,18 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .timer-btn:hover {
             background: rgba(56, 189, 248, 0.1);
         }
+
         .topic-selectors {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
             width: 100%;
         }
+
         .topic-select {
             flex: 1;
             padding: 1rem;
@@ -304,167 +345,162 @@
             cursor: pointer;
             text-align: center;
         }
+
         .topic-select.selected {
             border-color: var(--accent-pitch);
             background: rgba(34, 197, 94, 0.05);
         }
+
     </style>
 </head>
 <body>
+
     <header>
-        <h1>⚽ World Cup Travel Talk</h1>
-        <p>Simple A1 Conversation Prompts for Students</p>
+        <h1>⚽ Sports Law & World Cup Master</h1>
+        <p>Football Regulations & Contract Argumentation Training</p>
     </header>
 
     <!-- Progress Milestones -->
     <div class="progress-container">
-        <span class="milestone" id="star-1">1: TRAVEL & HOTELS</span>
-        <span class="milestone" id="star-2">2: MATCH DAY</span>
-        <span class="milestone" id="star-3">3: FOOD & LIFESTYLE</span>
+        <span class="milestone" id="star-1">PART 1: PLAYER CONTRACTS</span>
+        <span class="milestone" id="star-2">PART 2: FIFA & WORLD CUP</span>
+        <span class="milestone" id="star-3">PART 3: SPORTS CRISIS</span>
     </div>
 
     <!-- Navigation Map -->
     <div class="adventure-map">
-        <button class="mission-btn" onclick="openMission('contracts')">✈️ 1. Travel & Hotel Questions</button>
-        <button class="mission-btn" onclick="openMission('fifa')">🏟️ 2. Stadium & Match Questions</button>
-        <button class="mission-btn" onclick="openMission('crisis')">🍔 3. Food & Fun Questions</button>
-        <button class="mission-btn" id="final-nav-btn" style="border-color: var(--accent-blue); display: none;" onclick="openMission('final')">🎤 Final Challenge</button>
+        <button class="mission-btn" onclick="openMission('contracts')">📜 1. Player Contracts & Transfers</button>
+        <button class="mission-btn" onclick="openMission('fifa')">🌍 2. FIFA Regulations & World Cup</button>
+        <button class="mission-btn" onclick="openMission('crisis')">🚨 3. CAS Disputes & Doping Crisis</button>
+        <button class="mission-btn" id="final-nav-btn" style="border-color: var(--accent-blue); display: none;" onclick="openMission('final')">🏁 CAS Tribunal Defense</button>
     </div>
 
     <!-- Cards Arena -->
     <div class="card-container">
-        <!-- MODULE 1: TRAVEL & HOTELS -->
+
+        <!-- MODULE 1: PLAYER CONTRACTS & TRANSFERS -->
         <div id="card-contracts" class="mission-card">
             <span class="mission-badge">Module 1</span>
-            <div class="card-header">Travel & Accommodation</div>
-            <div class="instruction">🎯 Click the button to roll an unpredictable conversation card!</div>
+            <div class="card-header">Player Contracts & Transfer Law</div>
+            <div class="instruction">🎯 <strong>Case Brief:</strong> Click to reveal a negotiation roadblock. Argue how to legalise or protect the club's and player's interests.</div>
             
-            <div class="generator-box">
-                <div class="generated-question" id="q-contracts">🎲 Click below to draw a question!</div>
-                <button class="roll-btn" onclick="generateQuestion('contracts')">⚡ DRAW RANDOM QUESTION</button>
-            </div>
+            <ul class="questions-list">
+                <li class="question-item" onclick="revealQuestion(this, 'A superstar player wants to terminate their contract early due to lack of playtime. How do you enforce or negotiate the release clause?')">📜 Click to reveal Case File 1</li>
+                <li class="question-item" onclick="revealQuestion(this, 'How do you structure a player contract to separate image rights from regular employment salary legally?')">📜 Click to reveal Case File 2</li>
+                <li class="question-item" onclick="revealQuestion(this, 'A 17-year-old wonderkid is being signed by an international club. What are the FIFA restrictions on transferring minors?')">📜 Click to reveal Case File 3</li>
+                <li class="question-item" onclick="revealQuestion(this, 'How do sell-on clauses and solidarity mechanisms protect smaller clubs when a player is resold for millions?')">📜 Click to reveal Case File 4</li>
+                <li class="question-item" onclick="revealQuestion(this, 'A player signs a sponsorship deal with a brand that directly competes with the club\'s main sponsor. How do you settle this conflict?')">📜 Click to reveal Case File 5</li>
+            </ul>
 
             <div class="vocab-section">
-                <h4>💡 Help Chips (Vocabulary)</h4>
+                <h4>💡 Core Football & Legal Vocabulary (Click to use)</h4>
                 <div class="chips-container">
-                    <span class="chip" onclick="toggleChip(this)">I like to travel...</span>
-                    <span class="chip" onclick="toggleChip(this)">My favorite place is...</span>
-                    <span class="chip" onclick="toggleChip(this)">By plane / By car</span>
-                    <span class="chip" onclick="toggleChip(this)">Suitcase (Mala)</span>
+                    <span class="chip" onclick="toggleChip(this)">Release clause</span>
+                    <span class="chip" onclick="toggleChip(this)">Image rights</span>
+                    <span class="chip" onclick="toggleChip(this)">Solidarity mechanism</span>
+                    <span class="chip" onclick="toggleChip(this)">Breach of contract</span>
+                    <span class="chip" onclick="toggleChip(this)">Transfer window</span>
+                    <span class="chip" onclick="toggleChip(this)">Sponsorship agreement</span>
+                    <span class="chip" onclick="toggleChip(this)">Buyout option</span>
                 </div>
             </div>
 
-            <button class="next-btn" onclick="completeMission(1, 'fifa')">Go to Stadium & Match Questions ➡️</button>
+            <button class="next-btn" onclick="completeMission(1, 'fifa')">Proceed to FIFA & World Cup Regulations ➡️</button>
         </div>
 
-        <!-- MODULE 2: AT THE STADIUM -->
+        <!-- MODULE 2: FIFA & WORLD CUP REGULATIONS -->
         <div id="card-fifa" class="mission-card">
-            <span class="mission-badge">Module 2</span>            
-            <div class="card-header">Stadium & Match Day</div>
-            <div class="instruction">🎯 Click the button to roll an unpredictable conversation card!</div>
+            <span class="mission-badge">Module 2</span>
+            <div class="card-header">FIFA Framework & World Cup Host Duties</div>
+            <div class="instruction">🎯 <strong>FIFA Briefing:</strong> Click to reveal an international regulatory or World Cup organization challenge.</div>
             
-            <div class="generator-box">
-                <div class="generated-question" id="q-fifa">🎲 Click below to draw a question!</div>
-                <button class="roll-btn" onclick="generateQuestion('fifa')">⚡ DRAW RANDOM QUESTION</button>
-            </div>
+            <ul class="questions-list">
+                <li class="question-item" onclick="revealQuestion(this, 'A country hosting the World Cup wants to change tax laws exclusively for FIFA partners during the tournament. How do you defend this legally?')">🌍 Click to reveal Regulations Prompt 1</li>
+                <li class="question-item" onclick="revealQuestion(this, 'Explain how the Financial Fair Play (FFP) regulations prevent billionaire owners from overspending on new players.')">🌍 Click to reveal Regulations Prompt 2</li>
+                <li class="question-item" onclick="revealQuestion(this, 'During a World Cup, a player wears a shirt with a political message hidden under their jersey. What are the FIFA legal disciplinary actions?')">🌍 Click to reveal Regulations Prompt 3</li>
+                <li class="question-item" onclick="revealQuestion(this, 'How does FIFA handle ambush marketing from brands trying to advertise inside the stadium without paying for sponsorship?')">🌍 Click to reveal Regulations Prompt 4</li>
+                <li class="question-item" onclick="revealQuestion(this, 'A club refuses to release its top player for the World Cup because the national team matches are outside the official international calendar. Who wins the dispute?')">🌍 Click to reveal Regulations Prompt 5</li>
+            </ul>
 
             <div class="vocab-section">
-                <h4>💡 Help Chips (Vocabulary)</h4>
+                <h4>💡 Governing Bodies & Tournament Vocabulary (Click to use)</h4>
                 <div class="chips-container">
-                    <span class="chip" onclick="toggleChip(this)">At the stadium</span>
-                    <span class="chip" onclick="toggleChip(this)">On TV</span>
-                    <span class="chip" onclick="toggleChip(this)">My favorite player is...</span>
-                    <span class="chip" onclick="toggleChip(this)">I feel happy / excited</span>
+                    <span class="chip" onclick="toggleChip(this)">Financial Fair Play (FFP)</span>
+                    <span class="chip" onclick="toggleChip(this)">Ambush marketing</span>
+                    <span class="chip" onclick="toggleChip(this)">Disciplinary committee</span>
+                    <span class="chip" onclick="toggleChip(this)">Host country agreement</span>
+                    <span class="chip" onclick="toggleChip(this)">International match calendar</span>
+                    <span class="chip" onclick="toggleChip(this)">Governing body</span>
+                    <span class="chip" onclick="toggleChip(this)">Commercial rights</span>
                 </div>
             </div>
 
-            <button class="next-btn" onclick="completeMission(2, 'crisis')">Go to Food & Fun Questions ➡️</button>
+            <button class="next-btn" onclick="completeMission(2, 'crisis')">Proceed to Disputes & Crisis ➡️</button>
         </div>
 
-        <!-- MODULE 3: FOOD & DAILY FUN -->
+        <!-- MODULE 3: CAS DISPUTES & CRISIS MANAGEMENT -->
         <div id="card-crisis" class="mission-card">
             <span class="mission-badge">Module 3</span>
-            <div class="card-header">Food & Daily Routine on Trips</div>
-            <div class="instruction">🎯 Click the button to roll an unpredictable conversation card!</div>
+            <div class="card-header">CAS Appeals & Integrity Crisis</div>
+            <div class="instruction">🎯 <strong>Crisis Trigger:</strong> Click to open an appeal file at the Court of Arbitration for Sport (CAS).</div>
             
-            <div class="generator-box">
-                <div class="generated-question" id="q-crisis">🎲 Click below to draw a question!</div>
-                <button class="roll-btn" onclick="generateQuestion('crisis')">⚡ DRAW RANDOM QUESTION</button>
-            </div>
+            <ul class="questions-list">
+                <li class="question-item" onclick="revealQuestion(this, 'A player tests positive for a banned substance right before the World Cup semi-final. Present an immediate defense arguing contamination.')">🚨 Click to reveal Crisis File 1</li>
+                <li class="question-item" onclick="revealQuestion(this, 'A club is accused of match-fixing by a referee report. How do you structure the appeal to avoid relegation?')">🚨 Click to reveal Crisis File 2</li>
+                <li class="question-item" onclick="revealQuestion(this, 'What is the standard procedure to appeal a heavy multi-match FIFA suspension at the Court of Arbitration for Sport (CAS)?')">🚨 Click to reveal Crisis File 3</li>
+                <li class="question-item" onclick="revealQuestion(this, 'A national team fan base causes a massive stadium riot during a tournament. Explain how strict liability affects the Football Association.')">🚨 Click to reveal Crisis File 4</li>
+                <li class="question-item" onclick="revealQuestion(this, 'A referee makes a clear technical error (not a field-of-play decision). Can a club legally demand a match replay?')">🚨 Click to reveal Crisis File 5</li>
+            </ul>
 
             <div class="vocab-section">
-                <h4>💡 Help Chips (Vocabulary)</h4>
+                <h4>💡 Court & Integrity Terminology (Click to use)</h4>
                 <div class="chips-container">
-                    <span class="chip" onclick="toggleChip(this)">I like to eat...</span>
-                    <span class="chip" onclick="toggleChip(this)">New food</span>
-                    <span class="chip" onclick="toggleChip(this)">Take photos</span>
-                    <span class="chip" onclick="toggleChip(this)">With my friends</span>
+                    <span class="chip" onclick="toggleChip(this)">Court of Arbitration for Sport (CAS)</span>
+                    <span class="chip" onclick="toggleChip(this)">Strict liability</span>
+                    <span class="chip" onclick="toggleChip(this)">Banned substance</span>
+                    <span class="chip" onclick="toggleChip(this)">To file an appeal</span>
+                    <span class="chip" onclick="toggleChip(this)">Match-fixing allegation</span>
+                    <span class="chip" onclick="toggleChip(this)">Provisional suspension</span>
+                    <span class="chip" onclick="toggleChip(this)">Burden of proof</span>
                 </div>
             </div>
 
-            <button class="next-btn" onclick="completeMission(3, 'final')">Unlock Final Challenge 🏆</button>
+            <button class="next-btn" onclick="completeMission(3, 'final')">Unlock CAS Tribunal Challenge 🏆</button>
         </div>
 
-        <!-- FINAL CHALLENGE -->
+        <!-- FINAL CAS TRIBUNAL CHALLENGE -->
         <div id="card-final" class="mission-card">
-            <span class="mission-badge" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.3);">Practice Level</span>
-            <div class="card-header">🏁 Final Talk Challenge</div>
+            <span class="mission-badge" style="background: rgba(56, 189, 248, 0.1); color: var(--accent-blue); border-color: rgba(56, 189, 248, 0.3);">Arbitrator Level</span>
+            <div class="card-header">🏁 CAS Supreme Hearing</div>
             <div class="instruction" style="border-left-color: var(--accent-blue);">
-                🎤 Select a topic below and answer the question aloud. Keep it simple and simple!            
+                👨‍⚖️ <strong>The Panel of Arbitrators is listening:</strong> Select a high-stakes sport case. The student must present their closing legal pitch or counter-argue a FIFA sanction for 1 or 2 minutes.
             </div>
+
             <div class="topic-selectors">
-                <div class="topic-select" onclick="selectFinalTopic(this, 'Introduce yourself! What is your name, where do you live, and what is your favorite sport?')">👋 Introduce Yourself</div>
-                <div class="topic-select" onclick="selectFinalTopic(this, 'Imagine you have a ticket for the World Cup Final. Who do you invite to go with you?')">🎫 World Cup Ticket</div>
-                <div class="topic-select" onclick="selectFinalTopic(this, 'Describe a perfect travel day for you. What do you do?')">☀️ Perfect Day</div>
-            </div>            
-            <div style="background: #070c12; padding: 1.2rem; border-radius: 10px; border: 1px solid var(--border-color); text-align: center; font-size: 1.1rem; min-height: 60px;" id="selected-question-display">
-                Click on a topic above to see your question!            </div>
+                <div class="topic-select" onclick="selectFinalTopic(this)">⚽ Transfer Ban Appeal</div>
+                <div class="topic-select" onclick="selectFinalTopic(this)">🌍 World Cup Disqualification</div>
+                <div class="topic-select" onclick="selectFinalTopic(this)">🚨 Anti-Doping Violation Hearing</div>
+            </div>
+
             <div class="timer-container">
-                <div class="timer-circle" id="timer-display">30</div>
-                <button class="timer-btn" id="timer-control-btn" onclick="toggleTimer()">Start Timer ⏱️</button>
-            </div>            
+                <div class="timer-circle" id="timer-display">60</div>
+                <button class="timer-btn" id="timer-control-btn" onclick="toggleTimer()">Start Hearing Timer ⏱️</button>
+            </div>
+
             <button class="finish-btn" onclick="resetAdventure()">Restart Training Session 🔄</button>
-        </div>    
+        </div>
+
     </div>
 
     <!-- Audio API and App Logic -->
     <script>
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Questions Database loaded with your original sentences
-        const questionsDB = {
-            contracts: [
-                "Do you like to travel? What are your favorite places?",
-                "Do you prefer to travel by plane or by car? Why?",
-                "Do you like big hotels or small hotels?",
-                "What do you pack in your suitcase for a trip?",
-                "Can you speak English at the airport? Is it easy or difficult?"
-            ],
-            fifa: [
-                "Do you like to watch football at the stadium or on TV?",
-                "Who is your favorite football player? Why do you like him?",
-                "Do you have a favorite national team? (Brazil, Argentina, Spain...)",
-                "Imagine you are at a World Cup stadium. How do you feel?",
-                "Do you like to buy football jerseys?"
-            ],
-            crisis: [
-                "What do you like to eat when you watch a football match?",
-                "Do you like to try new food when you travel?",
-                "Do you prefer soda, water, or beer during a game?",
-                "Do you like to take photos with fans from other countries?",
-                "What is your favorite day of the week to watch soccer?"
-            ]
-        };
 
-        function playSound(type) {            
+        function playSound(type) {
             const osc = audioCtx.createOscillator();
-            const gain = createGainNode();            
-            function createGainNode() {
-                const g = audioCtx.createGain();
-                osc.connect(g);
-                g.connect(audioCtx.destination);
-                return g;
-            }
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
 
             if (type === 'click') {
                 osc.type = 'sine';
@@ -500,29 +536,30 @@
             }
         }
 
-        function openMission(topic) {            
-            playSound('click');            
+        function openMission(topic) {
+            playSound('click');
             document.querySelectorAll('.mission-card').forEach(card => card.style.display = 'none');
             const targetCard = document.getElementById(`card-${topic}`);
             if(targetCard) targetCard.style.display = 'block';
         }
 
-        // Random Question Shuffler Trigger
-        function generateQuestion(topic) {
-            playSound('reveal');
-            const list = questionsDB[topic];
-            const randomQuestion = list[Math.floor(Math.random() * list.length)];
-            document.getElementById(`q-${topic}`).innerHTML = `❓ <strong>Question:</strong> &nbsp; <span>${randomQuestion}</span>`;
+        function revealQuestion(element, text) {
+            if (!element.classList.contains('revealed')) {
+                playSound('reveal');
+                element.classList.add('revealed');
+                element.innerHTML = `🏁 <strong>Legal Dispute:</strong> &nbsp; ${text}`;
+            }
         }
 
-        function toggleChip(chip) {            
-            playSound('click');            
+        function toggleChip(chip) {
+            playSound('click');
             chip.classList.toggle('clicked');
         }
 
-        function completeMission(stepNumber, nextTopic) {            
-            playSound('star');            
-            document.getElementById(`star-${stepNumber}`).classList.add('active');                        
+        function completeMission(stepNumber, nextTopic) {
+            playSound('star');
+            document.getElementById(`star-${stepNumber}`).classList.add('active');
+            
             const currentBtn = document.querySelectorAll('.mission-btn')[stepNumber - 1];
             currentBtn.classList.add('completed');
             currentBtn.innerHTML = `✅ ${currentBtn.innerText}`;
@@ -530,52 +567,53 @@
             if(stepNumber === 3) {
                 document.getElementById('final-nav-btn').style.display = 'flex';
             }
+
             openMission(nextTopic);
         }
 
-        function selectFinalTopic(element, questionText) {            
-            playSound('click');            
+        function selectFinalTopic(element) {
+            playSound('click');
             document.querySelectorAll('.topic-select').forEach(t => t.classList.remove('selected'));
             element.classList.add('selected');
-            document.getElementById('selected-question-display').innerHTML = `<strong>Practice Prompt:</strong> "${questionText}"`;
         }
 
         // Timer Logic
         let timerInterval;
-        let timeLeft = 30;
+        let timeLeft = 60;
         let timerRunning = false;
 
-        function toggleTimer() {            
+        function toggleTimer() {
             const btn = document.getElementById('timer-control-btn');
             const display = document.getElementById('timer-display');
 
-            if (timerRunning) {                
-                clearInterval(timerInterval);                
-                btn.innerText = "Resume Timer ⏱️";                
-                display.classList.remove('running');                
-                timerRunning = false;            
-            } else {                
-                timerRunning = true;                
-                btn.innerText = "Pause ⏸️";                
-                display.classList.add('running');                                
-                timerInterval = setInterval(() => {                    
-                    timeLeft--;                    
-                    display.innerText = timeLeft;                    
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                btn.innerText = "Resume Hearing Defense ⏱️";
+                display.classList.remove('running');
+                timerRunning = false;
+            } else {
+                timerRunning = true;
+                btn.innerText = "Pause ⏸️";
+                display.classList.add('running');
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    display.innerText = timeLeft;
                     playSound('click');
 
-                    if (timeLeft <= 0) {                        
-                        clearInterval(timerInterval);                        
-                        playSound('alarm');                        
-                        display.classList.remove('running');                        
-                        btn.innerText = "Time Over! Nice Practice! ⚽";                        
-                        timerRunning = false;                    
-                    }                
-                }, 1000);            
-            }        
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        playSound('alarm');
+                        display.classList.remove('running');
+                        btn.innerText = "Hearing Time Limit Reached! ⚽";
+                        timerRunning = false;
+                    }
+                }, 1000);
+            }
         }
 
-        function resetAdventure() {            
-            location.reload();        
+        function resetAdventure() {
+            location.reload();
         }
 
         // Initialize first section
