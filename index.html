@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Essentials Radar 2040 - MultiRoom</title>
+    <title>Essentials Radar 2040 - Tourism Explosion</title>
     <style>
         :root {
             --bg-dark: #121214;
@@ -145,13 +145,13 @@
 
         .area-btn.locked { border-color: #323238; color: #7c7c8a; opacity: 0.5; cursor: not-allowed; }
         .area-btn.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(0,179,126,0.35); }
-        .btn-ai { top: 20%; left: 25%; }
-        .btn-robots { top: 20%; right: 20%; }
+        .btn-ai { top: 20%; left: 20%; }
+        .btn-robots { top: 20%; right: 15%; }
         .btn-surgeries { bottom: 25%; right: 15%; }
         .btn-diagnostics { bottom: 25%; left: 15%; }
         .wheel-center {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             background: var(--bg-dark);
             border: 3px solid var(--green);
             border-radius: 50%;
@@ -160,7 +160,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: bold;
             color: var(--green);
         }
@@ -217,7 +217,6 @@
         }
         .task-check-row input { margin-top: 2px; cursor: pointer; }
 
-        .extra-tip { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #323238; color: var(--green); font-size: 0.8rem; }
         textarea { background: var(--bg-dark); border: 1px solid #323238; border-radius: 6px; color: #fff; padding: 10px; font-size: 0.9rem; resize: none; height: 70px; }
         #msg-locked { display: none; color: var(--lock-color); font-size: 0.9rem; text-align: center; padding: 40px 10px; }
 
@@ -248,7 +247,7 @@
         }
         .trigger-btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
-        /* REMOTE NAVIGATION BUTTONS (TEACHER CONTROLLED) */
+        /* REMOTE NAVIGATION BUTTONS */
         .remote-nav-container {
             display: none;
             flex-direction: column;
@@ -270,10 +269,10 @@
 
         /* SCREEN: SIMULATION ARENA */
         .arena-card { background: var(--card-dark); border-radius: 12px; padding: 20px; border: 1px solid #323238; text-align: center; }
-        .characters-box { display: flex; justify-content: space-around; margin: 20px 0; }
+        .characters-box { display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap; gap: 10px; }
         .character { display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .char-avatar { font-size: 3rem; background: #29292e; width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; border-radius: 50%; border: 2px solid var(--primary); }
-        .char-name { font-size: 0.85rem; font-weight: bold; color: var(--text-main); }
+        .char-name { font-size: 0.85rem; font-weight: bold; color: var(--text-main); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .vs-badge { font-size: 1rem; color: var(--lock-color); font-weight: bold; align-self: center; }
 
         .cheat-sheet { background: var(--bg-dark); border-radius: 8px; padding: 12px; text-align: left; margin-top: 20px; max-height: 140px; overflow-y: auto; font-size: 0.85rem; border: 1px solid #323238; }
@@ -359,8 +358,8 @@
     <!-- SCREEN 1: LOGIN -->
     <div id="screen-login" class="screen active">
         <header>
-            <h1>Hospitals 2040</h1>
-            <p style="color: var(--text-sub); font-size: 0.9rem;">No Doctors Game!</p>
+            <h1>Tourism Explosion</h1>
+            <p style="color: var(--text-sub); font-size: 0.9rem;">The Global Travel Boom</p>
         </header>
         <div class="login-card">
             <label for="username">Type Your Name:</label>
@@ -381,13 +380,13 @@
         </div>
         
         <div class="warmup-box">
-            <h3>📖 Warm-up Briefing (Level B1):</h3>
-            <p><strong>Hospitals 2040: The "No-Doctors" Evolution</strong></p>
-            <p>Imagine a world where hospitals do not have human doctors inside the building. Advanced Artificial Intelligence models select medicines, specialized mechanical units perform complex robotic operations, and patients run automated blood tests directly at home. Is this setup highly effective or extremely risky?</p>
+            <h3>📖 Warm-up Briefing (Level A2-B1):</h3>
+            <p><strong>The Tourism Explosion Challenge</strong></p>
+            <p>Today, millions of people travel to historical cities every week. Low-cost flights make tickets very cheap, and historic cities receive a lot of money from tourists. However, local residents are leaving because of short-term rentals like Airbnb, and historic monuments or nature are being destroyed. Is global tourism good or bad for the world?</p>
             <p><strong>🤔 Questions to ponder while you wait:</strong></p>
             <ul>
-                <li>Would you honestly trust an automated robotic unit to perform a surgical procedure on you today? Why?</li>
-                <li>What is the ultimate fatal vulnerability if an entire community hospital depends completely on an active internet network?</li>
+                <li>How often do you travel? Do you prefer cheap flight tickets or comfortable trains?</li>
+                <li>In your opinion, what is more important: tourist money or the peace of local neighbors?</li>
             </ul>
         </div>
     </div>
@@ -395,7 +394,7 @@
     <!-- SCREEN 2: MAIN GAME RADAR -->
     <div id="screen-game" class="screen">
         <header>
-            <h1>Hospitals 2040</h1>
+            <h1>Tourism Explosion</h1>
             <div id="player-badge" class="user-badge">Loading...</div>
             <div style="margin-top: 8px;">
                 <button class="start-btn" style="background: var(--amber); color:#000; padding:6px 12px; font-size:0.8rem;" onclick="toggleBriefingModal(true)">📖 Open Warm-up Briefing</button>
@@ -409,12 +408,12 @@
             <div class="wheel-line line-h"></div>
             <div class="wheel-line line-v"></div>
             
-            <button id="wheel-ai" class="area-btn btn-ai" onclick="selectArea('ai')">🧠 AI</button>
-            <button id="wheel-robots" class="area-btn btn-robots" onclick="selectArea('robots')">🤖 Robots</button>
-            <button id="wheel-surgeries" class="area-btn btn-surgeries" onclick="selectArea('surgeries')">🔒 Surgeries</button>
-            <button id="wheel-diagnostics" class="area-btn btn-diagnostics" onclick="selectArea('diagnostics')">🔒 Check-ups</button>
+            <button id="wheel-ai" class="area-btn btn-ai" onclick="selectArea('ai')">✈️ Cheap Flights</button>
+            <button id="wheel-robots" class="area-btn btn-robots" onclick="selectArea('robots')">💰 City Income</button>
+            <button id="wheel-surgeries" class="area-btn btn-surgeries" onclick="selectArea('surgeries')">🔒 Locals Expelled</button>
+            <button id="wheel-diagnostics" class="area-btn btn-diagnostics" onclick="selectArea('diagnostics')">🔒 Destruction</button>
 
-            <div class="wheel-center">NO<br>DOCTORS</div>
+            <div class="wheel-center">TOURISM<br>BOOM</div>
         </div>
 
         <div class="inputs-section">
@@ -424,65 +423,97 @@
 
             <!-- INPUTS ZONES -->
             <div id="zone-ai" class="input-group">
-                <label>Your Zone: Artificial Intelligence (AI)</label>
+                <label>Zone: Low-Cost Flights (Cheap Tickets)</label>
                 <div class="essentials-pill">
-                    <strong>Ask your partner:</strong> "How does the computer choose the medicine if the internet stops?" Listen and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "Why are low-cost flights so popular today, and what is the problem with too many planes?" Discuss and type.
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
-                    <label class="task-check-row"><input type="checkbox" id="task-ai-1"><span>Help friend find the perfect word when they hesitate.</span></label>
-                    <label class="task-check-row"><input type="checkbox" id="task-ai-2"><span>Validate your partner's AI safety concerns out loud.</span></label>
+                    <label class="task-check-row"><input type="checkbox" id="task-ai-1"><span>Help friends find the perfect word when they hesitate.</span></label>
+                    <label class="task-check-row"><input type="checkbox" id="task-ai-2"><span>Validate your partner's travel safety or environment concerns out loud.</span></label>
                 </div>
-                <textarea id="text-ai" placeholder="Type your partner's ideas here..." oninput="saveText('ai')"></textarea>
+                <textarea id="text-ai" placeholder="Type group ideas here..." oninput="saveText('ai')"></textarea>
             </div>
 
             <div id="zone-robots" class="input-group">
-                <label>Your Zone: Robots</label>
+                <label>Zone: Income for Historic Cities</label>
                 <div class="essentials-pill">
-                    <strong>Ask your partner:</strong> "Who cleans and fixes the robots if there are no humans?" Listen and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "How do local shops, restaurants, and hotels benefit from tourist money?" Discuss and type.
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
                     <label class="task-check-row"><input type="checkbox" id="task-robots-1"><span>Actively listen without interrupting their full sentence.</span></label>
                     <label class="task-check-row"><input type="checkbox" id="task-robots-2"><span>Echo back their core argument to confirm you understood.</span></label>
                 </div>
-                <textarea id="text-robots" placeholder="Type your partner's ideas here..." oninput="saveText('robots')"></textarea>
+                <textarea id="text-robots" placeholder="Type group ideas here..." oninput="saveText('robots')"></textarea>
             </div>
 
             <div id="zone-surgeries" class="input-group">
-                <label>Your Zone: Robot Surgeries</label>
+                <label>Zone: Residents Expelled by Airbnb</label>
                 <div class="essentials-pill">
-                    <strong>Ask your partner:</strong> "How can we make an old grandfather trust a robot machine for a surgery?" Listen and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "Why are local people forced to leave their houses when a neighborhood becomes famous?" Discuss and type.
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
                     <label class="task-check-row"><input type="checkbox" id="task-surgeries-1"><span>Support your partner if they face complex pronunciation.</span></label>
                     <label class="task-check-row"><input type="checkbox" id="task-surgeries-2"><span>Ask a friendly follow-up to expand their target ideas.</span></label>
                 </div>
-                <textarea id="text-surgeries" placeholder="Type your partner's ideas here..." oninput="saveText('surgeries')"></textarea>
+                <textarea id="text-surgeries" placeholder="Type group ideas here..." oninput="saveText('surgeries')"></textarea>
             </div>
 
             <div id="zone-diagnostics" class="input-group">
-                <label>Your Zone: Home Check-ups</label>
+                <label>Zone: Destruction of Monuments & Nature</label>
                 <div class="essentials-pill">
-                    <strong>Ask your partner:</strong> "Can you tell me step-by-step how a normal person does a blood test alone at home?" Listen and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "What can we do to protect old monuments and beaches from thousands of tourists every day?" Discuss and type.
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
                     <label class="task-check-row"><input type="checkbox" id="task-diagnostics-1"><span>Show physical signs of agreement (nodding or smiling).</span></label>
                     <label class="task-check-row"><input type="checkbox" id="task-diagnostics-2"><span>Encourage your partner by saying "That's a powerful point!".</span></label>
                 </div>
-                <textarea id="text-diagnostics" placeholder="Type your partner's ideas here..." oninput="saveText('diagnostics')"></textarea>
+                <textarea id="text-diagnostics" placeholder="Type group ideas here..." oninput="saveText('diagnostics')"></textarea>
+            </div>
+
+            <!-- EXCLUSIVE PLAYER C INTERVIEW ZONES -->
+            <div id="zone-interview_1" class="input-group">
+                <label>🦊 Player C: The Balance Interview</label>
+                <div class="essentials-pill">
+                    <strong>Cooperative Mission:</strong> "Interview Player A and Player B. Ask them: 'How can we get the tourist money (Player A) without destroying the houses of local people (Player B)?' Summarize their combination here."
+                </div>
+                <div class="focus-tasks-container">
+                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity):</div>
+                    <div style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 5px; padding-left: 2px;">
+                        Mediation and Synthesis. Listen to both sides, unite the answers and type the summary in your own words.
+                    </div>
+                </div>
+                <textarea id="text-interview_1" placeholder="Type the combined summary here..." oninput="saveText('interview_1')"></textarea>
+            </div>
+
+            <div id="zone-interview_2" class="input-group">
+                <label>🦊 Player C: The Perfect Tourist Profile</label>
+                <div class="essentials-pill">
+                    <strong>Cooperative Mission:</strong> "Ask your group: 'What are 2 simple rules for a person to be a good tourist today?' Log the group's official rules."
+                </div>
+                <div class="focus-tasks-container">
+                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity):</div>
+                    <div style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 5px; padding-left: 2px;">
+                        Collective Building. Ensure that rule number 1 comes from Player A and rule number 2 comes from Player B.
+                    </div>
+                </div>
+                <textarea id="text-interview_2" placeholder="Type the group's 2 official rules here..." oninput="saveText('interview_2')"></textarea>
             </div>
         </div>
 
         <div>
-            <div class="deck-title">Your Action Deck (Talk to your Friend)</div>
+            <div class="deck-title">Your Action Deck (Talk to your Team)</div>
             <div class="button-deck">
-                <button id="deck-ai" class="trigger-btn" onclick="selectArea('ai')">🧠 Ask AI</button>
-                <button id="deck-robots" class="trigger-btn" onclick="selectArea('robots')">🤖 Ask Robots</button>
+                <button id="deck-ai" class="trigger-btn" onclick="selectArea('ai')">✈️ Flights Talk</button>
+                <button id="deck-robots" class="trigger-btn" onclick="selectArea('robots')">💰 Income Talk</button>
                 <button id="deck-surgeries" class="trigger-btn" onclick="selectArea('surgeries')">🔒 Locked</button>
                 <button id="deck-diagnostics" class="trigger-btn" onclick="selectArea('diagnostics')">🔒 Locked</button>
+                <!-- Player C Action Decks -->
+                <button id="deck-interview_1" class="trigger-btn" onclick="selectArea('interview_1')" style="display: none;">🦊 Balance Interview</button>
+                <button id="deck-interview_2" class="trigger-btn" onclick="selectArea('interview_2')" style="display: none;">🦊 Tourist Profile</button>
             </div>
 
             <!-- REMOTE NAV BOX (MASTER MENTOR CONTROLS) -->
@@ -514,16 +545,16 @@
 
             <div class="presentation-flow">
                 <div class="flow-step">
-                    <strong>1. Speaker Setup</strong>
-                    Decide who starts. Player A presents the AI & Robot configurations; Player B takes over for Surgeries & Check-up logs.
+                    <strong>1. Dynamic Speaker Setup</strong>
+                    If you have 3 players, divide the segments smoothly. Player A presents Flights/Income, Player B presents Airbnb problems, and Player C leads the final balance log.
                 </div>
                 <div class="flow-step">
                     <strong>2. The 60-Second Challenge</strong>
-                    Try to explain your partner's core answers smoothly without long pauses. Use transitions like <em>"Furthermore"</em> or <em>"On the other hand"</em>.
+                    Try to explain your partner's core answers smoothly without long pauses. Use simple connectives like <em>"Because of this"</em> or <em>"On the other hand"</em>.
                 </div>
                 <div class="flow-step">
                     <strong>3. Continuous Interaction</strong>
-                    Listeners must provide active feedback. Ask at least one challenge question when your friend finishes their statement.
+                    Listeners must provide active feedback. Ask at least one friendly question when your friend finishes talking.
                 </div>
             </div>
 
@@ -545,7 +576,7 @@
 
         <div class="arena-card">
             <p style="font-size:0.95rem; margin:0 0 15px 0; color:var(--text-main); line-height:1.4;">
-                📣 <strong>The Mission:</strong> You are on a Live TV Show. Present your futuristic Hospital ideas to the world!
+                📣 <strong>The Mission:</strong> You are on a Live TV Show. Debate your modern tourism ideas with the world!
             </p>
 
             <div class="characters-box">
@@ -557,6 +588,11 @@
                 <div class="character">
                     <div class="char-avatar">👧</div>
                     <div id="simulation-name-B" class="char-name">Player B</div>
+                </div>
+                <div class="character" id="char-box-c" style="display:none;">
+                    <div class="vs-badge">VS</div>
+                    <div class="char-avatar" style="border-color: var(--amber);">🦊</div>
+                    <div id="simulation-name-C" class="char-name">Player C</div>
                 </div>
             </div>
 
@@ -593,7 +629,7 @@
         </div>
 
         <div class="teacher-monitor-card">
-            <h4 style="margin:0 0 10px 0; color: var(--green);">👥 Manage Active Class & Rooms:</h4>
+            <h4 style="margin:0 0 10px 0; color: var(--green);">👥 Manage Active Class & Rooms (Flexible For 3 Players):</h4>
             <div id="teacher-students-lobby-list">
                 <p style="font-size:0.85rem; color:var(--text-sub);">No students online in the lounge yet...</p>
             </div>
@@ -621,12 +657,12 @@
                 <div class="wheel-line line-h"></div>
                 <div class="wheel-line line-v"></div>
 
-                <button id="tw-ai" class="area-btn btn-ai selected" onclick="selectTeacherArea('ai')">🧠 AI</button>
-                <button id="tw-robots" class="area-btn btn-robots" onclick="selectArea('robots')">🤖 Robots</button>
-                <button id="tw-surgeries" class="area-btn btn-surgeries" onclick="selectTeacherArea('surgeries')">✂️ Surgeries</button>
-                <button id="tw-diagnostics" class="area-btn btn-diagnostics" onclick="selectTeacherArea('diagnostics')">🩺 Check-ups</button>
+                <button id="tw-ai" class="area-btn btn-ai selected" onclick="selectTeacherArea('ai')">✈️ Flights</button>
+                <button id="tw-robots" class="area-btn btn-robots" onclick="selectArea('robots')">💰 Income</button>
+                <button id="tw-surgeries" class="area-btn btn-surgeries" onclick="selectTeacherArea('surgeries')">🏠 Airbnb</button>
+                <button id="tw-diagnostics" class="area-btn btn-diagnostics" onclick="selectTeacherArea('diagnostics')">🌱 Nature</button>
 
-                <div class="wheel-center">NO<br>DOCTORS</div>
+                <div class="wheel-center">TOURISM<br>BOOM</div>
             </div>
             <div id="teacher-zone-display" class="monitor-box" style="margin-top:15px;">Tap an area on the wheel above ☝️</div>
         </div>
@@ -639,7 +675,7 @@
 <!-- SCREEN 6: HOMEWORK PRINT LAYER -->
 <div id="homework-print-screen" class="homework-layout">
     <h2>Essentials Mission Report</h2>
-    <p><strong>Topic:</strong> Hospitals 2040 - The "No Doctors" Evolution</p>
+    <p><strong>Topic:</strong> Tourism Explosion — The Global Travel Boom</p>
     
     <div class="hw-section">
         <h4>🎯 The Solutions We Generated:</h4>
@@ -652,9 +688,9 @@
     </div>
 
     <div class="hw-section" style="border-color: var(--amber);">
-        <h4>📖 Essentials Knowledge Block (Level B1):</h4>
+        <h4>📖 Essentials Knowledge Block (Level A2-B1):</h4>
         <div class="reading-box">
-            "In the year 2040, healthcare will experience a magnificent structural transformation. Medical systems will transition from human-centric models to distributed artificial networks. While deep technology handles automated procedures, human developers focus on creative systems. True autonomy means creating platforms where critical thinking rules over memorization. The core of this progression is community learning—building resilient answers together rather than relying on an individual database."
+            "In the modern world, global tourism brings both magnificent opportunities and complex difficulties. Cheap flights allow people to explore famous historic locations easily, creating massive economic benefits for local shops. However, unchecked growth puts local citizens at risk as residential spaces turn into temporary vacation rentals. Sustainable travel design requires collective efforts to protect natural spots and old monuments, balancing progress with local quality of life."
         </div>
     </div>
 
@@ -666,17 +702,17 @@
 <div id="overlay-briefing" class="modal-overlay" onclick="toggleBriefingModal(false)"></div>
 <div id="modal-briefing" class="modal-briefing">
     <div class="modal-briefing-header">
-        <h3 class="modal-briefing-title">📖 Warm-up Briefing (Level B1)</h3>
+        <h3 class="modal-briefing-title">📖 Warm-up Briefing (Level A2-B1)</h3>
         <button class="modal-briefing-close" onclick="toggleBriefingModal(false)">&times;</button>
     </div>
     <div class="modal-briefing-body">
-        <p><strong>Hospitals 2040: The "No-Doctors" Evolution</strong></p>
-        <p>Imagine a world where hospitals do not have human doctors inside the building. Advanced <strong>Artificial Intelligence models</strong> select medicines, specialized <strong>mechanical units</strong> perform complex <strong>robotic operations</strong>, and patients run <strong>automated blood tests</strong> directly at home. Is this setup <strong>highly effective</strong> or <strong>extremely risky</strong>?</p>
+        <p><strong>Tourism Explosion: The Global Travel Boom</strong></p>
+        <p>Today, millions of people travel to historical cities every week. <strong>Low-cost flights</strong> make tickets very cheap, and historic cities receive a lot of <strong>money from tourists</strong>. However, <strong>local residents</strong> are leaving because of short-term rentals like Airbnb, and <strong>historic monuments or nature</strong> are being destroyed. Is global tourism good or bad for the world?</p>
         <hr style="border:0; border-top:1px dashed #323238; margin:12px 0;">
         <p><strong>🤔 Questions to ponder:</strong></p>
         <ul style="padding-left:18px; margin:0;">
-            <li style="margin-bottom:6px;">Would you honestly trust an <strong>automated robotic unit</strong> to perform a <strong>surgical procedure</strong> on you today? Why?</li>
-            <li>What is the <strong>ultimate fatal vulnerability</strong> if an entire community hospital depends completely on an active internet network?</li>
+            <li style="margin-bottom:6px;">How often do you travel? Do you prefer cheap flight tickets or comfortable trains?</li>
+            <li>In your opinion, what is more important: tourist money or the peace of local neighbors?</li>
         </ul>
     </div>
 </div>
@@ -694,8 +730,12 @@ let lastTeacherRoomData = null;
 let lastLobbyDataStr = null; 
 let studentActiveAreaLocal = null;
 
-const myZones = { 'A': ['ai', 'robots'], 'B': ['surgeries', 'diagnostics'] };
-const AREA_LABELS = { ai: '🧠 AI', robots: '🤖 Robots', surgeries: '✂️ Surgeries', diagnostics: '🩺 Check-ups' };
+const myZones = { 
+    'A': ['ai', 'robots'], 
+    'B': ['surgeries', 'diagnostics'],
+    'C': ['interview_1', 'interview_2']
+};
+const AREA_LABELS = { ai: '✈️ Cheap Flights', robots: '💰 City Income', surgeries: '🏠 Locals Expelled', diagnostics: '🌱 Destruction', interview_1: '🦊 Balance Interview', interview_2: '🦊 Tourist Profile' };
 
 let saveTimers = {};
 let lastRoomDataStr = null;
@@ -759,6 +799,15 @@ function watchLobbyStatus() {
 
 function setupVisualLocks() {
     const allAreas = ['ai', 'robots', 'surgeries', 'diagnostics'];
+    
+    if (myRole === 'C') {
+        document.getElementById('deck-interview_1').style.display = 'block';
+        document.getElementById('deck-interview_2').style.display = 'block';
+    } else {
+        document.getElementById('deck-interview_1').style.display = 'none';
+        document.getElementById('deck-interview_2').style.display = 'none';
+    }
+
     allAreas.forEach(id => {
         const isAllowed = myZones[myRole].includes(id);
         const wheelBtn = document.getElementById('wheel-' + id);
@@ -827,7 +876,7 @@ function syncDataFromServer() {
         const dataStr = JSON.stringify(data);
         const dataChanged = dataStr !== lastRoomDataStr;
 
-        const allAreas = ['ai', 'robots', 'surgeries', 'diagnostics'];
+        const allAreas = ['ai', 'robots', 'surgeries', 'diagnostics', 'interview_1', 'interview_2'];
         allAreas.forEach(id => {
             const textarea = document.getElementById('text-' + id);
             if (data[id] !== undefined && document.activeElement !== textarea && textarea.value !== data[id]) {
@@ -879,11 +928,19 @@ function syncDataFromServer() {
 
             if (data.player_A) document.getElementById('simulation-name-A').innerText = data.player_A;
             if (data.player_B) document.getElementById('simulation-name-B').innerText = data.player_B;
+            
+            if (data.player_C) {
+                document.getElementById('simulation-name-C').innerText = data.player_C;
+                document.getElementById('char-box-c').style.display = 'flex';
+            } else {
+                document.getElementById('char-box-c').style.display = 'none';
+            }
 
             let sheetHTML = '';
             allAreas.forEach(id => {
                 const val = data[id] ? data[id] : 'No inputs yet...';
-                sheetHTML += `<div class="cheat-item"><strong>${id.toUpperCase()}:</strong> ${val}</div>`;
+                const labelName = AREA_LABELS[id] ? AREA_LABELS[id].toUpperCase() : id.toUpperCase();
+                sheetHTML += `<div class="cheat-item"><strong>${labelName}:</strong> ${val}</div>`;
             });
             
             const cheatListEl = document.getElementById('cheat-list');
@@ -893,7 +950,6 @@ function syncDataFromServer() {
             if(presCheatListEl.innerHTML !== sheetHTML) presCheatListEl.innerHTML = sheetHTML;
         }
 
-        // Phase Synchronization (Forced by Teacher routing)
         if (data.current_phase === 'presentation' && currentActiveScreenId !== 'screen-presentation') {
             switchScreen('screen-presentation');
         } else if (data.current_phase === 'simulation' && currentActiveScreenId !== 'screen-simulation') {
@@ -928,10 +984,13 @@ function syncTeacherDashboard() {
                         <option value="Lobby" ${currentObj.assigned_room === 'Lobby' ? 'selected' : ''}>Lounge (Waiting)</option>
                         <option value="Room 1:A" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'A' ? 'selected' : ''}>Room 1 - Player A</option>
                         <option value="Room 1:B" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'B' ? 'selected' : ''}>Room 1 - Player B</option>
+                        <option value="Room 1:C" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'C' ? 'selected' : ''}>Room 1 - Player C</option>
                         <option value="Room 2:A" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'A' ? 'selected' : ''}>Room 2 - Player A</option>
                         <option value="Room 2:B" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'B' ? 'selected' : ''}>Room 2 - Player B</option>
+                        <option value="Room 2:C" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'C' ? 'selected' : ''}>Room 2 - Player C</option>
                         <option value="Room 3:A" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'A' ? 'selected' : ''}>Room 3 - Player A</option>
                         <option value="Room 3:B" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'B' ? 'selected' : ''}>Room 3 - Player B</option>
+                        <option value="Room 3:C" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'C' ? 'selected' : ''}>Room 3 - Player C</option>
                     </select>
                 </div>
             `;
@@ -968,7 +1027,8 @@ function sendTargetScreenRoute(routeValue) {
 function selectTeacherArea(area) {
     teacherSelectedArea = area;
     ['ai','robots','surgeries','diagnostics'].forEach(id => {
-        document.getElementById('tw-' + id).classList.toggle('selected', id === area);
+        const btn = document.getElementById('tw-' + id);
+        if(btn) btn.classList.toggle('selected', id === area);
     });
     renderTeacherZoneDisplay();
 }
@@ -1073,8 +1133,9 @@ function openHomeworkView() {
         hwContainer.style.display = 'flex';
 
         let solutionBuild = '';
-        ['ai','robots','surgeries','diagnostics'].forEach(id => {
-            solutionBuild += `<p><strong>${id.toUpperCase()}:</strong> ${data[id] || 'N/A'}</p>`;
+        ['ai','robots','surgeries','diagnostics', 'interview_1', 'interview_2'].forEach(id => {
+            const labelName = AREA_LABELS[id] ? AREA_LABELS[id].toUpperCase() : id.toUpperCase();
+            solutionBuild += `<p><strong>${labelName}:</strong> ${data[id] || 'N/A'}</p>`;
         });
         document.getElementById('hw-solutions-inject').innerHTML = solutionBuild;
         document.getElementById('hw-vocab-inject').innerText = data.teacher_words || 'No specific target words logged.';
