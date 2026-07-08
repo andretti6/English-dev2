@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Essentials Radar 2040 - Tourism Explosion</title>
+    <title>Essentials Radar 2040 - Digital Nomads</title>
     <style>
         :root {
             --bg-dark: #121214;
@@ -145,9 +145,9 @@
 
         .area-btn.locked { border-color: #323238; color: #7c7c8a; opacity: 0.5; cursor: not-allowed; }
         .area-btn.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(0,179,126,0.35); }
-        .btn-ai { top: 20%; left: 20%; }
-        .btn-robots { top: 20%; right: 15%; }
-        .btn-surgeries { bottom: 25%; right: 15%; }
+        .btn-ai { top: 20%; left: 15%; }
+        .btn-robots { top: 20%; right: 10%; }
+        .btn-surgeries { bottom: 25%; right: 10%; }
         .btn-diagnostics { bottom: 25%; left: 15%; }
         .wheel-center {
             width: 85px;
@@ -358,8 +358,8 @@
     <!-- SCREEN 1: LOGIN -->
     <div id="screen-login" class="screen active">
         <header>
-            <h1>Tourism Explosion</h1>
-            <p style="color: var(--text-sub); font-size: 0.9rem;">The Global Travel Boom</p>
+            <h1>Digital Nomads</h1>
+            <p style="color: var(--text-sub); font-size: 0.9rem;">Work from Any Country</p>
         </header>
         <div class="login-card">
             <label for="username">Type Your Name:</label>
@@ -376,17 +376,17 @@
         </header>
         <div class="lounge-box">
             <p style="color: var(--amber); font-weight: bold; margin-top: 0;">⏳ Please wait in the lounge...</p>
-            <p style="font-size:0.9rem; color: var(--text-sub);">Teacher André is setting up your target team and custom simulation room right now!</p>
+            <p style="font-size:0.9rem; color: var(--text-sub);">Your teacher is setting up your target team and custom simulation room right now!</p>
         </div>
         
         <div class="warmup-box">
             <h3>📖 Warm-up Briefing (Level A2-B1):</h3>
-            <p><strong>The Tourism Explosion Challenge</strong></p>
-            <p>Today, millions of people travel to historical cities every week. Low-cost flights make tickets very cheap, and historic cities receive a lot of money from tourists. However, local residents are leaving because of short-term rentals like Airbnb, and historic monuments or nature are being destroyed. Is global tourism good or bad for the world?</p>
+            <p><strong>The Digital Nomad Challenge</strong></p>
+            <p>Today, many people work online using their computers and travel to different countries. This gives them a lot of freedom and allows them to learn about new cultures. However, when too many nomads move to the same city, local prices go up (gentrification). Also, many nomads feel lonely because they do not have deep roots in one place. Is this lifestyle good or bad for society?</p>
             <p><strong>🤔 Questions to ponder while you wait:</strong></p>
             <ul>
-                <li>How often do you travel? Do you prefer cheap flight tickets or comfortable trains?</li>
-                <li>In your opinion, what is more important: tourist money or the peace of local neighbors?</li>
+                <li>Would you like to work online while living in another country? Why or why not?</li>
+                <li>What is more important: freedom to travel or staying close to family and community?</li>
             </ul>
         </div>
     </div>
@@ -394,7 +394,7 @@
     <!-- SCREEN 2: MAIN GAME RADAR -->
     <div id="screen-game" class="screen">
         <header>
-            <h1>Tourism Explosion</h1>
+            <h1>Digital Nomads</h1>
             <div id="player-badge" class="user-badge">Loading...</div>
             <div style="margin-top: 8px;">
                 <button class="start-btn" style="background: var(--amber); color:#000; padding:6px 12px; font-size:0.8rem;" onclick="toggleBriefingModal(true)">📖 Open Warm-up Briefing</button>
@@ -408,12 +408,12 @@
             <div class="wheel-line line-h"></div>
             <div class="wheel-line line-v"></div>
             
-            <button id="wheel-ai" class="area-btn btn-ai" onclick="selectArea('ai')">✈️ Cheap Flights</button>
-            <button id="wheel-robots" class="area-btn btn-robots" onclick="selectArea('robots')">💰 City Income</button>
-            <button id="wheel-surgeries" class="area-btn btn-surgeries" onclick="selectArea('surgeries')">🔒 Locals Expelled</button>
-            <button id="wheel-diagnostics" class="area-btn btn-diagnostics" onclick="selectArea('diagnostics')">🔒 Destruction</button>
+            <button id="wheel-ai" class="area-btn btn-ai" onclick="selectArea('ai')">✈️ Geoflexibility</button>
+            <button id="wheel-robots" class="area-btn btn-robots" onclick="selectArea('robots')">🌍 New Cultures</button>
+            <button id="wheel-surgeries" class="area-btn btn-surgeries" onclick="selectArea('surgeries')">🔒 Gentrification</button>
+            <button id="wheel-diagnostics" class="area-btn btn-diagnostics" onclick="selectArea('diagnostics')">🔒 Loneliness</button>
 
-            <div class="wheel-center">TOURISM<br>BOOM</div>
+            <div class="wheel-center">NOMAD<br>LIFE</div>
         </div>
 
         <div class="inputs-section">
@@ -423,22 +423,22 @@
 
             <!-- INPUTS ZONES -->
             <div id="zone-ai" class="input-group">
-                <label>Zone: Low-Cost Flights (Cheap Tickets)</label>
+                <label>Zone: Geoflexibility Freedom</label>
                 <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "Why are low-cost flights so popular today, and what is the problem with too many planes?" Discuss and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "What are the biggest benefits of having the freedom to choose your work location from any country?" Discuss and type.
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
                     <label class="task-check-row"><input type="checkbox" id="task-ai-1"><span>Help friends find the perfect word when they hesitate.</span></label>
-                    <label class="task-check-row"><input type="checkbox" id="task-ai-2"><span>Validate your partner's travel safety or environment concerns out loud.</span></label>
+                    <label class="task-check-row"><input type="checkbox" id="task-ai-2"><span>Validate your partner's lifestyle preferences out loud.</span></label>
                 </div>
                 <textarea id="text-ai" placeholder="Type group ideas here..." oninput="saveText('ai')"></textarea>
             </div>
 
             <div id="zone-robots" class="input-group">
-                <label>Zone: Income for Historic Cities</label>
+                <label>Zone: Learning New Cultures</label>
                 <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "How do local shops, restaurants, and hotels benefit from tourist money?" Discuss and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "How does working from different countries change your perspective and help you learn about cultures?" Discuss and type.
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
@@ -449,11 +449,11 @@
             </div>
 
             <div id="zone-surgeries" class="input-group">
-                <label>Zone: Residents Expelled by Airbnb</label>
+                <label>Zone: High Cost of Living & Gentrification</label>
                 <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "Why are local people forced to leave their houses when a neighborhood becomes famous?" Discuss and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "Why do local prices go up when many high-earning remote workers move to a neighborhood?" Discuss and type.
                 </div>
-                <div class="focus-tasks-container">
+                . <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
                     <label class="task-check-row"><input type="checkbox" id="task-surgeries-1"><span>Support your partner if they face complex pronunciation.</span></label>
                     <label class="task-check-row"><input type="checkbox" id="task-surgeries-2"><span>Ask a friendly follow-up to expand their target ideas.</span></label>
@@ -462,9 +462,9 @@
             </div>
 
             <div id="zone-diagnostics" class="input-group">
-                <label>Zone: Destruction of Monuments & Nature</label>
+                <label>Zone: Loneliness & Lack of Roots</label>
                 <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "What can we do to protect old monuments and beaches from thousands of tourists every day?" Discuss and type.
+                    <strong>Cooperative Task:</strong> Ask your partners: "How can modern digital nomads avoid loneliness and feel connected without a fixed home?" Discuss and type.
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
@@ -478,7 +478,7 @@
             <div id="zone-interview_1" class="input-group">
                 <label>🦊 Player C: The Balance Interview</label>
                 <div class="essentials-pill">
-                    <strong>Cooperative Mission:</strong> "Interview Player A and Player B. Ask them: 'How can we get the tourist money (Player A) without destroying the houses of local people (Player B)?' Summarize their combination here."
+                    <strong>Cooperative Mission:</strong> "Interview Player A and Player B. Ask them: 'How can we enjoy freedom and cultural exchange (Player A) without increasing the cost of life for local people (Player B)?' Summarize their ideas here."
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity):</div>
@@ -490,9 +490,9 @@
             </div>
 
             <div id="zone-interview_2" class="input-group">
-                <label>🦊 Player C: The Perfect Tourist Profile</label>
+                <label>🦊 Player C: The Perfect Nomad Profile</label>
                 <div class="essentials-pill">
-                    <strong>Cooperative Mission:</strong> "Ask your group: 'What are 2 simple rules for a person to be a good tourist today?' Log the group's official rules."
+                    <strong>Cooperative Mission:</strong> "Ask your group: 'What are 2 simple rules for a person to be a responsible digital nomad today?' Log the group's official rules."
                 </div>
                 <div class="focus-tasks-container">
                     <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity):</div>
@@ -507,13 +507,13 @@
         <div>
             <div class="deck-title">Your Action Deck (Talk to your Team)</div>
             <div class="button-deck">
-                <button id="deck-ai" class="trigger-btn" onclick="selectArea('ai')">✈️ Flights Talk</button>
-                <button id="deck-robots" class="trigger-btn" onclick="selectArea('robots')">💰 Income Talk</button>
+                <button id="deck-ai" class="trigger-btn" onclick="selectArea('ai')">✈️ Freedom Talk</button>
+                <button id="deck-robots" class="trigger-btn" onclick="selectArea('robots')">🌍 Culture Talk</button>
                 <button id="deck-surgeries" class="trigger-btn" onclick="selectArea('surgeries')">🔒 Locked</button>
                 <button id="deck-diagnostics" class="trigger-btn" onclick="selectArea('diagnostics')">🔒 Locked</button>
                 <!-- Player C Action Decks -->
                 <button id="deck-interview_1" class="trigger-btn" onclick="selectArea('interview_1')" style="display: none;">🦊 Balance Interview</button>
-                <button id="deck-interview_2" class="trigger-btn" onclick="selectArea('interview_2')" style="display: none;">🦊 Tourist Profile</button>
+                <button id="deck-interview_2" class="trigger-btn" onclick="selectArea('interview_2')" style="display: none;">🦊 Nomad Profile</button>
             </div>
 
             <!-- REMOTE NAV BOX (MASTER MENTOR CONTROLS) -->
@@ -546,7 +546,7 @@
             <div class="presentation-flow">
                 <div class="flow-step">
                     <strong>1. Dynamic Speaker Setup</strong>
-                    If you have 3 players, divide the segments smoothly. Player A presents Flights/Income, Player B presents Airbnb problems, and Player C leads the final balance log.
+                    If you have 3 players, divide the segments smoothly. Player A presents Freedom/Culture, Player B presents Gentrification and Loneliness, and Player C leads the final balance log.
                 </div>
                 <div class="flow-step">
                     <strong>2. The 60-Second Challenge</strong>
@@ -576,7 +576,7 @@
 
         <div class="arena-card">
             <p style="font-size:0.95rem; margin:0 0 15px 0; color:var(--text-main); line-height:1.4;">
-                📣 <strong>The Mission:</strong> You are on a Live TV Show. Debate your modern tourism ideas with the world!
+                📣 <strong>The Mission:</strong> You are on a Live TV Show. Debate your modern digital nomad ideas with the world!
             </p>
 
             <div class="characters-box">
@@ -629,7 +629,7 @@
         </div>
 
         <div class="teacher-monitor-card">
-            <h4 style="margin:0 0 10px 0; color: var(--green);">👥 Manage Active Class & Rooms (Flexible For 3 Players):</h4>
+            <h4 style="margin:0 0 10px 0; color: var(--green);">👥 Manage Active Class & Rooms:</h4>
             <div id="teacher-students-lobby-list">
                 <p style="font-size:0.85rem; color:var(--text-sub);">No students online in the lounge yet...</p>
             </div>
@@ -657,12 +657,12 @@
                 <div class="wheel-line line-h"></div>
                 <div class="wheel-line line-v"></div>
 
-                <button id="tw-ai" class="area-btn btn-ai selected" onclick="selectTeacherArea('ai')">✈️ Flights</button>
-                <button id="tw-robots" class="area-btn btn-robots" onclick="selectArea('robots')">💰 Income</button>
-                <button id="tw-surgeries" class="area-btn btn-surgeries" onclick="selectTeacherArea('surgeries')">🏠 Airbnb</button>
-                <button id="tw-diagnostics" class="area-btn btn-diagnostics" onclick="selectTeacherArea('diagnostics')">🌱 Nature</button>
+                <button id="tw-ai" class="area-btn btn-ai selected" onclick="selectTeacherArea('ai')">✈️ Freedom</button>
+                <button id="tw-robots" class="area-btn btn-robots" onclick="selectArea('robots')">🌍 Cultures</button>
+                <button id="tw-surgeries" class="area-btn btn-surgeries" onclick="selectTeacherArea('surgeries')">🏠 Costs</button>
+                <button id="tw-diagnostics" class="area-btn btn-diagnostics" onclick="selectTeacherArea('diagnostics')">🌱 Roots</button>
 
-                <div class="wheel-center">TOURISM<br>BOOM</div>
+                <div class="wheel-center">NOMAD<br>LIFE</div>
             </div>
             <div id="teacher-zone-display" class="monitor-box" style="margin-top:15px;">Tap an area on the wheel above ☝️</div>
         </div>
@@ -675,7 +675,7 @@
 <!-- SCREEN 6: HOMEWORK PRINT LAYER -->
 <div id="homework-print-screen" class="homework-layout">
     <h2>Essentials Mission Report</h2>
-    <p><strong>Topic:</strong> Tourism Explosion — The Global Travel Boom</p>
+    <p><strong>Topic:</strong> Digital Nomads — The Global Remote Work Challenge</p>
     
     <div class="hw-section">
         <h4>🎯 The Solutions We Generated:</h4>
@@ -690,7 +690,7 @@
     <div class="hw-section" style="border-color: var(--amber);">
         <h4>📖 Essentials Knowledge Block (Level A2-B1):</h4>
         <div class="reading-box">
-            "In the modern world, global tourism brings both magnificent opportunities and complex difficulties. Cheap flights allow people to explore famous historic locations easily, creating massive economic benefits for local shops. However, unchecked growth puts local citizens at risk as residential spaces turn into temporary vacation rentals. Sustainable travel design requires collective efforts to protect natural spots and old monuments, balancing progress with local quality of life."
+            "In the modern world, remote work brings both freedom and complex problems. Digital nomads enjoy great flexibility, working from anywhere and discovering new cultures. This exchange brings value to global minds. However, this trend can cause gentrification and increase local living costs in popular neighborhoods. Additionally, constant travel sometimes leads to isolation and loneliness. A smart approach requires finding ways to engage with local communities respectfully."
         </div>
     </div>
 
@@ -706,13 +706,13 @@
         <button class="modal-briefing-close" onclick="toggleBriefingModal(false)">&times;</button>
     </div>
     <div class="modal-briefing-body">
-        <p><strong>Tourism Explosion: The Global Travel Boom</strong></p>
-        <p>Today, millions of people travel to historical cities every week. <strong>Low-cost flights</strong> make tickets very cheap, and historic cities receive a lot of <strong>money from tourists</strong>. However, <strong>local residents</strong> are leaving because of short-term rentals like Airbnb, and <strong>historic monuments or nature</strong> are being destroyed. Is global tourism good or bad for the world?</p>
+        <p><strong>Digital Nomads: Work from Any Country</strong></p>
+        <p>Today, many people work online using their computers and travel to different countries. This gives them a lot of <strong>freedom and geoflexibility</strong> and allows them to <strong>learn about new cultures</strong>. However, when too many nomads move to the same city, local prices go up (<strong>gentrification</strong>). Also, many nomads feel <strong>lonely because they do not have deep roots</strong> in one place. Is this lifestyle good or bad for society?</p>
         <hr style="border:0; border-top:1px dashed #323238; margin:12px 0;">
         <p><strong>🤔 Questions to ponder:</strong></p>
         <ul style="padding-left:18px; margin:0;">
-            <li style="margin-bottom:6px;">How often do you travel? Do you prefer cheap flight tickets or comfortable trains?</li>
-            <li>In your opinion, what is more important: tourist money or the peace of local neighbors?</li>
+            <li style="margin-bottom:6px;">Would you like to work online while living in another country? Why or why not?</li>
+            <li>What is more important: freedom to travel or staying close to family and community?</li>
         </ul>
     </div>
 </div>
@@ -735,7 +735,7 @@ const myZones = {
     'B': ['surgeries', 'diagnostics'],
     'C': ['interview_1', 'interview_2']
 };
-const AREA_LABELS = { ai: '✈️ Cheap Flights', robots: '💰 City Income', surgeries: '🏠 Locals Expelled', diagnostics: '🌱 Destruction', interview_1: '🦊 Balance Interview', interview_2: '🦊 Tourist Profile' };
+const AREA_LABELS = { ai: '✈️ Geoflexibility', robots: '🌍 New Cultures', surgeries: '🏠 Gentrification', diagnostics: '🌱 Loneliness', interview_1: '🦊 Balance Interview', interview_2: '🦊 Nomad Profile' };
 
 let saveTimers = {};
 let lastRoomDataStr = null;
