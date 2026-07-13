@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Essentials Radar 2040 - Digital Nomads</title>
+    <title>TALK IT UP</title>
     <style>
         :root {
-            --bg-dark: #121214;
-            --card-dark: #1e1e22;
+            --bg-dark: #0f0f11;
+            --card-dark: #18181c;
             --primary: #8257e5;
+            --primary-glow: rgba(130, 87, 229, 0.4);
             --green: #00b37e;
+            --green-glow: rgba(0, 179, 126, 0.3);
             --amber: #ffcd00;
+            --amber-glow: rgba(255, 205, 0, 0.25);
             --text-main: #e1e1e6;
             --text-sub: #a8a8b3;
-            --lock-color: #f75a68;
-            --blue-info: #007acd;
+            --cyber-blue: #00e5ff;
+            --highlight-bg: rgba(255, 205, 0, 0.15);
+            --zoom-blue: #2D8CFF;
         }
 
         * { box-sizing: border-box; }
@@ -22,13 +26,13 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
             padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
         }
 
         .app-container {
@@ -39,1119 +43,701 @@
             gap: 20px;
         }
 
-        /* SCREENS */
-        .screen { display: none; flex-direction: column; gap: 20px; }
+        .screen { display: none; flex-direction: column; gap: 15px; width: 100%; }
         .screen.active { display: flex; }
 
-        /* SCREEN: LOGIN */
-        #screen-login { text-align: center; padding: 30px 10px; }
-        #screen-login h1 { color: var(--green); font-size: 1.8rem; margin: 0; }
-        
-        .login-card {
+        .arena-container {
+            width: 100%;
             background: var(--card-dark);
+            border: 2px solid #29292e;
+            border-radius: 16px;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .arena-header {
+            text-align: center;
+            border-bottom: 1px solid #29292e;
+            padding-bottom: 12px;
+        }
+
+        .arena-header h1 {
+            font-size: 1.6rem;
+            color: var(--amber);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .instruction-step {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--cyber-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"] {
+            background: #09090b;
+            border: 1px solid #29292e;
             border-radius: 8px;
-            border: 1px solid #323238;
+            color: #fff;
+            padding: 12px;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        .skills-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .skill-option-card {
+            background: #202024;
+            border: 1px solid #29292e;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .skill-option-card.selected {
+            border-color: var(--primary);
+            background: rgba(130, 87, 229, 0.08);
+        }
+
+        .skill-checkbox { width: 18px; height: 18px; accent-color: var(--primary); }
+        .skill-title { font-size: 0.9rem; font-weight: 500; color: var(--text-main); }
+
+        .partner-mission-box {
+            background: linear-gradient(135deg, rgba(130, 87, 229, 0.15), rgba(0, 229, 255, 0.05));
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .live-hints-zone {
+            background: #121214;
+            border-left: 4px solid var(--amber);
+            padding: 12px;
+            border-radius: 0 8px 8px 0;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 20px;
-            margin-bottom: 20px;
         }
 
-        .login-card label { font-size: 1rem; font-weight: bold; color: var(--text-sub); }
-        .login-card input, .login-card select {
-            background: var(--bg-dark);
-            border: 1px solid #323238;
-            color: #fff;
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 1rem;
-            text-align: center;
-        }
+        .hint-item { font-size: 0.85rem; color: var(--text-main); line-height: 1.4; }
 
-        .start-btn {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        /* SCREEN: LOBBY LOUNGE */
-        .lounge-box { background: var(--card-dark); border: 1px solid var(--primary); border-radius: 8px; padding: 15px; text-align: center; }
-        .warmup-box { background: #1a1a24; border-left: 4px solid var(--amber); padding: 15px; border-radius: 0 8px 8px 0; text-align: left; font-size: 0.95rem; line-height: 1.5; }
-        .warmup-box h3 { margin: 0 0 10px 0; color: var(--amber); font-size: 1.1rem; }
-        .warmup-box ul { margin: 10px 0 0 0; padding-left: 20px; color: var(--text-main); }
-        .warmup-box li { margin-bottom: 8px; }
-
-        /* HEADER */
-        header { text-align: center; }
-        header h1 { font-size: 1.3rem; color: var(--green); margin: 0 0 5px 0; text-transform: uppercase; }
-        .user-badge {
-            background: #29292e;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--amber);
-            display: inline-block;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-
-        /* WHEEL STRUCTURE */
-        .wheel-container {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .wheel {
+        .btn-submit {
             width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(
-                #29292e 0deg 90deg, 
-                #222226 90deg 180deg, 
-                #29292e 180deg 270deg, 
-                #222226 270deg 360deg
-            );
-            border: 2px solid var(--card-dark);
-            position: absolute;
-        }
-
-        .wheel-line { position: absolute; width: 100%; height: 2px; background-color: #323238; }
-        .line-v { transform: rotate(90deg); }
-
-        .area-btn {
-            position: absolute;
-            background: var(--card-dark);
-            border: 1px solid var(--primary);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .area-btn.locked { border-color: #323238; color: #7c7c8a; opacity: 0.5; cursor: not-allowed; }
-        .area-btn.selected { border-color: var(--green); box-shadow: 0 0 0 2px rgba(0,179,126,0.35); }
-        .btn-ai { top: 20%; left: 15%; }
-        .btn-robots { top: 20%; right: 10%; }
-        .btn-surgeries { bottom: 25%; right: 10%; }
-        .btn-diagnostics { bottom: 25%; left: 15%; }
-        .wheel-center {
-            width: 85px;
-            height: 85px;
-            background: var(--bg-dark);
-            border: 3px solid var(--green);
-            border-radius: 50%;
-            z-index: 5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            font-size: 0.65rem;
-            font-weight: bold;
-            color: var(--green);
-        }
-
-        /* INPUT SECTIONS */
-        .inputs-section {
-            background: var(--card-dark);
+            padding: 14px;
             border-radius: 8px;
-            padding: 15px;
-            border: 1px solid #323238;
-            min-height: 170px;
-        }
-
-        .input-group { display: none; flex-direction: column; gap: 8px; }
-        .input-group.active { display: flex; }
-        .input-group label { font-size: 0.9rem; color: var(--amber); font-weight: bold; }
-
-        .essentials-pill {
-            background: #1a1a24;
-            border-left: 4px solid var(--primary);
-            padding: 10px;
-            border-radius: 0 6px 6px 0;
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            line-height: 1.4;
-        }
-
-        /* HUMAN CAPACITY FOCUS TASKS */
-        .focus-tasks-container {
-            margin-top: 10px;
-            padding: 8px;
-            background: #19191b;
-            border: 1px dashed #444;
-            border-radius: 6px;
-        }
-        .focus-tasks-title {
-            font-size: 0.75rem;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
             text-transform: uppercase;
-            color: var(--amber);
-            margin-bottom: 6px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .task-check-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: var(--text-main);
-            margin-bottom: 5px;
-            cursor: pointer;
-        }
-        .task-check-row input { margin-top: 2px; cursor: pointer; }
-
-        textarea { background: var(--bg-dark); border: 1px solid #323238; border-radius: 6px; color: #fff; padding: 10px; font-size: 0.9rem; resize: none; height: 70px; }
-        #msg-locked { display: none; color: var(--lock-color); font-size: 0.9rem; text-align: center; padding: 40px 10px; }
-
-        .teacher-words-pill {
-            background: rgba(0, 179, 126, 0.1);
-            border: 1px solid var(--green);
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, var(--green), #00875f);
             color: #fff;
-            margin-bottom: 10px;
-            display: none;
+            box-shadow: 0 4px 12px var(--green-glow);
         }
+        .btn-submit:active { transform: scale(0.98); }
 
-        /* DECKS */
-        .deck-title { font-size: 0.8rem; text-transform: uppercase; color: var(--text-sub); margin-bottom: 8px; }
-        .button-deck { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        .trigger-btn {
-            background: linear-gradient(135deg, #29292e, #1e1e22);
-            border: 1px solid #323238;
-            color: var(--text-main);
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .trigger-btn:disabled { opacity: 0.2; cursor: not-allowed; }
-
-        /* REMOTE NAVIGATION BUTTONS */
-        .remote-nav-container {
-            display: none;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(130, 87, 229, 0.1);
-            border: 1px solid var(--primary);
+        /* ZOOM ROOMS UI FOR TEACHER */
+        .zoom-room-box {
+            background: #202024;
+            border: 1px solid #2d2d34;
             border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
         }
-
-        .pulse-active { animation: pulse 1.5s infinite; }
-
-        /* SCREEN: PRESENTATION TIME */
-        .pres-card { background: var(--card-dark); border-radius: 12px; padding: 20px; border: 1px solid var(--blue-info); }
-        .presentation-flow { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-        .flow-step { background: #19191b; border-left: 4px solid var(--blue-info); padding: 12px; border-radius: 0 6px 6px 0; font-size: 0.85rem; line-height: 1.4; }
-        .flow-step strong { color: var(--amber); display: block; margin-bottom: 4px; }
-
-        /* SCREEN: SIMULATION ARENA */
-        .arena-card { background: var(--card-dark); border-radius: 12px; padding: 20px; border: 1px solid #323238; text-align: center; }
-        .characters-box { display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap; gap: 10px; }
-        .character { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .char-avatar { font-size: 3rem; background: #29292e; width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; border-radius: 50%; border: 2px solid var(--primary); }
-        .char-name { font-size: 0.85rem; font-weight: bold; color: var(--text-main); max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .vs-badge { font-size: 1rem; color: var(--lock-color); font-weight: bold; align-self: center; }
-
-        .cheat-sheet { background: var(--bg-dark); border-radius: 8px; padding: 12px; text-align: left; margin-top: 20px; max-height: 140px; overflow-y: auto; font-size: 0.85rem; border: 1px solid #323238; }
-        .cheat-sheet h4 { color: var(--green); margin: 0 0 8px 0; text-transform: uppercase; font-size: 0.8rem; }
-        .cheat-item { margin-bottom: 8px; color: var(--text-sub); border-bottom: 1px solid #222; padding-bottom: 4px; }
-
-        /* TEACHER COMPONENT STYLES */
-        .teacher-monitor-card { background: var(--card-dark); border: 1px solid var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .monitor-box { background: var(--bg-dark); padding: 10px; border-radius: 6px; font-size: 0.85rem; color: #fff; min-height: 40px; margin-top: 5px; margin-bottom: 12px; border: 1px solid #323238; white-space: pre-wrap; }
-        .student-row { display: flex; justify-content: space-between; align-items: center; background: #29292e; padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 0.9rem; }
-        .student-row select { background: var(--bg-dark); color: #fff; border: 1px solid #444; padding: 4px; border-radius: 4px; font-size: 0.8rem; }
-
-        /* MODAL BRIEFING WINDOW */
-        .modal-briefing {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 380px;
-            background: #1a1a24;
-            border: 2px solid var(--amber);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.8);
-            z-index: 5000;
-        }
-        .modal-briefing-header {
+        .zoom-room-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #323238;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-        }
-        .modal-briefing-title {
-            margin: 0;
-            color: var(--amber);
-            font-size: 1.1rem;
-        }
-        .modal-briefing-close {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 1.3rem;
             font-weight: bold;
+            color: #fff;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #2d2d34;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+        }
+        .zoom-student-row {
+            font-size: 0.8rem;
+            padding: 4px 0;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .zoom-assign-btn {
+            background: var(--zoom-blue);
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
             cursor: pointer;
         }
-        .modal-briefing-body {
-            font-size: 0.9rem;
+
+        .study-box {
+            background: #121214;
+            border: 1px solid #29292e;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
             line-height: 1.5;
-            max-height: 300px;
-            overflow-y: auto;
             color: var(--text-main);
         }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 4999;
+
+        .word-hl {
+            background: var(--highlight-bg);
+            color: var(--amber);
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-weight: bold;
         }
 
-        /* HOMEWORK PRINT LAYER */
-        .homework-layout { background: #fff; color: #000; padding: 25px; border-radius: 12px; text-align: left; max-width: 500px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; gap: 20px; }
-        .homework-layout h2 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin: 0; }
-        .hw-section { background: #f4f4f6; padding: 12px; border-radius: 6px; border-left: 5px solid #323238; }
-        .hw-section h4 { margin: 0 0 5px 0; color: #222; text-transform: uppercase; font-size: 0.85rem; }
-        .reading-box { font-size: 0.95rem; line-height: 1.5; color: #333; font-style: italic; background: #fff8e7; padding: 15px; border-radius: 6px; border: 1px solid var(--amber); }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); box-shadow: 0 0 15px rgba(0, 179, 126, 0.4); }
-            100% { transform: scale(1); }
+        /* PRINT CONFIGURATION */
+        @media print {
+            body { background: #fff !important; color: #000 !important; padding: 0; }
+            .app-container { max-width: 100%; }
+            .screen { display: none !important; }
+            .screen#screen-profile { display: flex !important; }
+            .arena-container { border: none !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
+            .study-box, .skill-option-card, #profile-skills-summary > div { background: #f5f5f5 !important; border: 1px solid #ccc !important; color: #000 !important; }
+            .btn-submit, .word-hl { color: #000 !important; background: #e0e0e0 !important; }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
 <body>
 
-<div class="app-container" id="main-container">
+<div class="app-container">
 
-    <!-- SCREEN 1: LOGIN -->
+    <!-- SCREEN 1: LOGIN & GOAL SELECTION -->
     <div id="screen-login" class="screen active">
-        <header>
-            <h1>Digital Nomads</h1>
-            <p style="color: var(--text-sub); font-size: 0.9rem;">Work from Any Country</p>
-        </header>
-        <div class="login-card">
-            <label for="username">Type Your Name:</label>
-            <input type="text" id="username" placeholder="Your name here..." autocomplete="off">
-        </div>
-        <button class="start-btn" onclick="checkLoginFlow()">Let's Play! 🚀</button>
-    </div>
+        <div class="arena-container">
+            <div class="arena-header">
+                <h1 id="login-title">TALK IT UP</h1>
+                <div class="instruction-step" id="login-instruction">Talk to a friend and generate insights together</div>
+            </div>
 
-    <!-- SCREEN: LOBBY LOUNGE -->
-    <div id="screen-lobby" class="screen">
-        <header>
-            <h1>Mission Control Room</h1>
-            <div id="lobby-user-badge" class="user-badge">Waiting...</div>
-        </header>
-        <div class="lounge-box">
-            <p style="color: var(--amber); font-weight: bold; margin-top: 0;">⏳ Please wait in the lounge...</p>
-            <p style="font-size:0.9rem; color: var(--text-sub);">Your teacher is setting up your target team and custom simulation room right now!</p>
-        </div>
-        
-        <div class="warmup-box">
-            <h3>📖 Warm-up Briefing (Level A2-B1):</h3>
-            <p><strong>The Digital Nomad Challenge</strong></p>
-            <p>Today, many people work online using their computers and travel to different countries. This gives them a lot of freedom and allows them to learn about new cultures. However, when too many nomads move to the same city, local prices go up (gentrification). Also, many nomads feel lonely because they do not have deep roots in one place. Is this lifestyle good or bad for society?</p>
-            <p><strong>🤔 Questions to ponder while you wait:</strong></p>
-            <ul>
-                <li>Would you like to work online while living in another country? Why or why not?</li>
-                <li>What is more important: freedom to travel or staying close to family and community?</li>
-            </ul>
+            <div>
+                <label for="username">Your Name:</label>
+                <input type="text" id="username" placeholder="Type your name..." autocomplete="off" oninput="checkTeacherMode(this.value)">
+            </div>
+
+            <div id="skills-selection-block">
+                <label>What do you want to develop today?</label>
+                <div style="font-size: 0.75rem; color: var(--text-sub); margin-bottom: 8px;">Pick up to 2 target actions:</div>
+                <div class="skills-grid" id="login-skills-list"></div>
+            </div>
+
+            <button class="btn-submit" id="btn-login-enter" onclick="processLoginAndSearchRoom()" style="background: var(--primary); box-shadow: 0 4px 12px var(--primary-glow);">
+                Join Room 🚀
+            </button>
         </div>
     </div>
 
-    <!-- SCREEN 2: MAIN GAME RADAR -->
-    <div id="screen-game" class="screen">
-        <header>
-            <h1>Digital Nomads</h1>
-            <div id="player-badge" class="user-badge">Loading...</div>
-            <div style="margin-top: 8px;">
-                <button class="start-btn" style="background: var(--amber); color:#000; padding:6px 12px; font-size:0.8rem;" onclick="toggleBriefingModal(true)">📖 Open Warm-up Briefing</button>
-            </div>
-        </header>
-
-        <div id="student-vocab-board" class="teacher-words-pill"></div>
-
-        <div class="wheel-container">
-            <div class="wheel"></div>
-            <div class="wheel-line line-h"></div>
-            <div class="wheel-line line-v"></div>
-            
-            <button id="wheel-ai" class="area-btn btn-ai" onclick="selectArea('ai')">✈️ Geoflexibility</button>
-            <button id="wheel-robots" class="area-btn btn-robots" onclick="selectArea('robots')">🌍 New Cultures</button>
-            <button id="wheel-surgeries" class="area-btn btn-surgeries" onclick="selectArea('surgeries')">🔒 Gentrification</button>
-            <button id="wheel-diagnostics" class="area-btn btn-diagnostics" onclick="selectArea('diagnostics')">🔒 Loneliness</button>
-
-            <div class="wheel-center">NOMAD<br>LIFE</div>
-        </div>
-
-        <div class="inputs-section">
-            <div id="msg-locked">
-                🔒 This is your partner's zone. Listen to their question, give your ideas, and they will write it!
-            </div>
-
-            <!-- INPUTS ZONES -->
-            <div id="zone-ai" class="input-group">
-                <label>Zone: Geoflexibility Freedom</label>
-                <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "What are the biggest benefits of having the freedom to choose your work location from any country?" Discuss and type.
-                </div>
-                <div class="focus-tasks-container">
-                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
-                    <label class="task-check-row"><input type="checkbox" id="task-ai-1"><span>Help friends find the perfect word when they hesitate.</span></label>
-                    <label class="task-check-row"><input type="checkbox" id="task-ai-2"><span>Validate your partner's lifestyle preferences out loud.</span></label>
-                </div>
-                <textarea id="text-ai" placeholder="Type group ideas here..." oninput="saveText('ai')"></textarea>
-            </div>
-
-            <div id="zone-robots" class="input-group">
-                <label>Zone: Learning New Cultures</label>
-                <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "How does working from different countries change your perspective and help you learn about cultures?" Discuss and type.
-                </div>
-                <div class="focus-tasks-container">
-                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
-                    <label class="task-check-row"><input type="checkbox" id="task-robots-1"><span>Actively listen without interrupting their full sentence.</span></label>
-                    <label class="task-check-row"><input type="checkbox" id="task-robots-2"><span>Echo back their core argument to confirm you understood.</span></label>
-                </div>
-                <textarea id="text-robots" placeholder="Type group ideas here..." oninput="saveText('robots')"></textarea>
-            </div>
-
-            <div id="zone-surgeries" class="input-group">
-                <label>Zone: High Cost of Living & Gentrification</label>
-                <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "Why do local prices go up when many high-earning remote workers move to a neighborhood?" Discuss and type.
-                </div>
-                . <div class="focus-tasks-container">
-                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
-                    <label class="task-check-row"><input type="checkbox" id="task-surgeries-1"><span>Support your partner if they face complex pronunciation.</span></label>
-                    <label class="task-check-row"><input type="checkbox" id="task-surgeries-2"><span>Ask a friendly follow-up to expand their target ideas.</span></label>
-                </div>
-                <textarea id="text-surgeries" placeholder="Type group ideas here..." oninput="saveText('surgeries')"></textarea>
-            </div>
-
-            <div id="zone-diagnostics" class="input-group">
-                <label>Zone: Loneliness & Lack of Roots</label>
-                <div class="essentials-pill">
-                    <strong>Cooperative Task:</strong> Ask your partners: "How can modern digital nomads avoid loneliness and feel connected without a fixed home?" Discuss and type.
-                </div>
-                <div class="focus-tasks-container">
-                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity Tasks):</div>
-                    <label class="task-check-row"><input type="checkbox" id="task-diagnostics-1"><span>Show physical signs of agreement (nodding or smiling).</span></label>
-                    <label class="task-check-row"><input type="checkbox" id="task-diagnostics-2"><span>Encourage your partner by saying "That's a powerful point!".</span></label>
-                </div>
-                <textarea id="text-diagnostics" placeholder="Type group ideas here..." oninput="saveText('diagnostics')"></textarea>
-            </div>
-
-            <!-- EXCLUSIVE PLAYER C INTERVIEW ZONES -->
-            <div id="zone-interview_1" class="input-group">
-                <label>🦊 Player C: The Balance Interview</label>
-                <div class="essentials-pill">
-                    <strong>Cooperative Mission:</strong> "Interview Player A and Player B. Ask them: 'How can we enjoy freedom and cultural exchange (Player A) without increasing the cost of life for local people (Player B)?' Summarize their ideas here."
-                </div>
-                <div class="focus-tasks-container">
-                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity):</div>
-                    <div style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 5px; padding-left: 2px;">
-                        Mediation and Synthesis. Listen to both sides, unite the answers and type the summary in your own words.
-                    </div>
-                </div>
-                <textarea id="text-interview_1" placeholder="Type the combined summary here..." oninput="saveText('interview_1')"></textarea>
-            </div>
-
-            <div id="zone-interview_2" class="input-group">
-                <label>🦊 Player C: The Perfect Nomad Profile</label>
-                <div class="essentials-pill">
-                    <strong>Cooperative Mission:</strong> "Ask your group: 'What are 2 simple rules for a person to be a responsible digital nomad today?' Log the group's official rules."
-                </div>
-                <div class="focus-tasks-container">
-                    <div class="focus-tasks-title">🤝 Focus on the Other (Human Capacity):</div>
-                    <div style="font-size: 0.8rem; color: var(--text-main); margin-bottom: 5px; padding-left: 2px;">
-                        Collective Building. Ensure that rule number 1 comes from Player A and rule number 2 comes from Player B.
-                    </div>
-                </div>
-                <textarea id="text-interview_2" placeholder="Type the group's 2 official rules here..." oninput="saveText('interview_2')"></textarea>
-            </div>
-        </div>
-
-        <div>
-            <div class="deck-title">Your Action Deck (Talk to your Team)</div>
-            <div class="button-deck">
-                <button id="deck-ai" class="trigger-btn" onclick="selectArea('ai')">✈️ Freedom Talk</button>
-                <button id="deck-robots" class="trigger-btn" onclick="selectArea('robots')">🌍 Culture Talk</button>
-                <button id="deck-surgeries" class="trigger-btn" onclick="selectArea('surgeries')">🔒 Locked</button>
-                <button id="deck-diagnostics" class="trigger-btn" onclick="selectArea('diagnostics')">🔒 Locked</button>
-                <!-- Player C Action Decks -->
-                <button id="deck-interview_1" class="trigger-btn" onclick="selectArea('interview_1')" style="display: none;">🦊 Balance Interview</button>
-                <button id="deck-interview_2" class="trigger-btn" onclick="selectArea('interview_2')" style="display: none;">🦊 Nomad Profile</button>
-            </div>
-
-            <!-- REMOTE NAV BOX (MASTER MENTOR CONTROLS) -->
-            <div id="student-remote-nav-box" class="remote-nav-container">
-                <p style="font-size:0.75rem; color:var(--amber); margin:0; text-transform:uppercase; font-weight:bold;">⚡ Master Mentor Controls:</p>
-                <button id="btn-remote-presentation" class="start-btn pulse-active" style="background: var(--blue-info); display:none;" onclick="goToPresentationScreen()">Presentation Time 📺</button>
-                <button id="btn-remote-simulation" class="start-btn pulse-active" style="background: var(--green); display:none;" onclick="goToSimulationScreen()">Go to Simulation! 🚀</button>
-                <button id="btn-remote-homework" class="start-btn pulse-active" style="background: var(--primary); display:none;" onclick="openHomeworkView()">Homework Pages 📄</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCREEN 3: PRESENTATION TIME SCREEN -->
-    <div id="screen-presentation" class="screen">
-        <header>
-            <h1 style="color: var(--blue-info);">Presentation Time</h1>
-            <p style="color:var(--amber); margin:0; font-weight:bold; font-size:0.9rem;">Share your findings with your team!</p>
-        </header>
-
-        <div class="pres-card">
-            <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 15px;">
-                <div style="font-size: 2.5rem; background: #29292e; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; border-radius: 50%; border: 2px solid var(--blue-info);">🗣️</div>
-                <div style="font-size: 2.5rem; background: #29292e; width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; border-radius: 50%; border: 2px solid var(--amber);">👥</div>
+    <!-- LOUNGE & ZOOM-LIKE BREAKOUT ROOMS FOR TEACHER -->
+    <div id="screen-lounge" class="screen">
+        <div class="arena-container">
+            <div class="arena-header">
+                <h1 id="lounge-title">Waiting Lounge</h1>
+                <div id="lounge-user-badge" style="background:#29292e; padding:4px 10px; border-radius:12px; font-size:0.8rem; color:var(--amber);">Waiting...</div>
             </div>
             
-            <p style="font-size: 0.95rem; line-height: 1.4; margin: 0 0 15px 0; text-align: center;">
-                It's time to test your communication skills! Follow the instructions below to pitch your team's custom solutions:
-            </p>
-
-            <div class="presentation-flow">
-                <div class="flow-step">
-                    <strong>1. Dynamic Speaker Setup</strong>
-                    If you have 3 players, divide the segments smoothly. Player A presents Freedom/Culture, Player B presents Gentrification and Loneliness, and Player C leads the final balance log.
+            <!-- TEACHER INTERFACE (ZOOM BREAKOUT ROOMS STYLE) -->
+            <div id="teacher-control-panel" style="display: none; flex-direction: column; gap: 15px;">
+                <label>👥 Zoom Breakout Rooms Control:</label>
+                
+                <div style="background: #09090b; padding: 12px; border-radius: 8px; border: 1px solid #29292e;">
+                    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: var(--zoom-blue);">Unassigned Students (Click to select):</div>
+                    <div id="zoom-unassigned-pool" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 30px; padding-bottom: 10px;"></div>
+                    
+                    <div style="font-size: 0.8rem; font-weight: bold; margin: 10px 0 8px 0; color: #fff;">Rooms (Max 3 students per room):</div>
+                    <div id="zoom-rooms-container"></div>
                 </div>
-                <div class="flow-step">
-                    <strong>2. The 60-Second Challenge</strong>
-                    Try to explain your partner's core answers smoothly without long pauses. Use simple connectives like <em>"Because of this"</em> or <em>"On the other hand"</em>.
-                </div>
-                <div class="flow-step">
-                    <strong>3. Continuous Interaction</strong>
-                    Listeners must provide active feedback. Ask at least one friendly question when your friend finishes talking.
-                </div>
+
+                <button class="btn-submit" style="background: #f75a68; padding: 10px; font-size: 0.8rem;" onclick="clearEntireDatabaseLive()">
+                    💥 reset all sessions & rooms
+                </button>
             </div>
 
-            <div class="cheat-sheet" style="margin-top: 15px;">
-                <h4>📋 Quick Reference (Your Notes):</h4>
-                <div id="pres-cheat-list">Loading notes...</div>
+            <!-- STUDENT INTERFACE -->
+            <div class="lounge-box" id="student-lounge-view" style="text-align:center; padding:15px; border:1px dashed #323238; border-radius:8px;">
+                <p style="color: var(--amber); font-weight: bold; font-size:1.1rem;">⏳ Waiting for your teacher...</p>
+                <p style="font-size: 0.85rem; color: var(--text-sub);">Your teacher is setting up the conversation groups. You will jump directly into the room in a few seconds!</p>
             </div>
-        </div>
-
-        <button class="start-btn" style="background:#29292e;" onclick="backToIdeasScreen()">⬅ Back to Radar</button>
-    </div>
-
-    <!-- SCREEN 4: SIMULATION ARENA -->
-    <div id="screen-simulation" class="screen">
-        <header>
-            <h1>Simulation Arena</h1>
-            <p style="color:var(--amber); margin:0; font-weight:bold; font-size:0.9rem;">Talk and defend your points!</p>
-        </header>
-
-        <div class="arena-card">
-            <p style="font-size:0.95rem; margin:0 0 15px 0; color:var(--text-main); line-height:1.4;">
-                📣 <strong>The Mission:</strong> You are on a Live TV Show. Debate your modern digital nomad ideas with the world!
-            </p>
-
-            <div class="characters-box">
-                <div class="character">
-                    <div class="char-avatar">👦</div>
-                    <div id="simulation-name-A" class="char-name">Player A</div>
-                </div>
-                <div class="vs-badge">VS</div>
-                <div class="character">
-                    <div class="char-avatar">👧</div>
-                    <div id="simulation-name-B" class="char-name">Player B</div>
-                </div>
-                <div class="character" id="char-box-c" style="display:none;">
-                    <div class="vs-badge">VS</div>
-                    <div class="char-avatar" style="border-color: var(--amber);">🦊</div>
-                    <div id="simulation-name-C" class="char-name">Player C</div>
-                </div>
-            </div>
-
-            <div class="cheat-sheet">
-                <h4>📋 Your Ideas Cheat-Sheet:</h4>
-                <div id="cheat-list">Loading your notes...</div>
-            </div>
-        </div>
-
-        <button class="start-btn" style="background:#29292e;" onclick="backToIdeasScreen()">⬅ Back to Ideas</button>
-        <button class="start-btn" style="background:var(--green);" onclick="openHomeworkView()">PRINT HOMEWORK 📄</button>
-        <button class="start-btn" style="background:#29292e;" onclick="resetWholeGame()">Reset Game 🔄</button>
-    </div>
-
-    <!-- SCREEN 5: TEACHER HUB CONTROLLER -->
-    <div id="screen-teacher" class="screen">
-        <header>
-            <h1>Teacher Command Center</h1>
-            <p style="color: var(--amber); font-size:0.85rem; margin:0;">Zoom-Style Live Breakout Room Distribution</p>
-            <div style="margin-top: 8px;">
-                <button class="start-btn" style="background: var(--amber); color:#000; padding:6px 12px; font-size:0.8rem;" onclick="toggleBriefingModal(true)">📖 Open Warm-up Briefing (Teacher Access)</button>
-            </div>
-        </header>
-
-        <div class="teacher-monitor-card">
-            <h4 style="margin:0 0 8px 0; color: var(--amber);">🎯 Active Student Target Screen:</h4>
-            <select id="teacher-target-screen-select" onchange="sendTargetScreenRoute(this.value)" style="width:100%; padding:10px; background:var(--bg-dark); color:#fff; border:1px solid var(--amber); border-radius:6px; font-weight:bold;">
-                <option value="none">Nothing (Normal Radar View)</option>
-                <option value="presentation">Presentation Time Only</option>
-                <option value="simulation">Simulation Arena Only</option>
-                <option value="homework">Homework Pages Only</option>
-                <option value="all">Show All Buttons Together</option>
-            </select>
-        </div>
-
-        <div class="teacher-monitor-card">
-            <h4 style="margin:0 0 10px 0; color: var(--green);">👥 Manage Active Class & Rooms:</h4>
-            <div id="teacher-students-lobby-list">
-                <p style="font-size:0.85rem; color:var(--text-sub);">No students online in the lounge yet...</p>
-            </div>
-        </div>
-
-        <div class="teacher-monitor-card">
-            <label for="teacher-room-view-select">🔎 <strong>Monitor Room Live Feed:</strong></label>
-            <select id="teacher-room-view-select" onchange="changeMonitoredRoom(this.value)" style="width:100%; padding:8px; margin-top:5px; background:var(--bg-dark); color:#fff; border:1px solid #444;">
-                <option value="Room 1">Room 1</option>
-                <option value="Room 2">Room 2</option>
-                <option value="Room 3">Room 3</option>
-            </select>
-        </div>
-
-        <div class="login-card" style="margin:0;">
-            <label style="color:var(--green);">⚡ Send Vocabulary Feedback to Current Selected Room:</label>
-            <textarea id="teacher-vocab-input" placeholder="Type target vocabulary words..." style="height: 55px;"></textarea>
-            <button class="start-btn" style="background: var(--green); padding:10px;" onclick="sendTeacherVocabulary()">Send Target Words 📡</button>
-        </div>
-
-        <div class="teacher-monitor-card">
-            <h4 style="margin:0 0 10px 0; color: var(--green);">🎡 Live Wheel — <span id="teacher-wheel-room-label">Room 1</span></h4>
-            <div class="wheel-container" style="width:260px; height:260px;">
-                <div class="wheel"></div>
-                <div class="wheel-line line-h"></div>
-                <div class="wheel-line line-v"></div>
-
-                <button id="tw-ai" class="area-btn btn-ai selected" onclick="selectTeacherArea('ai')">✈️ Freedom</button>
-                <button id="tw-robots" class="area-btn btn-robots" onclick="selectArea('robots')">🌍 Cultures</button>
-                <button id="tw-surgeries" class="area-btn btn-surgeries" onclick="selectTeacherArea('surgeries')">🏠 Costs</button>
-                <button id="tw-diagnostics" class="area-btn btn-diagnostics" onclick="selectTeacherArea('diagnostics')">🌱 Roots</button>
-
-                <div class="wheel-center">NOMAD<br>LIFE</div>
-            </div>
-            <div id="teacher-zone-display" class="monitor-box" style="margin-top:15px;">Tap an area on the wheel above ☝️</div>
-        </div>
-
-        <button class="start-btn" style="background:#f75a68;" onclick="resetWholeGame()">Complete Database Wipe 🔄</button>
-    </div>
-
-</div>
-
-<!-- SCREEN 6: HOMEWORK PRINT LAYER -->
-<div id="homework-print-screen" class="homework-layout">
-    <h2>Essentials Mission Report</h2>
-    <p><strong>Topic:</strong> Digital Nomads — The Global Remote Work Challenge</p>
-    
-    <div class="hw-section">
-        <h4>🎯 The Solutions We Generated:</h4>
-        <div id="hw-solutions-inject" style="font-size: 0.9rem; line-height: 1.4; color: #444;"></div>
-    </div>
-
-    <div class="hw-section" style="border-color: var(--green);">
-        <h4>🧠 New Vocabulary Shared:</h4>
-        <div id="hw-vocab-inject" style="font-size: 0.9rem; color: #111; font-weight: bold;"></div>
-    </div>
-
-    <div class="hw-section" style="border-color: var(--amber);">
-        <h4>📖 Essentials Knowledge Block (Level A2-B1):</h4>
-        <div class="reading-box">
-            "In the modern world, remote work brings both freedom and complex problems. Digital nomads enjoy great flexibility, working from anywhere and discovering new cultures. This exchange brings value to global minds. However, this trend can cause gentrification and increase local living costs in popular neighborhoods. Additionally, constant travel sometimes leads to isolation and loneliness. A smart approach requires finding ways to engage with local communities respectfully."
         </div>
     </div>
 
-    <button class="start-btn" style="background:#222; width:100%; color:#fff;" onclick="window.print()">Print / Save as PDF 🖨️</button>
-    <button class="start-btn" style="background:#888; width:100%; color:#fff; margin-top:-10px;" onclick="closeHomeworkView()">Go Back ↩</button>
-</div>
+    <!-- SCREEN 2: ACTIVE ACTIVITY AREA -->
+    <div id="screen-activity" class="screen">
+        <div class="arena-container">
+            <div class="arena-header">
+                <h1>TALK IT UP</h1>
+                <div id="activity-partner-badge" style="background: rgba(0, 229, 255, 0.1); border: 1px solid var(--cyber-blue); padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; margin-top: 6px; font-weight: bold;">Connecting to Room...</div>
+            </div>
 
-<!-- FLOATING BRIEFING MODAL WINDOW -->
-<div id="overlay-briefing" class="modal-overlay" onclick="toggleBriefingModal(false)"></div>
-<div id="modal-briefing" class="modal-briefing">
-    <div class="modal-briefing-header">
-        <h3 class="modal-briefing-title">📖 Warm-up Briefing (Level A2-B1)</h3>
-        <button class="modal-briefing-close" onclick="toggleBriefingModal(false)">&times;</button>
+            <div class="partner-mission-box">
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--cyber-blue); font-weight: bold;">💡 Conversation Mission:</span>
+                <p style="font-size: 0.85rem; margin: 6px 0 0 0; color: var(--text-main); line-height: 1.4;" id="live-mission-text">Discovering your group goals...</p>
+            </div>
+
+            <label>🧭 Strategy Radar:</label>
+            <div class="live-hints-zone" id="live-radar-hints">
+                <!-- Injected dynamically and safely for all players -->
+            </div>
+
+            <button class="btn-submit" style="background: linear-gradient(135deg, var(--primary), #5f3dc4);" onclick="finishConversationAndGoToRecognition()">Finish Conversation 🏁</button>
+        </div>
     </div>
-    <div class="modal-briefing-body">
-        <p><strong>Digital Nomads: Work from Any Country</strong></p>
-        <p>Today, many people work online using their computers and travel to different countries. This gives them a lot of <strong>freedom and geoflexibility</strong> and allows them to <strong>learn about new cultures</strong>. However, when too many nomads move to the same city, local prices go up (<strong>gentrification</strong>). Also, many nomads feel <strong>lonely because they do not have deep roots</strong> in one place. Is this lifestyle good or bad for society?</p>
-        <hr style="border:0; border-top:1px dashed #323238; margin:12px 0;">
-        <p><strong>🤔 Questions to ponder:</strong></p>
-        <ul style="padding-left:18px; margin:0;">
-            <li style="margin-bottom:6px;">Would you like to work online while living in another country? Why or why not?</li>
-            <li>What is more important: freedom to travel or staying close to family and community?</li>
-        </ul>
+
+    <!-- SCREEN 3: MUTUAL RECOGNITION -->
+    <div id="screen-recognition" class="screen">
+        <div class="arena-container">
+            <div class="arena-header">
+                <h1>Mutual Recognition</h1>
+                <div class="instruction-step" id="rec-title-name">Which actions did you notice your friends using?</div>
+            </div>
+            <div class="skills-grid" id="recognition-skills-list"></div>
+            <button class="btn-submit" onclick="submitFinalRecognitionsToDB()">Submit Evaluation 💾</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: EVOLUTIONARY PROFILE & STUDY CORNER -->
+    <div id="screen-profile" class="screen">
+        <div class="arena-container">
+            <div class="arena-header">
+                <h1 style="color: var(--green);">Your Evolutionary Log</h1>
+                <div id="profile-name-badge" style="background:#29292e; padding:4px 10px; border-radius:12px; font-size:0.8rem; color:var(--green); font-weight:bold;">...</div>
+            </div>
+            
+            <label>📊 Mastered Capabilities:</label>
+            <div class="skills-grid" id="profile-skills-summary" style="max-height: 180px; gap:6px;"></div>
+            
+            <label style="margin-top: 5px;">📖 Weekly Study Corner (A2-B1):</label>
+            <div class="study-box">
+                <p style="margin:0 0 8px 0; font-weight:bold; color:var(--cyber-blue);">How to develop Active Listening in real life:</p>
+                To listen well, you don't just stay quiet. You must <span class="word-hl" title="prestar atenção de verdade">pay attention</span> to the other person's energy. When they speak, do not think about your next answer. Instead, try to <span class="word-hl" title="compreender / captar o significado">comprehend</span> their perspective. 
+                A great trick is to <span class="word-hl" title="parafrasear">paraphrase</span> what you heard: say things like <em>"So, what you mean is...?"</em>. This creates absolute <span class="word-hl" title="clareza">clarity</span> and builds incredible trust during a team project!
+            </div>
+
+            <button class="btn-submit no-print" style="background: var(--zoom-blue); margin-top: 5px;" onclick="window.print()">Print / Save Log 🖨️</button>
+            <button class="btn-submit no-print" style="background: #29292e; margin-top: 5px;" onclick="restartEntireFlow()">Start Over 🔄</button>
+        </div>
     </div>
 </div>
 
 <script>
-const BASE_URL = "https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub.json";
+    const capabilitiesMap = {
+        communication: { text: "Pass your vision and ideas clearly", techName: "Communication" },
+        negotiation: { text: "Create options where everyone wins something", techName: "Negotiation" },
+        empathy: { text: "Understand the problem from your partner's view", techName: "Empathy" },
+        creativity: { text: "Connect different points to find a rare solution", techName: "Creativity" },
+        cooperation: { text: "Combine distinct tasks into one mutual objective", techName: "Cooperation" },
+        active_listening: { text: "Listen carefully to understand, not just reply", techName: "Active Listening" }
+    };
 
-let myRole = ''; 
-let myName = '';
-let myAssignedRoom = '';
-let currentSelectedTeacherRoom = 'Room 1';
-let teacherSelectedArea = 'ai';
-let lastTeacherRoomDataStr = null;
-let lastTeacherRoomData = null;
-let lastLobbyDataStr = null; 
-let studentActiveAreaLocal = null;
+    const radarHintsMap = {
+        communication: "💡 Try this: Explain your core concept in under 30 seconds, then ask your group: 'Does this match what you have in mind?'",
+        negotiation: "💡 Try this: If someone disagrees, don't argue. Propose: 'Let's take a little piece of your idea and a piece of mine to make a third option.'",
+        empathy: "💡 Try this: Before you propose anything, tell your partners: 'I see your point about that problem, it makes sense because...'",
+        creativity: "💡 Try this: Suggest one wild, completely crazy rule or solution just to open your friends' imagination.",
+        cooperation: "💡 Try this: Explicitly say: 'Let's divide this! Person A does the structure, Person B finds the details, and I combine it.'",
+        active_listening: "💡 Try this: Wait 2 seconds after your partner finishes speaking before you speak. Say: 'So, you're saying that... right?'"
+    };
 
-const myZones = { 
-    'A': ['ai', 'robots'], 
-    'B': ['surgeries', 'diagnostics'],
-    'C': ['interview_1', 'interview_2']
-};
-const AREA_LABELS = { ai: '✈️ Geoflexibility', robots: '🌍 New Cultures', surgeries: '🏠 Gentrification', diagnostics: '🌱 Loneliness', interview_1: '🦊 Balance Interview', interview_2: '🦊 Nomad Profile' };
+    let myName = "";
+    let selectedDesiredSkills = [];
+    let currentRoomId = null;
+    let roomParticipants = {}; 
+    let pollingInterval = null;
+    let currentActiveScreen = "screen-login";
+    let isTeacherMode = false;
+    let selectedStudentForAssign = null;
 
-let saveTimers = {};
-let lastRoomDataStr = null;
-let currentActiveScreenId = 'screen-login';
-
-function toggleBriefingModal(show) {
-    document.getElementById('overlay-briefing').style.display = show ? 'block' : 'none';
-    document.getElementById('modal-briefing').style.display = show ? 'block' : 'none';
-}
-
-function checkLoginFlow() {
-    const nameInput = document.getElementById('username').value.trim();
-    if (!nameInput) { alert("Please write your name first!"); return; }
-
-    if (nameInput.toLowerCase() === 'teacher') {
-        const pass = prompt("Enter Teacher Password:");
-        if (pass === 'admin123') {
-            myRole = 'teacher';
-            switchScreen('screen-teacher');
-            setInterval(syncTeacherDashboard, 2000);
-        } else { alert("Wrong password!"); }
-        return;
-    }
-    
-    myName = nameInput;
-    enterLobbyLounge();
-}
-
-function enterLobbyLounge() {
-    switchScreen('screen-lobby');
-    document.getElementById('lobby-user-badge').innerText = myName;
-
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${myName}.json`, {
-        method: 'PUT',
-        body: JSON.stringify({ assigned_room: "Lobby", role: "" })
-    })
-    .then(() => {
-        window.lobbyInterval = setInterval(watchLobbyStatus, 2000);
-    });
-}
-
-function watchLobbyStatus() {
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${myName}.json`)
-    .then(res => res.json())
-    .then(statusData => {
-        if (statusData && statusData.assigned_room !== "Lobby" && statusData.role !== "") {
-            myAssignedRoom = statusData.assigned_room;
-            myRole = statusData.role;
-
-            clearInterval(window.lobbyInterval);
-            
-            switchScreen('screen-game');
-            document.getElementById('player-badge').innerText = `${myName} (${myAssignedRoom} - Player ${myRole})`;
-            setupVisualLocks();
-            
-            selectArea(myZones[myRole][0]);
-            setInterval(syncDataFromServer, 2000);
-        }
-    });
-}
-
-function setupVisualLocks() {
-    const allAreas = ['ai', 'robots', 'surgeries', 'diagnostics'];
-    
-    if (myRole === 'C') {
-        document.getElementById('deck-interview_1').style.display = 'block';
-        document.getElementById('deck-interview_2').style.display = 'block';
-    } else {
-        document.getElementById('deck-interview_1').style.display = 'none';
-        document.getElementById('deck-interview_2').style.display = 'none';
-    }
-
-    allAreas.forEach(id => {
-        const isAllowed = myZones[myRole].includes(id);
-        const wheelBtn = document.getElementById('wheel-' + id);
-        const deckBtn = document.getElementById('deck-' + id);
-
-        if (!isAllowed) {
-            wheelBtn.classList.add('locked');
-            wheelBtn.innerText = '🔒 ' + wheelBtn.innerText.replace(/[^a-zA-Z ]/g, "").trim();
-            deckBtn.disabled = true;
-            deckBtn.innerText = '🔒 Locked';
-        } else {
-            wheelBtn.classList.remove('locked');
-            deckBtn.disabled = false;
-        }
-    });
-}
-
-function selectArea(idArea) {
-    if (!myZones[myRole].includes(idArea)) {
-        document.querySelectorAll('.input-group').forEach(g => g.classList.remove('active'));
-        document.getElementById('msg-locked').style.display = 'block';
-        studentActiveAreaLocal = idArea; 
-        updateWheelSelectionUI(idArea);
-        return;
-    }
-    
-    studentActiveAreaLocal = idArea;
-    document.getElementById('msg-locked').style.display = 'none';
-    document.querySelectorAll('.input-group').forEach(g => g.classList.remove('active'));
-    
-    const targetZone = document.getElementById('zone-' + idArea);
-    if(targetZone) targetZone.classList.add('active');
-    
-    updateWheelSelectionUI(idArea);
-}
-
-function updateWheelSelectionUI(activeId) {
-    ['ai', 'robots', 'surgeries', 'diagnostics'].forEach(id => {
-        const btn = document.getElementById('wheel-' + id);
-        if(btn) {
-            btn.classList.toggle('selected', id === activeId);
-        }
-    });
-}
-
-function saveText(idArea) {
-    clearTimeout(saveTimers[idArea]);
-    saveTimers[idArea] = setTimeout(() => {
-        const textValue = document.getElementById('text-' + idArea).value;
-        const dataToSend = {};
-        dataToSend[idArea] = textValue;
-
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`, { 
-            method: 'PATCH', 
-            body: JSON.stringify(dataToSend) 
-        });
-    }, 600);
-}
-
-function syncDataFromServer() {
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`)
-    .then(response => response.json())
-    .then(data => {
-        if (!data) return;
-
-        const dataStr = JSON.stringify(data);
-        const dataChanged = dataStr !== lastRoomDataStr;
-
-        const allAreas = ['ai', 'robots', 'surgeries', 'diagnostics', 'interview_1', 'interview_2'];
-        allAreas.forEach(id => {
-            const textarea = document.getElementById('text-' + id);
-            if (data[id] !== undefined && document.activeElement !== textarea && textarea.value !== data[id]) {
-                textarea.value = data[id];
-            }
-        });
-
-        if(studentActiveAreaLocal) {
-            if (!myZones[myRole].includes(studentActiveAreaLocal)) {
-                document.getElementById('msg-locked').style.display = 'block';
-                document.querySelectorAll('.input-group').forEach(g => g.classList.remove('active'));
-            } else {
-                document.getElementById('msg-locked').style.display = 'none';
-                allAreas.forEach(id => {
-                    const g = document.getElementById('zone-' + id);
-                    if(g) g.classList.toggle('active', id === studentActiveAreaLocal);
-                });
-            }
-            updateWheelSelectionUI(studentActiveAreaLocal);
-        }
-
-        const navContainer = document.getElementById('student-remote-nav-box');
-        const btnPres = document.getElementById('btn-remote-presentation');
-        const btnSim = document.getElementById('btn-remote-simulation');
-        const btnHW = document.getElementById('btn-remote-homework');
-        
-        const route = data.target_screen_route || 'none';
-        if (route === 'none') {
-            navContainer.style.display = 'none';
-        } else {
-            navContainer.style.display = 'flex';
-            btnPres.style.display = (route === 'presentation' || route === 'all') ? 'block' : 'none';
-            btnSim.style.display = (route === 'simulation' || route === 'all') ? 'block' : 'none';
-            btnHW.style.display = (route === 'homework' || route === 'all') ? 'block' : 'none';
-        }
-
-        if (dataChanged) {
-            lastRoomDataStr = dataStr;
-
-            const vocabPill = document.getElementById('student-vocab-board');
-            if (data.teacher_words && data.teacher_words.trim() !== "") {
-                if(vocabPill.innerHTML !== `🍏 <strong>Teacher's Notes:</strong> ${data.teacher_words}`) {
-                    vocabPill.innerHTML = `🍏 <strong>Teacher's Notes:</strong> ${data.teacher_words}`;
-                }
-                vocabPill.style.display = 'block';
-            } else { 
-                vocabPill.style.display = 'none'; 
-            }
-
-            if (data.player_A) document.getElementById('simulation-name-A').innerText = data.player_A;
-            if (data.player_B) document.getElementById('simulation-name-B').innerText = data.player_B;
-            
-            if (data.player_C) {
-                document.getElementById('simulation-name-C').innerText = data.player_C;
-                document.getElementById('char-box-c').style.display = 'flex';
-            } else {
-                document.getElementById('char-box-c').style.display = 'none';
-            }
-
-            let sheetHTML = '';
-            allAreas.forEach(id => {
-                const val = data[id] ? data[id] : 'No inputs yet...';
-                const labelName = AREA_LABELS[id] ? AREA_LABELS[id].toUpperCase() : id.toUpperCase();
-                sheetHTML += `<div class="cheat-item"><strong>${labelName}:</strong> ${val}</div>`;
-            });
-            
-            const cheatListEl = document.getElementById('cheat-list');
-            if(cheatListEl.innerHTML !== sheetHTML) cheatListEl.innerHTML = sheetHTML;
-
-            const presCheatListEl = document.getElementById('pres-cheat-list');
-            if(presCheatListEl.innerHTML !== sheetHTML) presCheatListEl.innerHTML = sheetHTML;
-        }
-
-        if (data.current_phase === 'presentation' && currentActiveScreenId !== 'screen-presentation') {
-            switchScreen('screen-presentation');
-        } else if (data.current_phase === 'simulation' && currentActiveScreenId !== 'screen-simulation') {
-            switchScreen('screen-simulation');
-        } else if ((data.current_phase === 'game' || !data.current_phase) && (currentActiveScreenId === 'screen-simulation' || currentActiveScreenId === 'screen-presentation')) {
-            switchScreen('screen-game');
-        }
-    });
-}
-
-function syncTeacherDashboard() {
-    fetch("https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby.json")
-    .then(res => res.json())
-    .then(lobbyData => {
-        const lobbyStr = JSON.stringify(lobbyData);
-        if (lobbyStr === lastLobbyDataStr) return; 
-        lastLobbyDataStr = lobbyStr;
-
-        const listContainer = document.getElementById('teacher-students-lobby-list');
-        if(!lobbyData) {
-            listContainer.innerHTML = `<p style="font-size:0.85rem; color:var(--text-sub);">No students online...</p>`;
-            return;
-        }
-
-        let htmlBuilder = '';
-        Object.keys(lobbyData).forEach(studentName => {
-            const currentObj = lobbyData[studentName];
-            htmlBuilder += `
-                <div class="student-row">
-                    <strong>⚡ ${studentName}</strong>
-                    <select onchange="moveStudentFromDashboard('${studentName}', this.value)">
-                        <option value="Lobby" ${currentObj.assigned_room === 'Lobby' ? 'selected' : ''}>Lounge (Waiting)</option>
-                        <option value="Room 1:A" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'A' ? 'selected' : ''}>Room 1 - Player A</option>
-                        <option value="Room 1:B" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'B' ? 'selected' : ''}>Room 1 - Player B</option>
-                        <option value="Room 1:C" ${currentObj.assigned_room === 'Room 1' && currentObj.role === 'C' ? 'selected' : ''}>Room 1 - Player C</option>
-                        <option value="Room 2:A" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'A' ? 'selected' : ''}>Room 2 - Player A</option>
-                        <option value="Room 2:B" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'B' ? 'selected' : ''}>Room 2 - Player B</option>
-                        <option value="Room 2:C" ${currentObj.assigned_room === 'Room 2' && currentObj.role === 'C' ? 'selected' : ''}>Room 2 - Player C</option>
-                        <option value="Room 3:A" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'A' ? 'selected' : ''}>Room 3 - Player A</option>
-                        <option value="Room 3:B" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'B' ? 'selected' : ''}>Room 3 - Player B</option>
-                        <option value="Room 3:C" ${currentObj.assigned_room === 'Room 3' && currentObj.role === 'C' ? 'selected' : ''}>Room 3 - Player C</option>
-                    </select>
+    function renderLoginSkills() {
+        const container = document.getElementById("login-skills-list");
+        container.innerHTML = "";
+        Object.keys(capabilitiesMap).forEach(key => {
+            container.innerHTML += `
+                <div class="skill-option-card" id="card-login-${key}" onclick="toggleSelectSkill('${key}')">
+                    <input type="checkbox" class="skill-checkbox" id="check-login-${key}" style="pointer-events: none;">
+                    <div class="skill-title">${capabilitiesMap[key].text}</div>
                 </div>
             `;
         });
-        listContainer.innerHTML = htmlBuilder;
-    });
+    }
 
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${currentSelectedTeacherRoom}.json`)
-    .then(res => res.json())
-    .then(roomData => {
-        const roomStr = JSON.stringify(roomData);
-        if (roomStr === lastTeacherRoomDataStr) return; 
-        lastTeacherRoomDataStr = roomStr;
-        lastTeacherRoomData = roomData || {};
-        
-        if (roomData && roomData.target_screen_route) {
-            document.getElementById('teacher-target-screen-select').value = roomData.target_screen_route;
+    function checkTeacherMode(value) {
+        const normalized = value.trim().toLowerCase();
+        const block = document.getElementById("skills-selection-block");
+        const btn = document.getElementById("btn-login-enter");
+        const title = document.getElementById("login-title");
+        const instruction = document.getElementById("login-instruction");
+
+        if (normalized === "teacher") {
+            isTeacherMode = true;
+            block.style.display = "none";
+            title.innerText = "Zoom Room Control";
+            instruction.innerText = "Breakout Rooms administration dashboard.";
+            btn.innerText = "Open Zoom Dashboard 📡";
+        } else {
+            isTeacherMode = false;
+            block.style.display = "block";
+            title.innerText = "TALK IT UP";
+            instruction.innerText = "Talk to a friend and generate insights together";
+            btn.innerText = "Join Room 🚀";
         }
-        renderTeacherZoneDisplay();
-    });
-}
-
-function sendTargetScreenRoute(routeValue) {
-    let automaticPhase = 'game';
-    if(routeValue === 'presentation') automaticPhase = 'presentation';
-    if(routeValue === 'simulation') automaticPhase = 'simulation';
-
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${currentSelectedTeacherRoom}.json`, {
-        method: 'PATCH',
-        body: JSON.stringify({ target_screen_route: routeValue, current_phase: automaticPhase })
-    });
-}
-
-function selectTeacherArea(area) {
-    teacherSelectedArea = area;
-    ['ai','robots','surgeries','diagnostics'].forEach(id => {
-        const btn = document.getElementById('tw-' + id);
-        if(btn) btn.classList.toggle('selected', id === area);
-    });
-    renderTeacherZoneDisplay();
-}
-
-function renderTeacherZoneDisplay() {
-    const display = document.getElementById('teacher-zone-display');
-    const val = lastTeacherRoomData ? lastTeacherRoomData[teacherSelectedArea] : null;
-    display.innerText = (val && val.trim() !== '') ? val : '(Empty input)';
-}
-
-function moveStudentFromDashboard(targetStudent, compoundValue) {
-    if(compoundValue === 'Lobby') {
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${targetStudent}.json`, {
-            method: 'PUT',
-            body: JSON.stringify({ assigned_room: "Lobby", role: "" })
-        });
-        return;
     }
 
-    const splitted = compoundValue.split(':'); 
-    const targetRoom = splitted[0];
-    const targetRole = splitted[1];
-
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/lobby/${targetStudent}.json`, {
-        method: 'PUT',
-        body: JSON.stringify({ assigned_room: targetRoom, role: targetRole })
-    })
-    .then(() => {
-        const roomUpdate = {};
-        roomUpdate['player_' + targetRole] = targetStudent;
-        return fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${targetRoom}.json`, {
-            method: 'PATCH',
-            body: JSON.stringify(roomUpdate)
-        });
-    });
-}
-
-function changeMonitoredRoom(val) {
-    currentSelectedTeacherRoom = val;
-    document.getElementById('teacher-vocab-input').value = '';
-    document.getElementById('teacher-wheel-room-label').innerText = val;
-    lastTeacherRoomDataStr = null; 
-    syncTeacherDashboard();
-}
-
-function sendTeacherVocabulary() {
-    const txt = document.getElementById('teacher-vocab-input').value;
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${currentSelectedTeacherRoom}.json`, {
-        method: 'PATCH',
-        body: JSON.stringify({ teacher_words: txt })
-    }).then(() => alert(`Target words pushed to ${currentSelectedTeacherRoom}!`));
-}
-
-function goToPresentationScreen() {
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`, { 
-        method: 'PATCH', 
-        body: JSON.stringify({ current_phase: 'presentation' }) 
-    })
-    .then(() => { 
-        switchScreen('screen-presentation'); 
-    });
-}
-
-function goToSimulationScreen() {
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`, { 
-        method: 'PATCH', 
-        body: JSON.stringify({ current_phase: 'simulation' }) 
-    })
-    .then(() => { 
-        switchScreen('screen-simulation'); 
-    });
-}
-
-function backToIdeasScreen() {
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`, {
-        method: 'PATCH',
-        body: JSON.stringify({ current_phase: 'game' })
-    })
-    .then(() => { 
-        switchScreen('screen-game'); 
-    });
-}
-
-function switchScreen(screenId) {
-    if (currentActiveScreenId === screenId) return; 
-    
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(screenId);
-    if(target) {
-        target.classList.add('active');
-        currentActiveScreenId = screenId;
+    function toggleSelectSkill(key) {
+        if (isTeacherMode) return;
+        const idx = selectedDesiredSkills.indexOf(key);
+        if (idx > -1) {
+            selectedDesiredSkills.splice(idx, 1);
+            document.getElementById(`card-login-${key}`).classList.remove("selected");
+            document.getElementById(`check-login-${key}`).checked = false;
+        } else {
+            if (selectedDesiredSkills.length >= 2) return;
+            selectedDesiredSkills.push(key);
+            document.getElementById(`card-login-${key}`).classList.add("selected");
+            document.getElementById(`check-login-${key}`).checked = true;
+        }
     }
-}
 
-function openHomeworkView() {
-    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub/rooms/${myAssignedRoom}.json`)
-    .then(res => res.json())
-    .then(data => {
-        if(!data) return;
-        document.getElementById('main-container').style.display = 'none';
-        const hwContainer = document.getElementById('homework-print-screen');
-        hwContainer.style.display = 'flex';
+    function processLoginAndSearchRoom() {
+        myName = document.getElementById("username").value.trim();
+        if (!myName) { alert("Please enter your name."); return; }
 
-        let solutionBuild = '';
-        ['ai','robots','surgeries','diagnostics', 'interview_1', 'interview_2'].forEach(id => {
-            const labelName = AREA_LABELS[id] ? AREA_LABELS[id].toUpperCase() : id.toUpperCase();
-            solutionBuild += `<p><strong>${labelName}:</strong> ${data[id] || 'N/A'}</p>`;
+        if (isTeacherMode) {
+            const pwd = prompt("Password:");
+            if (pwd !== "admin123") return;
+            enterTeacherControlLounge();
+            return;
+        }
+
+        if (selectedDesiredSkills.length === 0) { alert("Select at least 1 focus goal!"); return; }
+        switchScreen("screen-lounge");
+        document.getElementById("student-lounge-view").style.display = "block";
+        document.getElementById("teacher-control-panel").style.display = "none";
+        document.getElementById("lounge-user-badge").innerText = myName;
+
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${myName}.json`, {
+            method: "PATCH",
+            body: JSON.stringify({ nome: myName, habilidadesDesejadas: selectedDesiredSkills, statusAtual: "waiting" })
         });
-        document.getElementById('hw-solutions-inject').innerHTML = solutionBuild;
-        document.getElementById('hw-vocab-inject').innerText = data.teacher_words || 'No specific target words logged.';
-    });
-}
 
-function closeHomeworkView() {
-    document.getElementById('homework-print-screen').style.display = 'none';
-    document.getElementById('main-container').style.display = 'flex';
-}
+        startStudentLobbyListener();
+    }
 
-function resetWholeGame() {
-    fetch("https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/multi_game_hub.json", { method: 'DELETE' })
-    .then(() => { window.location.reload(); });
-}
+    function enterTeacherControlLounge() {
+        switchScreen("screen-lounge");
+        document.getElementById("student-lounge-view").style.display = "none";
+        document.getElementById("teacher-control-panel").style.display = "flex";
+        document.getElementById("lounge-user-badge").innerText = "Host (Teacher)";
+        
+        if (pollingInterval) clearInterval(pollingInterval);
+        
+        pollingInterval = setInterval(() => {
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users.json`)
+            .then(r => r.json())
+            .then(users => {
+                const unassignedContainer = document.getElementById("zoom-unassigned-pool");
+                unassignedContainer.innerHTML = "";
+                if (!users) return;
+                
+                Object.keys(users).forEach(uName => {
+                    if (users[uName].statusAtual === "waiting") {
+                        let activeClass = (selectedStudentForAssign === uName) ? "background: var(--zoom-blue); border-color:#fff;" : "background:#29292e;";
+                        unassignedContainer.innerHTML += `
+                            <div style="padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; border:1px solid #444; color:#fff; ${activeClass}" onclick="selectStudentForZoomAssign('${uName}')">
+                                👤 ${uName}
+                            </div>`;
+                    }
+                });
+            });
+
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms.json`)
+            .then(r => r.json())
+            .then(rooms => {
+                const roomsContainer = document.getElementById("zoom-rooms-container");
+                roomsContainer.innerHTML = "";
+                
+                for (let i = 1; i <= 4; i++) {
+                    let rId = `Breakout_Room_${i}`;
+                    let rData = (rooms && rooms[rId]) ? rooms[rId] : { members: {} };
+                    let memberNames = Object.keys(rData.members || {});
+                    let count = memberNames.length;
+
+                    let studentsRowsHTML = "";
+                    memberNames.forEach(m => {
+                        studentsRowsHTML += `<div class="zoom-student-row">🟢 <span>${m}</span></div>`;
+                    });
+                    if(count === 0) studentsRowsHTML = `<div style="font-size:0.75rem; color:#666; font-style:italic;">- Empty Room -</div>`;
+
+                    roomsContainer.innerHTML += `
+                        <div class="zoom-room-box">
+                            <div class="zoom-room-header">
+                                <span>Breakout Room ${i} (${count}/3)</span>
+                                ${count < 3 ? `<button class="zoom-assign-btn" onclick="assignSelectedToRoom('${rId}')">Assign</button>` : ''}
+                            </div>
+                            <div>${studentsRowsHTML}</div>
+                        </div>
+                    `;
+                }
+            });
+        }, 1500);
+    }
+
+    function selectStudentForZoomAssign(uName) {
+        selectedStudentForAssign = (selectedStudentForAssign === uName) ? null : uName;
+    }
+
+    function assignSelectedToRoom(roomId) {
+        if (!selectedStudentForAssign) { alert("Click on an unassigned student first!"); return; }
+        let targetStudent = selectedStudentForAssign;
+        selectedStudentForAssign = null;
+
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${targetStudent}.json`)
+        .then(r => r.json())
+        .then(userData => {
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}/members/${targetStudent}.json`, {
+                method: "PUT",
+                body: JSON.stringify({ name: targetStudent, skills: userData.habilidadesDesejadas || [] })
+            }).then(() => {
+                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}.json`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ status: "active" })
+                });
+                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${targetStudent}.json`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ statusAtual: "paired", currentRoomId: roomId })
+                });
+            });
+        });
+    }
+
+    function startStudentLobbyListener() {
+        let studentLobbyInterval = setInterval(() => {
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${myName}.json`)
+            .then(r => r.json())
+            .then(u => {
+                if(u && u.statusAtual === "paired" && u.currentRoomId) {
+                    clearInterval(studentLobbyInterval);
+                    currentRoomId = u.currentRoomId;
+                    switchScreen("screen-activity");
+                    startRoomActivitySync();
+                }
+            });
+        }, 1500);
+    }
+
+    function startRoomActivitySync() {
+        if (pollingInterval) clearInterval(pollingInterval);
+        pollingInterval = setInterval(() => {
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`)
+            .then(r => r.json())
+            .then(room => {
+                if(!room || !room.members) return;
+                
+                roomParticipants = room.members;
+                let peersList = Object.keys(roomParticipants).filter(p => p !== myName);
+                
+                if(peersList.length > 0) {
+                    document.getElementById("activity-partner-badge").innerText = `Connected with: ${peersList.join(" & ")}`;
+                } else {
+                    document.getElementById("activity-partner-badge").innerText = "Waiting for room members...";
+                }
+
+                let missionHTML = `Help your group practice these habits today:<br><br>`;
+                let radarHTML = "";
+
+                Object.keys(roomParticipants).forEach(pName => {
+                    if(pName !== myName) { 
+                        let peerSkills = roomParticipants[pName].skills || [];
+                        missionHTML += `⚡ <strong>${pName} wants to:</strong> ${peerSkills.map(sk => `"${capabilitiesMap[sk]?.text}"`).join(" AND ")}<br>`;
+                        
+                        peerSkills.forEach(skKey => {
+                            let actionTip = radarHintsMap[skKey] || "Share ideas and build perspective together.";
+                            radarHTML += `
+                                <div class="hint-item">
+                                    <div style="font-weight:bold; color:var(--cyber-blue); font-size:0.75rem; margin-bottom:2px;">FOR ${pName.toUpperCase()}:</div>
+                                    ${actionTip}
+                                </div>`;
+                        });
+                    }
+                });
+
+                document.getElementById("live-mission-text").innerHTML = missionHTML;
+                const radarBox = document.getElementById("live-radar-hints");
+                radarBox.innerHTML = radarHTML || `<div class="hint-item" style="color:var(--text-sub);">Discussing rules and preparing dialogue tricks...</div>`;
+
+                if (room.status === "assessment" && currentActiveScreen === "screen-activity") {
+                    renderRecognitionGrid();
+                    switchScreen("screen-recognition");
+                }
+
+                if (room.status === "done" && currentActiveScreen === "screen-recognition") {
+                    showEvolutionaryProfile();
+                }
+            });
+        }, 1500);
+    }
+
+    function finishConversationAndGoToRecognition() {
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`, {
+            method: "PATCH",
+            body: JSON.stringify({ status: "assessment" })
+        });
+    }
+
+    let finalVotes = [];
+    function renderRecognitionGrid() {
+        let peers = Object.keys(roomParticipants).filter(p => p !== myName);
+        document.getElementById("rec-title-name").innerText = `Which actions did you see ${peers.join(" or ")} use successfully?`;
+        const container = document.getElementById("recognition-skills-list");
+        container.innerHTML = "";
+        finalVotes = [];
+        
+        Object.keys(capabilitiesMap).forEach(key => {
+            container.innerHTML += `
+                <div class="skill-option-card" id="card-rec-${key}" onclick="toggleVote('${key}')">
+                    <input type="checkbox" class="skill-checkbox" id="check-rec-${key}" style="pointer-events:none;">
+                    <div class="skill-title">${capabilitiesMap[key].text}</div>
+                </div>
+            `;
+        });
+    }
+
+    function toggleVote(key) {
+        const idx = finalVotes.indexOf(key);
+        if (idx > -1) {
+            finalVotes.splice(idx, 1);
+            document.getElementById(`card-rec-${key}`).classList.remove("selected");
+            document.getElementById(`check-rec-${key}`).checked = false;
+        } else {
+            finalVotes.push(key);
+            document.getElementById(`card-rec-${key}`).classList.add("selected");
+            document.getElementById(`check-rec-${key}`).checked = true;
+        }
+    }
+
+    function submitFinalRecognitionsToDB() {
+        if(finalVotes.length === 0) { alert("Please check at least one action!"); return; }
+        
+        let peers = Object.keys(roomParticipants).filter(p => p !== myName);
+        let promises = [];
+        
+        peers.forEach(partnerName => {
+            finalVotes.forEach(sk => {
+                let p = fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${partnerName}/scores/${sk}.json`)
+                .then(r => r.json())
+                .then(current => {
+                    let updated = (current || 0) + 1;
+                    return fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${partnerName}/scores/${sk}.json`, { method: "PUT", body: JSON.stringify(updated) });
+                });
+                promises.push(p);
+            });
+        });
+
+        let markDone = fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}/members/${myName}.json`, {
+            method: "PATCH",
+            body: JSON.stringify({ voted: true })
+        });
+        promises.push(markDone);
+
+        Promise.all(promises).then(() => {
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`)
+            .then(r => r.json())
+            .then(room => {
+                let allMembers = Object.keys(room.members);
+                let missingVotes = allMembers.filter(m => !room.members[m].voted);
+
+                if (missingVotes.length === 0) {
+                    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`, {
+                        method: "PATCH",
+                        body: JSON.stringify({ status: "done" })
+                    });
+                } else {
+                    document.getElementById("recognition-skills-list").innerHTML = `
+                        <div style="text-align:center; padding: 20px; color: var(--amber);">
+                            <p>⏳ Evaluation saved! Waiting for your group partners to finish their selections...</p>
+                        </div>
+                    `;
+                }
+            });
+        });
+    }
+
+    function showEvolutionaryProfile() {
+        if (pollingInterval) clearInterval(pollingInterval);
+        switchScreen("screen-profile");
+        document.getElementById("profile-name-badge").innerText = myName;
+        const summary = document.getElementById("profile-skills-summary");
+        summary.innerHTML = "Syncing logs...";
+
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${myName}/scores.json`)
+        .then(r => r.json())
+        .then(scores => {
+            summary.innerHTML = "";
+            Object.keys(capabilitiesMap).forEach(key => {
+                let pts = (scores && scores[key]) ? scores[key] : 0;
+                let stars = "★".repeat(Math.min(pts, 5)) + "☆".repeat(Math.max(0, 5 - pts));
+                
+                summary.innerHTML += `
+                    <div style="background:#202024; padding:8px 12px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; border:1px solid #29292e; font-size:0.8rem;">
+                        <div>
+                            <strong style="color:var(--amber);">${capabilitiesMap[key].techName}</strong> 
+                            <div style="font-size:0.7rem; color:var(--text-sub);">${capabilitiesMap[key].text}</div>
+                        </div>
+                        <span style="color:var(--amber); letter-spacing:1px; white-space:nowrap; margin-left:10px;">${stars} (${pts})</span>
+                    </div>
+                `;
+            });
+        });
+    }
+
+    function clearEntireDatabaseLive() {
+        if(confirm("This will clear all active rooms and student lists. Proceed?")) {
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub.json`, { method: "DELETE" })
+            .then(() => { alert("Database Reset Complete."); enterTeacherControlLounge(); });
+        }
+    }
+
+    function restartEntireFlow() {
+        selectedDesiredSkills = []; currentRoomId = null; roomParticipants = {}; isTeacherMode = false;
+        document.getElementById("username").value = "";
+        document.getElementById("teacher-control-panel").style.display = "none";
+        checkTeacherMode(""); renderLoginSkills(); switchScreen("screen-login");
+    }
+
+    function switchScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(id);
+        if(target) { target.classList.add('active'); currentActiveScreen = id; }
+    }
+
+    window.onload = renderLoginSkills;
 </script>
-
 </body>
 </html>
