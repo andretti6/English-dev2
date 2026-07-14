@@ -158,14 +158,25 @@
             box-shadow: 0 4px 12px var(--green-glow);
         }
         .btn-submit:active { transform: scale(0.98); }
+        .btn-submit:disabled {
+            background: #2b2b30 !important;
+            color: #666 !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+        }
 
         /* ZOOM ROOMS UI FOR TEACHER */
         .zoom-room-box {
             background: #202024;
-            border: 1px solid #2d2d34;
+            border: 2px dashed #2d2d34;
             border-radius: 8px;
             padding: 12px;
             margin-bottom: 10px;
+            transition: background 0.2s;
+        }
+        .zoom-room-box.drag-over {
+            background: rgba(45, 140, 255, 0.15);
+            border-color: var(--zoom-blue);
         }
         .zoom-room-header {
             display: flex;
@@ -180,21 +191,30 @@
         }
         .zoom-student-row {
             font-size: 0.8rem;
-            padding: 4px 0;
-            color: var(--text-sub);
+            padding: 6px;
+            margin: 4px 0;
+            background: #121214;
+            border: 1px solid #29292e;
+            border-radius: 4px;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 6px;
+            cursor: grab;
         }
-        .zoom-assign-btn {
-            background: var(--zoom-blue);
-            color: white;
-            border: none;
-            padding: 3px 8px;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            cursor: pointer;
+        .zoom-student-row:active { cursor: grabbing; }
+        
+        .zoom-unassigned-card {
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            font-size: 0.8rem; 
+            cursor: grab; 
+            transition: 0.2s; 
+            border:1px solid #444; 
+            color:#fff;
+            background:#29292e;
         }
+        .zoom-unassigned-card:active { cursor: grabbing; }
 
         .study-box {
             background: #121214;
@@ -269,11 +289,18 @@
                 <label>👥 Zoom Breakout Rooms Control:</label>
                 
                 <div style="background: #09090b; padding: 12px; border-radius: 8px; border: 1px solid #29292e;">
-                    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: var(--zoom-blue);">Unassigned Students (Click to select):</div>
-                    <div id="zoom-unassigned-pool" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 30px; padding-bottom: 10px;"></div>
+                    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: var(--zoom-blue);">Unassigned Students (Drag onto rooms):</div>
+                    <div id="zoom-unassigned-pool" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 50px; padding: 10px; border: 1px dashed #444; border-radius: 6px; margin-bottom: 15px;" ondragover="allowDrop(event)" ondrop="dropToUnassigned(event)"></div>
                     
-                    <div style="font-size: 0.8rem; font-weight: bold; margin: 10px 0 8px 0; color: #fff;">Rooms (Max 3 students per room):</div>
+                    <div style="font-size: 0.8rem; font-weight: bold; margin: 10px 0 8px 0; color: #fff;">Active Rooms (Drag students to rearrange):</div>
                     <div id="zoom-rooms-container"></div>
+                </div>
+
+                <div style="background: #1c1917; padding: 12px; border-radius: 8px; border: 1px solid var(--amber-glow); display: flex; flex-direction: column; gap: 8px;">
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--amber); font-weight: bold;">📢 Live Room Actions:</span>
+                    <button class="btn-submit" style="background: var(--amber); color:#000; font-size: 0.8rem; padding: 10px;" onclick="unlockEvaluationsGlobal()">
+                        🔓 Open Evaluations for Everyone
+                    </button>
                 </div>
 
                 <button class="btn-submit" style="background: #f75a68; padding: 10px; font-size: 0.8rem;" onclick="clearEntireDatabaseLive()">
@@ -302,12 +329,24 @@
                 <p style="font-size: 0.85rem; margin: 6px 0 0 0; color: var(--text-main); line-height: 1.4;" id="live-mission-text">Discovering your group goals...</p>
             </div>
 
+            <!-- DISCUSSION INSIGHTS SPARK -->
+            <div style="background: rgba(255, 205, 0, 0.05); border: 1px solid var(--amber); border-radius: 10px; padding: 15px; margin-top: 5px;">
+                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--amber); font-weight: bold;">🔥 Group Brainstorm Spark:</span>
+                <p style="font-size: 0.85rem; margin: 4px 0 8px 0; color: #fff; font-weight: bold;">How to build high-level AI in Brazil?</p>
+                <ul style="font-size: 0.8rem; color: var(--text-sub); margin: 0; padding-left: 20px; line-height: 1.4;">
+                    <li>What are the biggest challenges in infrastructure?</li>
+                    <li>How can we train and keep local tech talents here?</li>
+                    <li>Which sectors would benefit most from national AI solutions?</li>
+                </ul>
+            </div>
+
             <label>🧭 Strategy Radar:</label>
             <div class="live-hints-zone" id="live-radar-hints">
                 <!-- Injected dynamically and safely for all players -->
             </div>
 
-            <button class="btn-submit" style="background: linear-gradient(135deg, var(--primary), #5f3dc4);" onclick="finishConversationAndGoToRecognition()">Finish Conversation 🏁</button>
+            <!-- THIS BUTTON IS HIDDEN BY DEFAULT (display: none) AND REVEALED DYNAMICALLY BY THE TEACHER -->
+            <button class="btn-submit" id="btn-finish-conversation" style="display: none; background: linear-gradient(135deg, var(--primary), #5f3dc4);" onclick="finishConversationAndGoToRecognition()">Finish Conversation 🏁</button>
         </div>
     </div>
 
@@ -319,7 +358,16 @@
                 <div class="instruction-step" id="rec-title-name">Which actions did you notice your friends using?</div>
             </div>
             <div class="skills-grid" id="recognition-skills-list"></div>
-            <button class="btn-submit" onclick="submitFinalRecognitionsToDB()">Submit Evaluation 💾</button>
+            
+            <!-- CONTROLLER TO PREVENT PREMATURE SUBMISSIONS -->
+            <div id="evaluation-submit-block">
+                <button class="btn-submit" id="btn-submit-evaluation" onclick="submitFinalRecognitionsToDB()" disabled>
+                    Submit Evaluation 💾
+                </button>
+                <div id="eval-lock-warning" style="text-align: center; color: var(--amber); font-size: 0.75rem; margin-top: 8px;">
+                    🔒 Waiting for your teacher to open evaluations...
+                </div>
+            </div>
         </div>
     </div>
 
@@ -373,7 +421,6 @@
     let pollingInterval = null;
     let currentActiveScreen = "screen-login";
     let isTeacherMode = false;
-    let selectedStudentForAssign = null;
 
     function renderLoginSkills() {
         const container = document.getElementById("login-skills-list");
@@ -450,6 +497,88 @@
         startStudentLobbyListener();
     }
 
+    /* DRAG & DROP UTILITIES FOR TEACHER DASHBOARD */
+    function allowDrop(ev) {
+        ev.preventDefault();
+        const targetBox = ev.currentTarget;
+        if (targetBox.classList.contains("zoom-room-box")) {
+            targetBox.classList.add("drag-over");
+        }
+    }
+
+    function dragLeaveRoom(ev) {
+        ev.currentTarget.classList.remove("drag-over");
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function dropToRoom(ev, roomId) {
+        ev.preventDefault();
+        ev.currentTarget.classList.remove("drag-over");
+        const studentIdName = ev.dataTransfer.getData("text");
+        
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`)
+        .then(r => r.json())
+        .then(userData => {
+            if (!userData) return;
+
+            // Remove user from previous room details if any
+            if (userData.currentRoomId && userData.currentRoomId !== roomId) {
+                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${userData.currentRoomId}/members/${studentIdName}.json`, {
+                    method: "DELETE"
+                });
+            }
+
+            // Put user into target breakout room
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}/members/${studentIdName}.json`, {
+                method: "PUT",
+                body: JSON.stringify({ name: studentIdName, skills: userData.habilidadesDesejadas || [] })
+            }).then(() => {
+                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}.json`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ status: "active" })
+                });
+                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`, {
+                    method: "PATCH",
+                    body: JSON.stringify({ statusAtual: "paired", currentRoomId: roomId })
+                });
+            });
+        });
+    }
+
+    function dropToUnassigned(ev) {
+        ev.preventDefault();
+        const studentIdName = ev.dataTransfer.getData("text");
+
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`)
+        .then(r => r.json())
+        .then(userData => {
+            if (!userData) return;
+
+            if (userData.currentRoomId) {
+                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${userData.currentRoomId}/members/${studentIdName}.json`, {
+                    method: "DELETE"
+                });
+            }
+
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`, {
+                method: "PATCH",
+                body: JSON.stringify({ statusAtual: "waiting", currentRoomId: null })
+            });
+        });
+    }
+
+    function unlockEvaluationsGlobal() {
+        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub.json`, {
+            method: "PATCH",
+            body: JSON.stringify({ evaluationsUnlocked: true })
+        }).then(() => {
+            alert("Evaluations and Finish Buttons unlocked for all active rooms!");
+        });
+    }
+
     function enterTeacherControlLounge() {
         switchScreen("screen-lounge");
         document.getElementById("student-lounge-view").style.display = "none";
@@ -468,9 +597,8 @@
                 
                 Object.keys(users).forEach(uName => {
                     if (users[uName].statusAtual === "waiting") {
-                        let activeClass = (selectedStudentForAssign === uName) ? "background: var(--zoom-blue); border-color:#fff;" : "background:#29292e;";
                         unassignedContainer.innerHTML += `
-                            <div style="padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; border:1px solid #444; color:#fff; ${activeClass}" onclick="selectStudentForZoomAssign('${uName}')">
+                            <div class="zoom-unassigned-card" id="${uName}" draggable="true" ondragstart="drag(event)">
                                 👤 ${uName}
                             </div>`;
                     }
@@ -491,15 +619,17 @@
 
                     let studentsRowsHTML = "";
                     memberNames.forEach(m => {
-                        studentsRowsHTML += `<div class="zoom-student-row">🟢 <span>${m}</span></div>`;
+                        studentsRowsHTML += `
+                            <div class="zoom-student-row" id="${m}" draggable="true" ondragstart="drag(event)">
+                                🟢 <span>${m}</span>
+                            </div>`;
                     });
-                    if(count === 0) studentsRowsHTML = `<div style="font-size:0.75rem; color:#666; font-style:italic;">- Empty Room -</div>`;
+                    if(count === 0) studentsRowsHTML = `<div style="font-size:0.75rem; color:#666; font-style:italic;">- Drag students here -</div>`;
 
                     roomsContainer.innerHTML += `
-                        <div class="zoom-room-box">
+                        <div class="zoom-room-box" ondragover="allowDrop(event)" ondragleave="dragLeaveRoom(event)" ondrop="dropToRoom(event, '${rId}')">
                             <div class="zoom-room-header">
                                 <span>Breakout Room ${i} (${count}/3)</span>
-                                ${count < 3 ? `<button class="zoom-assign-btn" onclick="assignSelectedToRoom('${rId}')">Assign</button>` : ''}
                             </div>
                             <div>${studentsRowsHTML}</div>
                         </div>
@@ -507,34 +637,6 @@
                 }
             });
         }, 1500);
-    }
-
-    function selectStudentForZoomAssign(uName) {
-        selectedStudentForAssign = (selectedStudentForAssign === uName) ? null : uName;
-    }
-
-    function assignSelectedToRoom(roomId) {
-        if (!selectedStudentForAssign) { alert("Click on an unassigned student first!"); return; }
-        let targetStudent = selectedStudentForAssign;
-        selectedStudentForAssign = null;
-
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${targetStudent}.json`)
-        .then(r => r.json())
-        .then(userData => {
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}/members/${targetStudent}.json`, {
-                method: "PUT",
-                body: JSON.stringify({ name: targetStudent, skills: userData.habilidadesDesejadas || [] })
-            }).then(() => {
-                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}.json`, {
-                    method: "PATCH",
-                    body: JSON.stringify({ status: "active" })
-                });
-                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${targetStudent}.json`, {
-                    method: "PATCH",
-                    body: JSON.stringify({ statusAtual: "paired", currentRoomId: roomId })
-                });
-            });
-        });
     }
 
     function startStudentLobbyListener() {
@@ -555,6 +657,7 @@
     function startRoomActivitySync() {
         if (pollingInterval) clearInterval(pollingInterval);
         pollingInterval = setInterval(() => {
+            // Monitor student target room
             fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`)
             .then(r => r.json())
             .then(room => {
@@ -599,6 +702,28 @@
 
                 if (room.status === "done" && currentActiveScreen === "screen-recognition") {
                     showEvolutionaryProfile();
+                }
+            });
+
+            // Monitor global evaluations lock state
+            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub.json`)
+            .then(r => r.json())
+            .then(hub => {
+                const finishBtn = document.getElementById("btn-finish-conversation");
+                if(hub && hub.evaluationsUnlocked) {
+                    // Reveal the finish button to student
+                    finishBtn.style.display = "block";
+                    
+                    document.getElementById("btn-submit-evaluation").disabled = false;
+                    document.getElementById("eval-lock-warning").innerHTML = "🔓 evaluations unlocked! You can now submit your inputs.";
+                    document.getElementById("eval-lock-warning").style.color = "var(--green)";
+                } else {
+                    // Hide the finish button until teacher authorizes
+                    finishBtn.style.display = "none";
+                    
+                    document.getElementById("btn-submit-evaluation").disabled = true;
+                    document.getElementById("eval-lock-warning").innerHTML = "🔒 Waiting for your teacher to open evaluations...";
+                    document.getElementById("eval-lock-warning").style.color = "var(--amber)";
                 }
             });
         }, 1500);
@@ -684,6 +809,7 @@
                             <p>⏳ Evaluation saved! Waiting for your group partners to finish their selections...</p>
                         </div>
                     `;
+                    document.getElementById("evaluation-submit-block").style.display = "none";
                 }
             });
         });
