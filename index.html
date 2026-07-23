@@ -3,932 +3,459 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TALK IT UP — Live Session</title>
-    <!-- Firebase SDKs (Compat v9) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <title>Global Sports Reading & Listening Activity</title>
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style>
         :root {
-            --bg-dark: #0f0f11;
-            --card-dark: #18181c;
-            --primary: #8257e5;
-            --primary-glow: rgba(130, 87, 229, 0.4);
-            --green: #00b37e;
-            --green-glow: rgba(0, 179, 126, 0.3);
-            --amber: #ffcd00;
-            --amber-glow: rgba(255, 205, 0, 0.25);
-            --text-main: #e1e1e6;
-            --text-sub: #a8a8b3;
-            --cyber-blue: #00e5ff;
-            --highlight-bg: rgba(255, 205, 0, 0.15);
-            --zoom-blue: #2D8CFF;
+            --bg-color: #0b0f19;
+            --card-bg: #151d30;
+            --accent-blue: #38bdf8;
+            --accent-green: #22c55e;
+            --accent-purple: #a855f7;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            padding: 15px;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            padding: 2rem 1rem;
         }
 
-        .app-container {
+        .container {
+            max-width: 800px;
             width: 100%;
-            max-width: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
         }
 
-        .screen { display: none; flex-direction: column; gap: 15px; width: 100%; }
-        .screen.active { display: flex; }
-
-        .arena-container {
-            width: 100%;
-            background: var(--card-dark);
-            border: 2px solid #29292e;
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        /* Login Screen */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .arena-header {
+        header {
             text-align: center;
-            border-bottom: 1px solid #29292e;
-            padding-bottom: 12px;
+            margin-bottom: 2rem;
         }
 
-        .arena-header h1 {
-            font-size: 1.6rem;
-            color: var(--amber);
-            margin: 0;
+        header h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--accent-blue);
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 0.05em;
         }
 
-        .instruction-step {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-top: 4px;
+        .form-group {
+            margin-bottom: 1.2rem;
         }
 
         label {
-            font-size: 0.85rem;
-            color: var(--cyber-blue);
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        input[type="text"], input[type="number"] {
-            background: #09090b;
-            border: 1px solid #29292e;
-            border-radius: 8px;
-            color: #fff;
-            padding: 12px;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
             font-size: 0.95rem;
+        }
+
+        input {
             width: 100%;
-        }
-        input:focus { border-color: var(--primary); outline: none; }
-
-        .skills-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 280px;
-            overflow-y: auto;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #0b0f19;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
         }
 
-        .skill-option-card {
-            background: #202024;
-            border: 1px solid #29292e;
-            border-radius: 8px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        input:focus {
+            border-color: var(--accent-blue);
         }
 
-        .skill-option-card.selected {
-            border-color: var(--primary);
-            background: rgba(130, 87, 229, 0.08);
-        }
-
-        .skill-checkbox { width: 18px; height: 18px; accent-color: var(--primary); }
-        .skill-title { font-size: 0.9rem; font-weight: 500; color: var(--text-main); }
-
-        .magic-button-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .magic-btn {
-            background: #202024;
-            border: 1px solid #29292e;
+        .btn-start {
+            width: 100%;
+            background: var(--accent-blue);
+            color: #0b0f19;
+            border: none;
+            padding: 1rem;
             border-radius: 12px;
-            padding: 15px 8px;
-            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
+            margin-top: 0.5rem;
         }
-        .magic-btn:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            background: #26262b;
-        }
-        .magic-btn .icon { font-size: 1.8rem; }
-        .magic-btn .title { font-weight: bold; font-size: 0.85rem; color: #fff; }
-        .magic-btn .desc { font-size: 0.7rem; color: var(--text-sub); }
 
-        .reveal-panel {
-            background: #09090b;
-            border: 1px solid var(--primary);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 10px;
+        .btn-start:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Reading & Listening Screens */
+        #reading-screen, #teacher-screen {
             display: none;
         }
-        .reveal-panel.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        .panel-title { font-weight: bold; color: var(--primary); font-size: 1rem; margin-bottom: 8px; }
-        .panel-content { font-size: 0.8rem; line-height: 1.4; color: var(--text-main); }
-        .close-reveal {
-            background: none; border: none; color: var(--text-sub); cursor: pointer;
-            font-size: 0.75rem; text-decoration: underline; margin-top: 10px;
+
+        .text-body {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
         }
 
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            border-radius: 8px;
+        /* Key Words Style */
+        .keyword {
+            color: var(--accent-blue);
             font-weight: bold;
-            font-size: 0.95rem;
+            border-bottom: 2px dashed var(--accent-blue);
             cursor: pointer;
-            border: none;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, var(--green), #00875f);
-            color: #fff;
-            box-shadow: 0 4px 12px var(--green-glow);
-        }
-        .btn-submit:active { transform: scale(0.98); }
-        .btn-submit:disabled {
-            background: #2b2b30 !important;
-            color: #666 !important;
-            cursor: not-allowed;
-            box-shadow: none !important;
+            padding: 0 2px;
+            transition: all 0.2s;
         }
 
-        .zoom-room-box {
-            background: #202024;
-            border: 2px dashed #2d2d34;
+        .keyword:hover {
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .def-box {
+            background: #0b0f19;
+            border-left: 4px solid var(--accent-green);
+            padding: 1rem 1.2rem;
             border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-        }
-        .zoom-room-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            color: #fff;
-            font-size: 0.85rem;
-            border-bottom: 1px solid #2d2d34;
-            padding-bottom: 6px;
-            margin-bottom: 8px;
-        }
-        .zoom-student-row {
-            font-size: 0.8rem;
-            padding: 6px;
-            margin: 4px 0;
-            background: #121214;
-            border: 1px solid #29292e;
-            border-radius: 4px;
-            color: var(--text-main);
+            margin-top: 1.5rem;
+            min-height: 60px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            cursor: grab;
-        }
-        
-        .zoom-unassigned-card {
-            padding: 6px 12px; 
-            border-radius: 4px; 
-            font-size: 0.8rem; 
-            cursor: grab; 
-            border:1px solid #444; 
-            color:#fff;
-            background:#29292e;
         }
 
-        .study-box {
-            background: #121214;
-            border: 1px solid #29292e;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: var(--text-main);
+        .def-text {
+            color: var(--accent-green);
+            font-size: 1rem;
         }
 
-        .word-hl {
-            background: var(--highlight-bg);
-            color: var(--amber);
-            padding: 1px 4px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .theme-highlight-box {
-            background: linear-gradient(135deg, rgba(255, 205, 0, 0.15), rgba(130, 87, 229, 0.15));
-            border: 2px solid var(--amber);
+        /* Teacher Listening Panel */
+        .audio-player-box {
+            background: #0b0f19;
+            border: 1px solid var(--accent-purple);
+            padding: 1.5rem;
             border-radius: 14px;
-            padding: 20px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 1rem;
+            outline: none;
+        }
+
+        .listening-questions {
+            margin-top: 1.5rem;
+        }
+
+        .listening-questions h3 {
+            color: var(--accent-purple);
+            margin-bottom: 0.8rem;
+        }
+
+        .listening-questions ul {
+            list-style: none;
+        }
+
+        .listening-questions li {
+            background: #0b0f19;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+            border: 1px solid var(--border-color);
+            color: #cbd5e1;
+        }
+
+        /* Live Users Status */
+        .users-online {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .users-online h3 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .user-tag-list {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            box-shadow: 0 0 20px rgba(255, 205, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(5px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .user-tag {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-light);
         }
 
-        @media print {
-            body { background: #fff !important; color: #000 !important; padding: 0; }
-            .app-container { max-width: 100%; }
-            .screen { display: none !important; }
-            .screen#screen-profile { display: flex !important; }
-            .arena-container { border: none !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
-            .study-box, .skill-option-card { background: #f5f5f5 !important; border: 1px solid #ccc !important; color: #000 !important; }
-            .no-print { display: none !important; }
+        .user-tag.teacher {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
+    <div class="container">
+        
+        <!-- LOGIN SCREEN -->
+        <div id="login-screen" class="card">
+            <header>
+                <p>Collaborative Class</p>
+                <h1>Sports Around The World</h1>
+            </header>
 
-    <!-- SCREEN 1: LOGIN & ACCESS -->
-    <div id="screen-login" class="screen active">
-        <div class="arena-container">
-            <div class="arena-header">
-                <h1 id="login-title">TALK IT UP</h1>
-                <div class="instruction-step" id="login-instruction">Talk to a friend and generate insights together</div>
-            </div>
-
-            <div>
+            <div class="form-group">
                 <label for="username">Your Name:</label>
-                <input type="text" id="username" placeholder="Type your name..." autocomplete="off" oninput="checkTeacherMode(this.value)">
+                <input type="text" id="username" placeholder="Type your name here..." required>
             </div>
 
-            <button class="btn-submit" id="btn-login-enter" onclick="processLoginAndSearchRoom()" style="background: var(--primary); box-shadow: 0 4px 12px var(--primary-glow); margin-top: 10px;">
-                Join Room 🚀
-            </button>
+            <div class="form-group" id="pass-group">
+                <label for="password">Password (Teacher Only):</label>
+                <input type="password" id="password" placeholder="Enter teacher password...">
+            </div>
+
+            <button class="btn-start" id="join-btn" onclick="enterRoom()">Enter Activity 🚀</button>
         </div>
-    </div>
 
-    <!-- LOUNGE & BREAKOUT ROOMS FOR TEACHER -->
-    <div id="screen-lounge" class="screen">
-        <div class="arena-container">
-            <div class="arena-header">
-                <h1 id="lounge-title">Waiting Lounge</h1>
-                <div id="lounge-user-badge" style="background:#29292e; padding:4px 10px; border-radius:12px; font-size:0.8rem; color:var(--amber);">Waiting...</div>
-            </div>
-            
-            <!-- TEACHER INTERFACE -->
-            <div id="teacher-control-panel" style="display: none; flex-direction: column; gap: 15px;">
-                
-                <label>👥 Zoom Breakout Rooms Control:</label>
-                <div style="background: #09090b; padding: 12px; border-radius: 8px; border: 1px solid #29292e;">
-                    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: var(--zoom-blue);">Unassigned Students (Drag onto rooms):</div>
-                    <div id="zoom-unassigned-pool" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 50px; padding: 10px; border: 1px dashed #444; border-radius: 6px; margin-bottom: 15px;" ondragover="allowDrop(event)" ondrop="dropToUnassigned(event)"></div>
-                    
-                    <div style="font-size: 0.8rem; font-weight: bold; margin: 10px 0 8px 0; color: #fff;">Active Rooms (Drag students to rearrange):</div>
-                    <div id="zoom-rooms-container"></div>
+        <!-- STUDENT READING SCREEN -->
+        <div id="reading-screen">
+            <div class="card">
+                <header style="text-align: left; margin-bottom: 1.5rem;">
+                    <p id="role-badge">Student Role</p>
+                    <h1 id="article-title" style="font-size: 1.8rem;">Text Title</h1>
+                </header>
+
+                <div class="text-body" id="article-content">
+                    <!-- Dynamic text inserted here -->
                 </div>
 
-                <div style="background: #1c1917; padding: 12px; border-radius: 8px; border: 1px solid var(--amber-glow); display: flex; flex-direction: column; gap: 8px;">
-                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--amber); font-weight: bold;">📢 Live Room Actions:</span>
-                    <button class="btn-submit" style="background: var(--amber); color:#000; font-size: 0.8rem; padding: 10px;" onclick="unlockEvaluationsGlobal()">
-                        🔓 Open Evaluations for Everyone
-                    </button>
-                </div>
-
-                <button class="btn-submit" style="background: #f75a68; padding: 10px; font-size: 0.8rem;" onclick="clearEntireDatabaseLive()">
-                    💥 reset all sessions & rooms
-                </button>
-            </div>
-
-            <!-- STUDENT INTERFACE -->
-            <div class="lounge-box" id="student-lounge-view" style="text-align:center; padding:15px; border:1px dashed #323238; border-radius:8px;">
-                <p style="color: var(--amber); font-weight: bold; font-size:1.1rem;">⏳ Waiting for your teacher...</p>
-                <p style="font-size: 0.85rem; color: var(--text-sub);">Your teacher is setting up the conversation groups. You will jump directly into the room in a few seconds!</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCREEN 2: ACTIVE ACTIVITY AREA -->
-    <div id="screen-activity" class="screen">
-        
-        <!-- BACK TO DASHBOARD FOR GHOST MODE -->
-        <button id="ghost-back-btn" class="btn-submit" style="display:none; background:var(--zoom-blue); box-shadow:none; padding:10px; font-size:0.85rem;" onclick="exitGhostSpyMode()">
-            ⬅️ Return to Master Dashboard 📡 (You are a Ghost)
-        </button>
-
-        <div class="arena-container">
-            <div class="arena-header">
-                <h1>TALK IT UP</h1>
-                <div id="activity-partner-badge" style="background: rgba(0, 229, 255, 0.1); border: 1px solid var(--cyber-blue); padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; margin-top: 6px; font-weight: bold;">Connecting to Room...</div>
-            </div>
-
-            <!-- INTEGRATED CENTRAL THEME SECTION -->
-            <div class="theme-highlight-box">
-                <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--amber); font-weight: bold; letter-spacing: 1px; text-align: center;">🔥 Central Theme: AI & The Future of Work</span>
-                <p style="font-size: 1.15rem; margin: 5px 0; color: #fff; font-weight: bold; text-align: center; line-height: 1.4;">
-                    "Use your talents to get AI to help Brazilian people"
-                </p>
-            </div>
-
-            <!-- INTERACTIVE MAGIC SPARKS -->
-            <label style="margin-top: 10px;">⚡ Interactive Magic Sparks:</label>
-            <div class="magic-button-grid">
-                <div class="magic-btn" onclick="toggleMagicPanel('ideas')">
-                    <span class="icon">🧠</span>
-                    <span class="title">Wild Ideas</span>
-                    <span class="desc">Brainstorming Sparks</span>
-                </div>
-                <div class="magic-btn" onclick="toggleMagicPanel('action')">
-                    <span class="icon">🧪</span>
-                    <span class="title">Testing Area</span>
-                    <span class="desc">Simulate Roles</span>
-                </div>
-            </div>
-
-            <!-- MAGIC REVEAL PANELS -->
-            <!-- WILD IDEAS PANEL -->
-            <div id="panel-ideas" class="reveal-panel">
-                <div class="panel-title">🧠 Wild Ideas</div>
-                <div class="panel-content" style="display: flex; flex-direction: column; gap: 12px;">
-                    <p style="font-weight: bold; color: var(--cyber-blue); margin-bottom: 4px;">Ask inspiring questions about:</p>
-                    
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin: 5px 0;">
-                        <span style="background: #202024; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: var(--amber);">
-                            ⚡ <strong>your friend's talents</strong>
-                        </span>
-                        
-                        <span style="background: #202024; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: var(--amber);">
-                            ⚡ <strong>how to help people in Brazil</strong>
-                        </span>
-                        
-                        <span style="background: #202024; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: var(--amber); display: flex; flex-direction: column; gap: 4px;">
-                            <span>⚡ <strong>negotiate a win-win case</strong></span>
-                            <span style="font-size: 0.75rem; color: var(--text-sub); font-style: italic; line-height: 1.3;">
-                                Example: "If we use AI to create social media posts for your cousin's bakery in Brazil, I can practice English and we can help her sell more! What do you think?"
-                            </span>
-                        </span>
-                        
-                        <span style="background: #202024; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 0.8rem; color: var(--text-sub);">
-                            ⚡ <strong>what else to ask?</strong>
-                        </span>
+                <div class="def-box">
+                    <div class="def-text" id="definition-display">
+                        💡 <em>Click on any highlighted blue word in the text to see its simple English definition!</em>
                     </div>
                 </div>
-                <button class="close-reveal" onclick="closeAllMagicPanels()" style="margin-top: 15px;">✕ Close</button>
             </div>
 
-            <!-- TESTING AREA PANEL -->
-            <div id="panel-action" class="reveal-panel">
-                <div class="panel-title">🧪 Testing Area</div>
-                <div class="panel-content" style="display: flex; flex-direction: column; gap: 12px;">
-                    <p style="font-weight: bold; color: var(--cyber-blue); margin-bottom: 4px;">Test your concept with roles:</p>
-                    
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin: 5px 0;">
-                        <span style="background: #202024; border: 1px solid #333; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: #fff;">👤 Investors</span>
-                        <span style="background: #202024; border: 1px solid #333; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; color: #fff;">👤 Clients</span>
-                    </div>
-
-                    <div style="background: rgba(130, 87, 229, 0.08); padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary);">
-                        <p style="font-weight: bold; color: var(--amber); font-style: italic; font-size: 0.8rem;">
-                            ❓ anything to change or make better?
-                        </p>
-                    </div>
-                </div>
-                <button class="close-reveal" onclick="closeAllMagicPanels()" style="margin-top: 15px;">✕ Close</button>
-            </div>
-
-            <button class="btn-submit" id="btn-finish-conversation" style="display: none; background: linear-gradient(135deg, var(--primary), #5f3dc4);" onclick="finishConversationAndGoToRecognition()">Finish Conversation 🏁</button>
-        </div>
-    </div>
-
-    <!-- SCREEN 3: MUTUAL RECOGNITION -->
-    <div id="screen-recognition" class="screen">
-        <div class="arena-container">
-            <div class="arena-header">
-                <h1>Mutual Recognition</h1>
-                <div class="instruction-step" id="rec-title-name">Which actions did you notice your friends using?</div>
-            </div>
-            <div class="skills-grid" id="recognition-skills-list"></div>
-            
-            <div id="evaluation-submit-block">
-                <button class="btn-submit" id="btn-submit-evaluation" onclick="submitFinalRecognitionsToDB()" disabled>
-                    Submit Evaluation 💾
-                </button>
-                <div id="eval-lock-warning" style="text-align: center; color: var(--amber); font-size: 0.75rem; margin-top: 8px;">
-                    🔒 Waiting for your teacher to open evaluations...
+            <!-- LIVE FIREBASE USER LIST -->
+            <div class="users-online">
+                <h3>👥 Connected Students (Realtime)</h3>
+                <div class="user-tag-list" id="users-list-student">
+                    <!-- Live users inserted via Firebase -->
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- SCREEN 4: EVOLUTIONARY PROFILE -->
-    <div id="screen-profile" class="screen">
-        <div class="arena-container">
-            <div class="arena-header">
-                <h1 style="color: var(--green);">Your Evolutionary Log</h1>
-                <div id="profile-name-badge" style="background:#29292e; padding:4px 10px; border-radius:12px; font-size:0.8rem; color:var(--green); font-weight:bold;">...</div>
-            </div>
-            
-            <label>📊 Mastered Capabilities:</label>
-            <div class="skills-grid" id="profile-skills-summary" style="max-height: 180px; gap:6px;"></div>
-            
-            <label style="margin-top: 5px;">📖 Weekly Study Corner (A2-B1):</label>
-            <div class="study-box">
-                <p style="margin:0 0 8px 0; font-weight:bold; color:var(--cyber-blue);">How to develop Active Listening in real life:</p>
-                To listen well, you don't just stay quiet. You must <span class="word-hl" title="prestar atenção de verdade">pay attention</span> to the other person's energy. When they speak, do not think about your next answer. Instead, try to <span class="word-hl" title="compreender / captar o significado">comprehend</span> their perspective. 
-                A great trick is to <span class="word-hl" title="parafrasear">paraphrase</span> what you heard: say things like <em>"So, what you mean is...?"</em>. This creates absolute <span class="word-hl" title="clareza">clarity</span> and builds incredible trust during a team project!
+        <!-- TEACHER LISTENING SCREEN -->
+        <div id="teacher-screen">
+            <div class="card">
+                <header style="text-align: left; margin-bottom: 1.5rem;">
+                    <p style="color: var(--accent-purple);">TEACHER DASHBOARD</p>
+                    <h1 style="font-size: 1.8rem;">🎧 Listening Activity Control</h1>
+                </header>
+
+                <div class="audio-player-box">
+                    <p style="color: #fff; font-weight: bold;">Passage: The Global Evolution of Modern Sports</p>
+                    <audio controls>
+                        <source src="https://files.catbox.moe/eyrtyr.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+
+                <div class="listening-questions">
+                    <h3>🎯 Discussion Questions for Students:</h3>
+                    <ul>
+                        <li><strong>1. Main Idea:</strong> What is the primary message regarding how sports connect global cultures?</li>
+                        <li><strong>2. Specific Details:</strong> Which countries were mentioned, and how did cricket evolve in India?</li>
+                        <li><strong>3. Vocabulary Focus:</strong> What does "homogenization" mean in the context of global sports?</li>
+                        <li><strong>4. Reflection:</strong> Why do communities still fiercely protect local traditional sports?</li>
+                    </ul>
+                </div>
             </div>
 
-            <button class="btn-submit no-print" style="background: var(--zoom-blue); margin-top: 5px;" onclick="window.print()">Print / Save Log 🖨️</button>
-            <button class="btn-submit no-print" style="background: #29292e; margin-top: 5px;" onclick="restartEntireFlow()">Start Over 🔄</button>
+            <!-- LIVE FIREBASE USER LIST -->
+            <div class="users-online">
+                <h3>👥 Connected Classroom (Realtime)</h3>
+                <div class="user-tag-list" id="users-list-teacher">
+                    <!-- Live users inserted via Firebase -->
+                </div>
+            </div>
         </div>
+
     </div>
-</div>
 
-<script>
-    // ========== FIREBASE SETUP ==========
-    const firebaseConfig = {
-        apiKey: "AIzaSyDemoKey",
-        authDomain: "english-meetings-f08e4.firebaseapp.com",
-        databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com",
-        projectId: "english-meetings-f08e4",
-        storageBucket: "english-meetings-f08e4.appspot.com",
-        messagingSenderId: "000000000000",
-        appId: "1:000000000000:web:000000000000"
-    };
+    <script>
+        // 1. FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+        // 2. TEXT DATASETS
+        const articles = {
+            1: {
+                title: "The Power of Sports Diplomacy",
+                badge: "Student 1 Article",
+                content: `Sports have long served as a <span class="keyword" onclick="showDef('Neutral ground', 'A place or situation where neither side has an advantage or control.')">neutral ground</span> where nations can build connections, even during periods of intense political tension. Known as "sports diplomacy," athletic competitions allow countries to engage in peaceful dialogue and foster mutual respect on an international stage. Events like the Olympics or international tournaments bring athletes from diverse <span class="keyword" onclick="showDef('Geopolitical', 'Connected with political relations between countries in specific regions.')">geopolitical</span> backgrounds together, proving that shared rules and sportsmanship can temporarily set aside <span class="keyword" onclick="showDef('Ideological', 'Based on a system of ideas or beliefs, especially political ones.')">ideological</span> differences. Through friendly rivalry, sports often open doors for cultural exchange and diplomatic <span class="keyword" onclick="showDef('Reconciliation', 'The process of restoring friendly relations between people or countries.')">reconciliation</span> that traditional politics cannot achieve.`
+            },
+            2: {
+                title: "The Economic Impact of Mega-Sports Events",
+                badge: "Student 2 Article",
+                content: `Hosting major international sporting events can transform a nation's economy, but it comes with <span class="keyword" onclick="showDef('Substantial', 'Large in size, value, importance, or degree.')">substantial</span> financial risks. Cities invest billions of dollars in building state-of-the-art stadiums, upgrading public transportation, and boosting local <span class="keyword" onclick="showDef('Infrastructure', 'The basic physical systems of a country like roads, transport, and power.')">infrastructure</span> to welcome global spectators. While these investments can stimulate tourism, generate temporary jobs, and enhance a country's global prestige, they also run the risk of leaving behind underutilized venues and public debt. As a result, the debate over whether the economic benefits of host cities <span class="keyword" onclick="showDef('Outweigh', 'To be greater or more important than something else.')">outweigh</span> the immense financial burden remains a central topic today.`
+            },
+            3: {
+                title: "The Role of Technology in Modern Athletics",
+                badge: "Student 3 Article",
+                content: `Technology has <span class="keyword" onclick="showDef('Fundamentally', 'In a central, essential, or basic way.')">fundamentally</span> transformed how sports are played, refereed, and consumed across the globe. From high-tech wearable sensors that monitor athletes' heart rates and fatigue levels to advanced video assistant referee (VAR) systems, data analytics now drive almost every strategic decision. While these innovations improve fairness and reduce injury risks, some critics argue that <span class="keyword" onclick="showDef('Over-reliance', 'Depending too much on someone or something.')">over-reliance</span> on technology threatens to compromise the human element and natural flow of the game. Striking a balance between technological precision and athletic <span class="keyword" onclick="showDef('Spontaneity', 'Natural behavior done without planning or force.')">spontaneity</span> continues to be a great challenge.`
+            }
+        };
 
-    const capabilitiesMap = {
-        communication: { text: "Pass your vision and ideas clearly", techName: "Communication" },
-        negotiation: { text: "Create options where everyone wins something", techName: "Negotiation" },
-        empathy: { text: "Understand the problem from your partner's view", techName: "Empathy" },
-        creativity: { text: "Connect different points to find a rare solution", techName: "Creativity" },
-        cooperation: { text: "Combine distinct tasks into one mutual objective", techName: "Cooperation" },
-        active_listening: { text: "Listen carefully to understand, not just reply", techName: "Active Listening" }
-    };
+        let currentUserName = "";
 
-    let myName = "";
-    let selectedDesiredSkills = [];
-    let currentRoomId = null;
-    let roomParticipants = {}; 
-    let pollingInterval = null;
-    let currentActiveScreen = "screen-login";
-    let isTeacherMode = false;
-    let isGhostSpaying = false;
+        // 3. ENTER ROOM LOGIC
+        async function enterRoom() {
+            const nameInput = document.getElementById('username').value.trim();
+            const passInput = document.getElementById('password').value.trim();
+            const btn = document.getElementById('join-btn');
 
-    function checkTeacherMode(value) {
-        const normalized = value.trim().toLowerCase();
-        const btn = document.getElementById("btn-login-enter");
-        const title = document.getElementById("login-title");
-        const instruction = document.getElementById("login-instruction");
-
-        if (normalized === "teacher") {
-            isTeacherMode = true;
-            title.innerText = "Zoom Room Control";
-            instruction.innerText = "Breakout Rooms administration dashboard.";
-            btn.innerText = "Open Zoom Dashboard 📡";
-        } else {
-            isTeacherMode = false;
-            title.innerText = "TALK IT UP";
-            instruction.innerText = "Talk to a friend and generate insights together";
-            btn.innerText = "Join Room 🚀";
-        }
-    }
-
-    function processLoginAndSearchRoom() {
-        myName = document.getElementById("username").value.trim();
-        if (!myName) { alert("Please enter your name."); return; }
-
-        if (isTeacherMode) {
-            const pwd = prompt("Password:");
-            if (pwd !== "admin123") return;
-            enterTeacherControlLounge();
-            return;
-        }
-
-        switchScreen("screen-lounge");
-        document.getElementById("student-lounge-view").style.display = "block";
-        document.getElementById("teacher-control-panel").style.display = "none";
-        document.getElementById("lounge-user-badge").innerText = myName;
-
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${myName}.json`, {
-            method: "PATCH",
-            body: JSON.stringify({ nome: myName, statusAtual: "waiting" })
-        });
-
-        startStudentLobbyListener();
-    }
-
-    // ========== DRAG & DROP FOR BREAKOUT ROOMS ==========
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
-
-    function drag(ev) {
-        ev.target.id && ev.dataTransfer.setData("text", ev.target.id);
-    }
-
-    function dropToRoom(ev, roomId) {
-        ev.preventDefault();
-        const studentIdName = ev.dataTransfer.getData("text");
-        if (!studentIdName) return;
-        
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`)
-        .then(r => r.json())
-        .then(userData => {
-            if (!userData) return;
-
-            if (userData.currentRoomId && userData.currentRoomId !== roomId) {
-                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${userData.currentRoomId}/members/${studentIdName}.json`, {
-                    method: "DELETE"
-                });
+            if (!nameInput) {
+                alert("Please enter your name!");
+                return;
             }
 
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}/members/${studentIdName}.json`, {
-                method: "PUT",
-                body: JSON.stringify({ name: studentIdName })
-            }).then(() => {
-                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${roomId}.json`, {
-                    method: "PATCH",
-                    body: JSON.stringify({ status: "active" })
-                });
-                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`, {
-                    method: "PATCH",
-                    body: JSON.stringify({ statusAtual: "paired", currentRoomId: roomId })
-                });
-            });
-        });
-    }
+            btn.disabled = true;
+            btn.innerText = "Connecting...";
 
-    function dropToUnassigned(ev) {
-        ev.preventDefault();
-        const studentIdName = ev.dataTransfer.getData("text");
-        if (!studentIdName) return;
+            currentUserName = nameInput;
 
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`)
-        .then(r => r.json())
-        .then(userData => {
-            if (!userData) return;
+            // CHECK IF TEACHER
+            if (nameInput.toLowerCase() === 'teacher' && passInput === 'admin123') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('teacher-screen').style.display = 'block';
 
-            if (userData.currentRoomId) {
-                fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${userData.currentRoomId}/members/${studentIdName}.json`, {
-                    method: "DELETE"
+                const userRef = database.ref('active_students/' + sanitizeName(currentUserName));
+                userRef.set({
+                    name: "Teacher 👨‍🏫",
+                    role: "Teacher / Host",
+                    isTeacher: true,
+                    joinedAt: Date.now()
                 });
+                userRef.onDisconnect().remove();
+
+                listenToLiveUsers('users-list-teacher');
+                return;
             }
 
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${studentIdName}.json`, {
-                method: "PATCH",
-                body: JSON.stringify({ statusAtual: "waiting", currentRoomId: null })
-            });
-        });
-    }
-
-    function unlockEvaluationsGlobal() {
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub.json`, {
-            method: "PATCH",
-            body: JSON.stringify({ evaluationsUnlocked: true })
-        }).then(() => {
-            alert("Evaluations and Finish Buttons unlocked for all active rooms!");
-        });
-    }
-
-    // ========== TEACHER VISUAL CONTROL ==========
-    function enterTeacherControlLounge() {
-        switchScreen("screen-lounge");
-        document.getElementById("student-lounge-view").style.display = "none";
-        document.getElementById("teacher-control-panel").style.display = "flex";
-        document.getElementById("lounge-user-badge").innerText = "Host (Teacher)";
-        
-        if (pollingInterval) clearInterval(pollingInterval);
-        
-        pollingInterval = setInterval(() => {
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users.json`)
-            .then(r => r.json())
-            .then(users => {
-                const unassignedContainer = document.getElementById("zoom-unassigned-pool");
-                unassignedContainer.innerHTML = "";
-                if (!users) return;
-                
-                Object.keys(users).forEach(uName => {
-                    if (users[uName].statusAtual === "waiting") {
-                        unassignedContainer.innerHTML += `
-                            <div class="zoom-unassigned-card" id="${uName}" draggable="true" ondragstart="drag(event)">
-                                👤 ${uName}
-                            </div>`;
-                    }
-                });
+            // REGULAR STUDENT ROLE ASSIGNMENT
+            const snapshot = await database.ref('active_students').once('value');
+            const activeData = snapshot.val() || {};
+            
+            const roleCounts = { 1: 0, 2: 0, 3: 0 };
+            Object.values(activeData).forEach(u => {
+                if (u.roleId && roleCounts[u.roleId] !== undefined) {
+                    roleCounts[u.roleId]++;
+                }
             });
 
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms.json`)
-            .then(r => r.json())
-            .then(rooms => {
-                const roomsContainer = document.getElementById("zoom-rooms-container");
-                roomsContainer.innerHTML = "";
-                
-                for (let i = 1; i <= 4; i++) {
-                    let rId = `Breakout_Room_${i}`;
-                    let rData = (rooms && rooms[rId]) ? rooms[rId] : { members: {} };
-                    let memberNames = Object.keys(rData.members || {});
-                    let count = memberNames.length;
+            let assignedRoleId = 1;
+            let minCount = Infinity;
+            [1, 2, 3].forEach(roleId => {
+                if (roleCounts[roleId] < minCount) {
+                    minCount = roleCounts[roleId];
+                    assignedRoleId = roleId;
+                }
+            });
 
-                    let studentsRowsHTML = "";
-                    memberNames.forEach(m => {
-                        studentsRowsHTML += `
-                            <div class="zoom-student-row" id="${m}" draggable="true" ondragstart="drag(event)">
-                                🟢 <span>${m}</span>
-                            </div>`;
+            // Render assigned article
+            const selectedArticle = articles[assignedRoleId];
+            document.getElementById('article-title').innerText = selectedArticle.title;
+            document.getElementById('role-badge').innerText = selectedArticle.badge;
+            document.getElementById('article-content').innerHTML = selectedArticle.content;
+
+            // Display Student Screen
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('reading-screen').style.display = 'block';
+
+            // Push to Firebase
+            const userRef = database.ref('active_students/' + sanitizeName(currentUserName));
+            userRef.set({
+                name: currentUserName,
+                role: "Student " + assignedRoleId,
+                roleId: assignedRoleId,
+                joinedAt: Date.now()
+            });
+
+            userRef.onDisconnect().remove();
+            listenToLiveUsers('users-list-student');
+        }
+
+        // 4. KEYWORD DEFINITION DISPLAY
+        function showDef(word, definition) {
+            const display = document.getElementById('definition-display');
+            display.innerHTML = `<strong>${word}:</strong> ${definition}`;
+        }
+
+        // 5. REALTIME FIREBASE SYNC
+        function listenToLiveUsers(targetContainerId) {
+            database.ref('active_students').on('value', (snapshot) => {
+                const usersListContainer = document.getElementById(targetContainerId);
+                usersListContainer.innerHTML = '';
+
+                const data = snapshot.val();
+                if (data) {
+                    Object.values(data).forEach(user => {
+                        const tag = document.createElement('div');
+                        tag.className = 'user-tag' + (user.isTeacher ? ' teacher' : '');
+                        tag.innerHTML = `🟢 <strong>${user.name}</strong> (${user.role})`;
+                        usersListContainer.appendChild(tag);
                     });
-                    if(count === 0) studentsRowsHTML = `<div style="font-size:0.75rem; color:#666; font-style:italic;">- Drag students here -</div>`;
-
-                    roomsContainer.innerHTML += `
-                        <div class="zoom-room-box" ondragover="allowDrop(event)" ondrop="dropToRoom(event, '${rId}')">
-                            <div class="zoom-room-header">
-                                <span>Breakout Room ${i} (${count}/3)</span>
-                                <button onclick="enterGhostSpyMode('${rId}')" style="background:var(--primary); color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:0.7rem; cursor:pointer;">Spy Room 👁️</button>
-                            </div>
-                            <div>${studentsRowsHTML}</div>
-                        </div>
-                    `;
                 }
             });
-        }, 1500);
-    }
-
-    // GHOST SPY MODE LOGIC
-    function enterGhostSpyMode(roomId) {
-        isGhostSpaying = true;
-        currentRoomId = roomId;
-        
-        document.getElementById("ghost-back-btn").style.display = "block";
-        
-        switchScreen("screen-activity");
-        startRoomActivitySync();
-    }
-
-    function exitGhostSpyMode() {
-        isGhostSpaying = false;
-        document.getElementById("ghost-back-btn").style.display = "none";
-        
-        currentRoomId = null;
-        enterTeacherControlLounge();
-    }
-
-    function startStudentLobbyListener() {
-        let studentLobbyInterval = setInterval(() => {
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${myName}.json`)
-            .then(r => r.json())
-            .then(u => {
-                if(u && u.statusAtual === "paired" && u.currentRoomId) {
-                    clearInterval(studentLobbyInterval);
-                    currentRoomId = u.currentRoomId;
-                    switchScreen("screen-activity");
-                    startRoomActivitySync();
-                }
-            });
-        }, 1500);
-    }
-
-    function startRoomActivitySync() {
-        if (pollingInterval) clearInterval(pollingInterval);
-        pollingInterval = setInterval(() => {
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`)
-            .then(r => r.json())
-            .then(room => {
-                if(!room || !room.members) return;
-                
-                roomParticipants = room.members;
-                let peersList = Object.keys(roomParticipants).filter(p => p !== myName);
-                
-                if(peersList.length > 0) {
-                    document.getElementById("activity-partner-badge").innerText = isGhostSpaying ? `Spying: ${peersList.join(" & ")}` : `Connected with: ${peersList.join(" & ")}`;
-                } else {
-                    document.getElementById("activity-partner-badge").innerText = "Waiting for room members...";
-                }
-
-                if (!isGhostSpaying) {
-                    if (room.status === "assessment" && currentActiveScreen === "screen-activity") {
-                        renderRecognitionGrid();
-                        switchScreen("screen-recognition");
-                    }
-                    if (room.status === "done" && currentActiveScreen === "screen-recognition") {
-                        showEvolutionaryProfile();
-                    }
-                }
-            });
-
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub.json`)
-            .then(r => r.json())
-            .then(hub => {
-                const finishBtn = document.getElementById("btn-finish-conversation");
-                if(isGhostSpaying) {
-                    finishBtn.style.display = "none";
-                    return;
-                }
-
-                if(hub && hub.evaluationsUnlocked) {
-                    finishBtn.style.display = "block";
-                    document.getElementById("btn-submit-evaluation").disabled = false;
-                    document.getElementById("eval-lock-warning").innerHTML = "🔓 Evaluations unlocked! Click to rate your peers' soft skills.";
-                    document.getElementById("eval-lock-warning").style.color = "var(--green)";
-                } else {
-                    finishBtn.style.display = "none";
-                    document.getElementById("btn-submit-evaluation").disabled = true;
-                    document.getElementById("eval-lock-warning").innerHTML = "🔒 Waiting for your teacher to open evaluations...";
-                    document.getElementById("eval-lock-warning").style.color = "var(--amber)";
-                }
-            });
-        }, 1500);
-    }
-
-    // ========== MAGIC SELECTIONS SYSTEM ==========
-    function toggleMagicPanel(panelName) {
-        const panel = document.getElementById(`panel-${panelName}`);
-        const isCurrentlyActive = panel.classList.contains("active");
-        closeAllMagicPanels();
-        if(!isCurrentlyActive) {
-            panel.classList.add("active");
         }
-    }
 
-    function closeAllMagicPanels() {
-        document.querySelectorAll(".reveal-panel").forEach(p => p.classList.remove("active"));
-    }
-
-    function finishConversationAndGoToRecognition() {
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`, {
-            method: "PATCH",
-            body: JSON.stringify({ status: "assessment" })
-        });
-    }
-
-    // ========== ASSESSMENT & RECOGNITION FLOW ==========
-    let finalVotes = [];
-    function renderRecognitionGrid() {
-        let peers = Object.keys(roomParticipants).filter(p => p !== myName);
-        document.getElementById("rec-title-name").innerText = `Which actions did you notice ${peers.join(" or ")} using?`;
-        const container = document.getElementById("recognition-skills-list");
-        container.innerHTML = "";
-        finalVotes = [];
-        
-        Object.keys(capabilitiesMap).forEach(key => {
-            container.innerHTML += `
-                <div class="skill-option-card" id="card-rec-${key}" onclick="toggleVote('${key}')">
-                    <input type="checkbox" class="skill-checkbox" id="check-rec-${key}" style="pointer-events:none;">
-                    <div class="skill-title">${capabilitiesMap[key].text}</div>
-                </div>
-            `;
-        });
-    }
-
-    function toggleVote(key) {
-        const idx = finalVotes.indexOf(key);
-        if (idx > -1) {
-            finalVotes.splice(idx, 1);
-            document.getElementById(`card-rec-${key}`).classList.remove("selected");
-            document.getElementById(`check-rec-${key}`).checked = false;
-        } else {
-            finalVotes.push(key);
-            document.getElementById(`card-rec-${key}`).classList.add("selected");
-            document.getElementById(`check-rec-${key}`).checked = true;
+        function sanitizeName(name) {
+            return name.replace(/[.#$\[\]]/g, "_");
         }
-    }
-
-    function submitFinalRecognitionsToDB() {
-        if(finalVotes.length === 0) { alert("Please check at least one action!"); return; }
-        
-        let peers = Object.keys(roomParticipants).filter(p => p !== myName);
-        let promises = [];
-        
-        peers.forEach(partnerName => {
-            finalVotes.forEach(sk => {
-                let p = fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${partnerName}/scores/${sk}.json`)
-                .then(r => r.json())
-                .then(current => {
-                    let updated = (current || 0) + 1;
-                    return fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${partnerName}/scores/${sk}.json`, { method: "PUT", body: JSON.stringify(updated) });
-                });
-                promises.push(p);
-            });
-        });
-
-        let markDone = fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}/members/${myName}.json`, {
-            method: "PATCH",
-            body: JSON.stringify({ voted: true })
-        });
-        promises.push(markDone);
-
-        Promise.all(promises).then(() => {
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`)
-            .then(r => r.json())
-            .then(room => {
-                let allMembers = Object.keys(room.members);
-                let missingVotes = allMembers.filter(m => !room.members[m].voted);
-
-                if (missingVotes.length === 0) {
-                    fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/rooms/${currentRoomId}.json`, {
-                        method: "PATCH",
-                        body: JSON.stringify({ status: "done" })
-                    });
-                } else {
-                    document.getElementById("recognition-skills-list").innerHTML = `
-                        <div style="text-align:center; padding: 20px; color: var(--amber);">
-                            <p>⏳ Evaluation saved! Waiting for your group partners to finish their selections...</p>
-                        </div>
-                    `;
-                    document.getElementById("evaluation-submit-block").style.display = "none";
-                }
-            });
-        });
-    }
-
-    function showEvolutionaryProfile() {
-        if (pollingInterval) clearInterval(pollingInterval);
-        switchScreen("screen-profile");
-        document.getElementById("profile-name-badge").innerText = myName;
-        const summary = document.getElementById("profile-skills-summary");
-        summary.innerHTML = "Syncing logs...";
-
-        fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub/users/${myName}/scores.json`)
-        .then(r => r.json())
-        .then(scores => {
-            summary.innerHTML = "";
-            Object.keys(capabilitiesMap).forEach(key => {
-                let pts = (scores && scores[key]) ? scores[key] : 0;
-                let stars = "★".repeat(Math.min(pts, 5)) + "☆".repeat(Math.max(0, 5 - pts));
-                
-                summary.innerHTML += `
-                    <div style="background:#202024; padding:8px 12px; border-radius:6px; display:flex; justify-content:space-between; align-items:center; border:1px solid #29292e; font-size:0.8rem;">
-                        <div>
-                            <strong style="color:var(--amber);">${capabilitiesMap[key].techName}</strong> 
-                            <div style="font-size:0.75rem; color:var(--text-sub);">${capabilitiesMap[key].text}</div>
-                        </div>
-                        <span style="color:var(--amber); letter-spacing:1px; white-space:nowrap; margin-left:10px;">${stars} (${pts})</span>
-                    </div>
-                `;
-            });
-        });
-    }
-
-    function clearEntireDatabaseLive() {
-        if(confirm("This will clear all active rooms and student lists. Proceed?")) {
-            fetch(`https://english-meetings-f08e4-default-rtdb.firebaseio.com/sessions/human_capabilities_hub.json`, { method: "DELETE" })
-            .then(() => { alert("Database Reset Complete."); enterTeacherControlLounge(); });
-        }
-    }
-
-    function restartEntireFlow() {
-        selectedDesiredSkills = []; currentRoomId = null; roomParticipants = {}; isTeacherMode = false; isGhostSpaying = false;
-        document.getElementById("username").value = "";
-        document.getElementById("teacher-control-panel").style.display = "none";
-        document.getElementById("ghost-back-btn").style.display = "none";
-        checkTeacherMode(""); switchScreen("screen-login");
-    }
-
-    function switchScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        const target = document.getElementById(id);
-        if(target) { target.classList.add('active'); currentActiveScreen = id; }
-    }
-</script>
+    </script>
 </body>
 </html>
