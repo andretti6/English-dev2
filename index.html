@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Sports Reading & Listening Activity</title>
+    <title>Sports & Life Skills - Interactive Activity</title>
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -16,6 +16,8 @@
             --accent-blue: #38bdf8;
             --accent-green: #22c55e;
             --accent-purple: #a855f7;
+            --accent-orange: #f97316;
+            --accent-red: #ef4444;
             --text-light: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #1e293b;
@@ -39,11 +41,11 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 850px;
             width: 100%;
         }
 
-        /* Login Screen */
+        /* Card Styles */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -51,6 +53,7 @@
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
         }
 
         header {
@@ -116,84 +119,211 @@
             transform: translateY(-2px);
         }
 
-        /* Reading & Listening Screens */
-        #reading-screen, #teacher-screen {
+        .btn-print {
+            background: #334155;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            float: right;
+            transition: 0.2s;
+        }
+
+        .btn-print:hover {
+            background: #475569;
+        }
+
+        #activity-screen, #teacher-screen {
             display: none;
         }
 
-        .text-body {
-            font-size: 1.15rem;
-            line-height: 1.7;
-            color: #cbd5e1;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Key Words Style */
-        .keyword {
-            color: var(--accent-blue);
-            font-weight: bold;
-            border-bottom: 2px dashed var(--accent-blue);
-            cursor: pointer;
-            padding: 0 2px;
-            transition: all 0.2s;
-        }
-
-        .keyword:hover {
-            background: rgba(56, 189, 248, 0.15);
-        }
-
-        .def-box {
-            background: #0b0f19;
-            border-left: 4px solid var(--accent-green);
-            padding: 1rem 1.2rem;
-            border-radius: 8px;
-            margin-top: 1.5rem;
-            min-height: 60px;
+        /* Section Styling */
+        .section-header {
             display: flex;
             align-items: center;
+            gap: 0.6rem;
+            font-size: 1.3rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        .def-text {
-            color: var(--accent-green);
-            font-size: 1rem;
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1rem;
         }
 
-        /* Teacher Listening Panel */
-        .audio-player-box {
+        /* Audio Box */
+        .audio-box {
             background: #0b0f19;
-            border: 1px solid var(--accent-purple);
-            padding: 1.5rem;
-            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 1.2rem;
+            border-radius: 12px;
             margin-bottom: 1.5rem;
-            text-align: center;
         }
 
         audio {
             width: 100%;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             outline: none;
         }
 
-        .listening-questions {
-            margin-top: 1.5rem;
+        /* Question Box */
+        .question-box {
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
         }
 
-        .listening-questions h3 {
+        .question-box h4 {
             color: var(--accent-purple);
             margin-bottom: 0.8rem;
         }
 
-        .listening-questions ul {
-            list-style: none;
+        .question-box ol {
+            padding-left: 1.2rem;
+            color: #cbd5e1;
+            line-height: 1.6;
         }
 
-        .listening-questions li {
-            background: #0b0f19;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.6rem;
-            border: 1px solid var(--border-color);
+        /* Reading Box */
+        .text-body {
+            font-size: 1.05rem;
+            line-height: 1.7;
             color: #cbd5e1;
+            background: #0b0f19;
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .prompt-box {
+            background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .prompt-box h4 {
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Visual Speaking Prompt (No Input Box) */
+        .visual-questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .question-visual-item {
+            background: #0b0f19;
+            border: 1px dashed var(--accent-green);
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            color: #e2e8f0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .question-visual-item span.letter {
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .question-visual-item span.dots {
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .more-possibilities-badge {
+            display: inline-block;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            background: rgba(34, 197, 94, 0.1);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        /* AI Vocabulary Box */
+        .ai-vocab-box {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .ai-vocab-box h4 {
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .ai-input-group input {
+            flex: 1;
+        }
+
+        .ai-input-group button {
+            background: var(--accent-blue);
+            color: #0b0f19;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .ai-result {
+            margin-top: 0.8rem;
+            padding: 0.8rem;
+            background: #0b0f19;
+            border-radius: 8px;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            display: none;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        /* Action Roleplay Box */
+        .roleplay-box {
+            background: rgba(249, 115, 22, 0.05);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            padding: 1.5rem;
+            border-radius: 14px;
+        }
+
+        .role-title {
+            color: var(--accent-orange);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
         }
 
         /* Live Users Status */
@@ -227,9 +357,94 @@
             color: var(--text-light);
         }
 
-        .user-tag.teacher {
-            border-color: var(--accent-purple);
+        /* Teacher Screen / Spy Mode Styles */
+        .spy-card {
+            background: #0b0f19;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .spy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .spy-section {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .spy-section-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Modal Popup for Password */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal h3 {
+            margin-bottom: 1rem;
             color: var(--accent-purple);
+        }
+
+        /* Print Media Styles */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .card {
+                background: #fff !important;
+                color: #000 !important;
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+            }
+            .btn-print, .users-online, .ai-vocab-box, audio, #login-screen {
+                display: none !important;
+            }
+            .section-header, .role-title, h3, h4 {
+                color: #000 !important;
+            }
+            .text-body, .audio-box, .question-box, .prompt-box, .roleplay-box {
+                background: #f8fafc !important;
+                color: #000 !important;
+                border: 1px solid #ddd !important;
+            }
+            input {
+                background: #fff !important;
+                color: #000 !important;
+                border: 1px solid #aaa !important;
+            }
         }
     </style>
 </head>
@@ -240,8 +455,8 @@
         <!-- LOGIN SCREEN -->
         <div id="login-screen" class="card">
             <header>
-                <p>Collaborative Class</p>
-                <h1>Sports Around The World</h1>
+                <p>Collaborative Speaking Session</p>
+                <h1>Sports & Essential Life Skills</h1>
             </header>
 
             <div class="form-group">
@@ -249,29 +464,100 @@
                 <input type="text" id="username" placeholder="Type your name here..." required>
             </div>
 
-            <div class="form-group" id="pass-group">
-                <label for="password">Password (Teacher Only):</label>
-                <input type="password" id="password" placeholder="Enter teacher password...">
-            </div>
-
             <button class="btn-start" id="join-btn" onclick="enterRoom()">Enter Activity 🚀</button>
         </div>
 
-        <!-- STUDENT READING SCREEN -->
-        <div id="reading-screen">
-            <div class="card">
-                <header style="text-align: left; margin-bottom: 1.5rem;">
-                    <p id="role-badge">Student Role</p>
-                    <h1 id="article-title" style="font-size: 1.8rem;">Text Title</h1>
-                </header>
+        <!-- MAIN ACTIVITY SCREEN (STUDENT) -->
+        <div id="activity-screen">
+            
+            <!-- HEADER BAR WITH PRINT BUTTON -->
+            <div style="margin-bottom: 1.5rem; overflow: hidden;">
+                <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+            </div>
 
-                <div class="text-body" id="article-content">
-                    <!-- Dynamic text inserted here -->
+            <!-- SECTION A: LISTENING CROSS-TASK -->
+            <div class="card">
+                <span class="badge" id="student-badge">Student Role</span>
+                <h2 class="section-header">🎧 Part A: Listen & Cross-Examine</h2>
+
+                <div class="audio-box">
+                    <p style="color: #fff; font-weight: bold;" id="audio-label">Your Personal Audio Track:</p>
+                    <audio id="student-audio" controls>
+                        <source id="audio-source" src="" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
                 </div>
 
-                <div class="def-box">
-                    <div class="def-text" id="definition-display">
-                        💡 <em>Click on any highlighted blue word in the text to see its simple English definition!</em>
+                <div class="question-box">
+                    <h4 id="ask-partner-label">❓ Ask Your Partner:</h4>
+                    <ol id="partner-questions">
+                        <!-- Questions to ask partner inserted dynamically -->
+                    </ol>
+                </div>
+            </div>
+
+            <!-- SECTION B: READING & QUESTION CREATION -->
+            <div class="card">
+                <h2 class="section-header">📖 Part B: Read & Formulate Questions</h2>
+                
+                <h3 id="reading-title" style="color: var(--accent-blue); margin-bottom: 0.8rem;">Text Title</h3>
+                <div class="text-body" id="reading-text">
+                    <!-- Text inserted dynamically -->
+                </div>
+
+                <!-- AI DICTIONARY TOOL -->
+                <div class="ai-vocab-box">
+                    <h4>💡 AI Smart Dictionary (Groq Powered)</h4>
+                    <p style="color: var(--text-muted); font-size: 0.85rem;">Don't know a word? Type it below to get a simple definition in English!</p>
+                    <div class="ai-input-group">
+                        <input type="text" id="vocab-word" placeholder="e.g. investor, resilience, sponsor...">
+                        <button onclick="lookupWord()">Define</button>
+                    </div>
+                    <div class="ai-result" id="vocab-result"></div>
+                </div>
+
+                <!-- VISUAL SPEAKING PROMPTS (NO TEXTAREA) -->
+                <div class="prompt-box">
+                    <h4>💬 Create Your Own Questions for Your Partner! (Speaking Practice)</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.8rem;">
+                        Based on the text above, formulate your questions orally and ask your partner directly:
+                    </p>
+                    
+                    <div class="visual-questions-container">
+                        <div class="question-visual-item">
+                            <span class="letter">a)</span>
+                            <span>Ask partner:</span>
+                            <span class="dots">"................................................................?"</span>
+                        </div>
+                        <div class="question-visual-item">
+                            <span class="letter">b)</span>
+                            <span>Ask partner:</span>
+                            <span class="dots">"................................................................?"</span>
+                        </div>
+                    </div>
+
+                    <div class="more-possibilities-badge">
+                        💡 Keep going! Create more questions and explore endless possibilities together!
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION C: INTO ACTION! ROLEPLAY -->
+            <div class="card">
+                <h2 class="section-header" style="color: var(--accent-orange);">🤝 Part C: Into Action! (Group Negotiation)</h2>
+                
+                <div class="roleplay-box">
+                    <div class="role-title" id="assigned-role">Your Assigned Role: </div>
+                    <p style="color: #cbd5e1; line-height: 1.6; margin-bottom: 1rem;">
+                        <strong>Scenario:</strong> You are launching a global youth sports program that combines athletic training with mental resilience coaching. 
+                        Work together as a team to negotiate terms and build a successful partnership!
+                    </p>
+
+                    <div style="background: #0b0f19; padding: 1rem; border-radius: 8px; border-left: 3px solid var(--accent-orange);">
+                        <p style="color: var(--accent-orange); font-weight: bold; margin-bottom: 0.4rem;">🎯 Your Objective:</p>
+                        <p style="color: #cbd5e1; font-size: 0.95rem;" id="role-objective">
+                            <!-- Objective inserted dynamically -->
+                        </p>
                     </div>
                 </div>
             </div>
@@ -279,48 +565,36 @@
             <!-- LIVE FIREBASE USER LIST -->
             <div class="users-online">
                 <h3>👥 Connected Students (Realtime)</h3>
-                <div class="user-tag-list" id="users-list-student">
+                <div class="user-tag-list" id="users-list">
                     <!-- Live users inserted via Firebase -->
                 </div>
             </div>
+
         </div>
 
-        <!-- TEACHER LISTENING SCREEN -->
+        <!-- TEACHER DASHBOARD SCREEN (MODO SPY) -->
         <div id="teacher-screen">
             <div class="card">
-                <header style="text-align: left; margin-bottom: 1.5rem;">
-                    <p style="color: var(--accent-purple);">TEACHER DASHBOARD</p>
-                    <h1 style="font-size: 1.8rem;">🎧 Listening Activity Control</h1>
-                </header>
-
-                <div class="audio-player-box">
-                    <p style="color: #fff; font-weight: bold;">Passage: The Global Evolution of Modern Sports</p>
-                    <audio controls>
-                        <source src="https://files.catbox.moe/eyrtyr.mp3" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
-                </div>
-
-                <div class="listening-questions">
-                    <h3>🎯 Discussion Questions for Students:</h3>
-                    <ul>
-                        <li><strong>1. Main Idea:</strong> What is the primary message regarding how sports connect global cultures?</li>
-                        <li><strong>2. Specific Details:</strong> Which countries were mentioned, and how did cricket evolve in India?</li>
-                        <li><strong>3. Vocabulary Focus:</strong> What does "homogenization" mean in the context of global sports?</li>
-                        <li><strong>4. Reflection:</strong> Why do communities still fiercely protect local traditional sports?</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- LIVE FIREBASE USER LIST -->
-            <div class="users-online">
-                <h3>👥 Connected Classroom (Realtime)</h3>
-                <div class="user-tag-list" id="users-list-teacher">
-                    <!-- Live users inserted via Firebase -->
+                <h2 class="section-header" style="color: var(--accent-purple);">🕵️ Teacher Dashboard - Modo Spy</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Monitor live student screens, assigned audio tracks, texts, and role objectives in real time.</p>
+                <div id="teacher-students-container">
+                    <!-- Live Spy cards rendered here -->
                 </div>
             </div>
         </div>
 
+    </div>
+
+    <!-- PASSWORD MODAL -->
+    <div class="modal-overlay" id="password-modal">
+        <div class="modal">
+            <h3>🔒 Teacher Authentication</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">Please enter password to access Spy Mode:</p>
+            <div class="form-group">
+                <input type="password" id="teacher-password" placeholder="Password">
+            </div>
+            <button class="btn-start" onclick="verifyTeacherPassword()">Access Spy Mode 🕵️</button>
+        </div>
     </div>
 
     <script>
@@ -331,35 +605,71 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 2. TEXT DATASETS
-        const articles = {
+        // GROQ API KEY
+        const GROQ_API_KEY = "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";
+
+        // 2. DATASETS FOR EACH STUDENT
+        const studentData = {
             1: {
-                title: "The Power of Sports Diplomacy",
-                badge: "Student 1 Article",
-                content: `Sports have long served as a <span class="keyword" onclick="showDef('Neutral ground', 'A place or situation where neither side has an advantage or control.')">neutral ground</span> where nations can build connections, even during periods of intense political tension. Known as "sports diplomacy," athletic competitions allow countries to engage in peaceful dialogue and foster mutual respect on an international stage. Events like the Olympics or international tournaments bring athletes from diverse <span class="keyword" onclick="showDef('Geopolitical', 'Connected with political relations between countries in specific regions.')">geopolitical</span> backgrounds together, proving that shared rules and sportsmanship can temporarily set aside <span class="keyword" onclick="showDef('Ideological', 'Based on a system of ideas or beliefs, especially political ones.')">ideological</span> differences. Through friendly rivalry, sports often open doors for cultural exchange and diplomatic <span class="keyword" onclick="showDef('Reconciliation', 'The process of restoring friendly relations between people or countries.')">reconciliation</span> that traditional politics cannot achieve.`
+                badge: "Student 1",
+                audioUrl: "https://files.catbox.moe/akgf4n.mp3",
+                audioLabel: "Your Audio: Track 1",
+                askPartnerLabel: "❓ Ask Student 2 (about Audio 2):",
+                questionsForPartner: [
+                    "What main obstacle or challenge was described in the second audio?",
+                    "How did the speaker suggest overcoming difficult moments in training?"
+                ],
+                readingTitle: "Mental Strength and Resilience",
+                readingText: "Sports teach you how to deal with failure and keep going after a loss. You learn to stay calm under pressure and never give up easily. This mental strength helps you face difficult situations at school, work, or in personal life.",
+                role: "The Athlete 🏃‍♂️",
+                objective: "Ask the Investor and Sponsor for financial support and specialized training facilities while ensuring your personal values and career choices are respected."
             },
             2: {
-                title: "The Economic Impact of Mega-Sports Events",
-                badge: "Student 2 Article",
-                content: `Hosting major international sporting events can transform a nation's economy, but it comes with <span class="keyword" onclick="showDef('Substantial', 'Large in size, value, importance, or degree.')">substantial</span> financial risks. Cities invest billions of dollars in building state-of-the-art stadiums, upgrading public transportation, and boosting local <span class="keyword" onclick="showDef('Infrastructure', 'The basic physical systems of a country like roads, transport, and power.')">infrastructure</span> to welcome global spectators. While these investments can stimulate tourism, generate temporary jobs, and enhance a country's global prestige, they also run the risk of leaving behind underutilized venues and public debt. As a result, the debate over whether the economic benefits of host cities <span class="keyword" onclick="showDef('Outweigh', 'To be greater or more important than something else.')">outweigh</span> the immense financial burden remains a central topic today.`
+                badge: "Student 2",
+                audioUrl: "https://files.catbox.moe/p3fbe5.mp3",
+                audioLabel: "Your Audio: Track 2",
+                askPartnerLabel: "❓ Ask Student 3 (about Audio 3):",
+                questionsForPartner: [
+                    "What key benefit of teamwork was highlighted in the third audio?",
+                    "According to the audio, how does leadership influence group performance?"
+                ],
+                readingTitle: "Community and Belonging",
+                readingText: "Being part of a sports team or club gives you a sense of community. You share goals, celebrate victories, and support each other during hard times. This feeling of belonging can reduce loneliness and make you feel valued by others.",
+                role: "The Investor 💼",
+                objective: "Ask probing questions about financial returns, community impact, and long-term sustainability before agreeing to fund the program."
             },
             3: {
-                title: "The Role of Technology in Modern Athletics",
-                badge: "Student 3 Article",
-                content: `Technology has <span class="keyword" onclick="showDef('Fundamentally', 'In a central, essential, or basic way.')">fundamentally</span> transformed how sports are played, refereed, and consumed across the globe. From high-tech wearable sensors that monitor athletes' heart rates and fatigue levels to advanced video assistant referee (VAR) systems, data analytics now drive almost every strategic decision. While these innovations improve fairness and reduce injury risks, some critics argue that <span class="keyword" onclick="showDef('Over-reliance', 'Depending too much on someone or something.')">over-reliance</span> on technology threatens to compromise the human element and natural flow of the game. Striking a balance between technological precision and athletic <span class="keyword" onclick="showDef('Spontaneity', 'Natural behavior done without planning or force.')">spontaneity</span> continues to be a great challenge.`
+                badge: "Student 3",
+                audioUrl: "https://files.catbox.moe/30n3pk.mp3",
+                audioLabel: "Your Audio: Track 3",
+                askPartnerLabel: "❓ Ask Student 1 (about Audio 1):",
+                questionsForPartner: [
+                    "What was the main motivation mentioned in the first audio?",
+                    "How does physical preparation affect long-term consistency according to the audio?"
+                ],
+                readingTitle: "Leadership and Responsibility",
+                readingText: "In sports, you often take on roles like team captain or coach's helper. These roles teach you how to lead, motivate others, and take responsibility. These skills are very useful later in life, both at work and in your personal relationships.",
+                role: "The Sponsor 🏷️",
+                objective: "Negotiate brand visibility, ethics, and youth representation. Ask how the Athlete and Investor plan to promote positive values through this project."
             }
         };
 
         let currentUserName = "";
+        let assignedRoleId = 1;
 
         // 3. ENTER ROOM LOGIC
         async function enterRoom() {
             const nameInput = document.getElementById('username').value.trim();
-            const passInput = document.getElementById('password').value.trim();
             const btn = document.getElementById('join-btn');
 
             if (!nameInput) {
                 alert("Please enter your name!");
+                return;
+            }
+
+            // Check if user is Teacher
+            if (nameInput.toLowerCase() === "teacher") {
+                document.getElementById('password-modal').style.display = 'flex';
                 return;
             }
 
@@ -368,25 +678,7 @@
 
             currentUserName = nameInput;
 
-            // CHECK IF TEACHER
-            if (nameInput.toLowerCase() === 'teacher' && passInput === 'admin123') {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('teacher-screen').style.display = 'block';
-
-                const userRef = database.ref('active_students/' + sanitizeName(currentUserName));
-                userRef.set({
-                    name: "Teacher 👨‍🏫",
-                    role: "Teacher / Host",
-                    isTeacher: true,
-                    joinedAt: Date.now()
-                });
-                userRef.onDisconnect().remove();
-
-                listenToLiveUsers('users-list-teacher');
-                return;
-            }
-
-            // REGULAR STUDENT ROLE ASSIGNMENT
+            // Fetch current active students from Firebase to balance roles
             const snapshot = await database.ref('active_students').once('value');
             const activeData = snapshot.val() || {};
             
@@ -397,7 +689,7 @@
                 }
             });
 
-            let assignedRoleId = 1;
+            // Find role with fewest users
             let minCount = Infinity;
             [1, 2, 3].forEach(roleId => {
                 if (roleCounts[roleId] < minCount) {
@@ -406,51 +698,204 @@
                 }
             });
 
-            // Render assigned article
-            const selectedArticle = articles[assignedRoleId];
-            document.getElementById('article-title').innerText = selectedArticle.title;
-            document.getElementById('role-badge').innerText = selectedArticle.badge;
-            document.getElementById('article-content').innerHTML = selectedArticle.content;
+            // Populate Screen Data
+            const data = studentData[assignedRoleId];
+            document.getElementById('student-badge').innerText = data.badge;
+            
+            // Audio setup
+            document.getElementById('audio-label').innerText = data.audioLabel;
+            const audioPlayer = document.getElementById('student-audio');
+            document.getElementById('audio-source').src = data.audioUrl;
+            audioPlayer.load();
 
-            // Display Student Screen
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('reading-screen').style.display = 'block';
-
-            // Push to Firebase
-            const userRef = database.ref('active_students/' + sanitizeName(currentUserName));
-            userRef.set({
-                name: currentUserName,
-                role: "Student " + assignedRoleId,
-                roleId: assignedRoleId,
-                joinedAt: Date.now()
+            // Questions setup
+            document.getElementById('ask-partner-label').innerText = data.askPartnerLabel;
+            const qList = document.getElementById('partner-questions');
+            qList.innerHTML = '';
+            data.questionsForPartner.forEach(q => {
+                const li = document.createElement('li');
+                li.innerText = q;
+                qList.appendChild(li);
             });
 
+            // Reading setup
+            document.getElementById('reading-title').innerText = data.readingTitle;
+            document.getElementById('reading-text').innerText = data.readingText;
+
+            // Action setup
+            document.getElementById('assigned-role').innerText = "Your Assigned Role: " + data.role;
+            document.getElementById('role-objective').innerText = data.objective;
+
+            // Display Screen
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('activity-screen').style.display = 'block';
+
+            // Push initial data to Firebase
+            syncDataToFirebase();
+
+            const userRef = database.ref('active_students/' + sanitizeName(currentUserName));
             userRef.onDisconnect().remove();
-            listenToLiveUsers('users-list-student');
+            listenToLiveUsers();
         }
 
-        // 4. KEYWORD DEFINITION DISPLAY
-        function showDef(word, definition) {
-            const display = document.getElementById('definition-display');
-            display.innerHTML = `<strong>${word}:</strong> ${definition}`;
+        // 4. SYNC STUDENT DATA TO FIREBASE
+        function syncDataToFirebase() {
+            if (!currentUserName || currentUserName.toLowerCase() === "teacher") return;
+            
+            const data = studentData[assignedRoleId];
+
+            database.ref('active_students/' + sanitizeName(currentUserName)).set({
+                name: currentUserName,
+                badge: data.badge,
+                role: data.role,
+                roleId: assignedRoleId,
+                audioUrl: data.audioUrl,
+                audioLabel: data.audioLabel,
+                readingTitle: data.readingTitle,
+                readingText: data.readingText,
+                questionsForPartner: data.questionsForPartner,
+                objective: data.objective,
+                joinedAt: Date.now()
+            });
         }
 
-        // 5. REALTIME FIREBASE SYNC
-        function listenToLiveUsers(targetContainerId) {
+        // 5. TEACHER PASSWORD VERIFICATION
+        function verifyTeacherPassword() {
+            const pwd = document.getElementById('teacher-password').value;
+            if (pwd === "admin123") {
+                document.getElementById('password-modal').style.display = 'none';
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('teacher-screen').style.display = 'block';
+                startTeacherSpyMode();
+            } else {
+                alert("Incorrect Password!");
+            }
+        }
+
+        // 6. TEACHER MODO SPY (LIVE MONITORING OF ALL SCREENS)
+        function startTeacherSpyMode() {
             database.ref('active_students').on('value', (snapshot) => {
-                const usersListContainer = document.getElementById(targetContainerId);
+                const container = document.getElementById('teacher-students-container');
+                container.innerHTML = '';
+
+                const data = snapshot.val();
+                if (!data || Object.keys(data).length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 2rem;">No active students currently online.</p>';
+                    return;
+                }
+
+                Object.values(data).forEach(user => {
+                    const card = document.createElement('div');
+                    card.className = 'spy-card';
+                    
+                    const qListHtml = (user.questionsForPartner || []).map(q => `<li>${q}</li>`).join('');
+
+                    card.innerHTML = `
+                        <div class="spy-header">
+                            <div>
+                                <h3 style="color: #fff; font-size: 1.2rem;">👤 ${user.name}</h3>
+                                <span style="color: var(--accent-blue); font-size: 0.9rem; font-weight: bold;">${user.badge || 'Student'}</span>
+                            </div>
+                            <span style="background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
+                                ${user.role || 'Role'}
+                            </span>
+                        </div>
+
+                        <!-- Audio Spy View -->
+                        <div class="spy-section">
+                            <div class="spy-section-title">🎧 ${user.audioLabel || 'Audio Track'}</div>
+                            <audio controls style="width: 100%; margin-top: 0.4rem;">
+                                <source src="${user.audioUrl}" type="audio/mpeg">
+                            </audio>
+                        </div>
+
+                        <!-- Questions Student is Asking -->
+                        <div class="spy-section">
+                            <div class="spy-section-title" style="color: var(--accent-purple);">❓ Questions Assigned to Ask Partner:</div>
+                            <ol style="padding-left: 1.2rem; color: #cbd5e1; font-size: 0.9rem; line-height: 1.5;">
+                                ${qListHtml}
+                            </ol>
+                        </div>
+
+                        <!-- Reading Text View -->
+                        <div class="spy-section">
+                            <div class="spy-section-title" style="color: var(--accent-green);">📖 Reading Text: ${user.readingTitle || ''}</div>
+                            <p style="font-size: 0.88rem; color: #94a3b8; line-height: 1.5;">${user.readingText || ''}</p>
+                        </div>
+
+                        <!-- Objective View -->
+                        <div class="spy-section">
+                            <div class="spy-section-title" style="color: var(--accent-orange);">🎯 Role Objective:</div>
+                            <p style="font-size: 0.88rem; color: #e2e8f0;">${user.objective || ''}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        // 7. REALTIME FIREBASE SYNC FOR STUDENTS
+        function listenToLiveUsers() {
+            database.ref('active_students').on('value', (snapshot) => {
+                const usersListContainer = document.getElementById('users-list');
                 usersListContainer.innerHTML = '';
 
                 const data = snapshot.val();
                 if (data) {
                     Object.values(data).forEach(user => {
                         const tag = document.createElement('div');
-                        tag.className = 'user-tag' + (user.isTeacher ? ' teacher' : '');
-                        tag.innerHTML = `🟢 <strong>${user.name}</strong> (${user.role})`;
+                        tag.className = 'user-tag';
+                        tag.innerHTML = `🟢 <strong>${user.name}</strong> - ${user.badge} (${user.role})`;
                         usersListContainer.appendChild(tag);
                     });
                 }
             });
+        }
+
+        // 8. GROQ AI DICTIONARY LOOKUP
+        async function lookupWord() {
+            const input = document.getElementById('vocab-word');
+            const resultDiv = document.getElementById('vocab-result');
+            const word = input.value.trim();
+
+            if (!word) return;
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerText = "Searching definition...";
+
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are an ESL dictionary assistant. Provide a very simple, clear, 1-2 sentence definition in simple English for B1 English learners, followed by one simple example sentence."
+                            },
+                            {
+                                role: "user",
+                                content: `Define the word: "${word}"`
+                            }
+                        ],
+                        max_tokens: 100
+                    })
+                });
+
+                const data = await response.json();
+                if (data.choices && data.choices[0]) {
+                    resultDiv.innerText = data.choices[0].message.content;
+                } else {
+                    resultDiv.innerText = "Could not find a definition. Try another word!";
+                }
+            } catch (err) {
+                console.error(err);
+                resultDiv.innerText = "Error contacting AI dictionary. Please try again.";
+            }
         }
 
         function sanitizeName(name) {
