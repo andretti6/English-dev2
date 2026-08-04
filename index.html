@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B2 Conversation Challenges - Pair Work</title>
+    <title>TOEFL Speaking & Free Debate - B2 Pair Work</title>
     <style>
         :root {
             --bg-color: #0b0f17;
@@ -11,6 +11,7 @@
             --accent-blue: #38bdf8;
             --accent-purple: #c084fc;
             --accent-green: #4ade80;
+            --accent-amber: #f59e0b;
             --text-light: #f1f5f9;
             --text-muted: #94a3b8;
             --border-color: #243248;
@@ -30,7 +31,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem 1rem;
+            padding: 1.5rem 1rem;
         }
 
         .container {
@@ -38,63 +39,138 @@
             width: 100%;
         }
 
+        /* Screen Switcher Navigation */
+        .screen-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            padding: 0.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .badge {
             background: rgba(56, 189, 248, 0.1);
             color: var(--accent-blue);
-            padding: 0.4rem 1.2rem;
+            padding: 0.3rem 1rem;
             border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             display: inline-block;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             border: 1px solid rgba(56, 189, 248, 0.2);
         }
 
         header h1 {
-            font-size: 2.2rem;
+            font-size: 2rem;
             color: #fff;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
-        /* Controls */
-        .controls {
+        /* TIMER SECTION */
+        .timer-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+            font-family: monospace;
+            margin: 0.5rem 0;
+            letter-spacing: 2px;
+        }
+
+        .timer-phase {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .timer-alert {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .timer-controls {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 0.8rem;
+            margin-top: 1rem;
         }
 
-        .btn-random {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            color: #fff;
+        .btn {
             border: none;
-            padding: 0.8rem 1.8rem;
-            font-size: 1rem;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.9rem;
             font-weight: bold;
             border-radius: 30px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+            transition: all 0.2s;
         }
 
-        .btn-random:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(192, 132, 252, 0.3);
-        }
+        .btn-primary { background: var(--accent-blue); color: #000; }
+        .btn-warning { background: var(--accent-amber); color: #000; }
+        .btn-secondary { background: var(--border-color); color: var(--text-light); }
 
-        /* Cards Grid */
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        /* CARDS GRID */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -108,369 +184,469 @@
             padding: 1.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
             text-align: center;
+            position: relative;
         }
 
-        .card:hover {
+        /* Locked Card Styling */
+        .card.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+            filter: grayscale(1);
+        }
+
+        .card.locked::after {
+            content: "🔒 Complete current round first";
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .card:not(.locked):hover {
             border-color: var(--accent-blue);
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         }
 
-        /* Mystery Elements */
         .card-number {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 900;
             color: var(--accent-blue);
-            margin-bottom: 0.3rem;
         }
 
         .mystery-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             color: #fff;
-            margin-top: 0.4rem;
+            margin-top: 0.3rem;
         }
 
         .card-click-hint {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--accent-purple);
             font-style: italic;
-            margin-top: 0.5rem;
+            margin-top: 0.4rem;
             font-weight: bold;
         }
 
-        /* Hidden Content Body */
         .card-body {
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
             text-align: left;
         }
 
         .real-title {
-            font-size: 1.3rem;
+            font-size: 1.15rem;
             font-weight: bold;
             color: #fff;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
             display: none;
         }
 
-        /* Type Tags */
-        .tag {
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 0.3rem 0.8rem;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 0.8rem;
-        }
-
-        .tag-consensus {
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent-blue);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-        }
-
-        .tag-jigsaw {
-            background: rgba(192, 132, 252, 0.15);
-            color: var(--accent-purple);
-            border: 1px solid rgba(192, 132, 252, 0.3);
-        }
-
-        /* Active Expanded State */
         .card.active {
             border-color: var(--accent-green);
             background: #111827;
-            grid-column: 1 / -1; /* Expands to full width when active */
+            grid-column: 1 / -1;
             text-align: left;
         }
 
         .card.active .card-number,
         .card.active .mystery-title,
-        .card.active .card-click-hint {
-            display: none; /* Hide mystery text on expand */
-        }
+        .card.active .card-click-hint { display: none; }
 
-        .card.active .real-title {
-            display: block;
-        }
+        .card.active .real-title { display: block; }
 
         .card.active .card-body {
-            max-height: 600px;
+            max-height: 500px;
             opacity: 1;
             margin-top: 0.5rem;
         }
 
-        .instructions {
+        .question-text {
             color: #cbd5e1;
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            background: rgba(255,255,255,0.03);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 3px solid var(--accent-blue);
         }
 
-        .roles-box {
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--accent-green);
-            padding: 0.8rem 1rem;
-            border-radius: 6px;
-            font-size: 0.95rem;
+        /* SCREEN 2 STYLES */
+        .connectors-box {
+            background: rgba(192, 132, 252, 0.08);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
         }
 
-        .roles-box strong {
-            color: var(--accent-green);
+        .connectors-box h3 {
+            color: var(--accent-purple);
+            font-size: 1.05rem;
+            margin-bottom: 0.8rem;
         }
 
-        .roles-box ul {
+        .connectors-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .connector-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .deep-dive-list {
             list-style: none;
-            margin-top: 0.5rem;
+            margin-top: 0.8rem;
         }
 
-        .roles-box li {
-            margin-bottom: 0.4rem;
-            color: var(--text-muted);
+        .deep-dive-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.6rem;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
 
-        .roles-box li span {
-            color: #fff;
-            font-weight: bold;
+        .deep-dive-list li::before {
+            content: "💬";
+            position: absolute;
+            left: 0;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <header>
-            <span class="badge">B2 Level • Pair Work</span>
-            <h1>Speaking & Debate Challenges</h1>
-            <p>Pick a card blindly to reveal the secret scenario for your debate.</p>
-        </header>
-
-        <div class="controls">
-            <button class="btn-random" onclick="pickRandom()">Random Pick 🎲</button>
+        <!-- Navigation Between Screens -->
+        <div class="screen-nav">
+            <button class="nav-btn active" onclick="switchScreen(1, event)">Screen 1: TOEFL Loop ⏱️</button>
+            <button class="nav-btn" onclick="switchScreen(2, event)">Screen 2: Free Debate 💬</button>
         </div>
 
-        <div class="grid" id="cardsGrid">
+        <!-- ================= SCREEN 1 ================= -->
+        <div id="screen1" class="screen active">
+            <header>
+                <span class="badge">TOEFL Speaking Loop</span>
+                <h1>Monologue & Follow-up</h1>
+                <p>Pick the available card, start the timer, and answer your partner's question!</p>
+            </header>
 
-            <!-- CARD 1 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">01</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
+            <!-- Timer Dashboard -->
+            <div class="timer-card">
+                <div class="timer-phase" id="timerPhase">Phase 1: Speaker Monologue</div>
+                <div class="timer-display" id="timerDisplay">02:00</div>
+                
+                <div class="timer-alert" id="timerAlert">
+                    ⚠️ <strong>PERSON 2:</strong> Ask ONE follow-up question right now!
+                </div>
 
-                <div class="card-body">
-                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
-                    <div class="real-title">1. The Startup Budget 💰</div>
-                    <p class="instructions">You 2 are business partners starting a new company. You have <strong>$15,000</strong> left, but you can only choose <strong>TWO</strong> investments: <i>AI Software, Social Media Ads, Hiring an Assistant, or App Design</i>.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong> Debate and agree unanimously on the 2 choices within 6 minutes.
-                    </div>
+                <div class="timer-controls">
+                    <button class="btn btn-primary" onclick="startTimer()">Start Timer ▶</button>
+                    <button class="btn btn-warning" onclick="pauseTimer()">Pause ⏸</button>
+                    <button class="btn btn-secondary" onclick="resetLoop()">Reset / Switch 🔄</button>
                 </div>
             </div>
 
-            <!-- CARD 2 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">02</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
+            <!-- Mystery Cards Grid -->
+            <div class="grid" id="toeflGrid">
+                <!-- Card 1 (Initially Unlocked) -->
+                <div class="card" data-index="0" onclick="selectCard(this)">
+                    <div class="card-number">01</div>
+                    <div class="mystery-title">🔒 Mystery Question 1</div>
+                    <div class="card-click-hint">Click me!</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Remote Work vs. Office</div>
+                        <div class="question-text">Some people prefer working from home, while others believe working in an office is better for career growth. Which do you prefer and why?</div>
+                    </div>
+                </div>
 
-                <div class="card-body">
-                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
-                    <div class="real-title">2. Mystery Workplace Crisis 🏢</div>
-                    <p class="instructions">A major client canceled their contract today. Teacher sends 1 private clue to Student A and Student B via Zoom chat.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong>
-                        <ul>
-                            <li><span>Student A:</span> Knows what happened during the CEO's meeting.</li>
-                            <li><span>Student B:</span> Knows what went wrong with the tech delivery.</li>
-                            <li><i>Explain your clues to each other and discover who made the mistake!</i></li>
+                <!-- Card 2 (Locked) -->
+                <div class="card locked" data-index="1" onclick="selectCard(this)">
+                    <div class="card-number">02</div>
+                    <div class="mystery-title">🔒 Mystery Question 2</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: AI in Daily Life</div>
+                        <div class="question-text">Artificial Intelligence is automating many everyday tasks. Do you think this will make human life easier or more complicated in the long run?</div>
+                    </div>
+                </div>
+
+                <!-- Card 3 (Locked) -->
+                <div class="card locked" data-index="2" onclick="selectCard(this)">
+                    <div class="card-number">03</div>
+                    <div class="mystery-title">🔒 Mystery Question 3</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Learning Methods</div>
+                        <div class="question-text">Do you prefer learning new skills through self-study (books/videos) or through structured classes with a teacher? Explain your reasons.</div>
+                    </div>
+                </div>
+
+                <!-- Card 4 (Locked) -->
+                <div class="card locked" data-index="3" onclick="selectCard(this)">
+                    <div class="card-number">04</div>
+                    <div class="mystery-title">🔒 Mystery Question 4</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Financial Choices</div>
+                        <div class="question-text">Some people like to save most of their money for the future, while others prefer spending it on experiences now. What is your approach?</div>
+                    </div>
+                </div>
+
+                <!-- Card 5 (Locked) -->
+                <div class="card locked" data-index="4" onclick="selectCard(this)">
+                    <div class="card-number">05</div>
+                    <div class="mystery-title">🔒 Mystery Question 5</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: City Life vs. Nature</div>
+                        <div class="question-text">Is it better to live in a big city with many opportunities or in a peaceful rural area close to nature? Give specific details.</div>
+                    </div>
+                </div>
+
+                <!-- Card 6 (Locked) -->
+                <div class="card locked" data-index="5" onclick="selectCard(this)">
+                    <div class="card-number">06</div>
+                    <div class="mystery-title">🔒 Mystery Question 6</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Social Media Impact</div>
+                        <div class="question-text">Has social media improved human relationships or made people feel more isolated? Express your view with examples.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 2 ================= -->
+        <div id="screen2" class="screen">
+            <header>
+                <span class="badge">Joint Brainstorming</span>
+                <h1>Free Conversation & Debate</h1>
+                <p>No timers! Pick a topic below to compare experiences and debate in detail.</p>
+            </header>
+
+            <!-- Useful B2 Connectors -->
+            <div class="connectors-box">
+                <h3>💡 Conversation Boosters (B2 Connectors)</h3>
+                <div class="connectors-list">
+                    <span class="connector-chip">"Building on what you said..."</span>
+                    <span class="connector-chip">"I see your point, but..."</span>
+                    <span class="connector-chip">"From my personal experience..."</span>
+                    <span class="connector-chip">"On the other hand..."</span>
+                    <span class="connector-chip">"Would you agree that...?"</span>
+                </div>
+            </div>
+
+            <!-- Deep-Dive Cards Grid (Free to open) -->
+            <div class="grid">
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">01</div>
+                    <div class="mystery-title">💬 Open Topic 1</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: The Future of Work 💼</div>
+                        <ul class="deep-dive-list">
+                            <li>What did you agree or disagree on during your 2-minute monologues?</li>
+                            <li>How will remote work change companies over the next 10 years?</li>
+                            <li>What is the biggest sacrifice a person makes when choosing 100% remote work?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">02</div>
+                    <div class="mystery-title">💬 Open Topic 2</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: Technology & Humanity 🤖</div>
+                        <ul class="deep-dive-list">
+                            <li>Which human skills do you think AI will NEVER be able to replace?</li>
+                            <li>Should governments regulate AI development, or let it grow freely?</li>
+                            <li>How has technology changed your own attention span or daily routine?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">03</div>
+                    <div class="mystery-title">💬 Open Topic 3</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: Modern Education 📚</div>
+                        <ul class="deep-dive-list">
+                            <li>Is a university degree still essential for financial success today?</li>
+                            <li>If you could redesign the school system from scratch, what would you change?</li>
+                            <li>What is the most useful skill you learned completely on your own?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">04</div>
+                    <div class="mystery-title">💬 Open Topic 4</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: Quality of Life & Success 🌟</div>
+                        <ul class="deep-dive-list">
+                            <li>How do you personally define "success" in life?</li>
+                            <li>Why do many people struggle to balance work and personal life nowadays?</li>
+                            <li>What is one luxury item or habit that is actually a waste of money?</li>
                         </ul>
                     </div>
                 </div>
             </div>
-
-            <!-- CARD 3 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">03</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
-                    <div class="real-title">3. Mars Colony Survivors 🚀</div>
-                    <p class="instructions">You are selecting the first humans for a Mars colony. You must choose only <strong>2 professionals</strong> out of 5: <i>A Doctor, an Engineer, an AI Specialist, a Farmer, or a Chef</i>.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong> Discuss the pros and cons and choose the top 2 together.
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 4 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">04</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
-                    <div class="real-title">4. The Missing Alibi 🕵️‍♂️</div>
-                    <p class="instructions">A rare piece of art was stolen from a gallery at 9:00 PM. You both interviewed different suspects.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong>
-                        <ul>
-                            <li><span>Student A:</span> Interviewed the Security Guard.</li>
-                            <li><span>Student B:</span> Interviewed the Gallery Manager.</li>
-                            <li><i>Share your witness reports to find out who is lying!</i></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 5 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">05</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
-                    <div class="real-title">5. Workplace 4-Day Week 🗓️</div>
-                    <p class="instructions">Your company is switching to a 4-day work week. You must agree on one schedule: <strong>Take Mondays off</strong>, <strong>Take Fridays off</strong>, or <strong>Work 10 hours a day for 4 days</strong>.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong> Negotiate until you both agree on the exact same proposal.
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 6 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">06</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
-                    <div class="real-title">6. Travel Itinerary Puzzle ✈️</div>
-                    <p class="instructions">You 2 are organizing a weekend trip to London. Teacher sends travel details privately.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong>
-                        <ul>
-                            <li><span>Student A:</span> Has flight schedules and hotel prices.</li>
-                            <li><span>Student B:</span> Has event tickets and opening times.</li>
-                            <li><i>Combine your info verbally to plan a flawless 2-day trip!</i></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 7 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">07</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
-                    <div class="real-title">7. AI vs Human Teachers 🤖</div>
-                    <p class="instructions">A university wants to replace 50% of human teachers with conversational AI tutors to make tuition cheaper.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong> Agree on 2 strict rules the university MUST create before using AI.
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 8 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">08</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
-                    <div class="real-title">8. The Product Redesign 📱</div>
-                    <p class="instructions">Your popular app lost 30% of users this month. You analyzed different user groups.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong>
-                        <ul>
-                            <li><span>Student A:</span> Read complaints from Teenagers (Gen Z).</li>
-                            <li><span>Student B:</span> Read complaints from Working Professionals (+30 yrs).</li>
-                            <li><i>Compare user feedback and decide on the #1 priority fix!</i></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 9 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">09</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
-                    <div class="real-title">9. The Time Capsule ⏳</div>
-                    <p class="instructions">You are burying a Time Capsule to be opened in 100 years. You can only put <strong>2 items</strong> inside to represent human culture in 2026.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong> Defend your personal ideas and agree on the 2 final objects.
-                    </div>
-                </div>
-            </div>
-
-            <!-- CARD 10 -->
-            <div class="card" onclick="toggleCard(this)">
-                <div class="card-number">10</div>
-                <div class="mystery-title">🔒 Secret Scenario</div>
-                <div class="card-click-hint">Click me!</div>
-
-                <div class="card-body">
-                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
-                    <div class="real-title">10. The Event Emergency 🎉</div>
-                    <p class="instructions">An international conference starts in 1 hour, but emergency problems occurred at the venue.</p>
-                    <div class="roles-box">
-                        <strong>🎯 Goal:</strong>
-                        <ul>
-                            <li><span>Student A:</span> Manages Catering and Food delivery.</li>
-                            <li><span>Student B:</span> Manages Sound System and Microphones.</li>
-                            <li><i>Explain your urgent problem to your partner and solve it together!</i></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
     <script>
-        function toggleCard(card) {
-            const isActive = card.classList.contains('active');
+        // Screen Navigation
+        function switchScreen(screenNum, e) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             
-            // Close all cards first
-            document.querySelectorAll('.card').forEach(c => {
-                c.classList.remove('active');
-            });
+            document.getElementById(`screen${screenNum}`).classList.add('active');
+            e.target.classList.add('active');
+        }
 
-            // If it wasn't active, open it
-            if (!isActive) {
-                card.classList.add('active');
+        // Fixed Short Pop Sound (No long buzzing)
+        function playShortPop() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch (e) {
+                // Browser prevented audio before interaction
             }
         }
 
-        function pickRandom() {
-            const cards = document.querySelectorAll('.card');
-            const randomIndex = Math.floor(Math.random() * cards.length);
-            
-            // Close all first
-            cards.forEach(c => c.classList.remove('active'));
-            
-            // Open random card and scroll to it
-            cards[randomIndex].classList.add('active');
-            cards[randomIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // State Management
+        let timer = null;
+        let timeLeft = 120; // 2 minutes
+        let phase = 1; // 1 = Monologue, 2 = Q&A, 3 = Complete
+        let currentCardIndex = 0;
+
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerPhase = document.getElementById('timerPhase');
+        const timerAlert = document.getElementById('timerAlert');
+        const allToeflCards = document.querySelectorAll('#toeflGrid .card');
+
+        function updateDisplay() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
+
+        function selectCard(card) {
+            if (card.classList.contains('locked')) return;
+            
+            allToeflCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            currentCardIndex = parseInt(card.getAttribute('data-index'));
+            resetLoop();
+        }
+
+        function toggleSimpleCard(card) {
+            const isActive = card.classList.contains('active');
+            document.querySelectorAll('#screen2 .card').forEach(c => c.classList.remove('active'));
+            if (!isActive) card.classList.add('active');
+        }
+
+        function startTimer() {
+            if (timer || phase === 3) return;
+            playShortPop();
+
+            timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateDisplay();
+                } else {
+                    clearInterval(timer);
+                    timer = null;
+                    handlePhaseEnd();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        function handlePhaseEnd() {
+            playShortPop();
+
+            if (phase === 1) {
+                // Switch to Phase 2 (Q&A 1:30)
+                phase = 2;
+                timeLeft = 90;
+                timerPhase.textContent = "Phase 2: Question & Answer";
+                timerPhase.style.color = "var(--accent-amber)";
+                timerDisplay.style.color = "var(--accent-amber)";
+                timerAlert.style.display = "block";
+                updateDisplay();
+                startTimer(); // Auto start Phase 2
+            } else if (phase === 2) {
+                // Cycle Complete! Unlock Next Card
+                phase = 3;
+                timerPhase.textContent = "Cycle Complete! Next card unlocked 🔓";
+                timerPhase.style.color = "var(--accent-purple)";
+                timerAlert.style.display = "none";
+                
+                unlockNextCard();
+            }
+        }
+
+        function unlockNextCard() {
+            const nextIndex = currentCardIndex + 1;
+            if (nextIndex < allToeflCards.length) {
+                allToeflCards[nextIndex].classList.remove('locked');
+                allToeflCards[nextIndex].querySelector('.card-click-hint').textContent = "Click to reveal!";
+            }
+        }
+
+        function resetLoop() {
+            pauseTimer();
+            phase = 1;
+            timeLeft = 120;
+            timerPhase.textContent = "Phase 1: Speaker Monologue";
+            timerPhase.style.color = "var(--accent-green)";
+            timerDisplay.style.color = "var(--accent-blue)";
+            timerAlert.style.display = "none";
+            updateDisplay();
+        }
+
+        // Initialize
+        updateDisplay();
     </script>
 </body>
 </html>
