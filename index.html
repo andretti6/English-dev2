@@ -3,24 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports & Life Skills - Interactive Game</title>
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
+    <title>B2 Conversation Challenges - Pair Work</title>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #151d30;
+            --bg-color: #0b0f17;
+            --card-bg: #161f30;
             --accent-blue: #38bdf8;
-            --accent-green: #22c55e;
-            --accent-purple: #a855f7;
-            --accent-orange: #f97316;
-            --accent-red: #ef4444;
-            --text-light: #f8fafc;
+            --accent-purple: #c084fc;
+            --accent-green: #4ade80;
+            --text-light: #f1f5f9;
             --text-muted: #94a3b8;
-            --border-color: #1e293b;
+            --border-color: #243248;
         }
 
         * {
@@ -45,19 +38,23 @@
             width: 100%;
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            position: relative;
-        }
-
         header {
             text-align: center;
             margin-bottom: 2rem;
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(56, 189, 248, 0.2);
         }
 
         header h1 {
@@ -67,825 +64,412 @@
         }
 
         header p {
-            color: var(--accent-blue);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
             color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: #0b0f19;
-            color: #fff;
             font-size: 1rem;
-            outline: none;
         }
 
-        input:disabled {
-            background: #1e293b;
-            color: #64748b;
-            cursor: not-allowed;
-            border-color: #334155;
-        }
-
-        input:focus {
-            border-color: var(--accent-blue);
-        }
-
-        .btn-start {
-            width: 100%;
-            background: var(--accent-blue);
-            color: #0b0f19;
-            border: none;
-            padding: 1rem;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 0.5rem;
-        }
-
-        .btn-start:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        .btn-action {
-            background: var(--accent-green);
-            color: #0b0f19;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-action:disabled {
-            background: #334155;
-            color: #64748b;
-            cursor: not-allowed;
-        }
-
-        .btn-print {
-            background: #334155;
-            color: #fff;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            float: right;
-            transition: 0.2s;
-        }
-
-        .btn-print:hover { background: #475569; }
-
-        #activity-screen, #teacher-screen { display: none; }
-
-        .section-header {
+        /* Controls */
+        .controls {
             display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 1.4rem;
-            color: #fff;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border-color);
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
-        /* Character Assigned Box */
-        .assigned-role-card {
-            background: rgba(56, 189, 248, 0.05);
-            border: 2px solid var(--accent-blue);
+        .btn-random {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .btn-random:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(192, 132, 252, 0.3);
+        }
+
+        /* Cards Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
             text-align: center;
         }
 
-        .role-badge {
+        .card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        /* Mystery Elements */
+        .card-number {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 900;
             color: var(--accent-blue);
-            margin-bottom: 0.5rem;
-        }
-
-        .secret-box-assigned {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(168, 85, 247, 0.15);
-            border: 1px solid var(--accent-purple);
-            border-radius: 10px;
-            color: #f1f5f9;
-            font-weight: 500;
-        }
-
-        /* Audio Player Box */
-        .audio-box {
-            background: #0b0f19;
-            border: 1px solid var(--border-color);
-            padding: 1.2rem;
-            border-radius: 12px;
-        }
-
-        audio { width: 100%; margin-top: 0.8rem; outline: none; }
-
-        /* Avatars Team Display */
-        .team-avatars-grid {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            margin-top: 1.2rem;
-            flex-wrap: wrap;
-        }
-
-        .avatar-card {
-            background: #0b0f19;
-            border: 1px solid var(--border-color);
-            padding: 1rem;
-            border-radius: 14px;
-            text-align: center;
-            min-width: 130px;
-        }
-
-        .avatar-icon {
-            font-size: 2.5rem;
             margin-bottom: 0.3rem;
         }
 
-        .avatar-name {
+        .mystery-title {
+            font-size: 1.1rem;
             font-weight: bold;
             color: #fff;
-            font-size: 0.95rem;
+            margin-top: 0.4rem;
         }
 
-        .avatar-role {
-            font-size: 0.8rem;
-            color: var(--accent-blue);
-        }
-
-        /* Signatures Box */
-        .signatures-container {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .sign-btn {
-            background: #1e293b;
-            color: var(--text-muted);
-            border: 1px dashed var(--border-color);
-            padding: 0.8rem 1.2rem;
-            border-radius: 10px;
-            cursor: pointer;
+        .card-click-hint {
+            font-size: 0.85rem;
+            color: var(--accent-purple);
+            font-style: italic;
+            margin-top: 0.5rem;
             font-weight: bold;
-            transition: 0.2s;
-            flex: 1;
-            text-align: center;
         }
 
-        .sign-btn.signed {
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
+        /* Hidden Content Body */
+        .card-body {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            text-align: left;
         }
 
-        /* Drag & Drop Rooms (Teacher) */
-        .rooms-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .room-box {
-            background: #0b0f19;
-            border: 2px dashed var(--border-color);
-            border-radius: 14px;
-            padding: 1rem;
-            min-height: 180px;
-        }
-
-        .room-box.drag-over {
-            border-color: var(--accent-blue);
-            background: rgba(56, 189, 248, 0.05);
-        }
-
-        .room-title {
-            font-size: 1rem;
+        .real-title {
+            font-size: 1.3rem;
             font-weight: bold;
-            color: var(--accent-blue);
+            color: #fff;
             margin-bottom: 0.8rem;
-            display: flex;
-            justify-content: space-between;
+            display: none;
         }
 
-        .draggable-student {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-            cursor: grab;
+        /* Type Tags */
+        .tag {
+            font-size: 0.75rem;
             font-weight: bold;
-            display: flex;
-            justify-content: space-between;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 0.8rem;
         }
 
-        /* Spy Mode Cards */
-        .spy-card {
-            background: #0b0f19;
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.2rem;
+        .tag-consensus {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .tag-jigsaw {
+            background: rgba(192, 132, 252, 0.15);
+            color: var(--accent-purple);
+            border: 1px solid rgba(192, 132, 252, 0.3);
+        }
+
+        /* Active Expanded State */
+        .card.active {
+            border-color: var(--accent-green);
+            background: #111827;
+            grid-column: 1 / -1; /* Expands to full width when active */
+            text-align: left;
+        }
+
+        .card.active .card-number,
+        .card.active .mystery-title,
+        .card.active .card-click-hint {
+            display: none; /* Hide mystery text on expand */
+        }
+
+        .card.active .real-title {
+            display: block;
+        }
+
+        .card.active .card-body {
+            max-height: 600px;
+            opacity: 1;
+            margin-top: 0.5rem;
+        }
+
+        .instructions {
+            color: #cbd5e1;
+            font-size: 1rem;
+            line-height: 1.6;
             margin-bottom: 1rem;
         }
 
-        /* Modals */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            max-width: 480px;
-            width: 100%;
-        }
-
-        .skill-option {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: #0b0f19;
+        .roles-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--accent-green);
             padding: 0.8rem 1rem;
-            border-radius: 10px;
-            margin-bottom: 0.6rem;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
+            border-radius: 6px;
+            font-size: 0.95rem;
         }
 
-        .skill-option input { width: auto; }
+        .roles-box strong {
+            color: var(--accent-green);
+        }
 
-        @media print {
-            .btn-print, #login-screen, audio, .modal-overlay { display: none !important; }
-            body { background: #fff !important; color: #000 !important; }
-            .card { background: #fff !important; border: 1px solid #ccc !important; }
+        .roles-box ul {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .roles-box li {
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+        }
+
+        .roles-box li span {
+            color: #fff;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        
-        <!-- LOGIN SCREEN -->
-        <div id="login-screen" class="card">
-            <header>
-                <p>Collaborative Mission</p>
-                <h1>🚀 Changing Lives Through Sport</h1>
-            </header>
+        <header>
+            <span class="badge">B2 Level • Pair Work</span>
+            <h1>Speaking & Debate Challenges</h1>
+            <p>Pick a card blindly to reveal the secret scenario for your debate.</p>
+        </header>
 
-            <div class="form-group">
-                <label for="username">Enter Your Name:</label>
-                <input type="text" id="username" placeholder="Type your name here..." required>
-            </div>
-
-            <button class="btn-start" onclick="enterRoom()">Enter Mission 🚀</button>
+        <div class="controls">
+            <button class="btn-random" onclick="pickRandom()">Random Pick 🎲</button>
         </div>
 
-        <!-- MAIN ACTIVITY SCREEN (STUDENT) -->
-        <div id="activity-screen">
-            
-            <div style="margin-bottom: 1rem; overflow: hidden;">
-                <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
-            </div>
+        <div class="grid" id="cardsGrid">
 
-            <!-- MISSION INTRO -->
-            <div class="card">
-                <p style="color: var(--accent-blue); font-weight: bold; text-transform: uppercase;">Current Mission</p>
-                <h1 style="font-size: 1.8rem; margin-top: 0.3rem; margin-bottom: 0.8rem;">Empowering Young Athletic Talents</h1>
-                <p style="color: #cbd5e1; line-height: 1.6;">
-                    You are building a real partnership to fund talented young athletes and change their future. Connect, negotiate, and unlock their dream!
-                </p>
-            </div>
+            <!-- CARD 1 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">01</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
 
-            <!-- STEP 1: YOUR ASSIGNED CHARACTER -->
-            <div class="card">
-                <h2 class="section-header">🎮 Step 1: Your Assigned Character</h2>
-                
-                <div class="assigned-role-card" id="assigned-role-display">
-                    <div class="role-badge" id="my-role-title">Loading your character...</div>
-                    <p style="color: #cbd5e1;" id="my-role-goal"></p>
-                    <div class="secret-box-assigned" id="my-secret-data">
-                        🔒 Secret data will appear once you are placed in a room.
+                <div class="card-body">
+                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
+                    <div class="real-title">1. The Startup Budget 💰</div>
+                    <p class="instructions">You 2 are business partners starting a new company. You have <strong>$15,000</strong> left, but you can only choose <strong>TWO</strong> investments: <i>AI Software, Social Media Ads, Hiring an Assistant, or App Design</i>.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong> Debate and agree unanimously on the 2 choices within 6 minutes.
                     </div>
                 </div>
             </div>
 
-            <!-- STEP 2: AUDIO BRIEFING -->
-            <div class="card">
-                <h2 class="section-header">🎧 Step 2: Mission Audio Briefing</h2>
-                
-                <div class="audio-box">
-                    <p style="color: #fff; font-weight: bold;">🔊 Listen carefully to the track below and take note of main ideas on paper!</p>
-                    <audio controls>
-                        <source src="https://files.catbox.moe/akgf4n.mp3" type="audio/mpeg">
-                        Your browser does not support audio.
-                    </audio>
-                </div>
-            </div>
+            <!-- CARD 2 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">02</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
 
-            <!-- STEP 3: TEAM POWER TALK -->
-            <div class="card">
-                <h2 class="section-header" style="color: var(--accent-orange);">⚡ Step 3: Team Power Talk</h2>
-                
-                <p style="color: #fff; font-weight: bold; margin-bottom: 0.5rem;">2 Power Rules for Today:</p>
-                <ul style="color: #cbd5e1; margin-left: 1.2rem; font-size: 0.95rem; margin-bottom: 1.5rem;">
-                    <li>1️⃣ <strong>Ask your partners!</strong> You hold unique clues that others need.</li>
-                    <li>2️⃣ <strong>Help everyone win!</strong> Match budgets and goals together as a team.</li>
-                </ul>
-
-                <p style="color: var(--text-muted); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; text-align: center;">Your Team Members in this Room:</p>
-                <div class="team-avatars-grid" id="team-avatars-container">
-                    <!-- Dynamic Avatars -->
-                </div>
-            </div>
-
-            <!-- STEP 4: SEAL THE DEAL -->
-            <div class="card">
-                <h2 class="section-header" style="color: var(--accent-green);">📑 Step 4: Seal the Deal!</h2>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Ask your teammates for their data. You can only fill in your partner's information!</p>
-
-                <div class="deal-form-grid" style="display: grid; gap: 1rem; margin-top: 1rem;">
-                    <div class="form-group">
-                        <label style="color: var(--accent-blue);">Athlete's Need ($):</label>
-                        <input type="text" id="input-athlete" placeholder="Locked for Athlete" oninput="syncDealInput('athlete')">
-                    </div>
-                    <div class="form-group">
-                        <label style="color: var(--accent-purple);">Investor's Budget ($):</label>
-                        <input type="text" id="input-investor" placeholder="Locked for Investor" oninput="syncDealInput('investor')">
-                    </div>
-                    <div class="form-group">
-                        <label style="color: var(--accent-orange);">Sponsor's Reach (People):</label>
-                        <input type="text" id="input-sponsor" placeholder="Locked for Sponsor" oninput="syncDealInput('sponsor')">
-                    </div>
-                </div>
-
-                <!-- SIGNATURES SECTION -->
-                <div style="margin-top: 1.5rem;">
-                    <p style="color: #fff; font-weight: bold; font-size: 0.95rem;">✍️ Team Signatures Required:</p>
-                    <div class="signatures-container" id="signatures-box">
-                        <!-- Signatures injected dynamically -->
-                    </div>
-                </div>
-
-                <div style="margin-top: 1.5rem; text-align: center;">
-                    <button class="btn-action" id="finish-mission-btn" disabled onclick="openEvaluationModal()">🏆 Complete Mission!</button>
-                </div>
-
-                <!-- Peer Feedback Received Box (Appears on print) -->
-                <div id="stars-feedback-box" style="display:none; margin-top: 1.5rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border: 1px solid var(--accent-green); border-radius: 10px;">
-                    <h4 style="color: var(--accent-green); margin-bottom: 0.5rem;">⭐ Peer Feedback Received:</h4>
-                    <ul id="stars-list" style="color: #cbd5e1; font-size: 0.9rem; margin-left: 1.2rem;"></ul>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- TEACHER DASHBOARD SCREEN -->
-        <div id="teacher-screen">
-            <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                    <h2 class="section-header" style="color: var(--accent-blue); margin-bottom: 0; border: none;">🔀 Breakout Room Organizer</h2>
-                    <button class="btn-action" onclick="createNewRoom()">➕ Add Breakout Room</button>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Drag students into rooms. Roles are assigned automatically!</p>
-
-                <div class="rooms-grid" id="rooms-container">
-                    <!-- Unassigned Box -->
-                    <div class="room-box" id="room-unassigned" ondragover="allowDrop(event)" ondrop="dropStudent(event, 'unassigned')">
-                        <div class="room-title">
-                            <span>👥 Unassigned Students</span>
-                        </div>
-                        <div class="student-list" id="list-unassigned"></div>
+                <div class="card-body">
+                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
+                    <div class="real-title">2. Mystery Workplace Crisis 🏢</div>
+                    <p class="instructions">A major client canceled their contract today. Teacher sends 1 private clue to Student A and Student B via Zoom chat.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong>
+                        <ul>
+                            <li><span>Student A:</span> Knows what happened during the CEO's meeting.</li>
+                            <li><span>Student B:</span> Knows what went wrong with the tech delivery.</li>
+                            <li><i>Explain your clues to each other and discover who made the mistake!</i></li>
+                        </ul>
                     </div>
                 </div>
             </div>
 
-            <!-- MODO SPY -->
-            <div class="card">
-                <h2 class="section-header" style="color: var(--accent-purple);">🕵️ Modo Spy - Live Student Monitor</h2>
-                <div id="teacher-spy-container"></div>
-            </div>
-        </div>
+            <!-- CARD 3 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">03</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
 
-    </div>
-
-    <!-- TEACHER PASSWORD MODAL -->
-    <div class="modal-overlay" id="password-modal">
-        <div class="modal">
-            <h3 style="color: var(--accent-purple); margin-bottom: 0.8rem; text-align: center;">🔒 Teacher Authentication</h3>
-            <div class="form-group">
-                <input type="password" id="teacher-password" placeholder="Password">
-            </div>
-            <button class="btn-start" onclick="verifyTeacherPassword()">Access Dashboard 🕵️</button>
-        </div>
-    </div>
-
-    <!-- EVALUATION / FEEDBACK MODAL -->
-    <div class="modal-overlay" id="eval-modal">
-        <div class="modal">
-            <h2 style="color: var(--accent-green); text-align: center; margin-bottom: 0.5rem;">🎉 Mission Accomplished!</h2>
-            <p style="color: #cbd5e1; font-size: 0.9rem; text-align: center; margin-bottom: 1.2rem;">
-                Select up to 3 skills you observed in your partner to award them stars:
-            </p>
-
-            <div id="skills-list">
-                <label class="skill-option">
-                    <input type="checkbox" value="Shows good ability to help everybody win">
-                    <span>⭐ Shows good ability to help everybody win</span>
-                </label>
-                <label class="skill-option">
-                    <input type="checkbox" value="Great communication and active listening">
-                    <span>⭐ Great communication and active listening</span>
-                </label>
-                <label class="skill-option">
-                    <input type="checkbox" value="Strong problem solving and team spirit">
-                    <span>⭐ Strong problem solving and team spirit</span>
-                </label>
+                <div class="card-body">
+                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
+                    <div class="real-title">3. Mars Colony Survivors 🚀</div>
+                    <p class="instructions">You are selecting the first humans for a Mars colony. You must choose only <strong>2 professionals</strong> out of 5: <i>A Doctor, an Engineer, an AI Specialist, a Farmer, or a Chef</i>.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong> Discuss the pros and cons and choose the top 2 together.
+                    </div>
+                </div>
             </div>
 
-            <button class="btn-start" style="background: var(--accent-green); margin-top: 1rem;" onclick="submitEvaluation()">Submit Stars & Finish 🌟</button>
+            <!-- CARD 4 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">04</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
+
+                <div class="card-body">
+                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
+                    <div class="real-title">4. The Missing Alibi 🕵️‍♂️</div>
+                    <p class="instructions">A rare piece of art was stolen from a gallery at 9:00 PM. You both interviewed different suspects.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong>
+                        <ul>
+                            <li><span>Student A:</span> Interviewed the Security Guard.</li>
+                            <li><span>Student B:</span> Interviewed the Gallery Manager.</li>
+                            <li><i>Share your witness reports to find out who is lying!</i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 5 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">05</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
+
+                <div class="card-body">
+                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
+                    <div class="real-title">5. Workplace 4-Day Week 🗓️</div>
+                    <p class="instructions">Your company is switching to a 4-day work week. You must agree on one schedule: <strong>Take Mondays off</strong>, <strong>Take Fridays off</strong>, or <strong>Work 10 hours a day for 4 days</strong>.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong> Negotiate until you both agree on the exact same proposal.
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 6 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">06</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
+
+                <div class="card-body">
+                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
+                    <div class="real-title">6. Travel Itinerary Puzzle ✈️</div>
+                    <p class="instructions">You 2 are organizing a weekend trip to London. Teacher sends travel details privately.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong>
+                        <ul>
+                            <li><span>Student A:</span> Has flight schedules and hotel prices.</li>
+                            <li><span>Student B:</span> Has event tickets and opening times.</li>
+                            <li><i>Combine your info verbally to plan a flawless 2-day trip!</i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 7 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">07</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
+
+                <div class="card-body">
+                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
+                    <div class="real-title">7. AI vs Human Teachers 🤖</div>
+                    <p class="instructions">A university wants to replace 50% of human teachers with conversational AI tutors to make tuition cheaper.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong> Agree on 2 strict rules the university MUST create before using AI.
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 8 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">08</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
+
+                <div class="card-body">
+                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
+                    <div class="real-title">8. The Product Redesign 📱</div>
+                    <p class="instructions">Your popular app lost 30% of users this month. You analyzed different user groups.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong>
+                        <ul>
+                            <li><span>Student A:</span> Read complaints from Teenagers (Gen Z).</li>
+                            <li><span>Student B:</span> Read complaints from Working Professionals (+30 yrs).</li>
+                            <li><i>Compare user feedback and decide on the #1 priority fix!</i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 9 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">09</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
+
+                <div class="card-body">
+                    <span class="tag tag-consensus">Idea 3 • Consensus</span>
+                    <div class="real-title">9. The Time Capsule ⏳</div>
+                    <p class="instructions">You are burying a Time Capsule to be opened in 100 years. You can only put <strong>2 items</strong> inside to represent human culture in 2026.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong> Defend your personal ideas and agree on the 2 final objects.
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 10 -->
+            <div class="card" onclick="toggleCard(this)">
+                <div class="card-number">10</div>
+                <div class="mystery-title">🔒 Secret Scenario</div>
+                <div class="card-click-hint">Click me!</div>
+
+                <div class="card-body">
+                    <span class="tag tag-jigsaw">Idea 4 • Information Gap</span>
+                    <div class="real-title">10. The Event Emergency 🎉</div>
+                    <p class="instructions">An international conference starts in 1 hour, but emergency problems occurred at the venue.</p>
+                    <div class="roles-box">
+                        <strong>🎯 Goal:</strong>
+                        <ul>
+                            <li><span>Student A:</span> Manages Catering and Food delivery.</li>
+                            <li><span>Student B:</span> Manages Sound System and Microphones.</li>
+                            <li><i>Explain your urgent problem to your partner and solve it together!</i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // 1. FIREBASE CONFIG
-        const firebaseConfig = {
-            databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        let currentUserName = "";
-        let currentRoomId = "unassigned";
-        let myAssignedRoleKey = "";
-        let roomCount = 2; // Default 2 breakout rooms
-
-        const rolesDict = {
-            athlete: {
-                title: "🏃 THE ATHLETE",
-                goal: "Show your dedication and prove why you deserve this chance!",
-                secret: "🔒 Secret Info: You need $30,000 for travel, entry fees, and pro equipment. You train 6 hours every day!",
-                avatar: "🏃"
-            },
-            investor: {
-                title: "💰 THE INVESTOR",
-                goal: "Decide if the athlete is ready and allocate your funds smartly!",
-                secret: "🔒 Secret Info: You have a $50,000 budget, but you will only invest if the athlete stays committed to school!",
-                avatar: "💼"
-            },
-            sponsor: {
-                title: "📣 THE SPONSOR",
-                goal: "Create an exciting social media campaign to tell their story!",
-                secret: "🔒 Secret Info: Your sponsor package will reach 100,000 sports fans on TikTok and Instagram!",
-                avatar: "📣"
-            },
-            investor_sponsor: {
-                title: "💼 THE INVESTOR & SPONSOR",
-                goal: "Combine funding and social media promotion to empower the athlete!",
-                secret: "🔒 Secret Info: You have $50,000 budget and a campaign reaching 100,000 fans if the athlete shows dedication!",
-                avatar: "🤝"
-            }
-        };
-
-        // 2. LOGIN LOGIC
-        function enterRoom() {
-            const nameInput = document.getElementById('username').value.trim();
-            if (!nameInput) {
-                alert("Please enter your name!");
-                return;
-            }
-
-            if (nameInput.toLowerCase() === "teacher") {
-                document.getElementById('password-modal').style.display = 'flex';
-                return;
-            }
-
-            currentUserName = nameInput;
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('activity-screen').style.display = 'block';
-
-            const userRef = database.ref('students/' + sanitizeName(currentUserName));
-            userRef.set({
-                name: currentUserName,
-                room: 'unassigned',
-                assignedRole: '',
-                signatures: {},
-                stars: []
-            });
-            userRef.onDisconnect().remove();
-
-            // Listen for room updates
-            database.ref('students/' + sanitizeName(currentUserName)).on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    currentRoomId = data.room || 'unassigned';
-                    myAssignedRoleKey = data.assignedRole || '';
-                    updateStudentUI(data);
-                }
+        function toggleCard(card) {
+            const isActive = card.classList.contains('active');
+            
+            // Close all cards first
+            document.querySelectorAll('.card').forEach(c => {
+                c.classList.remove('active');
             });
 
-            // Listen to all room members
-            database.ref('students').on('value', () => {
-                syncRoomData();
-            });
-        }
-
-        // 3. AUTO ROLE ASSIGNMENT & UI SYNC
-        function syncRoomData() {
-            database.ref('students').once('value', (snapshot) => {
-                const allStudents = snapshot.val() || {};
-                const roomMembers = Object.values(allStudents).filter(s => s.room === currentRoomId && s.room !== 'unassigned');
-                
-                // Render Avatars in Step 3
-                const avatarsContainer = document.getElementById('team-avatars-container');
-                avatarsContainer.innerHTML = '';
-
-                roomMembers.forEach(m => {
-                    const rInfo = rolesDict[m.assignedRole] || { avatar: "👤", title: "Member" };
-                    const card = document.createElement('div');
-                    card.className = 'avatar-card';
-                    card.innerHTML = `
-                        <div class="avatar-icon">${rInfo.avatar}</div>
-                        <div class="avatar-name">${m.name}</div>
-                        <div class="avatar-role">${rInfo.title}</div>
-                    `;
-                    avatarsContainer.appendChild(card);
-                });
-
-                // Update Signatures Box & Form Locking
-                updateFormLocking(roomMembers);
-            });
-        }
-
-        function updateStudentUI(myDbData) {
-            // Render Assigned Role (Step 1)
-            const roleObj = rolesDict[myAssignedRoleKey];
-            if (roleObj) {
-                document.getElementById('my-role-title').innerText = roleObj.title;
-                document.getElementById('my-role-goal').innerText = "Goal: " + roleObj.goal;
-                document.getElementById('my-secret-data').innerText = roleObj.secret;
-            } else {
-                document.getElementById('my-role-title').innerText = "Waiting for room assignment...";
-                document.getElementById('my-role-goal').innerText = "Your teacher will place you in a breakout room soon.";
-                document.getElementById('my-secret-data').innerText = "🔒 Secret data locked.";
-            }
-
-            // Render Stars Feedback if any received
-            if (myDbData.stars && myDbData.stars.length > 0) {
-                const box = document.getElementById('stars-feedback-box');
-                const list = document.getElementById('stars-list');
-                box.style.display = 'block';
-                list.innerHTML = myDbData.stars.map(s => `<li>${s}</li>`).join('');
+            // If it wasn't active, open it
+            if (!isActive) {
+                card.classList.add('active');
             }
         }
 
-        // 4. FORM LOCKING & SIGNATURES LOGIC
-        function updateFormLocking(roomMembers) {
-            const inputAthlete = document.getElementById('input-athlete');
-            const inputInvestor = document.getElementById('input-investor');
-            const inputSponsor = document.getElementById('input-sponsor');
-
-            // Disable student's OWN role inputs (They must ask their friends)
-            inputAthlete.disabled = (myAssignedRoleKey === 'athlete');
-            inputInvestor.disabled = (myAssignedRoleKey === 'investor' || myAssignedRoleKey === 'investor_sponsor');
-            inputSponsor.disabled = (myAssignedRoleKey === 'sponsor' || myAssignedRoleKey === 'investor_sponsor');
-
-            // Render Signatures
-            const sigBox = document.getElementById('signatures-box');
-            sigBox.innerHTML = '';
-
-            let allSigned = roomMembers.length > 0;
-
-            roomMembers.forEach(m => {
-                const hasSigned = m.signatures && m.signatures[m.name];
-                if (!hasSigned) allSigned = false;
-
-                const btn = document.createElement('div');
-                btn.className = `sign-btn ${hasSigned ? 'signed' : ''}`;
-                btn.innerText = hasSigned ? `✅ Signed by ${m.name}` : `✍️ Click to Sign (${m.name})`;
-                
-                if (m.name === currentUserName && !hasSigned) {
-                    btn.onclick = () => signContract();
-                }
-                sigBox.appendChild(btn);
-            });
-
-            // Unlock Finish Button if all signed
-            document.getElementById('finish-mission-btn').disabled = !allSigned;
-        }
-
-        function syncDealInput(type) {
-            const val = document.getElementById(`input-${type}`).value;
-            database.ref(`rooms/${currentRoomId}/deal/${type}`).set(val);
-        }
-
-        function signContract() {
-            database.ref(`students/${sanitizeName(currentUserName)}/signatures/${currentUserName}`).set(true);
-        }
-
-        // 5. EVALUATION / FEEDBACK MODAL
-        function openEvaluationModal() {
-            document.getElementById('eval-modal').style.display = 'flex';
-        }
-
-        function submitEvaluation() {
-            const selected = [];
-            document.querySelectorAll('#skills-list input:checked').forEach(cb => {
-                selected.push(cb.value);
-            });
-
-            if (selected.length === 0) {
-                alert("Please select at least 1 star skill for your partners!");
-                return;
-            }
-            if (selected.length > 3) {
-                alert("You can select up to 3 skills!");
-                return;
-            }
-
-            // Send stars to all room members except self
-            database.ref('students').once('value', (snapshot) => {
-                const all = snapshot.val() || {};
-                Object.values(all).forEach(s => {
-                    if (s.room === currentRoomId && s.name !== currentUserName) {
-                        const existing = s.stars || [];
-                        const updated = [...existing, ...selected.map(sk => `${currentUserName} says: "${sk}"`)];
-                        database.ref(`students/${sanitizeName(s.name)}/stars`).set(updated);
-                    }
-                });
-
-                document.getElementById('eval-modal').style.display = 'none';
-                alert("🎉 Mission Completed! You can now print your report.");
-                window.print();
-            });
-        }
-
-        // 6. TEACHER DASHBOARD LOGIC
-        function verifyTeacherPassword() {
-            if (document.getElementById('teacher-password').value === "admin123") {
-                document.getElementById('password-modal').style.display = 'none';
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('teacher-screen').style.display = 'block';
-                initTeacherDashboard();
-            } else {
-                alert("Incorrect Password!");
-            }
-        }
-
-        function initTeacherDashboard() {
-            renderRoomsGrid();
-            database.ref('students').on('value', (snapshot) => {
-                const students = snapshot.val() || {};
-                renderDragAndDrop(students);
-                renderSpyMode(students);
-            });
-        }
-
-        function createNewRoom() {
-            roomCount++;
-            renderRoomsGrid();
-            database.ref('students').once('value', (s) => renderDragAndDrop(s.val() || {}));
-        }
-
-        function renderRoomsGrid() {
-            const container = document.getElementById('rooms-container');
-            container.innerHTML = `
-                <div class="room-box" id="room-unassigned" ondragover="allowDrop(event)" ondrop="dropStudent(event, 'unassigned')">
-                    <div class="room-title"><span>👥 Unassigned Students</span></div>
-                    <div class="student-list" id="list-unassigned"></div>
-                </div>
-            `;
-
-            for (let i = 1; i <= roomCount; i++) {
-                const box = document.createElement('div');
-                box.className = 'room-box';
-                box.id = `room-${i}`;
-                box.setAttribute('ondragover', 'allowDrop(event)');
-                box.setAttribute('ondrop', `dropStudent(event, 'room${i}')`);
-                box.innerHTML = `
-                    <div class="room-title">
-                        <span>🚪 Breakout Room ${i}</span>
-                        <span style="font-size: 0.8rem; color: var(--accent-green);">Active</span>
-                    </div>
-                    <div class="student-list" id="list-room${i}"></div>
-                `;
-                container.appendChild(box);
-            }
-        }
-
-        function renderDragAndDrop(students) {
-            document.querySelectorAll('.student-list').forEach(l => l.innerHTML = '');
-
-            Object.values(students).forEach(s => {
-                const item = document.createElement('div');
-                item.className = 'draggable-student';
-                item.draggable = true;
-                item.ondragstart = (e) => e.dataTransfer.setData('text/plain', s.name);
-                item.innerHTML = `<span>👤 ${s.name}</span> <small style="color:var(--accent-blue);">${rolesDict[s.assignedRole]?.title || 'No Role'}</small>`;
-
-                const listEl = document.getElementById(`list-${s.room}`) || document.getElementById('list-unassigned');
-                listEl.appendChild(item);
-            });
-        }
-
-        function allowDrop(ev) {
-            ev.preventDefault();
-            ev.currentTarget.classList.add('drag-over');
-        }
-
-        function dropStudent(ev, targetRoom) {
-            ev.preventDefault();
-            ev.currentTarget.classList.remove('drag-over');
-            const studentName = ev.dataTransfer.getData('text/plain');
-
-            if (studentName) {
-                // Auto calculate roles for the target room
-                database.ref('students').once('value', (snapshot) => {
-                    const all = snapshot.val() || {};
-                    
-                    // Update room first
-                    all[sanitizeName(studentName)].room = targetRoom;
-                    
-                    // Recalculate roles for target room members
-                    const targetMembers = Object.values(all).filter(m => m.room === targetRoom);
-                    const isPair = targetMembers.length <= 2;
-                    const rolesToAssign = isPair ? ['athlete', 'investor_sponsor'] : ['athlete', 'investor', 'sponsor'];
-
-                    targetMembers.forEach((m, idx) => {
-                        const assignedRole = rolesToAssign[idx] || 'sponsor';
-                        database.ref(`students/${sanitizeName(m.name)}`).update({
-                            room: targetRoom,
-                            assignedRole: assignedRole
-                        });
-                    });
-
-                    if (targetRoom === 'unassigned') {
-                        database.ref(`students/${sanitizeName(studentName)}`).update({
-                            room: 'unassigned',
-                            assignedRole: ''
-                        });
-                    }
-                });
-            }
-        }
-
-        // 7. MODO SPY
-        function renderSpyMode(students) {
-            const container = document.getElementById('teacher-spy-container');
-            container.innerHTML = '';
-
-            Object.values(students).forEach(s => {
-                const card = document.createElement('div');
-                card.className = 'spy-card';
-                card.innerHTML = `
-                    <div style="display:flex; justify-between; align-items:center; margin-bottom: 0.5rem;">
-                        <h3 style="color:#fff;">👤 ${s.name} <span style="font-size:0.8rem; color:var(--text-muted);">(${s.room})</span></h3>
-                        <span style="color:var(--accent-green); font-weight:bold;">${rolesDict[s.assignedRole]?.title || 'Pending'}</span>
-                    </div>
-                    <p style="font-size:0.88rem; color:var(--accent-orange);">⭐ Stars Received: ${s.stars ? s.stars.length : 0}</p>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function sanitizeName(name) {
-            return name.replace(/[.#$\[\]]/g, "_");
+        function pickRandom() {
+            const cards = document.querySelectorAll('.card');
+            const randomIndex = Math.floor(Math.random() * cards.length);
+            
+            // Close all first
+            cards.forEach(c => c.classList.remove('active'));
+            
+            // Open random card and scroll to it
+            cards[randomIndex].classList.add('active');
+            cards[randomIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     </script>
 </body>
