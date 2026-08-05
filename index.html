@@ -1,790 +1,653 @@
+A1 file
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Role Play: Airport Immigration | Interactive Studio</title>
-    <!-- Firebase SDK (Compat version for ease of use in single-file script) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <title>TOEFL Speaking & Free Debate - B2 Pair Work</title>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --surface-color: #131c2e;
-            --surface-border: #1e293b;
-            --primary: #38bdf8;
-            --primary-glow: rgba(56, 189, 248, 0.15);
-            --accent: #f43f5e;
-            --accent-glow: rgba(244, 63, 94, 0.15);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --text-main: #f8fafc;
+            --bg-color: #0b0f17;
+            --card-bg: #161f30;
+            --accent-blue: #38bdf8;
+            --accent-purple: #c084fc;
+            --accent-green: #4ade80;
+            --accent-amber: #f59e0b;
+            --text-light: #f1f5f9;
             --text-muted: #94a3b8;
-            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --border-color: #243248;
         }
 
-        *, *::before, *::after {
+        * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: var(--font-family);
             background-color: var(--bg-color);
-            color: var(--text-main);
+            color: var(--text-light);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            align-items: center;
+            padding: 1.5rem 1rem;
         }
 
-        /* HEADER & SETUP OVERLAY */
-        #setup-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .container {
+            max-width: 900px;
             width: 100%;
-            height: 100%;
-            background: rgba(11, 15, 25, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
+        }
+
+        /* Screen Switcher Navigation */
+        .screen-nav {
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            padding: 0.5rem;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
         }
 
-        .modal-card {
-            background: var(--surface-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 16px;
-            padding: 40px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            text-align: center;
-        }
-
-        .modal-card h2 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: var(--text-main);
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .modal-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 30px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .input-group input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-glow);
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #0284c7, #2563eb);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
-        }
-
-        /* MAIN APP LAYOUT */
-        header {
-            background: var(--surface-color);
-            border-bottom: 1px solid var(--surface-border);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-brand h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .header-brand span {
-            font-size: 0.75rem;
-            background: var(--primary-glow);
-            color: var(--primary);
-            padding: 4px 8px;
-            border-radius: 20px;
-            border: 1px solid rgba(56, 189, 248, 0.3);
-        }
-
-        .user-status {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .user-status b {
-            color: var(--text-main);
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
+        .nav-btn {
             background: transparent;
-            border: 1px solid var(--surface-border);
             color: var(--text-muted);
-            border-radius: 6px;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 30px;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Screen Sections */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
             font-size: 0.8rem;
-            transition: all 0.2s;
-        }
-
-        .btn-sm:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* CONTAINER */
-        .app-container {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 20px;
-            padding: 20px 30px;
-            max-width: 1600px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        @media(max-width: 1100px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* WORKSPACE */
-        .workspace {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .panel {
-            background: var(--surface-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 12px;
-            padding: 24px;
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--surface-border);
-        }
-
-        .panel-header h3 {
-            font-size: 1.1rem;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* ROLE-SPECIFIC BANNER */
-        .role-banner {
-            padding: 16px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(131, 24, 222, 0.05));
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: inline-block;
+            margin-bottom: 0.5rem;
             border: 1px solid rgba(56, 189, 248, 0.2);
         }
 
-        .role-banner.officer {
-            background: linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(30, 41, 59, 0.5));
-            border-color: rgba(244, 63, 94, 0.3);
+        header h1 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 0.3rem;
         }
 
-        .role-info h4 {
-            font-size: 0.9rem;
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* TIMER SECTION */
+        .timer-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+            font-family: monospace;
+            margin: 0.5rem 0;
+            letter-spacing: 2px;
+        }
+
+        .timer-phase {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-green);
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--primary);
-            margin-bottom: 4px;
         }
 
-        .role-banner.officer .role-info h4 {
-            color: var(--accent);
+        .timer-alert {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 1rem;
+            display: none;
         }
 
-        .role-info p {
-            font-size: 1.05rem;
-            font-weight: 600;
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
         }
 
-        /* SCENES NAVIGATOR / CHECKLIST */
-        .scenes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .scene-card {
-            background: var(--bg-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 8px;
-            padding: 14px;
+        .btn {
+            border: none;
+            padding: 0.7rem 1.4rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .scene-card:hover {
-            border-color: var(--primary);
+        .btn-primary { background: var(--accent-blue); color: #000; }
+        .btn-warning { background: var(--accent-amber); color: #000; }
+        .btn-secondary { background: var(--border-color); color: var(--text-light); }
+
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        /* CARDS GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.2rem;
         }
 
-        .scene-card.active {
-            border-color: var(--primary);
-            background: var(--primary-glow);
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
         }
 
-        .scene-card .scene-num {
+        /* Locked Card Styling */
+        .card.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+            filter: grayscale(1);
+        }
+
+        .card.locked::after {
+            content: "🔒 Complete current round first";
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
             font-size: 0.75rem;
             color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 4px;
         }
 
-        .scene-card .scene-title {
+        .card:not(.locked):hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+        }
+
+        .card-number {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+        }
+
+        .mystery-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 0.3rem;
+        }
+
+        .card-click-hint {
+            font-size: 0.8rem;
+            color: var(--accent-purple);
+            font-style: italic;
+            margin-top: 0.4rem;
+            font-weight: bold;
+        }
+
+        .card-body {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            text-align: left;
+        }
+
+        .real-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.6rem;
+            display: none;
+        }
+
+        .card.active {
+            border-color: var(--accent-green);
+            background: #111827;
+            grid-column: 1 / -1;
+            text-align: left;
+        }
+
+        .card.active .card-number,
+        .card.active .mystery-title,
+        .card.active .card-click-hint { display: none; }
+
+        .card.active .real-title { display: block; }
+
+        .card.active .card-body {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 0.5rem;
+        }
+
+        .question-text {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.5;
+            background: rgba(255,255,255,0.03);
+            padding: 1rem;
+            border-radius: 10px;
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        /* SCREEN 2 STYLES */
+        .connectors-box {
+            background: rgba(192, 132, 252, 0.08);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .connectors-box h3 {
+            color: var(--accent-purple);
+            font-size: 1.05rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .connectors-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .connector-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .deep-dive-list {
+            list-style: none;
+            margin-top: 0.8rem;
+        }
+
+        .deep-dive-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.6rem;
+            color: #cbd5e1;
             font-size: 0.95rem;
-            font-weight: 600;
+            line-height: 1.4;
         }
 
-        /* SCENE DETAILS BOX */
-        .scene-detail-box {
-            background: var(--bg-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .checklist-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            cursor: pointer;
-        }
-
-        .checklist-item input[type="checkbox"] {
-            margin-top: 3px;
-            accent-color: var(--primary);
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        .checklist-item.completed span {
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }
-
-        /* SIDEBAR VOCABULARY & NOTES */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .vocab-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 280px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .vocab-item {
-            background: var(--bg-color);
-            border: 1px solid var(--surface-border);
-            padding: 10px 14px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-        }
-
-        .vocab-item span.term {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        /* NOTES / MISTAKES TRACKER */
-        .notes-area {
-            width: 100%;
-            height: 150px;
-            background: var(--bg-color);
-            border: 1px solid var(--surface-border);
-            border-radius: 8px;
-            padding: 12px;
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 0.9rem;
-            resize: none;
-            outline: none;
-        }
-
-        .notes-area:focus {
-            border-color: var(--primary);
-        }
-
-        /* LIVE SYNC BADGE */
-        .sync-status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
-            color: var(--success);
-        }
-
-        .sync-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--success);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
-
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--surface-border);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
+        .deep-dive-list li::before {
+            content: "💬";
+            position: absolute;
+            left: 0;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 
-    <!-- SETUP MODAL (AUTO-CONFIGURED OR MANUAL) -->
-    <div id="setup-modal">
-        <div class="modal-card">
-            <h2>Role Play Studio</h2>
-            <p>Airport Immigration &bull; Work Exchange Mission</p>
-            
-            <div class="input-group">
-                <label for="userName">Your Name</label>
-                <input type="text" id="userName" placeholder="">
-            </div>
-
-            <button class="btn-primary" onclick="initSession()">Enter Simulation</button>
-        </div>
-    </div>
-
-    <!-- MAIN INTERFACE -->
-    <header>
-        <div class="header-brand">
-            <h1>Airport Immigration <span>B1 Level</span></h1>
-        </div>
-        <div class="user-status">
-            <div class="sync-status">
-                <div class="sync-dot"></div>
-                <span>Firebase Live Sync</span>
-            </div>
-            <span>User: <b id="display-name">-</b> (<span id="display-role">-</span>)</span>
-            <button class="btn-sm" onclick="switchUser()">Switch</button>
-        </div>
-    </header>
-
-    <div class="app-container">
-        <!-- WORKSPACE AREA -->
-        <div class="workspace">
-            <!-- ROLE BRIEFING BANNER -->
-            <div class="role-banner" id="roleBanner">
-                <div class="role-info">
-                    <h4 id="bannerRoleTitle">Your Mission</h4>
-                    <p id="bannerRoleDesc">Loading instructions...</p>
-                </div>
-                <div id="bannerExtra"></div>
-            </div>
-
-            <!-- SCENES NAVIGATOR -->
-            <div class="panel">
-                <div class="panel-header">
-                    <h3 id="scenesPanelHeader">Simulation Scenes</h3>
-                    <span style="font-size: 0.85rem; color: var(--text-muted);" id="scenesPanelSubtitle">Click scene to focus</span>
-                </div>
-                <div class="scenes-grid" id="scenesGrid">
-                    <!-- Populated via JS -->
-                </div>
-
-                <!-- ACTIVE SCENE DETAILS -->
-                <div class="scene-detail-box" id="sceneDetailBox">
-                    <h4 id="activeSceneTitle" style="margin-bottom: 8px; color: var(--primary);">Select a scene above</h4>
-                    <p id="activeSceneDesc" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 14px;"></p>
-                    <div id="activeSceneContent"></div>
-                </div>
-            </div>
+    <div class="container">
+        <!-- Navigation Between Screens -->
+        <div class="screen-nav">
+            <button class="nav-btn active" onclick="switchScreen(1, event)">Screen 1: TOEFL Loop ⏱️</button>
+            <button class="nav-btn" onclick="switchScreen(2, event)">Screen 2: Free Debate 💬</button>
         </div>
 
-        <!-- SIDEBAR: VOCABULARY & NOTES -->
-        <div class="sidebar">
-            <!-- ESSENTIAL VOCABULARY -->
-            <div class="panel" style="flex: 1;">
-                <div class="panel-header">
-                    <h3>Essential Vocab</h3>
+        <!-- ================= SCREEN 1 ================= -->
+        <div id="screen1" class="screen active">
+            <header>
+                <span class="badge">TOEFL Speaking Loop</span>
+                <h1>Monologue & Follow-up</h1>
+                <p>Pick the available card, start the timer, and answer your partner's question!</p>
+            </header>
+
+            <!-- Timer Dashboard -->
+            <div class="timer-card">
+                <div class="timer-phase" id="timerPhase">Phase 1: Speaker Monologue</div>
+                <div class="timer-display" id="timerDisplay">02:00</div>
+                
+                <div class="timer-alert" id="timerAlert">
+                    ⚠️ <strong>PERSON 2:</strong> Ask ONE follow-up question right now!
                 </div>
-                <div class="vocab-list" id="vocabList">
-                    <!-- Populated via JS -->
+
+                <div class="timer-controls">
+                    <button class="btn btn-primary" onclick="startTimer()">Start Timer ▶</button>
+                    <button class="btn btn-warning" onclick="pauseTimer()">Pause ⏸</button>
+                    <button class="btn btn-secondary" onclick="resetLoop()">Reset / Switch 🔄</button>
                 </div>
             </div>
 
-            <!-- PRONUNCIATION & MISTAKES TRACKER -->
-            <div class="panel">
-                <div class="panel-header">
-                    <h3>Live Notes / Pronunciation</h3>
+            <!-- Mystery Cards Grid -->
+            <div class="grid" id="toeflGrid">
+                <!-- Card 1 (Initially Unlocked) -->
+                <div class="card" data-index="0" onclick="selectCard(this)">
+                    <div class="card-number">01</div>
+                    <div class="mystery-title">🔒 Mystery Question 1</div>
+                    <div class="card-click-hint">Click me!</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Remote Work vs. Office</div>
+                        <div class="question-text">Some people prefer working from home, while others believe working in an office is better for career growth. Which do you prefer and why?</div>
+                    </div>
                 </div>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">Teacher notes words to improve here:</p>
-                <textarea id="liveNotes" class="notes-area" placeholder="Type words or corrections here in real-time..."></textarea>
+
+                <!-- Card 2 (Locked) -->
+                <div class="card locked" data-index="1" onclick="selectCard(this)">
+                    <div class="card-number">02</div>
+                    <div class="mystery-title">🔒 Mystery Question 2</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: AI in Daily Life</div>
+                        <div class="question-text">Artificial Intelligence is automating many everyday tasks. Do you think this will make human life easier or more complicated in the long run?</div>
+                    </div>
+                </div>
+
+                <!-- Card 3 (Locked) -->
+                <div class="card locked" data-index="2" onclick="selectCard(this)">
+                    <div class="card-number">03</div>
+                    <div class="mystery-title">🔒 Mystery Question 3</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Learning Methods</div>
+                        <div class="question-text">Do you prefer learning new skills through self-study (books/videos) or through structured classes with a teacher? Explain your reasons.</div>
+                    </div>
+                </div>
+
+                <!-- Card 4 (Locked) -->
+                <div class="card locked" data-index="3" onclick="selectCard(this)">
+                    <div class="card-number">04</div>
+                    <div class="mystery-title">🔒 Mystery Question 4</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Financial Choices</div>
+                        <div class="question-text">Some people like to save most of their money for the future, while others prefer spending it on experiences now. What is your approach?</div>
+                    </div>
+                </div>
+
+                <!-- Card 5 (Locked) -->
+                <div class="card locked" data-index="4" onclick="selectCard(this)">
+                    <div class="card-number">05</div>
+                    <div class="mystery-title">🔒 Mystery Question 5</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: City Life vs. Nature</div>
+                        <div class="question-text">Is it better to live in a big city with many opportunities or in a peaceful rural area close to nature? Give specific details.</div>
+                    </div>
+                </div>
+
+                <!-- Card 6 (Locked) -->
+                <div class="card locked" data-index="5" onclick="selectCard(this)">
+                    <div class="card-number">06</div>
+                    <div class="mystery-title">🔒 Mystery Question 6</div>
+                    <div class="card-click-hint">Locked</div>
+                    <div class="card-body">
+                        <div class="real-title">Topic: Social Media Impact</div>
+                        <div class="question-text">Has social media improved human relationships or made people feel more isolated? Express your view with examples.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SCREEN 2 ================= -->
+        <div id="screen2" class="screen">
+            <header>
+                <span class="badge">Joint Brainstorming</span>
+                <h1>Free Conversation & Debate</h1>
+                <p>No timers! Pick a topic below to compare experiences and debate in detail.</p>
+            </header>
+
+            <!-- Useful B2 Connectors -->
+            <div class="connectors-box">
+                <h3>💡 Conversation Boosters (B2 Connectors)</h3>
+                <div class="connectors-list">
+                    <span class="connector-chip">"Building on what you said..."</span>
+                    <span class="connector-chip">"I see your point, but..."</span>
+                    <span class="connector-chip">"From my personal experience..."</span>
+                    <span class="connector-chip">"On the other hand..."</span>
+                    <span class="connector-chip">"Would you agree that...?"</span>
+                </div>
+            </div>
+
+            <!-- Deep-Dive Cards Grid (Free to open) -->
+            <div class="grid">
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">01</div>
+                    <div class="mystery-title">💬 Open Topic 1</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: The Future of Work 💼</div>
+                        <ul class="deep-dive-list">
+                            <li>What did you agree or disagree on during your 2-minute monologues?</li>
+                            <li>How will remote work change companies over the next 10 years?</li>
+                            <li>What is the biggest sacrifice a person makes when choosing 100% remote work?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">02</div>
+                    <div class="mystery-title">💬 Open Topic 2</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: Technology & Humanity 🤖</div>
+                        <ul class="deep-dive-list">
+                            <li>Which human skills do you think AI will NEVER be able to replace?</li>
+                            <li>Should governments regulate AI development, or let it grow freely?</li>
+                            <li>How has technology changed your own attention span or daily routine?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">03</div>
+                    <div class="mystery-title">💬 Open Topic 3</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: Modern Education 📚</div>
+                        <ul class="deep-dive-list">
+                            <li>Is a university degree still essential for financial success today?</li>
+                            <li>If you could redesign the school system from scratch, what would you change?</li>
+                            <li>What is the most useful skill you learned completely on your own?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" onclick="toggleSimpleCard(this)">
+                    <div class="card-number">04</div>
+                    <div class="mystery-title">💬 Open Topic 4</div>
+                    <div class="card-click-hint">Click to expand debate...</div>
+                    <div class="card-body">
+                        <div class="real-title">Deep-Dive: Quality of Life & Success 🌟</div>
+                        <ul class="deep-dive-list">
+                            <li>How do you personally define "success" in life?</li>
+                            <li>Why do many people struggle to balance work and personal life nowadays?</li>
+                            <li>What is one luxury item or habit that is actually a waste of money?</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- FIREBASE CONFIGURATION ---
-        const firebaseConfig = {
-            databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const dbRef = firebase.database().ref("airport_roleplay_v1");
-
-        // --- SCENARIO DATA ---
-        const scenes = [
-            {
-                id: 1,
-                title: "Greeting",
-                desc: "Initial encounter at the immigration counter.",
-                studentTask: "Greet back politely. Hand over passport when asked.",
-                officerTask: "Say good morning, ask for passport, and ask: 'What brings you to Canada?'",
-                prompts: ["Good morning.", "Passport, please.", "What brings you to Canada?"]
-            },
-            {
-                id: 2,
-                title: "Basic Questions",
-                desc: "Answering inquiries about your stay and work exchange.",
-                studentTask: "Answer clearly. Mention your work exchange program and travel plans.",
-                officerTask: "Ask natural questions regarding duration, address, return ticket, and employer.",
-                prompts: ["What's your full name?", "How long are you staying?", "What company are you going to work for?", "How much money are you bringing?"]
-            },
-            {
-                id: 3,
-                title: "Documents",
-                desc: "Presenting supporting official documents.",
-                studentTask: "React naturally: 'Sure.', 'Here you are.', 'One moment.'",
-                officerTask: "Ask for specific documents: Visa, Work Permit, Invitation letter, Insurance.",
-                prompts: ["Passport / Visa", "Work permit", "Accommodation confirmation", "Return ticket"]
-            },
-            {
-                id: 4,
-                title: "Small Problem",
-                desc: "Addressing a minor procedural hiccup.",
-                studentTask: "Stay calm. Clarify or provide alternative copies if asked.",
-                officerTask: "Choose one: Missing work permit copy, incomplete address, or pronunciation check.",
-                prompts: ["Officer: I can't find your work permit.", "Officer: Sorry? Could you repeat that?"]
-            },
-            {
-                id: 5,
-                title: "Unexpected Challenge",
-                desc: "Handling an unforeseen situation in real-time.",
-                studentTask: "Problem-solve on the spot (e.g., check phone notes, explain delayed flight or medicine).",
-                officerTask: "Introduce a surprise challenge (e.g., changed address, dead phone battery, or food in bag).",
-                prompts: ["Your employer changed the address.", "You forgot the hotel name / postal code.", "You have medicine / food in your luggage."]
-            },
-            {
-                id: 6,
-                title: "Secondary Inspection",
-                desc: "Detailed follow-up questions (Optional).",
-                studentTask: "Explain motivation clearly and professionally.",
-                officerTask: "Ask why they chose Canada, past experience, and future plans.",
-                prompts: ["Why did you choose Canada?", "What experience do you have?", "What are your plans after the program?"]
-            },
-            {
-                id: 7,
-                title: "Finish",
-                desc: "Conclusion of immigration screening.",
-                studentTask: "Thank the officer and wish them a good day.",
-                officerTask: "Welcome to Canada or direct to supervisor.",
-                prompts: ["Everything looks good. Welcome to Canada.", "Please wait here."]
-            }
-        ];
-
-        const vocabulary = [
-            { term: "Passport", def: "Official travel document" },
-            { term: "Purpose", def: "Reason for travel" },
-            { term: "Work permit", def: "Official authorization to work" },
-            { term: "Employer", def: "Company you will work for" },
-            { term: "Accommodation", def: "Place to stay" },
-            { term: "Immigration", def: "Border control office" },
-            { term: "Opportunity", def: "Favorable circumstance" },
-            { term: "Available", def: "Ready for use" },
-            { term: "Address", def: "Location details" },
-            { term: "Return ticket", def: "Ticket back home" }
-        ];
-
-        // --- STATE VARIABLES ---
-        let currentUser = {
-            name: "",
-            role: ""
-        };
-        let activeSceneId = 1;
-
-        // --- INITIALIZATION ---
-        function initSession() {
-            const nameInput = document.getElementById("userName").value.trim();
-
-            if(!nameInput) {
-                alert("Please enter your name!");
-                return;
-            }
-
-            currentUser.name = nameInput;
+        // Screen Navigation
+        function switchScreen(screenNum, e) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             
-            // Automatic role detection based on name
-            if (nameInput.toLowerCase() === "andre") {
-                currentUser.role = "teacher";
-            } else {
-                currentUser.role = "student";
-            }
-
-            document.getElementById("display-name").innerText = currentUser.name;
-            document.getElementById("display-role").innerText = currentUser.role.toUpperCase();
-            document.getElementById("setup-modal").style.display = "none";
-
-            // If student, lock active scene to 1 permanently
-            if (currentUser.role === "student") {
-                activeSceneId = 1;
-            }
-
-            renderUI();
-            setupFirebaseSync();
+            document.getElementById(`screen${screenNum}`).classList.add('active');
+            e.target.classList.add('active');
         }
 
-        function switchUser() {
-            document.getElementById("setup-modal").style.display = "flex";
+        // Fixed Short Pop Sound (No long buzzing)
+        function playShortPop() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
+                
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                osc.start();
+                osc.stop(ctx.currentTime + 0.08);
+            } catch (e) {
+                // Browser prevented audio before interaction
+            }
         }
 
-        function renderUI() {
-            // Render Role Banner
-            const banner = document.getElementById("roleBanner");
-            const bannerTitle = document.getElementById("bannerRoleTitle");
-            const bannerDesc = document.getElementById("bannerRoleDesc");
+        // State Management
+        let timer = null;
+        let timeLeft = 120; // 2 minutes
+        let phase = 1; // 1 = Monologue, 2 = Q&A, 3 = Complete
+        let currentCardIndex = 0;
+
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerPhase = document.getElementById('timerPhase');
+        const timerAlert = document.getElementById('timerAlert');
+        const allToeflCards = document.querySelectorAll('#toeflGrid .card');
+
+        function updateDisplay() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function selectCard(card) {
+            if (card.classList.contains('locked')) return;
             
-            if(currentUser.role === "student") {
-                banner.className = "role-banner";
-                bannerTitle.innerText = `Student Mission (${currentUser.name} / Immigrant)`;
-                bannerDesc.innerText = "You are arriving in Canada for a work exchange program. Stay calm, answer honestly, and handle Scene 1!";
-            } else {
-                banner.className = "role-banner officer";
-                bannerTitle.innerText = "Teacher Mission (Immigration Officer - André)";
-                bannerDesc.innerText = "You control Scenes 2 to 7. Stay serious but polite, introduce challenges, and manage the simulation.";
-            }
+            allToeflCards.forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            currentCardIndex = parseInt(card.getAttribute('data-index'));
+            resetLoop();
+        }
 
-            // Render Scenes based on Role
-            const grid = document.getElementById("scenesGrid");
-            grid.innerHTML = "";
+        function toggleSimpleCard(card) {
+            const isActive = card.classList.contains('active');
+            document.querySelectorAll('#screen2 .card').forEach(c => c.classList.remove('active'));
+            if (!isActive) card.classList.add('active');
+        }
 
-            if (currentUser.role === "student") {
-                // Student only sees Scene 1
-                document.getElementById("scenesPanelHeader").innerText = "Your Current Scene";
-                document.getElementById("scenesPanelSubtitle").innerText = "Focus on Scene 1";
-                
-                const scene = scenes.find(s => s.id === 1);
-                const card = document.createElement("div");
-                card.className = "scene-card active";
-                card.innerHTML = `
-                    <div class="scene-num">Scene ${scene.id}</div>
-                    <div class="scene-title">${scene.title}</div>
-                `;
-                grid.appendChild(card);
-                activeSceneId = 1;
-            } else {
-                // Teacher sees Scenes 2 to 7
-                document.getElementById("scenesPanelHeader").innerText = "Simulation Scenes (Teacher Control)";
-                document.getElementById("scenesPanelSubtitle").innerText = "Click scene to switch active scene for both";
-                
-                scenes.filter(s => s.id >= 2).forEach(scene => {
-                    const card = document.createElement("div");
-                    card.className = `scene-card ${scene.id === activeSceneId ? 'active' : ''}`;
-                    card.onclick = () => setActiveScene(scene.id);
-                    card.innerHTML = `
-                        <div class="scene-num">Scene ${scene.id}</div>
-                        <div class="scene-title">${scene.title}</div>
-                    `;
-                    grid.appendChild(card);
-                });
-                
-                // If active scene is 1, default teacher view to scene 2 when interface loads
-                if (activeSceneId === 1) {
-                    activeSceneId = 2;
+        function startTimer() {
+            if (timer || phase === 3) return;
+            playShortPop();
+
+            timer = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateDisplay();
+                } else {
+                    clearInterval(timer);
+                    timer = null;
+                    handlePhaseEnd();
                 }
-            }
-
-            renderActiveSceneDetails();
-            renderVocabulary();
+            }, 1000);
         }
 
-        function setActiveScene(id) {
-            if(currentUser.role === "student") return; // Student cannot change scenes
-            activeSceneId = id;
-            // Sync active scene to Firebase so teacher controls it
-            dbRef.child("activeScene").set(id);
-            renderUI();
+        function pauseTimer() {
+            clearInterval(timer);
+            timer = null;
         }
 
-        function renderActiveSceneDetails() {
-            const scene = scenes.find(s => s.id === activeSceneId);
-            if(!scene) return;
+        function handlePhaseEnd() {
+            playShortPop();
 
-            document.getElementById("activeSceneTitle").innerText = `Scene ${scene.id}: ${scene.title}`;
-            document.getElementById("activeSceneDesc").innerText = scene.desc;
-
-            const contentDiv = document.getElementById("activeSceneContent");
-            let html = `<div style="margin-bottom: 12px; font-weight:600; font-size:0.9rem; color:var(--text-main);">Instructions for your role:</div>`;
-            
-            const taskText = currentUser.role === "student" ? scene.studentTask : scene.officerTask;
-            html += `
-                <div class="checklist-item">
-                    <input type="checkbox" id="taskCheck" onchange="toggleTask()">
-                    <span><b>Task:</b> ${taskText}</span>
-                </div>
-            `;
-
-            if(scene.prompts && scene.prompts.length > 0) {
-                html += `<div style="margin-top: 14px; font-size:0.85rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Key Prompts & Ideas:</div>`;
-                html += `<ul style="margin-top: 6px; padding-left: 20px; font-size:0.9rem; color:var(--text-main);">`;
-                scene.prompts.forEach(p => {
-                    html += `<li style="margin-bottom: 4px;">${p}</li>`;
-                });
-                html += `</ul>`;
-            }
-
-            contentDiv.innerHTML = html;
-        }
-
-        function toggleTask() {
-            const checked = document.getElementById("taskCheck").checked;
-            const item = document.getElementById("taskCheck").parentElement;
-            if(checked) {
-                item.classList.add("completed");
-            } else {
-                item.classList.remove("completed");
+            if (phase === 1) {
+                // Switch to Phase 2 (Q&A 1:30)
+                phase = 2;
+                timeLeft = 90;
+                timerPhase.textContent = "Phase 2: Question & Answer";
+                timerPhase.style.color = "var(--accent-amber)";
+                timerDisplay.style.color = "var(--accent-amber)";
+                timerAlert.style.display = "block";
+                updateDisplay();
+                startTimer(); // Auto start Phase 2
+            } else if (phase === 2) {
+                // Cycle Complete! Unlock Next Card
+                phase = 3;
+                timerPhase.textContent = "Cycle Complete! Next card unlocked 🔓";
+                timerPhase.style.color = "var(--accent-purple)";
+                timerAlert.style.display = "none";
+                
+                unlockNextCard();
             }
         }
 
-        function renderVocabulary() {
-            const list = document.getElementById("vocabList");
-            list.innerHTML = "";
-            vocabulary.forEach(v => {
-                const item = document.createElement("div");
-                item.className = "vocab-item";
-                item.innerHTML = `<span class="term">${v.term}</span> <span style="color:var(--text-muted); font-size:0.8rem;">${v.def}</span>`;
-                list.appendChild(item);
-            });
+        function unlockNextCard() {
+            const nextIndex = currentCardIndex + 1;
+            if (nextIndex < allToeflCards.length) {
+                allToeflCards[nextIndex].classList.remove('locked');
+                allToeflCards[nextIndex].querySelector('.card-click-hint').textContent = "Click to reveal!";
+            }
         }
 
-        // --- FIREBASE REAL-TIME SYNC ---
-        function setupFirebaseSync() {
-            // Listen to active scene changes
-            dbRef.child("activeScene").on("value", (snapshot) => {
-                const val = snapshot.val();
-                if(val && val !== activeSceneId) {
-                    if (currentUser.role === "teacher" && val >= 2) {
-                        activeSceneId = val;
-                        renderUI();
-                    }
-                }
-            });
-
-            // Listen to live notes/mistakes changes
-            const notesArea = document.getElementById("liveNotes");
-            dbRef.child("liveNotes").on("value", (snapshot) => {
-                const val = snapshot.val();
-                if(val !== null && val !== notesArea.value) {
-                    notesArea.value = val;
-                }
-            });
-
-            // Broadcast notes on input
-            notesArea.addEventListener("input", () => {
-                dbRef.child("liveNotes").set(notesArea.value);
-            });
+        function resetLoop() {
+            pauseTimer();
+            phase = 1;
+            timeLeft = 120;
+            timerPhase.textContent = "Phase 1: Speaker Monologue";
+            timerPhase.style.color = "var(--accent-green)";
+            timerDisplay.style.color = "var(--accent-blue)";
+            timerAlert.style.display = "none";
+            updateDisplay();
         }
+
+        // Initialize
+        updateDisplay();
     </script>
 </body>
 </html>
