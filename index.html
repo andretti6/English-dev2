@@ -1,653 +1,1224 @@
-A1 file
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-950">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOEFL Speaking & Free Debate - B2 Pair Work</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Department Store Role-Play</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js">
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
-        :root {
-            --bg-color: #0b0f17;
-            --card-bg: #161f30;
-            --accent-blue: #38bdf8;
-            --accent-purple: #c084fc;
-            --accent-green: #4ade80;
-            --accent-amber: #f59e0b;
-            --text-light: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border-color: #243248;
-        }
-
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-light);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1.5rem 1rem;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100%;
+            background: #0f172a;
         }
-
-        .container {
-            max-width: 900px;
-            width: 100%;
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        /* Screen Switcher Navigation */
-        .screen-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            background: var(--card-bg);
-            padding: 0.5rem;
-            border-radius: 50px;
-            border: 1px solid var(--border-color);
+        .glass-light {
+            background: rgba(30, 41, 59, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
-
-        .nav-btn {
-            background: transparent;
-            color: var(--text-muted);
-            border: none;
-            padding: 0.7rem 1.5rem;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn.active {
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
-        }
-
-        /* Screen Sections */
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
+        canvas {
             display: block;
+            outline: none;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 1.5rem;
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .fade-slide {
+            animation: fadeSlide 0.4s ease-out;
         }
 
-        .badge {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-blue);
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.85);
+            }
+        }
+        .pulse-dot {
+            animation: pulse-dot 1.6s ease-in-out infinite;
+        }
+
+        .role-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.7rem;
+            border-radius: 999px;
+            letter-spacing: 0.02em;
             display: inline-block;
-            margin-bottom: 0.5rem;
-            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        .role-badge.buyer {
+            background: rgba(34, 211, 238, 0.18);
+            color: #67e8f9;
+            border: 1px solid rgba(34, 211, 238, 0.25);
+        }
+        .role-badge.seller {
+            background: rgba(168, 85, 247, 0.18);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.25);
         }
 
-        header h1 {
-            font-size: 2rem;
-            color: #fff;
-            margin-bottom: 0.3rem;
+        /* Custom scroll for suggestions */
+        .suggest-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+        .suggest-scroll::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
         }
 
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* TIMER SECTION */
-        .timer-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 1.5rem;
+        /* Avatar label in 3D scene — positioned via JS */
+        .avatar-label-3d {
+            position: absolute;
+            pointer-events: none;
             text-align: center;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            transform: translate(-50%, -50%);
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            transition: opacity 0.2s;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+        }
+        .avatar-label-3d .name {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #f1f5f9;
+            background: rgba(15, 23, 42, 0.7);
+            padding: 0.1rem 0.6rem;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(4px);
+        }
+        .avatar-label-3d .role-tag {
+            font-size: 0.55rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            margin-top: 0.15rem;
+            background: rgba(15, 23, 42, 0.65);
+            padding: 0.05rem 0.5rem;
+            border-radius: 4px;
+            display: inline-block;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .avatar-label-3d .role-tag.buyer {
+            color: #67e8f9;
+            border-color: rgba(34, 211, 238, 0.2);
+        }
+        .avatar-label-3d .role-tag.seller {
+            color: #c084fc;
+            border-color: rgba(168, 85, 247, 0.2);
         }
 
-        .timer-display {
-            font-size: 4rem;
-            font-weight: 900;
-            color: var(--accent-blue);
-            font-family: monospace;
-            margin: 0.5rem 0;
-            letter-spacing: 2px;
-        }
-
-        .timer-phase {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--accent-green);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .timer-alert {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--accent-amber);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            padding: 0.8rem;
-            border-radius: 10px;
-            font-weight: bold;
-            margin-top: 1rem;
-            display: none;
-        }
-
-        .timer-controls {
-            display: flex;
-            justify-content: center;
-            gap: 0.8rem;
-            margin-top: 1rem;
-        }
-
-        .btn {
-            border: none;
-            padding: 0.7rem 1.4rem;
-            font-size: 0.9rem;
-            font-weight: bold;
-            border-radius: 30px;
+        /* Setup picker */
+        .color-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid transparent;
             cursor: pointer;
             transition: all 0.2s;
         }
-
-        .btn-primary { background: var(--accent-blue); color: #000; }
-        .btn-warning { background: var(--accent-amber); color: #000; }
-        .btn-secondary { background: var(--border-color); color: var(--text-light); }
-
-        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
-        /* CARDS GRID */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.2rem;
+        .color-dot:hover {
+            transform: scale(1.12);
+        }
+        .color-dot.active {
+            border-color: #22d3ee;
+            box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
+            transform: scale(1.1);
         }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            position: relative;
-        }
-
-        /* Locked Card Styling */
-        .card.locked {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-            filter: grayscale(1);
-        }
-
-        .card.locked::after {
-            content: "🔒 Complete current round first";
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .card:not(.locked):hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-3px);
-        }
-
-        .card-number {
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: var(--accent-blue);
-        }
-
-        .mystery-title {
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            margin-top: 0.3rem;
-        }
-
-        .card-click-hint {
-            font-size: 0.8rem;
-            color: var(--accent-purple);
-            font-style: italic;
-            margin-top: 0.4rem;
-            font-weight: bold;
-        }
-
-        .card-body {
-            max-height: 0;
-            opacity: 0;
+        #avatar-preview {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: rgba(30, 41, 59, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.06);
             overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease;
-            text-align: left;
-        }
-
-        .real-title {
-            font-size: 1.15rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 0.6rem;
-            display: none;
-        }
-
-        .card.active {
-            border-color: var(--accent-green);
-            background: #111827;
-            grid-column: 1 / -1;
-            text-align: left;
-        }
-
-        .card.active .card-number,
-        .card.active .mystery-title,
-        .card.active .card-click-hint { display: none; }
-
-        .card.active .real-title { display: block; }
-
-        .card.active .card-body {
-            max-height: 500px;
-            opacity: 1;
-            margin-top: 0.5rem;
-        }
-
-        .question-text {
-            color: #cbd5e1;
-            font-size: 1.05rem;
-            line-height: 1.5;
-            background: rgba(255,255,255,0.03);
-            padding: 1rem;
-            border-radius: 10px;
-            border-left: 3px solid var(--accent-blue);
-        }
-
-        /* SCREEN 2 STYLES */
-        .connectors-box {
-            background: rgba(192, 132, 252, 0.08);
-            border: 1px solid rgba(192, 132, 252, 0.2);
-            border-radius: 16px;
-            padding: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        .connectors-box h3 {
-            color: var(--accent-purple);
-            font-size: 1.05rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .connectors-list {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem;
+            align-items: center;
+            justify-content: center;
+        }
+        #avatar-preview svg {
+            width: 100%;
+            height: 100%;
         }
 
-        .connector-chip {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-light);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
+        .btn-join {
+            background: linear-gradient(135deg, #22d3ee, #06b6d4);
+            color: #0f172a;
+            font-weight: 700;
+            transition: all 0.25s;
+            border: none;
+        }
+        .btn-join:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.25);
+        }
+        .btn-join:disabled {
+            opacity: 0.5;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
         }
 
-        .deep-dive-list {
-            list-style: none;
-            margin-top: 0.8rem;
+        .btn-leave {
+            background: rgba(239, 68, 68, 0.12);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            transition: all 0.2s;
+        }
+        .btn-leave:hover {
+            background: rgba(239, 68, 68, 0.22);
         }
 
-        .deep-dive-list li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.6rem;
+        .suggestion-item {
+            background: rgba(30, 41, 59, 0.5);
+            border-left: 2px solid rgba(56, 189, 248, 0.25);
+            padding: 0.5rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
             color: #cbd5e1;
-            font-size: 0.95rem;
             line-height: 1.4;
+            transition: background 0.15s;
         }
-
-        .deep-dive-list li::before {
-            content: "💬";
-            position: absolute;
-            left: 0;
-            font-size: 0.85rem;
+        .suggestion-item:hover {
+            background: rgba(30, 41, 59, 0.8);
+        }
+        .suggestion-item .icon {
+            margin-right: 0.4rem;
+            opacity: 0.5;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Navigation Between Screens -->
-        <div class="screen-nav">
-            <button class="nav-btn active" onclick="switchScreen(1, event)">Screen 1: TOEFL Loop ⏱️</button>
-            <button class="nav-btn" onclick="switchScreen(2, event)">Screen 2: Free Debate 💬</button>
-        </div>
+    <!-- ============================================================ -->
+    <!-- 3D CONTAINER — always visible behind overlays                  -->
+    <!-- ============================================================ -->
+    <div id="three-container" class="absolute inset-0 w-full h-full bg-slate-950 z-0"></div>
 
-        <!-- ================= SCREEN 1 ================= -->
-        <div id="screen1" class="screen active">
-            <header>
-                <span class="badge">TOEFL Speaking Loop</span>
-                <h1>Monologue & Follow-up</h1>
-                <p>Pick the available card, start the timer, and answer your partner's question!</p>
-            </header>
-
-            <!-- Timer Dashboard -->
-            <div class="timer-card">
-                <div class="timer-phase" id="timerPhase">Phase 1: Speaker Monologue</div>
-                <div class="timer-display" id="timerDisplay">02:00</div>
-                
-                <div class="timer-alert" id="timerAlert">
-                    ⚠️ <strong>PERSON 2:</strong> Ask ONE follow-up question right now!
+    <!-- ============================================================ -->
+    <!-- VIEW: SETUP                                                   -->
+    <!-- ============================================================ -->
+    <div id="view-setup" class="relative z-10 w-full h-full flex items-center justify-center p-4">
+        <div class="glass-panel rounded-3xl max-w-lg w-full p-7 shadow-2xl border border-white/5 fade-slide">
+            <div class="flex items-center gap-3 mb-5 border-b border-slate-800/60 pb-4">
+                <div class="w-10 h-10 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-xl border border-cyan-500/20">
+                    🛍️
                 </div>
-
-                <div class="timer-controls">
-                    <button class="btn btn-primary" onclick="startTimer()">Start Timer ▶</button>
-                    <button class="btn btn-warning" onclick="pauseTimer()">Pause ⏸</button>
-                    <button class="btn btn-secondary" onclick="resetLoop()">Reset / Switch 🔄</button>
+                <div>
+                    <h1 class="font-bold text-white text-lg tracking-tight">Store Role-Play</h1>
+                    <p class="text-xs text-slate-400">Negotiate in English · Real-time 3D</p>
+                </div>
+                <div class="ml-auto flex items-center gap-1.5">
+                    <span id="setup-dot" class="w-2.5 h-2.5 rounded-full bg-slate-600 pulse-dot"></span>
+                    <span id="setup-conn-label" class="text-[10px] text-slate-500">connecting...</span>
                 </div>
             </div>
 
-            <!-- Mystery Cards Grid -->
-            <div class="grid" id="toeflGrid">
-                <!-- Card 1 (Initially Unlocked) -->
-                <div class="card" data-index="0" onclick="selectCard(this)">
-                    <div class="card-number">01</div>
-                    <div class="mystery-title">🔒 Mystery Question 1</div>
-                    <div class="card-click-hint">Click me!</div>
-                    <div class="card-body">
-                        <div class="real-title">Topic: Remote Work vs. Office</div>
-                        <div class="question-text">Some people prefer working from home, while others believe working in an office is better for career growth. Which do you prefer and why?</div>
-                    </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Your Name</label>
+                    <input type="text" id="input-name" maxlength="16" placeholder="e.g. Alex"
+                    class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-500/60 transition placeholder:text-slate-500" />
                 </div>
 
-                <!-- Card 2 (Locked) -->
-                <div class="card locked" data-index="1" onclick="selectCard(this)">
-                    <div class="card-number">02</div>
-                    <div class="mystery-title">🔒 Mystery Question 2</div>
-                    <div class="card-click-hint">Locked</div>
-                    <div class="card-body">
-                        <div class="real-title">Topic: AI in Daily Life</div>
-                        <div class="question-text">Artificial Intelligence is automating many everyday tasks. Do you think this will make human life easier or more complicated in the long run?</div>
-                    </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Room Code</label>
+                    <input type="text" id="input-room" maxlength="20" value="store-01"
+                    class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 font-mono outline-none focus:border-cyan-500/60 transition" />
+                    <p class="text-[10px] text-slate-500 mt-1">Share this code with your negotiation partner.</p>
                 </div>
 
-                <!-- Card 3 (Locked) -->
-                <div class="card locked" data-index="2" onclick="selectCard(this)">
-                    <div class="card-number">03</div>
-                    <div class="mystery-title">🔒 Mystery Question 3</div>
-                    <div class="card-click-hint">Locked</div>
-                    <div class="card-body">
-                        <div class="real-title">Topic: Learning Methods</div>
-                        <div class="question-text">Do you prefer learning new skills through self-study (books/videos) or through structured classes with a teacher? Explain your reasons.</div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1.5">Avatar</label>
+                    <div class="flex items-center gap-4">
+                        <div id="avatar-preview" class="flex-shrink-0"></div>
+                        <div class="flex-1 space-y-2">
+                            <div class="flex gap-2">
+                                <button type="button" onclick="setAvatarGender('male')" id="btn-gender-m"
+                                class="flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500">
+                                🧔 Male
+                            </button>
+                            <button type="button" onclick="setAvatarGender('female')" id="btn-gender-f"
+                            class="flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500">
+                            👩 Female
+                        </button>
                     </div>
-                </div>
-
-                <!-- Card 4 (Locked) -->
-                <div class="card locked" data-index="3" onclick="selectCard(this)">
-                    <div class="card-number">04</div>
-                    <div class="mystery-title">🔒 Mystery Question 4</div>
-                    <div class="card-click-hint">Locked</div>
-                    <div class="card-body">
-                        <div class="real-title">Topic: Financial Choices</div>
-                        <div class="question-text">Some people like to save most of their money for the future, while others prefer spending it on experiences now. What is your approach?</div>
-                    </div>
-                </div>
-
-                <!-- Card 5 (Locked) -->
-                <div class="card locked" data-index="4" onclick="selectCard(this)">
-                    <div class="card-number">05</div>
-                    <div class="mystery-title">🔒 Mystery Question 5</div>
-                    <div class="card-click-hint">Locked</div>
-                    <div class="card-body">
-                        <div class="real-title">Topic: City Life vs. Nature</div>
-                        <div class="question-text">Is it better to live in a big city with many opportunities or in a peaceful rural area close to nature? Give specific details.</div>
-                    </div>
-                </div>
-
-                <!-- Card 6 (Locked) -->
-                <div class="card locked" data-index="5" onclick="selectCard(this)">
-                    <div class="card-number">06</div>
-                    <div class="mystery-title">🔒 Mystery Question 6</div>
-                    <div class="card-click-hint">Locked</div>
-                    <div class="card-body">
-                        <div class="real-title">Topic: Social Media Impact</div>
-                        <div class="question-text">Has social media improved human relationships or made people feel more isolated? Express your view with examples.</div>
+                    <div>
+                        <label class="text-[10px] text-slate-500 block mb-1">Skin</label>
+                        <div id="skin-picker" class="flex gap-1.5 flex-wrap"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= SCREEN 2 ================= -->
-        <div id="screen2" class="screen">
-            <header>
-                <span class="badge">Joint Brainstorming</span>
-                <h1>Free Conversation & Debate</h1>
-                <p>No timers! Pick a topic below to compare experiences and debate in detail.</p>
-            </header>
-
-            <!-- Useful B2 Connectors -->
-            <div class="connectors-box">
-                <h3>💡 Conversation Boosters (B2 Connectors)</h3>
-                <div class="connectors-list">
-                    <span class="connector-chip">"Building on what you said..."</span>
-                    <span class="connector-chip">"I see your point, but..."</span>
-                    <span class="connector-chip">"From my personal experience..."</span>
-                    <span class="connector-chip">"On the other hand..."</span>
-                    <span class="connector-chip">"Would you agree that...?"</span>
-                </div>
-            </div>
-
-            <!-- Deep-Dive Cards Grid (Free to open) -->
-            <div class="grid">
-                <div class="card" onclick="toggleSimpleCard(this)">
-                    <div class="card-number">01</div>
-                    <div class="mystery-title">💬 Open Topic 1</div>
-                    <div class="card-click-hint">Click to expand debate...</div>
-                    <div class="card-body">
-                        <div class="real-title">Deep-Dive: The Future of Work 💼</div>
-                        <ul class="deep-dive-list">
-                            <li>What did you agree or disagree on during your 2-minute monologues?</li>
-                            <li>How will remote work change companies over the next 10 years?</li>
-                            <li>What is the biggest sacrifice a person makes when choosing 100% remote work?</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card" onclick="toggleSimpleCard(this)">
-                    <div class="card-number">02</div>
-                    <div class="mystery-title">💬 Open Topic 2</div>
-                    <div class="card-click-hint">Click to expand debate...</div>
-                    <div class="card-body">
-                        <div class="real-title">Deep-Dive: Technology & Humanity 🤖</div>
-                        <ul class="deep-dive-list">
-                            <li>Which human skills do you think AI will NEVER be able to replace?</li>
-                            <li>Should governments regulate AI development, or let it grow freely?</li>
-                            <li>How has technology changed your own attention span or daily routine?</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card" onclick="toggleSimpleCard(this)">
-                    <div class="card-number">03</div>
-                    <div class="mystery-title">💬 Open Topic 3</div>
-                    <div class="card-click-hint">Click to expand debate...</div>
-                    <div class="card-body">
-                        <div class="real-title">Deep-Dive: Modern Education 📚</div>
-                        <ul class="deep-dive-list">
-                            <li>Is a university degree still essential for financial success today?</li>
-                            <li>If you could redesign the school system from scratch, what would you change?</li>
-                            <li>What is the most useful skill you learned completely on your own?</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card" onclick="toggleSimpleCard(this)">
-                    <div class="card-number">04</div>
-                    <div class="mystery-title">💬 Open Topic 4</div>
-                    <div class="card-click-hint">Click to expand debate...</div>
-                    <div class="card-body">
-                        <div class="real-title">Deep-Dive: Quality of Life & Success 🌟</div>
-                        <ul class="deep-dive-list">
-                            <li>How do you personally define "success" in life?</li>
-                            <li>Why do many people struggle to balance work and personal life nowadays?</li>
-                            <li>What is one luxury item or habit that is actually a waste of money?</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <button onclick="joinRoom()" id="btn-join" class="btn-join w-full py-3.5 rounded-2xl text-sm mt-2 transition">
+            🚀 Enter Store
+        </button>
+        <p id="join-error" class="hidden text-xs text-red-400 text-center mt-2"></p>
     </div>
+</div>
+</div>
 
-    <script>
-        // Screen Navigation
-        function switchScreen(screenNum, e) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById(`screen${screenNum}`).classList.add('active');
-            e.target.classList.add('active');
+<!-- ============================================================ -->
+<!-- VIEW: MEETING                                                 -->
+<!-- ============================================================ -->
+<div id="view-meeting" class="hidden relative z-10 w-full h-full">
+    <!-- Top bar -->
+    <header class="absolute top-0 left-0 right-0 p-3 md:p-4 flex items-center justify-between z-20 pointer-events-none">
+        <div class="glass-panel px-4 py-2 rounded-2xl flex items-center gap-3 pointer-events-auto shadow-xl">
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-semibold text-sm text-white">🛍️ Store</span>
+                    <span class="text-[10px] text-slate-400 font-mono bg-slate-800/60 px-2 py-0.5 rounded border border-slate-700/50">
+                        <span id="meeting-room-code">store-01</span>
+                    </span>
+                </div>
+                <p class="text-[10px] text-slate-400"><span id="meeting-player-count">0</span> participants</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2 pointer-events-auto">
+            <button onclick="toggleOrbit()" id="orbit-btn"
+            class="glass-light px-3 py-1.5 rounded-xl text-[10px] font-medium text-slate-300 border border-white/5 hover:border-white/15 transition flex items-center gap-1.5">
+            🔄 Orbit
+        </button>
+        <button onclick="leaveRoom()" class="btn-leave px-3 py-1.5 rounded-xl text-[10px] font-medium transition flex items-center gap-1.5">
+            ✕ Leave
+        </button>
+    </div>
+</header>
+
+<!-- Bottom: Role + Suggestions (collapsible, minimal) -->
+<div class="absolute bottom-4 left-4 right-4 z-20 pointer-events-none flex flex-wrap items-end justify-between gap-3">
+    <!-- Role badge + suggestion toggle -->
+    <div class="pointer-events-auto glass-panel rounded-2xl px-4 py-2.5 flex items-center gap-4 shadow-xl border border-white/5">
+        <div>
+            <div class="text-[9px] text-slate-500 uppercase tracking-wider">Your Role</div>
+            <div id="meeting-role-badge" class="role-badge buyer mt-0.5">Buyer</div>
+        </div>
+        <div class="w-px h-8 bg-slate-700/50"></div>
+        <button onclick="toggleSuggestions()" id="suggest-toggle"
+        class="text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5">
+        💬 <span id="suggest-toggle-label">Show Suggestions</span>
+    </button>
+</div>
+
+<!-- Quick hint -->
+<div class="pointer-events-auto glass-light rounded-xl px-3 py-1.5 text-[10px] text-slate-400 border border-white/5">
+    🗣️ Speak in English · Your role is private
+</div>
+</div>
+
+<!-- Suggestions panel (slide-up) -->
+<div id="suggestions-panel" class="absolute bottom-[5.5rem] left-4 right-4 md:left-auto md:right-6 md:w-80 z-20 pointer-events-none hidden">
+    <div class="glass-panel rounded-2xl p-4 shadow-2xl border border-white/5 pointer-events-auto max-h-[50vh] overflow-y-auto suggest-scroll fade-slide">
+        <div class="flex items-center justify-between border-b border-slate-800/60 pb-2 mb-2.5">
+            <span class="text-xs font-medium text-amber-300/80">💡 Suggestions (English)</span>
+            <span class="text-[9px] text-slate-500">private</span>
+        </div>
+        <ul id="suggestions-list" class="space-y-1.5"></ul>
+    </div>
+</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT                                                    -->
+<!-- ============================================================ -->
+<script>
+    // =============================================================
+    // FIREBASE SETUP
+    // =============================================================
+    const FIREBASE_BASE = "https://english-meetings-f08e4-default-rtdb.firebaseio.com";
+
+    function setConnStatus(ok, label) {
+        const dot = document.getElementById('setup-dot');
+        const lbl = document.getElementById('setup-conn-label');
+        dot.className = ok ?
+            'w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot' :
+            'w-2.5 h-2.5 rounded-full bg-red-500 pulse-dot';
+        lbl.textContent = label;
+    }
+    setConnStatus(false, 'connecting...');
+    fetch(`${FIREBASE_BASE}/.json?shallow=true`)
+        .then(r => { if (!r.ok) throw new Error(); setConnStatus(true, 'connected'); })
+        .catch(() => setConnStatus(false, 'offline'));
+
+    function playerUrl(room, id) { return `${FIREBASE_BASE}/rooms/${encodeURIComponent(room)}/players/${encodeURIComponent(id)}.json`; }
+
+    function playersUrl(room) { return `${FIREBASE_BASE}/rooms/${encodeURIComponent(room)}/players.json`; }
+
+    // =============================================================
+    // AVATAR STATE & GENERATION (SVG → Canvas → Texture)
+    // =============================================================
+    let avatarState = {
+        gender: 'male',
+        skin: '#fed7aa',
+        shirt: '#0284c7',
+        hair: 'short',
+        expression: 'happy',
+        glasses: false,
+        headset: false
+    };
+
+    const SKINS = ['#f8fafc', '#fde047', '#fbcfe8', '#fed7aa', '#d97706', '#78350f'];
+    const SHIRTS = ['#0284c7', '#7c3aed', '#059669', '#dc2626', '#475569', '#ea580c'];
+
+    function setAvatarGender(g) {
+        avatarState.gender = g;
+        document.getElementById('btn-gender-m').className = g === 'male' ?
+            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-cyan-500/20 text-cyan-300 border-cyan-500/40' :
+            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500';
+        document.getElementById('btn-gender-f').className = g === 'female' ?
+            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-purple-500/20 text-purple-300 border-purple-500/40' :
+            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500';
+        if (g === 'female') document.getElementById('hair-select').value = 'long';
+        else document.getElementById('hair-select').value = 'short';
+        renderPreview();
+    }
+
+    function setSkin(c) { avatarState.skin = c;
+        renderSkinPickers();
+        renderPreview(); }
+
+    function setShirt(c) { avatarState.shirt = c;
+        renderShirtPickers();
+        renderPreview(); }
+
+    function renderSkinPickers() {
+        const container = document.getElementById('skin-picker');
+        container.innerHTML = SKINS.map(c =>
+            `<div class="color-dot ${avatarState.skin === c ? 'active' : ''}" style="background:${c}" onclick="setSkin('${c}')"></div>`
+        ).join('');
+    }
+
+    function renderShirtPickers() {
+        const container = document.getElementById('shirt-picker');
+        if (!container) return;
+        container.innerHTML = SHIRTS.map(c =>
+            `<div class="color-dot ${avatarState.shirt === c ? 'active' : ''}" style="background:${c}" onclick="setShirt('${c}')"></div>`
+        ).join('');
+    }
+
+    // We'll use a select for hair instead of multiple buttons
+    function renderPreview() {
+        const container = document.getElementById('avatar-preview');
+        container.innerHTML = generateAvatarSVG(avatarState);
+    }
+
+    // Expose hair change
+    window.onHairChange = function(val) {
+        avatarState.hair = val;
+        renderPreview();
+    };
+
+    function generateAvatarSVG(cfg) {
+        const isFemale = cfg.gender === 'female';
+        const shoulderPath = isFemale ? 'M 24 95 C 24 72, 76 72, 76 95 Z' : 'M 18 95 C 18 68, 82 68, 82 95 Z';
+        const lipColor = isFemale ? '#be185d' : '#0f172a';
+        const lashes = isFemale ?
+            `<line x1="37" y1="32" x2="34" y2="30" stroke="#0f172a" stroke-width="1"/>
+               <line x1="63" y1="32" x2="66" y2="30" stroke="#0f172a" stroke-width="1"/>` :
+            '';
+        const hairSVG = getHairSVG(cfg.hair, isFemale);
+
+        return `
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 44 58 L 56 58 L 56 68 L 44 68 Z" fill="${cfg.skin}" opacity="0.9"/>
+          <path d="${shoulderPath}" fill="${cfg.shirt}"/>
+          <path d="M 30 36 C 30 18, 70 18, 70 36 C 70 56, 30 56, 30 36 Z" fill="${cfg.skin}"/>
+          <circle cx="29" cy="38" r="4" fill="${cfg.skin}"/>
+          <circle cx="71" cy="38" r="4" fill="${cfg.skin}"/>
+          ${hairSVG}
+          <g class="eye">
+            <ellipse cx="41" cy="36" rx="3" ry="4" fill="#0f172a"/>
+            <ellipse cx="59" cy="36" rx="3" ry="4" fill="#0f172a"/>
+          </g>
+          ${lashes}
+          <path d="M 37 29 Q 41 27 45 29" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+          <path d="M 55 29 Q 59 27 63 29" fill="none" stroke="#1e293b" stroke-width="1.5"/>
+          <path d="M 50 37 L 48 42 L 51 42" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+          ${cfg.expression === 'happy' ? `<path d="M 42 46 Q 50 52 58 46" fill="none" stroke="${lipColor}" stroke-width="2" stroke-linecap="round"/>` : ''}
+          ${cfg.expression === 'neutral' ? `<line x1="43" y1="48" x2="57" y2="48" stroke="${lipColor}" stroke-width="2" stroke-linecap="round"/>` : ''}
+          ${cfg.expression === 'focused' ? `<path d="M 44 49 Q 50 46 56 49" fill="none" stroke="${lipColor}" stroke-width="2" stroke-linecap="round"/>` : ''}
+          ${cfg.glasses ? '<circle cx="41" cy="36" r="7" fill="none" stroke="#0f172a" stroke-width="1.5"/><circle cx="59" cy="36" r="7" fill="none" stroke="#0f172a" stroke-width="1.5"/><line x1="48" y1="36" x2="51" y2="36" stroke="#0f172a" stroke-width="1.5"/>' : ''}
+          ${cfg.headset ? '<path d="M 27 34 C 27 12, 73 12, 73 34" fill="none" stroke="#38bdf8" stroke-width="2.5"/><rect x="25" y="30" width="5" height="12" rx="2" fill="#0369a1"/><rect x="70" y="30" width="5" height="12" rx="2" fill="#0369a1"/>' : ''}
+        </svg>`;
+    }
+
+    function getHairSVG(style, isFemale) {
+        const color = "#1e293b";
+        if (style === 'short') return `<path d="M 28 26 C 30 10, 70 10, 72 26 C 65 18, 35 18, 28 26 Z" fill="${color}"/>`;
+        if (style === 'curly')
+            return `<circle cx="34" cy="18" r="8" fill="${color}"/><circle cx="50" cy="14" r="9" fill="${color}"/><circle cx="66" cy="18" r="8" fill="${color}"/>`;
+        if (style === 'long')
+            return `<path d="M 26 30 C 26 8, 74 8, 74 30 L 76 ${isFemale ? 66 : 56} L 68 ${isFemale ? 66 : 56} L 68 28 C 68 20, 32 20, 32 28 L 32 ${isFemale ? 66 : 56} L 24 ${isFemale ? 66 : 56} Z" fill="${color}"/>`;
+        return '';
+    }
+
+    // Convert SVG to image/canvas for Three.js texture
+    function svgToTexture(svgStr, callback) {
+        const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, 128, 128);
+            URL.revokeObjectURL(url);
+            callback(canvas);
+        };
+        img.onerror = function() {
+            // fallback: generate a simple colored circle
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.arc(64, 64, 56, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#f1f5f9';
+            ctx.font = '48px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('👤', 64, 68);
+            callback(canvas);
+        };
+        img.src = url;
+    }
+
+    // =============================================================
+    // ROLE & SUGGESTIONS DATA
+    // =============================================================
+    const ROLE_DATA = {
+        buyer: {
+            label: 'Buyer',
+            css: 'buyer',
+            desc: 'You are the buyer. Ask about price, quality, and terms.',
+            suggestions: [
+                "Could you tell me more about this item?",
+                "Is there any room for a discount?",
+                "What's included in the price?",
+                "Do you offer a warranty or guarantee?",
+                "What are the payment options?",
+                "Can you match a competitor's price?",
+                "Is this available in other colors/sizes?",
+                "What's your return policy?"
+            ]
+        },
+        seller: {
+            label: 'Seller',
+            css: 'seller',
+            desc: 'You are the seller. Present value, benefits, and close the deal.',
+            suggestions: [
+                "This product offers great value because...",
+                "I can offer you a special discount today.",
+                "Let me explain the key benefits.",
+                "We provide a full warranty on all items.",
+                "Our payment terms are very flexible.",
+                "This is a limited-time promotion.",
+                "We guarantee fast delivery.",
+                "Let me show you why this is worth the price."
+            ]
+        }
+    };
+
+    // =============================================================
+    // THREE.JS — 3D DEPARTMENT STORE SCENE
+    // =============================================================
+    let scene, camera, renderer, controls;
+    let storeGroup, avatarSprites = {};
+    let labelContainer = document.createElement('div');
+    labelContainer.style.position = 'absolute';
+    labelContainer.style.top = '0';
+    labelContainer.style.left = '0';
+    labelContainer.style.width = '100%';
+    labelContainer.style.height = '100%';
+    labelContainer.style.pointerEvents = 'none';
+    labelContainer.style.overflow = 'hidden';
+    labelContainer.style.zIndex = '5';
+    document.body.appendChild(labelContainer);
+
+    let labelElements = {};
+    let isOrbiting = false;
+    let orbitAngle = 0;
+    let targetCamPos = { x: 5, y: 3.5, z: 5 };
+    let targetLookAt = { x: 0, y: 1.2, z: 0 };
+
+    function initThree() {
+        const container = document.getElementById('three-container');
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0b1120);
+        scene.fog = new THREE.FogExp2(0x0b1120, 0.028);
+
+        camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 40);
+        camera.position.set(targetCamPos.x, targetCamPos.y, targetCamPos.z);
+
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        container.appendChild(renderer.domElement);
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.maxPolarAngle = Math.PI / 2 - 0.03;
+        controls.minDistance = 2.2;
+        controls.maxDistance = 14;
+        controls.target.set(0, 1.2, 0);
+        controls.update();
+
+        buildStore();
+        animateThree();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    }
+
+    function buildStore() {
+        storeGroup = new THREE.Group();
+        scene.add(storeGroup);
+
+        // ---- Floor ----
+        const floorGeo = new THREE.PlaneGeometry(18, 18);
+        const floorMat = new THREE.MeshStandardMaterial({
+            color: 0x1a2236,
+            roughness: 0.35,
+            metalness: 0.2,
+        });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        floor.receiveShadow = true;
+        storeGroup.add(floor);
+
+        // Floor tile grid (subtle)
+        const gridHelper = new THREE.GridHelper(18, 24, 0x2a3a5a, 0x1a2a4a);
+        gridHelper.position.y = 0.01;
+        storeGroup.add(gridHelper);
+
+        // ---- Back wall ----
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x0d1528, roughness: 0.7 });
+        const backWall = new THREE.Mesh(new THREE.PlaneGeometry(18, 7), wallMat);
+        backWall.position.set(0, 3.5, -8.5);
+        storeGroup.add(backWall);
+
+        // ---- Side walls ----
+        for (let s of [-1, 1]) {
+            const side = new THREE.Mesh(new THREE.PlaneGeometry(18, 7), wallMat);
+            side.position.set(s * 8.5, 3.5, 0);
+            side.rotation.y = s * Math.PI / 2;
+            storeGroup.add(side);
         }
 
-        // Fixed Short Pop Sound (No long buzzing)
-        function playShortPop() {
-            try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (!AudioCtx) return;
-                const ctx = new AudioCtx();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.08);
-                
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+        // ---- Shelves (back wall) ----
+        const shelfMat = new THREE.MeshStandardMaterial({ color: 0x1e2a4a, metalness: 0.5, roughness: 0.4 });
+        for (let row = 0; row < 3; row++) {
+            const yPos = 1.2 + row * 1.6;
+            const shelf = new THREE.Mesh(new THREE.BoxGeometry(12, 0.08, 0.6), shelfMat);
+            shelf.position.set(0, yPos, -7.8);
+            shelf.castShadow = true;
+            storeGroup.add(shelf);
 
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                
-                osc.start();
-                osc.stop(ctx.currentTime + 0.08);
-            } catch (e) {
-                // Browser prevented audio before interaction
+            // Products on shelf
+            for (let p = -5; p <= 5; p += 1.6) {
+                const h = 0.25 + Math.random() * 0.4;
+                const w = 0.2 + Math.random() * 0.2;
+                const d = 0.2 + Math.random() * 0.2;
+                const prodMat = new THREE.MeshStandardMaterial({
+                    color: new THREE.Color().setHSL(0.55 + Math.random() * 0.35, 0.4, 0.4 + Math.random() * 0.3),
+                    roughness: 0.5,
+                });
+                const prod = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), prodMat);
+                prod.position.set(p, yPos + h / 2, -7.5 + Math.random() * 0.2);
+                prod.castShadow = true;
+                storeGroup.add(prod);
             }
         }
 
-        // State Management
-        let timer = null;
-        let timeLeft = 120; // 2 minutes
-        let phase = 1; // 1 = Monologue, 2 = Q&A, 3 = Complete
-        let currentCardIndex = 0;
+        // ---- COUNTER / DESK (main feature) ----
+        const counterGroup = new THREE.Group();
 
-        const timerDisplay = document.getElementById('timerDisplay');
-        const timerPhase = document.getElementById('timerPhase');
-        const timerAlert = document.getElementById('timerAlert');
-        const allToeflCards = document.querySelectorAll('#toeflGrid .card');
+        // Top
+        const topMat = new THREE.MeshPhysicalMaterial({
+            color: 0x2a3a5a,
+            metalness: 0.1,
+            roughness: 0.15,
+            transparent: true,
+            opacity: 0.92,
+        });
+        const top = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.1, 1.8), topMat);
+        top.position.y = 1.2;
+        top.castShadow = true;
+        top.receiveShadow = true;
+        counterGroup.add(top);
 
-        function updateDisplay() {
-            const mins = Math.floor(timeLeft / 60);
-            const secs = timeLeft % 60;
-            timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        // Base
+        const baseMat = new THREE.MeshStandardMaterial({ color: 0x1a2a4a, roughness: 0.6 });
+        const base = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1.1, 1.4), baseMat);
+        base.position.y = 0.6;
+        base.castShadow = true;
+        counterGroup.add(base);
+
+        // LED strip under counter
+        const ledMat = new THREE.MeshBasicMaterial({ color: 0x22d3ee });
+        const led = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.02, 0.06), ledMat);
+        led.position.set(0, 0.05, 0.75);
+        counterGroup.add(led);
+        const led2 = led.clone();
+        led2.position.z = -0.75;
+        counterGroup.add(led2);
+
+        // Small display items on counter
+        const itemMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.3, metalness: 0.1 });
+        for (let i = -1; i <= 1; i += 0.8) {
+            const item = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.15), itemMat);
+            item.position.set(i * 0.8, 1.28, 0.55);
+            item.castShadow = true;
+            counterGroup.add(item);
         }
 
-        function selectCard(card) {
-            if (card.classList.contains('locked')) return;
-            
-            allToeflCards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            currentCardIndex = parseInt(card.getAttribute('data-index'));
-            resetLoop();
+        counterGroup.position.y = 0;
+        storeGroup.add(counterGroup);
+
+        // ---- Floor accent lights ----
+        const accentMat = new THREE.MeshBasicMaterial({ color: 0x1e3a5a, transparent: true, opacity: 0.15 });
+        for (let x of [-2.5, 2.5]) {
+            const dot = new THREE.Mesh(new THREE.CircleGeometry(0.5, 16), accentMat);
+            dot.rotation.x = -Math.PI / 2;
+            dot.position.set(x, 0.02, 0);
+            storeGroup.add(dot);
         }
 
-        function toggleSimpleCard(card) {
-            const isActive = card.classList.contains('active');
-            document.querySelectorAll('#screen2 .card').forEach(c => c.classList.remove('active'));
-            if (!isActive) card.classList.add('active');
+        // ---- Ambient lighting ----
+        const amb = new THREE.AmbientLight(0x2a3a6a, 0.6);
+        scene.add(amb);
+
+        const mainLight = new THREE.SpotLight(0xffeedd, 2.2);
+        mainLight.position.set(0, 7, 0);
+        mainLight.angle = Math.PI / 2.8;
+        mainLight.penumbra = 0.7;
+        mainLight.castShadow = true;
+        mainLight.shadow.mapSize.width = 1024;
+        mainLight.shadow.mapSize.height = 1024;
+        scene.add(mainLight);
+
+        const fill = new THREE.DirectionalLight(0x4488ff, 0.8);
+        fill.position.set(2, 4, -4);
+        scene.add(fill);
+
+        const backLight = new THREE.DirectionalLight(0x6688cc, 0.5);
+        backLight.position.set(-2, 3, 6);
+        scene.add(backLight);
+
+        // Small point light at counter
+        const counterLight = new THREE.PointLight(0x22d3ee, 0.6, 4);
+        counterLight.position.set(0, 1.6, 0);
+        scene.add(counterLight);
+    }
+
+    // =============================================================
+    // AVATAR SPRITE MANAGEMENT IN 3D
+    // =============================================================
+    const avatarPositions = {
+        // Two sides of the counter
+        buyer: { x: -1.6, z: 1.6 },
+        seller: { x: 1.6, z: -1.6 },
+        // Additional seats for more participants
+        extra: [
+            { x: -2.6, z: 0.8 },
+            { x: 2.6, z: -0.8 },
+            { x: -2.6, z: -0.8 },
+            { x: 2.6, z: 0.8 },
+        ]
+    };
+
+    let avatarTextureCache = {};
+
+    function getAvatarPosition(role, index) {
+        if (role === 'buyer') return avatarPositions.buyer;
+        if (role === 'seller') return avatarPositions.seller;
+        const extra = avatarPositions.extra;
+        return extra[index % extra.length] || { x: 0, z: 0 };
+    }
+
+    function createAvatarSprite(playerId, playerData) {
+        // Remove old sprite if exists
+        if (avatarSprites[playerId]) {
+            scene.remove(avatarSprites[playerId]);
+            delete avatarSprites[playerId];
+        }
+        if (labelElements[playerId]) {
+            labelContainer.removeChild(labelElements[playerId]);
+            delete labelElements[playerId];
         }
 
-        function startTimer() {
-            if (timer || phase === 3) return;
-            playShortPop();
+        const cfg = playerData.avatarConfig || avatarState;
+        const svgStr = generateAvatarSVG(cfg);
+        const role = playerData.role || 'buyer';
+        const name = playerData.name || 'Guest';
 
-            timer = setInterval(() => {
-                if (timeLeft > 0) {
-                    timeLeft--;
-                    updateDisplay();
-                } else {
-                    clearInterval(timer);
-                    timer = null;
-                    handlePhaseEnd();
+        svgToTexture(svgStr, (canvas) => {
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+
+            const spriteMat = new THREE.SpriteMaterial({
+                map: texture,
+                transparent: true,
+                depthWrite: false,
+                sizeAttenuation: true,
+            });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.scale.set(1.6, 1.6, 1);
+
+            // Position
+            const pos = getAvatarPosition(role, Object.keys(avatarSprites).length);
+            sprite.position.set(pos.x, 1.4, pos.z);
+            sprite.userData = { playerId, role, name };
+
+            scene.add(sprite);
+            avatarSprites[playerId] = sprite;
+
+            // Create HTML label
+            const label = document.createElement('div');
+            label.className = 'avatar-label-3d';
+            label.innerHTML = `
+                <div class="name">${escapeHtml(name)}</div>
+                <div class="role-tag ${role}">${role === 'buyer' ? '🛒 Buyer' : '📦 Seller'}</div>
+            `;
+            labelContainer.appendChild(label);
+            labelElements[playerId] = label;
+
+            // Also update existing labels positions
+            updateLabelPositions();
+        });
+    }
+
+    function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    function updateLabelPositions() {
+        // Project 3D positions to screen space for each label
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        for (const [id, sprite] of Object.entries(avatarSprites)) {
+            const label = labelElements[id];
+            if (!label) continue;
+
+            const pos = sprite.position.clone();
+            pos.y += 1.1; // above sprite
+
+            pos.project(camera);
+            const x = (pos.x * 0.5 + 0.5) * width;
+            const y = (-pos.y * 0.5 + 0.5) * height;
+
+            // Only show if in front of camera
+            if (pos.z < 1) {
+                label.style.display = 'block';
+                label.style.left = x + 'px';
+                label.style.top = y + 'px';
+                label.style.opacity = '1';
+            } else {
+                label.style.display = 'none';
+            }
+        }
+    }
+
+    function renderAllAvatars(playersData) {
+        // Remove sprites for players that left
+        const currentIds = Object.keys(playersData);
+        for (const id of Object.keys(avatarSprites)) {
+            if (!currentIds.includes(id)) {
+                scene.remove(avatarSprites[id]);
+                delete avatarSprites[id];
+                if (labelElements[id]) {
+                    labelContainer.removeChild(labelElements[id]);
+                    delete labelElements[id];
                 }
-            }, 1000);
-        }
-
-        function pauseTimer() {
-            clearInterval(timer);
-            timer = null;
-        }
-
-        function handlePhaseEnd() {
-            playShortPop();
-
-            if (phase === 1) {
-                // Switch to Phase 2 (Q&A 1:30)
-                phase = 2;
-                timeLeft = 90;
-                timerPhase.textContent = "Phase 2: Question & Answer";
-                timerPhase.style.color = "var(--accent-amber)";
-                timerDisplay.style.color = "var(--accent-amber)";
-                timerAlert.style.display = "block";
-                updateDisplay();
-                startTimer(); // Auto start Phase 2
-            } else if (phase === 2) {
-                // Cycle Complete! Unlock Next Card
-                phase = 3;
-                timerPhase.textContent = "Cycle Complete! Next card unlocked 🔓";
-                timerPhase.style.color = "var(--accent-purple)";
-                timerAlert.style.display = "none";
-                
-                unlockNextCard();
             }
         }
 
-        function unlockNextCard() {
-            const nextIndex = currentCardIndex + 1;
-            if (nextIndex < allToeflCards.length) {
-                allToeflCards[nextIndex].classList.remove('locked');
-                allToeflCards[nextIndex].querySelector('.card-click-hint').textContent = "Click to reveal!";
+        // Add/update sprites for current players
+        for (const [id, data] of Object.entries(playersData)) {
+            if (!avatarSprites[id]) {
+                createAvatarSprite(id, data);
+            } else {
+                // Update existing sprite if config changed
+                // For simplicity, we just recreate if the config seems different
+                // We'll update the sprite by recreating it
+                const old = avatarSprites[id];
+                const oldCfg = old.userData;
+                if (oldCfg.name !== data.name || oldCfg.role !== data.role) {
+                    // Recreate
+                    scene.remove(old);
+                    delete avatarSprites[id];
+                    if (labelElements[id]) {
+                        labelContainer.removeChild(labelElements[id]);
+                        delete labelElements[id];
+                    }
+                    createAvatarSprite(id, data);
+                }
             }
         }
 
-        function resetLoop() {
-            pauseTimer();
-            phase = 1;
-            timeLeft = 120;
-            timerPhase.textContent = "Phase 1: Speaker Monologue";
-            timerPhase.style.color = "var(--accent-green)";
-            timerDisplay.style.color = "var(--accent-blue)";
-            timerAlert.style.display = "none";
-            updateDisplay();
+        // Update player count
+        document.getElementById('meeting-player-count').textContent = currentIds.length;
+    }
+
+    // =============================================================
+    // THREE.JS ANIMATION LOOP
+    // =============================================================
+    function animateThree() {
+        requestAnimationFrame(animateThree);
+
+        // Orbit animation
+        if (isOrbiting) {
+            orbitAngle += 0.004;
+            const r = 6.5;
+            targetCamPos.x = Math.sin(orbitAngle) * r;
+            targetCamPos.z = Math.cos(orbitAngle) * r;
+            targetCamPos.y = 3.0 + Math.sin(orbitAngle * 0.6) * 0.4;
         }
 
-        // Initialize
-        updateDisplay();
-    </script>
+        // Smooth camera
+        camera.position.x += (targetCamPos.x - camera.position.x) * 0.035;
+        camera.position.y += (targetCamPos.y - camera.position.y) * 0.035;
+        camera.position.z += (targetCamPos.z - camera.position.z) * 0.035;
+
+        controls.target.x += (targetLookAt.x - controls.target.x) * 0.035;
+        controls.target.y += (targetLookAt.y - controls.target.y) * 0.035;
+        controls.target.z += (targetLookAt.z - controls.target.z) * 0.035;
+
+        controls.update();
+        updateLabelPositions();
+        renderer.render(scene, camera);
+    }
+
+    function toggleOrbit() {
+        isOrbiting = !isOrbiting;
+        const btn = document.getElementById('orbit-btn');
+        if (isOrbiting) {
+            btn.classList.add('bg-cyan-500/10', 'border-cyan-500/20');
+            btn.classList.remove('border-white/5');
+        } else {
+            btn.classList.remove('bg-cyan-500/10', 'border-cyan-500/20');
+            btn.classList.add('border-white/5');
+        }
+    }
+
+    // =============================================================
+    // ROOM MANAGEMENT (Firebase)
+    // =============================================================
+    let currentRoom = null;
+    let playerId = null;
+    let myRole = null;
+    let roomPlayers = {};
+    let eventSource = null;
+    let myName = '';
+
+    function getOrCreatePlayerId() {
+        let id = sessionStorage.getItem('store_player_id');
+        if (!id) {
+            id = 'p-' + Date.now() + '-' + Math.random().toString(16).slice(2, 8);
+            sessionStorage.setItem('store_player_id', id);
+        }
+        return id;
+    }
+
+    async function joinRoom() {
+        const name = document.getElementById('input-name').value.trim();
+        const room = document.getElementById('input-room').value.trim();
+        const errEl = document.getElementById('join-error');
+        errEl.classList.add('hidden');
+
+        if (!name) { errEl.textContent = 'Please enter your name.';
+            errEl.classList.remove('hidden'); return; }
+        if (!room) { errEl.textContent = 'Please enter a room code.';
+            errEl.classList.remove('hidden'); return; }
+
+        const btn = document.getElementById('btn-join');
+        btn.disabled = true;
+        btn.textContent = 'Joining...';
+
+        currentRoom = room;
+        playerId = getOrCreatePlayerId();
+        myName = name;
+
+        try {
+            // Check if player exists
+            const existingRes = await fetch(playerUrl(room, playerId));
+            const existing = existingRes.ok ? await existingRes.json() : null;
+
+            if (existing && existing.role) {
+                myRole = existing.role;
+            } else {
+                // Assign role based on current player count
+                const allRes = await fetch(playersUrl(room));
+                const all = allRes.ok ? (await allRes.json() || {}) : {};
+                const count = Object.keys(all).length;
+                myRole = (count % 2 === 0) ? 'buyer' : 'seller';
+            }
+
+            // Read hair selection from the hidden select
+            const hairSelect = document.getElementById('hair-select');
+            if (hairSelect) avatarState.hair = hairSelect.value;
+
+            await writeMyData();
+
+            window.addEventListener('beforeunload', leaveBeacon);
+            enterMeetingView();
+            listenToRoom(room);
+        } catch (err) {
+            console.error(err);
+            errEl.textContent = 'Could not connect. Check your network.';
+            errEl.classList.remove('hidden');
+            btn.disabled = false;
+            btn.textContent = '🚀 Enter Store';
+        }
+    }
+
+    function writeMyData() {
+        return fetch(playerUrl(currentRoom, playerId), {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: myName,
+                gender: avatarState.gender,
+                avatarConfig: avatarState,
+                role: myRole,
+                joinedAt: Date.now()
+            })
+        });
+    }
+
+    function leaveBeacon() {
+        if (currentRoom && playerId) {
+            fetch(playerUrl(currentRoom, playerId), { method: 'DELETE', keepalive: true });
+        }
+    }
+
+    function enterMeetingView() {
+        document.getElementById('view-setup').style.display = 'none';
+        document.getElementById('view-meeting').classList.remove('hidden');
+
+        document.getElementById('meeting-room-code').textContent = currentRoom;
+
+        const info = ROLE_DATA[myRole];
+        const badge = document.getElementById('meeting-role-badge');
+        badge.textContent = info.label;
+        badge.className = `role-badge ${info.css}`;
+
+        // Show suggestions
+        const list = document.getElementById('suggestions-list');
+        list.innerHTML = info.suggestions.map(s =>
+            `<li class="suggestion-item"><span class="icon">💡</span> ${s}</li>`
+        ).join('');
+
+        // Initialize 3D if not already
+        if (!scene) initThree();
+
+        // Update avatar preview in setup (we're in meeting now)
+    }
+
+    function listenToRoom(room) {
+        if (eventSource) { eventSource.close(); }
+
+        eventSource = new EventSource(playersUrl(room));
+        eventSource.addEventListener('put', (e) => {
+            try { const { path, data } = JSON.parse(e.data);
+                applyUpdate(path, data); } catch (_) {}
+        });
+        eventSource.addEventListener('patch', (e) => {
+            try { const { path, data } = JSON.parse(e.data);
+                applyUpdate(path, data); } catch (_) {}
+        });
+        eventSource.onerror = () => { /* auto-reconnect */ };
+        eventSource.onopen = () => { setConnStatus(true, 'connected'); };
+    }
+
+    function applyUpdate(path, data) {
+        if (path === '/' || path === '') {
+            roomPlayers = data || {};
+        } else {
+            const key = path.replace(/^\//, '').split('/')[0];
+            if (data === null) {
+                delete roomPlayers[key];
+            } else if (path === `/${key}`) {
+                roomPlayers[key] = data;
+            } else {
+                roomPlayers[key] = roomPlayers[key] || {};
+                const sub = path.replace(`/${key}/`, '').split('/');
+                let obj = roomPlayers[key];
+                for (let i = 0; i < sub.length - 1; i++) {
+                    obj[sub[i]] = obj[sub[i]] || {};
+                    obj = obj[sub[i]];
+                }
+                obj[sub[sub.length - 1]] = data;
+            }
+        }
+        // Update 3D avatars
+        renderAllAvatars(roomPlayers);
+    }
+
+    function toggleSuggestions() {
+        const panel = document.getElementById('suggestions-panel');
+        const label = document.getElementById('suggest-toggle-label');
+        if (panel.classList.contains('hidden')) {
+            panel.classList.remove('hidden');
+            label.textContent = 'Hide Suggestions';
+        } else {
+            panel.classList.add('hidden');
+            label.textContent = 'Show Suggestions';
+        }
+    }
+
+    function leaveRoom() {
+        window.removeEventListener('beforeunload', leaveBeacon);
+        if (currentRoom && playerId) {
+            fetch(playerUrl(currentRoom, playerId), { method: 'DELETE' }).catch(() => {});
+        }
+        if (eventSource) { eventSource.close();
+            eventSource = null; }
+        sessionStorage.removeItem('store_player_id');
+
+        // Clean up sprites
+        for (const id of Object.keys(avatarSprites)) {
+            scene.remove(avatarSprites[id]);
+            delete avatarSprites[id];
+            if (labelElements[id]) {
+                labelContainer.removeChild(labelElements[id]);
+                delete labelElements[id];
+            }
+        }
+        roomPlayers = {};
+        currentRoom = null;
+        playerId = null;
+
+        document.getElementById('view-meeting').classList.add('hidden');
+        document.getElementById('view-setup').style.display = 'flex';
+        document.getElementById('btn-join').disabled = false;
+        document.getElementById('btn-join').textContent = '🚀 Enter Store';
+        document.getElementById('suggestions-panel').classList.add('hidden');
+        document.getElementById('suggest-toggle-label').textContent = 'Show Suggestions';
+        document.getElementById('meeting-player-count').textContent = '0';
+    }
+
+    // =============================================================
+    // INIT
+    // =============================================================
+    window.onload = function() {
+        // Setup avatar preview
+        renderSkinPickers();
+        renderShirtPickers();
+        renderPreview();
+
+        // Add hair select to the DOM (we need it in the setup)
+        const hairContainer = document.getElementById('avatar-preview').parentElement;
+        const hairDiv = document.createElement('div');
+        hairDiv.className = 'mt-2';
+        hairDiv.innerHTML = `
+            <label class="text-[10px] text-slate-500 block mb-0.5">Hair</label>
+            <select id="hair-select" onchange="window.onHairChange(this.value)" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200 outline-none focus:border-cyan-500/60">
+                <option value="short">Short</option>
+                <option value="curly">Curly</option>
+                <option value="long">Long</option>
+                <option value="bald">Bald</option>
+            </select>
+        `;
+        // Insert after the skin picker
+        const skinPicker = document.getElementById('skin-picker');
+        skinPicker.parentElement.after(hairDiv);
+
+        // Also add shirt picker if not present
+        const shirtDiv = document.createElement('div');
+        shirtDiv.className = 'mt-2';
+        shirtDiv.innerHTML = `
+            <label class="text-[10px] text-slate-500 block mb-0.5">Shirt</label>
+            <div id="shirt-picker" class="flex gap-1.5 flex-wrap"></div>
+        `;
+        document.getElementById('skin-picker').parentElement.after(shirtDiv);
+        renderShirtPickers();
+
+        // Set default gender
+        setAvatarGender('male');
+
+        // Enter key support
+        document.getElementById('input-name').addEventListener('keydown', (e) => { if (e.key === 'Enter') joinRoom(); });
+        document.getElementById('input-room').addEventListener('keydown', (e) => { if (e.key === 'Enter') joinRoom(); });
+    };
+
+    // Also need to handle the shirt picker re-render
+    const origRenderShirt = renderShirtPickers;
+    renderShirtPickers = function() {
+        const container = document.getElementById('shirt-picker');
+        if (!container) return;
+        container.innerHTML = SHIRTS.map(c =>
+            `<div class="color-dot ${avatarState.shirt === c ? 'active' : ''}" style="background:${c}" onclick="setShirt('${c}')"></div>`
+        ).join('');
+    };
+    // Override setShirt to re-render both
+    const origSetShirt = setShirt;
+    setShirt = function(c) {
+        avatarState.shirt = c;
+        renderShirtPickers();
+        renderPreview();
+    };
+
+    console.log('🛍️ Department Store Role-Play loaded.');
+</script>
+
 </body>
 </html>
