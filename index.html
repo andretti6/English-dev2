@@ -1,1223 +1,690 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Department Store Role-Play</title>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js">
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow: hidden;
-            height: 100%;
-            background: #0f172a;
-        }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.78);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .glass-light {
-            background: rgba(30, 41, 59, 0.65);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        canvas {
-            display: block;
-            outline: none;
-        }
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Life English Missions — Interactive Session</title>
 
-        @keyframes fadeSlide {
-            0% {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .fade-slide {
-            animation: fadeSlide 0.4s ease-out;
-        }
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-        @keyframes pulse-dot {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.4;
-                transform: scale(0.85);
-            }
-        }
-        .pulse-dot {
-            animation: pulse-dot 1.6s ease-in-out infinite;
-        }
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --text-white: #f0f6fc;
+      --accent-blue: #58a6ff;
+      --accent-purple: #bc8cff;
+      --accent-green: #238636;
+      --accent-green-border: #2ea043;
+      --accent-green-glow: rgba(46, 160, 67, 0.15);
+      --pill-bg: #21262d;
+      --pill-text: #79c0ff;
+      --challenge-bg: #261c14;
+      --challenge-border: #844212;
+      --challenge-text: #f0883e;
+      --role-worker-bg: #1e1b4b;
+      --role-worker-border: #4338ca;
+      --role-worker-text: #c7d2fe;
+      --radius: 12px;
+      --transition: all 0.25s ease-in-out;
+    }
 
-        .role-badge {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.2rem 0.7rem;
-            border-radius: 999px;
-            letter-spacing: 0.02em;
-            display: inline-block;
-        }
-        .role-badge.buyer {
-            background: rgba(34, 211, 238, 0.18);
-            color: #67e8f9;
-            border: 1px solid rgba(34, 211, 238, 0.25);
-        }
-        .role-badge.seller {
-            background: rgba(168, 85, 247, 0.18);
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.25);
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Custom scroll for suggestions */
-        .suggest-scroll::-webkit-scrollbar {
-            width: 3px;
-        }
-        .suggest-scroll::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
 
-        /* Avatar label in 3D scene — positioned via JS */
-        .avatar-label-3d {
-            position: absolute;
-            pointer-events: none;
-            text-align: center;
-            transform: translate(-50%, -50%);
-            font-family: 'Inter', sans-serif;
-            user-select: none;
-            transition: opacity 0.2s;
-            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
-        }
-        .avatar-label-3d .name {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: #f1f5f9;
-            background: rgba(15, 23, 42, 0.7);
-            padding: 0.1rem 0.6rem;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(4px);
-        }
-        .avatar-label-3d .role-tag {
-            font-size: 0.55rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            margin-top: 0.15rem;
-            background: rgba(15, 23, 42, 0.65);
-            padding: 0.05rem 0.5rem;
-            border-radius: 4px;
-            display: inline-block;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        .avatar-label-3d .role-tag.buyer {
-            color: #67e8f9;
-            border-color: rgba(34, 211, 238, 0.2);
-        }
-        .avatar-label-3d .role-tag.seller {
-            color: #c084fc;
-            border-color: rgba(168, 85, 247, 0.2);
-        }
+    .app-container { max-width: 800px; width: 100%; margin: 0 auto; }
 
-        /* Setup picker */
-        .color-dot {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .color-dot:hover {
-            transform: scale(1.12);
-        }
-        .color-dot.active {
-            border-color: #22d3ee;
-            box-shadow: 0 0 14px rgba(34, 211, 238, 0.35);
-            transform: scale(1.1);
-        }
+    /* LOGIN / USER OVERLAY */
+    .login-screen {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      margin-top: 40px;
+    }
 
-        #avatar-preview {
-            width: 88px;
-            height: 88px;
-            border-radius: 50%;
-            background: rgba(30, 41, 59, 0.5);
-            border: 2px solid rgba(255, 255, 255, 0.06);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #avatar-preview svg {
-            width: 100%;
-            height: 100%;
-        }
+    .login-screen h1 { color: var(--text-white); font-size: 22px; margin-bottom: 8px; }
+    .login-screen p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
 
-        .btn-join {
-            background: linear-gradient(135deg, #22d3ee, #06b6d4);
-            color: #0f172a;
-            font-weight: 700;
-            transition: all 0.25s;
-            border: none;
-        }
-        .btn-join:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(34, 211, 238, 0.25);
-        }
-        .btn-join:disabled {
-            opacity: 0.5;
-            transform: none;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      max-width: 400px;
+      margin: 0 auto;
+    }
 
-        .btn-leave {
-            background: rgba(239, 68, 68, 0.12);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            transition: all 0.2s;
-        }
-        .btn-leave:hover {
-            background: rgba(239, 68, 68, 0.22);
-        }
+    .input-group input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background-color: var(--bg-color);
+      color: var(--text-white);
+      font-size: 14px;
+      outline: none;
+    }
 
-        .suggestion-item {
-            background: rgba(30, 41, 59, 0.5);
-            border-left: 2px solid rgba(56, 189, 248, 0.25);
-            padding: 0.5rem 0.7rem;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            color: #cbd5e1;
-            line-height: 1.4;
-            transition: background 0.15s;
-        }
-        .suggestion-item:hover {
-            background: rgba(30, 41, 59, 0.8);
-        }
-        .suggestion-item .icon {
-            margin-right: 0.4rem;
-            opacity: 0.5;
-        }
-    </style>
+    .input-group button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      background-color: var(--accent-blue);
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .input-group button:hover { opacity: 0.9; }
+
+    /* HEADER & PROGRESS */
+    header {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .user-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .user-tag { color: var(--accent-blue); font-weight: 700; }
+
+    .main-title { font-size: 24px; font-weight: 800; color: var(--text-white); margin-bottom: 4px; }
+    .subtitle { color: var(--accent-blue); font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+
+    .module-info {
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-bar-container {
+      width: 100%; height: 10px; background-color: var(--pill-bg); border-radius: 5px; overflow: hidden; margin-top: 12px;
+    }
+
+    .progress-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+      transition: var(--transition);
+    }
+
+    .completion-banner {
+      display: none;
+      background-color: var(--accent-green-glow);
+      border: 1px solid var(--accent-green-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .completion-banner h2 { color: #3fb950; font-size: 18px; margin-bottom: 4px; }
+
+    /* MISSIONS LIST */
+    .missions-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .mission-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .mission-card.unlocked {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mission-card.completed {
+      border-color: var(--accent-green-border);
+      background-color: #0d1912;
+    }
+
+    .mission-header {
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .mission-header:hover { background-color: rgba(255, 255, 255, 0.02); }
+
+    .mission-number { font-size: 12px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; }
+    .mission-title { font-size: 18px; font-weight: 700; color: var(--text-white); margin: 2px 0; }
+    .mission-sub { font-size: 13px; color: var(--text-muted); }
+
+    .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+
+    .status-badge {
+      font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 20px; background-color: var(--pill-bg); color: var(--text-muted);
+    }
+
+    .mission-card.completed .status-badge { background-color: var(--accent-green); color: var(--text-white); }
+    .mission-card.locked-badge .status-badge { background-color: #21262d; color: #484f58; }
+
+    .toggle-btn { font-size: 12px; color: var(--accent-blue); font-weight: 600; }
+
+    /* EXPANDED CONTENT */
+    .mission-body {
+      display: none;
+      padding: 0 20px 20px 20px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .mission-card.open .mission-body { display: block; }
+
+    .section { margin-top: 20px; }
+    .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-blue); margin-bottom: 8px; }
+
+    .p-text { font-size: 14px; color: var(--text-main); margin-bottom: 8px; }
+
+    .pills-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .pill { background-color: var(--pill-bg); color: var(--pill-text); font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px; }
+
+    .expression-group { margin-top: 8px; }
+    .expression-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+    .expression-item {
+      font-size: 14px; font-style: italic; color: var(--text-white);
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 6px 12px; border-left: 2px solid var(--accent-blue); border-radius: 0 4px 4px 0; margin-bottom: 6px;
+    }
+
+    /* ACTION BRIEFING & ROLES */
+    .action-briefing-box {
+      background-color: var(--role-worker-bg);
+      border: 1px solid var(--role-worker-border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .action-briefing-title { font-size: 12px; font-weight: 800; color: #a5b4fc; text-transform: uppercase; margin-bottom: 8px; }
+
+    .role-assigned-banner {
+      background-color: rgba(255,255,255,0.05);
+      border: 1px dashed var(--accent-purple);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-white);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .role-name { font-weight: 800; color: var(--accent-purple); text-transform: uppercase; }
+
+    .challenge-box {
+      background-color: var(--challenge-bg);
+      border: 1px solid var(--challenge-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+
+    .challenge-box .section-title { color: var(--challenge-text); margin-bottom: 4px; }
+    .challenge-box p { font-size: 13px; color: #f8c59f; }
+
+    .complete-action {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .complete-action input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent-green-border); cursor: pointer; }
+    .complete-action label { font-size: 14px; font-weight: 600; color: var(--text-white); cursor: pointer; }
+  </style>
 </head>
 <body>
 
-    <!-- ============================================================ -->
-    <!-- 3D CONTAINER — always visible behind overlays                  -->
-    <!-- ============================================================ -->
-    <div id="three-container" class="absolute inset-0 w-full h-full bg-slate-950 z-0"></div>
+<div class="app-container">
 
-    <!-- ============================================================ -->
-    <!-- VIEW: SETUP                                                   -->
-    <!-- ============================================================ -->
-    <div id="view-setup" class="relative z-10 w-full h-full flex items-center justify-center p-4">
-        <div class="glass-panel rounded-3xl max-w-lg w-full p-7 shadow-2xl border border-white/5 fade-slide">
-            <div class="flex items-center gap-3 mb-5 border-b border-slate-800/60 pb-4">
-                <div class="w-10 h-10 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-xl border border-cyan-500/20">
-                    🛍️
-                </div>
-                <div>
-                    <h1 class="font-bold text-white text-lg tracking-tight">Store Role-Play</h1>
-                    <p class="text-xs text-slate-400">Negotiate in English · Real-time 3D</p>
-                </div>
-                <div class="ml-auto flex items-center gap-1.5">
-                    <span id="setup-dot" class="w-2.5 h-2.5 rounded-full bg-slate-600 pulse-dot"></span>
-                    <span id="setup-conn-label" class="text-[10px] text-slate-500">connecting...</span>
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Your Name</label>
-                    <input type="text" id="input-name" maxlength="16" placeholder="e.g. Alex"
-                    class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 outline-none focus:border-cyan-500/60 transition placeholder:text-slate-500" />
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1">Room Code</label>
-                    <input type="text" id="input-room" maxlength="20" value="store-01"
-                    class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 font-mono outline-none focus:border-cyan-500/60 transition" />
-                    <p class="text-[10px] text-slate-500 mt-1">Share this code with your negotiation partner.</p>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-1.5">Avatar</label>
-                    <div class="flex items-center gap-4">
-                        <div id="avatar-preview" class="flex-shrink-0"></div>
-                        <div class="flex-1 space-y-2">
-                            <div class="flex gap-2">
-                                <button type="button" onclick="setAvatarGender('male')" id="btn-gender-m"
-                                class="flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500">
-                                🧔 Male
-                            </button>
-                            <button type="button" onclick="setAvatarGender('female')" id="btn-gender-f"
-                            class="flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500">
-                            👩 Female
-                        </button>
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-slate-500 block mb-1">Skin</label>
-                        <div id="skin-picker" class="flex gap-1.5 flex-wrap"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <button onclick="joinRoom()" id="btn-join" class="btn-join w-full py-3.5 rounded-2xl text-sm mt-2 transition">
-            🚀 Enter Store
-        </button>
-        <p id="join-error" class="hidden text-xs text-red-400 text-center mt-2"></p>
+  <!-- LOGIN SCREEN -->
+  <div class="login-screen" id="loginScreen">
+    <h1>🌎 Real-Life English Sessions</h1>
+    <p>Enter your name to join the session and receive your role assignment.</p>
+    <div class="input-group">
+      <input type="text" id="usernameInput" placeholder="Your name (e.g. Matheus)..." />
+      <button onclick="joinSession()">JOIN SESSION</button>
     </div>
-</div>
-</div>
+  </div>
 
-<!-- ============================================================ -->
-<!-- VIEW: MEETING                                                 -->
-<!-- ============================================================ -->
-<div id="view-meeting" class="hidden relative z-10 w-full h-full">
-    <!-- Top bar -->
-    <header class="absolute top-0 left-0 right-0 p-3 md:p-4 flex items-center justify-between z-20 pointer-events-none">
-        <div class="glass-panel px-4 py-2 rounded-2xl flex items-center gap-3 pointer-events-auto shadow-xl">
-            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot"></div>
-            <div>
-                <div class="flex items-center gap-2">
-                    <span class="font-semibold text-sm text-white">🛍️ Store</span>
-                    <span class="text-[10px] text-slate-400 font-mono bg-slate-800/60 px-2 py-0.5 rounded border border-slate-700/50">
-                        <span id="meeting-room-code">store-01</span>
-                    </span>
-                </div>
-                <p class="text-[10px] text-slate-400"><span id="meeting-player-count">0</span> participants</p>
-            </div>
-        </div>
+  <!-- MAIN APP CONTAINER (HIDDEN UNTIL JOINED) -->
+  <div id="mainApp" style="display: none;">
+    <header>
+      <div class="user-info-bar">
+        <div>Logged in as: <span class="user-tag" id="userDisplay"></span></div>
+        <div id="participantsCount">Participants: 0</div>
+      </div>
 
-        <div class="flex items-center gap-2 pointer-events-auto">
-            <button onclick="toggleOrbit()" id="orbit-btn"
-            class="glass-light px-3 py-1.5 rounded-xl text-[10px] font-medium text-slate-300 border border-white/5 hover:border-white/15 transition flex items-center gap-1.5">
-            🔄 Orbit
-        </button>
-        <button onclick="leaveRoom()" class="btn-leave px-3 py-1.5 rounded-xl text-[10px] font-medium transition flex items-center gap-1.5">
-            ✕ Leave
-        </button>
+      <div class="main-title">🌎 WORK EXCHANGE — REAL LIFE MISSIONS</div>
+      <div class="subtitle">Prepare. Communicate. Solve. Adapt.</div>
+      
+      <div class="module-info">
+        <div><strong>Module 1</strong> — Real-Life Scenarios</div>
+        <div id="progressText">0 / 9 Missions Completed</div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+    </header>
+
+    <div class="completion-banner" id="completionBanner">
+      <h2>🎉 MODULE COMPLETE!</h2>
+      <p>All real-life missions have been successfully cleared!</p>
     </div>
-</header>
 
-<!-- Bottom: Role + Suggestions (collapsible, minimal) -->
-<div class="absolute bottom-4 left-4 right-4 z-20 pointer-events-none flex flex-wrap items-end justify-between gap-3">
-    <!-- Role badge + suggestion toggle -->
-    <div class="pointer-events-auto glass-panel rounded-2xl px-4 py-2.5 flex items-center gap-4 shadow-xl border border-white/5">
-        <div>
-            <div class="text-[9px] text-slate-500 uppercase tracking-wider">Your Role</div>
-            <div id="meeting-role-badge" class="role-badge buyer mt-0.5">Buyer</div>
-        </div>
-        <div class="w-px h-8 bg-slate-700/50"></div>
-        <button onclick="toggleSuggestions()" id="suggest-toggle"
-        class="text-xs text-slate-300 hover:text-white transition flex items-center gap-1.5">
-        💬 <span id="suggest-toggle-label">Show Suggestions</span>
-    </button>
+    <div class="missions-list" id="missionsContainer"></div>
+  </div>
+
 </div>
 
-<!-- Quick hint -->
-<div class="pointer-events-auto glass-light rounded-xl px-3 py-1.5 text-[10px] text-slate-400 border border-white/5">
-    🗣️ Speak in English · Your role is private
-</div>
-</div>
-
-<!-- Suggestions panel (slide-up) -->
-<div id="suggestions-panel" class="absolute bottom-[5.5rem] left-4 right-4 md:left-auto md:right-6 md:w-80 z-20 pointer-events-none hidden">
-    <div class="glass-panel rounded-2xl p-4 shadow-2xl border border-white/5 pointer-events-auto max-h-[50vh] overflow-y-auto suggest-scroll fade-slide">
-        <div class="flex items-center justify-between border-b border-slate-800/60 pb-2 mb-2.5">
-            <span class="text-xs font-medium text-amber-300/80">💡 Suggestions (English)</span>
-            <span class="text-[9px] text-slate-500">private</span>
-        </div>
-        <ul id="suggestions-list" class="space-y-1.5"></ul>
-    </div>
-</div>
-</div>
-
-<!-- ============================================================ -->
-<!-- JAVASCRIPT                                                    -->
-<!-- ============================================================ -->
 <script>
-    // =============================================================
-    // FIREBASE SETUP
-    // =============================================================
-    const FIREBASE_BASE = "https://english-meetings-f08e4-default-rtdb.firebaseio.com";
+  // FIREBASE CONFIGURATION
+  const firebaseConfig = {
+    databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-    function setConnStatus(ok, label) {
-        const dot = document.getElementById('setup-dot');
-        const lbl = document.getElementById('setup-conn-label');
-        dot.className = ok ?
-            'w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-dot' :
-            'w-2.5 h-2.5 rounded-full bg-red-500 pulse-dot';
-        lbl.textContent = label;
+  // APP STATE
+  let currentUser = "";
+  let userOrderIndex = 0;
+  let allParticipants = [];
+  let firebaseMissionsState = {};
+
+  const missionsData = [
+    {
+      id: "m1",
+      number: "MISSION 01",
+      title: "Airport Immigration ✈️",
+      subtitle: "Arriving in a new country",
+      workerRoleTitle: "Immigration Officer",
+      customerRoleTitle: "Traveler / Student",
+      situation: "You have arrived at immigration in a new country. The officer asks you details about your stay.",
+      missionGoal: "Answer questions about your trip clearly without getting nervous.",
+      words: ["passport", "visa", "work exchange", "accommodation", "employer", "return ticket", "purpose"],
+      expressions: [
+        { label: "Asking to repeat", text: "Could you repeat that, please?" },
+        { label: "Clarifying", text: "I'm here for a work exchange program." },
+        { label: "Presenting docs", text: "Here is my documentation." }
+      ],
+      workerPrompts: [
+        "Passport and landing card, please.",
+        "What is the main purpose of your visit?",
+        "Where will you be staying for the duration of your trip?"
+      ],
+      challengeText: "Ask for proof of return flight or ask a question using fast connected speech."
+    },
+    {
+      id: "m2",
+      number: "MISSION 02",
+      title: "Checking into Accommodation 🛎️",
+      subtitle: "Arrival at hotel or hostel",
+      workerRoleTitle: "Receptionist / Front Desk",
+      customerRoleTitle: "Guest / Traveler",
+      situation: "You arrive at your accommodation and need to check in and verify room details.",
+      missionGoal: "Provide your booking information, check Wi-Fi, and get your keys.",
+      words: ["reservation", "check-in", "key", "booking", "deposit", "Wi-Fi", "checkout"],
+      expressions: [
+        { label: "Check-in", text: "I have a reservation under my name." },
+        { label: "Questions", text: "What time is checkout tomorrow?" }
+      ],
+      workerPrompts: [
+        "Welcome! How can I help you today?",
+        "May I see your passport and booking confirmation?"
+      ],
+      challengeText: "Inform the guest that their credit card was declined or that their reservation is for next week."
+    },
+    {
+      id: "m3",
+      number: "MISSION 03",
+      title: "Buying Groceries 🛒",
+      subtitle: "Navigating the market",
+      workerRoleTitle: "Supermarket Assistant / Cashier",
+      customerRoleTitle: "Shopper",
+      situation: "You are shopping for food in a local market and need help finding ingredients.",
+      missionGoal: "Find all items on your list, ask for help, and pay at checkout.",
+      words: ["groceries", "aisle", "price", "cashier", "receipt", "bag", "fresh", "frozen"],
+      expressions: [
+        { label: "Locating", text: "Excuse me, where can I find...?" },
+        { label: "Payment", text: "Can I pay by card, or cash only?" }
+      ],
+      workerPrompts: [
+        "Can I help you find anything on the shelves?",
+        "Did you find everything okay today?"
+      ],
+      challengeText: "Inform the shopper that the item they want is completely out of stock and offer a weird alternative."
+    },
+    {
+      id: "m4",
+      number: "MISSION 04",
+      title: "Asking for Directions 🗺️",
+      subtitle: "Finding your way",
+      workerRoleTitle: "Local Resident",
+      customerRoleTitle: "Lost Traveler",
+      situation: "You are lost in the downtown area and need to find the main station.",
+      missionGoal: "Politely ask a local for directions and confirm the route.",
+      words: ["street", "avenue", "corner", "block", "left", "right", "straight", "station"],
+      expressions: [
+        { label: "Approach", text: "Excuse me, could you help me for a second?" },
+        { label: "Route", text: "How do I get to the central station from here?" }
+      ],
+      workerPrompts: [
+        "Sure, what are you looking for?",
+        "Go straight down this avenue and turn right at the third lights..."
+      ],
+      challengeText: "Give directions very quickly using local landmarks instead of street names."
+    },
+    {
+      id: "m5",
+      number: "MISSION 05",
+      title: "Ordering at a Cafe ☕",
+      subtitle: "Food and drink orders",
+      workerRoleTitle: "Barista / Waiter",
+      customerRoleTitle: "Customer",
+      situation: "You are at a crowded coffee shop trying to order food and drinks.",
+      missionGoal: "Order drinks with specific customizations and pay.",
+      words: ["menu", "coffee", "takeaway", "latte", "dairy-free", "receipt", "pastry"],
+      expressions: [
+        { label: "Ordering", text: "I'd like an iced latte with oat milk, please." },
+        { label: "Dietary", text: "Is this pastry gluten-free?" }
+      ],
+      workerPrompts: [
+        "Hi! What can I get started for you today?",
+        "For here or to go?"
+      ],
+      challengeText: "Tell the customer you ran out of oat milk and the espresso machine is currently broken."
+    },
+    {
+      id: "m6",
+      number: "MISSION 06",
+      title: "Renting a Car 🚗",
+      subtitle: "Transportation setup",
+      workerRoleTitle: "Rental Agent",
+      customerRoleTitle: "Traveler",
+      situation: "You need to rent a car for a weekend road trip.",
+      missionGoal: "Inquire about car options, insurance coverage, and rental fees.",
+      words: ["rental", "driver's license", "insurance", "fuel", "automatic", "deposit"],
+      expressions: [
+        { label: "Inquiry", text: "I'd like to rent a compact car for 3 days." },
+        { label: "Insurance", text: "Does the price include full insurance coverage?" }
+      ],
+      workerPrompts: [
+        "Welcome to City Rentals! Do you have a reservation?",
+        "Will you be adding an additional driver today?"
+      ],
+      challengeText: "Require an international driving permit or add a compulsory $200 security deposit."
+    },
+    {
+      id: "m7",
+      number: "MISSION 07",
+      title: "Reporting an Issue / Complaint 🧳",
+      subtitle: "Problem solving under pressure",
+      workerRoleTitle: "Customer Service Manager",
+      customerRoleTitle: "Aggrieved Customer",
+      situation: "Your hotel room shower has no hot water and the AC is broken.",
+      missionGoal: "Explain the problem firmly but politely and negotiate a room change or discount.",
+      words: ["complaint", "issue", "broken", "refund", "manager", "upgrade", "unacceptable"],
+      expressions: [
+        { label: "Complaint", text: "I'm afraid there is a problem with my room." },
+        { label: "Demand", text: "I would like to request a room change or a refund." }
+      ],
+      workerPrompts: [
+        "Good morning, how can I assist you?",
+        "I understand your frustration. Let me check what we can do."
+      ],
+      challengeText: "Refuse an immediate refund and offer a 10% voucher for a future stay instead."
+    },
+    {
+      id: "m8",
+      number: "MISSION 08",
+      title: "Visiting a Pharmacy 🩺",
+      subtitle: "Health and wellness",
+      workerRoleTitle: "Pharmacist",
+      customerRoleTitle: "Patient / Customer",
+      situation: "You have a severe headache and sore throat and need over-the-counter medicine.",
+      missionGoal: "Describe symptoms, understand dosage, and check for side effects.",
+      words: ["pharmacy", "symptoms", "painkiller", "dosage", "prescription", "pills"],
+      expressions: [
+        { label: "Symptoms", text: "I have a bad headache and a sore throat." },
+        { label: "Usage", text: "How many times a day should I take this?" }
+      ],
+      workerPrompts: [
+        "Hello! What symptoms are you experiencing?",
+        "Are you taking any other medications right now?"
+      ],
+      challengeText: "Explain that this specific medicine requires a doctor's prescription."
+    },
+    {
+      id: "m9",
+      number: "MISSION 09",
+      title: "Networking at a Social Event 🎉",
+      subtitle: "Making connections",
+      workerRoleTitle: "Party Host / Local Resident",
+      customerRoleTitle: "Newcomer / Guest",
+      situation: "You are at a local social gathering meeting people for the first time.",
+      missionGoal: "Make small talk, introduce yourself, talk about hobbies, and exchange contacts.",
+      words: ["hometown", "hobbies", "exchange", "work", "free time", "contact", "weekend"],
+      expressions: [
+        { label: "Small talk", text: "Hi! I don't think we've met yet. I'm..." },
+        { label: "Closing", text: "It was great talking to you! Let's swap contacts." }
+      ],
+      workerPrompts: [
+        "Hey there! Welcome to the party! How do you know the host?",
+        "What do you like to do in your free time around here?"
+      ],
+      challengeText: "Ask an unexpected cultural question or invite them to a weekend hiking trip."
     }
-    setConnStatus(false, 'connecting...');
-    fetch(`${FIREBASE_BASE}/.json?shallow=true`)
-        .then(r => { if (!r.ok) throw new Error(); setConnStatus(true, 'connected'); })
-        .catch(() => setConnStatus(false, 'offline'));
+  ];
 
-    function playerUrl(room, id) { return `${FIREBASE_BASE}/rooms/${encodeURIComponent(room)}/players/${encodeURIComponent(id)}.json`; }
+  function joinSession() {
+    const nameInput = document.getElementById('usernameInput').value.trim();
+    if (!nameInput) return alert("Please enter your name!");
 
-    function playersUrl(room) { return `${FIREBASE_BASE}/rooms/${encodeURIComponent(room)}/players.json`; }
+    currentUser = nameInput;
+    document.getElementById('userDisplay').textContent = currentUser;
 
-    // =============================================================
-    // AVATAR STATE & GENERATION (SVG → Canvas → Texture)
-    // =============================================================
-    let avatarState = {
-        gender: 'male',
-        skin: '#fed7aa',
-        shirt: '#0284c7',
-        hair: 'short',
-        expression: 'happy',
-        glasses: false,
-        headset: false
-    };
+    // Register user in Firebase
+    const userRef = db.ref('session/participants/' + currentUser);
+    userRef.set({ name: currentUser, joinedAt: Date.now() });
 
-    const SKINS = ['#f8fafc', '#fde047', '#fbcfe8', '#fed7aa', '#d97706', '#78350f'];
-    const SHIRTS = ['#0284c7', '#7c3aed', '#059669', '#dc2626', '#475569', '#ea580c'];
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
 
-    function setAvatarGender(g) {
-        avatarState.gender = g;
-        document.getElementById('btn-gender-m').className = g === 'male' ?
-            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-cyan-500/20 text-cyan-300 border-cyan-500/40' :
-            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500';
-        document.getElementById('btn-gender-f').className = g === 'female' ?
-            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-purple-500/20 text-purple-300 border-purple-500/40' :
-            'flex-1 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-500';
-        if (g === 'female') document.getElementById('hair-select').value = 'long';
-        else document.getElementById('hair-select').value = 'short';
-        renderPreview();
+    initFirebaseListeners();
+  }
+
+  function initFirebaseListeners() {
+    // Listen to participants to determine sequence/order
+    db.ref('session/participants').on('value', snapshot => {
+      const data = snapshot.val() || {};
+      allParticipants = Object.keys(data).sort((a,b) => data[a].joinedAt - data[b].joinedAt);
+      
+      userOrderIndex = allParticipants.indexOf(currentUser);
+      document.getElementById('participantsCount').textContent = `Participants: ${allParticipants.length}`;
+      
+      renderMissions();
+    });
+
+    // Listen to completion states
+    db.ref('session/missions').on('value', snapshot => {
+      firebaseMissionsState = snapshot.val() || {};
+      renderMissions();
+    });
+  }
+
+  function renderMissions() {
+    const container = document.getElementById('missionsContainer');
+    container.innerHTML = '';
+
+    let completedCount = 0;
+
+    missionsData.forEach((m, index) => {
+      const isCompleted = !!firebaseMissionsState[m.id];
+      if (isCompleted) completedCount++;
+
+      // Unlock rule: Mission 0 is unlocked. Subsequent missions unlock only if previous is checked.
+      const isUnlocked = (index === 0) || (!!firebaseMissionsState[missionsData[index - 1].id]);
+
+      // Alternating Role Logic based on mission index and user index
+      const isWorker = ((index + userOrderIndex) % 2 === 0);
+      const myRoleTitle = isWorker ? m.workerRoleTitle : m.customerRoleTitle;
+
+      const card = document.createElement('div');
+      card.className = `mission-card ${isUnlocked ? 'unlocked' : ''} ${isCompleted ? 'completed' : ''}`;
+      card.id = `card-${m.id}`;
+
+      card.innerHTML = `
+        <div class="mission-header" onclick="${isUnlocked ? `toggleCard('${m.id}')` : ''}">
+          <div>
+            <div class="mission-number">${m.number}</div>
+            <div class="mission-title">${m.title}</div>
+            <div class="mission-sub">${m.subtitle}</div>
+          </div>
+          <div class="header-actions">
+            <span class="status-badge" id="badge-${m.id}">
+              ${isCompleted ? '✓ COMPLETED' : (isUnlocked ? 'NOT COMPLETED' : '🔒 LOCKED')}
+            </span>
+            ${isUnlocked ? `<span class="toggle-btn" id="toggle-${m.id}">[ OPEN MISSION ]</span>` : ''}
+          </div>
+        </div>
+
+        <div class="mission-body">
+          <div class="role-assigned-banner">
+            <div>YOUR ROLE THIS MISSION:</div>
+            <div class="role-name">🎭 ${myRoleTitle}</div>
+          </div>
+
+          ${isWorker ? `
+            <!-- WORKER / HOST VIEW -->
+            <div class="section">
+              <div class="action-briefing-box">
+                <div class="action-briefing-title">🎭 ACTION BRIEFING (Your Interventions)</div>
+                <p class="p-text" style="color:var(--role-worker-text);">
+                  You are the <strong>${m.workerRoleTitle}</strong>. Lead the conversation using these opening prompts:
+                </p>
+                <ul style="padding-left: 20px; font-size:13px; color:var(--role-worker-text);">
+                  ${m.workerPrompts.map(p => `<li>"${p}"</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="challenge-box">
+                <div class="section-title">⚡ YOUR CHALLENGE TASK</div>
+                <p>${m.challengeText}</p>
+              </div>
+            </div>
+          ` : `
+            <!-- CUSTOMER / TRAVELER VIEW -->
+            <div class="section">
+              <div class="section-title">Situation</div>
+              <p class="p-text">${m.situation}</p>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Your Mission</div>
+              <p class="p-text">${m.missionGoal}</p>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Words You Should Know</div>
+              <div class="pills-container">
+                ${m.words.map(w => `<span class="pill">${w}</span>`).join('')}
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Useful Expressions</div>
+              ${m.expressions.map(e => `
+                <div class="expression-group">
+                  <div class="expression-label">${e.label}</div>
+                  <div class="expression-item">"${e.text}"</div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+
+          <div class="complete-action">
+            <input type="checkbox" id="chk-${m.id}" ${isCompleted ? 'checked' : ''} onchange="toggleCompletion('${m.id}', this.checked)">
+            <label for="chk-${m.id}">Mission completed (Unlocks next mission for everyone)</label>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    updateProgress(completedCount);
+  }
+
+  function toggleCard(missionId) {
+    const card = document.getElementById(`card-${missionId}`);
+    const toggleBtn = document.getElementById(`toggle-${missionId}`);
+    
+    card.classList.toggle('open');
+    if (toggleBtn) {
+      toggleBtn.textContent = card.classList.contains('open') ? '[ CLOSE MISSION ]' : '[ OPEN MISSION ]';
     }
+  }
 
-    function setSkin(c) { avatarState.skin = c;
-        renderSkinPickers();
-        renderPreview(); }
+  function toggleCompletion(missionId, isChecked) {
+    db.ref('session/missions/' + missionId).set(isChecked);
+  }
 
-    function setShirt(c) { avatarState.shirt = c;
-        renderShirtPickers();
-        renderPreview(); }
+  function updateProgress(completedCount) {
+    const total = missionsData.length;
+    const percentage = Math.round((completedCount / total) * 100);
 
-    function renderSkinPickers() {
-        const container = document.getElementById('skin-picker');
-        container.innerHTML = SKINS.map(c =>
-            `<div class="color-dot ${avatarState.skin === c ? 'active' : ''}" style="background:${c}" onclick="setSkin('${c}')"></div>`
-        ).join('');
-    }
+    document.getElementById('progressText').textContent = `${completedCount} / ${total} Missions Completed`;
+    document.getElementById('progressBar').style.width = `${percentage}%`;
 
-    function renderShirtPickers() {
-        const container = document.getElementById('shirt-picker');
-        if (!container) return;
-        container.innerHTML = SHIRTS.map(c =>
-            `<div class="color-dot ${avatarState.shirt === c ? 'active' : ''}" style="background:${c}" onclick="setShirt('${c}')"></div>`
-        ).join('');
-    }
-
-    // We'll use a select for hair instead of multiple buttons
-    function renderPreview() {
-        const container = document.getElementById('avatar-preview');
-        container.innerHTML = generateAvatarSVG(avatarState);
-    }
-
-    // Expose hair change
-    window.onHairChange = function(val) {
-        avatarState.hair = val;
-        renderPreview();
-    };
-
-    function generateAvatarSVG(cfg) {
-        const isFemale = cfg.gender === 'female';
-        const shoulderPath = isFemale ? 'M 24 95 C 24 72, 76 72, 76 95 Z' : 'M 18 95 C 18 68, 82 68, 82 95 Z';
-        const lipColor = isFemale ? '#be185d' : '#0f172a';
-        const lashes = isFemale ?
-            `<line x1="37" y1="32" x2="34" y2="30" stroke="#0f172a" stroke-width="1"/>
-               <line x1="63" y1="32" x2="66" y2="30" stroke="#0f172a" stroke-width="1"/>` :
-            '';
-        const hairSVG = getHairSVG(cfg.hair, isFemale);
-
-        return `
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 44 58 L 56 58 L 56 68 L 44 68 Z" fill="${cfg.skin}" opacity="0.9"/>
-          <path d="${shoulderPath}" fill="${cfg.shirt}"/>
-          <path d="M 30 36 C 30 18, 70 18, 70 36 C 70 56, 30 56, 30 36 Z" fill="${cfg.skin}"/>
-          <circle cx="29" cy="38" r="4" fill="${cfg.skin}"/>
-          <circle cx="71" cy="38" r="4" fill="${cfg.skin}"/>
-          ${hairSVG}
-          <g class="eye">
-            <ellipse cx="41" cy="36" rx="3" ry="4" fill="#0f172a"/>
-            <ellipse cx="59" cy="36" rx="3" ry="4" fill="#0f172a"/>
-          </g>
-          ${lashes}
-          <path d="M 37 29 Q 41 27 45 29" fill="none" stroke="#1e293b" stroke-width="1.5"/>
-          <path d="M 55 29 Q 59 27 63 29" fill="none" stroke="#1e293b" stroke-width="1.5"/>
-          <path d="M 50 37 L 48 42 L 51 42" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
-          ${cfg.expression === 'happy' ? `<path d="M 42 46 Q 50 52 58 46" fill="none" stroke="${lipColor}" stroke-width="2" stroke-linecap="round"/>` : ''}
-          ${cfg.expression === 'neutral' ? `<line x1="43" y1="48" x2="57" y2="48" stroke="${lipColor}" stroke-width="2" stroke-linecap="round"/>` : ''}
-          ${cfg.expression === 'focused' ? `<path d="M 44 49 Q 50 46 56 49" fill="none" stroke="${lipColor}" stroke-width="2" stroke-linecap="round"/>` : ''}
-          ${cfg.glasses ? '<circle cx="41" cy="36" r="7" fill="none" stroke="#0f172a" stroke-width="1.5"/><circle cx="59" cy="36" r="7" fill="none" stroke="#0f172a" stroke-width="1.5"/><line x1="48" y1="36" x2="51" y2="36" stroke="#0f172a" stroke-width="1.5"/>' : ''}
-          ${cfg.headset ? '<path d="M 27 34 C 27 12, 73 12, 73 34" fill="none" stroke="#38bdf8" stroke-width="2.5"/><rect x="25" y="30" width="5" height="12" rx="2" fill="#0369a1"/><rect x="70" y="30" width="5" height="12" rx="2" fill="#0369a1"/>' : ''}
-        </svg>`;
-    }
-
-    function getHairSVG(style, isFemale) {
-        const color = "#1e293b";
-        if (style === 'short') return `<path d="M 28 26 C 30 10, 70 10, 72 26 C 65 18, 35 18, 28 26 Z" fill="${color}"/>`;
-        if (style === 'curly')
-            return `<circle cx="34" cy="18" r="8" fill="${color}"/><circle cx="50" cy="14" r="9" fill="${color}"/><circle cx="66" cy="18" r="8" fill="${color}"/>`;
-        if (style === 'long')
-            return `<path d="M 26 30 C 26 8, 74 8, 74 30 L 76 ${isFemale ? 66 : 56} L 68 ${isFemale ? 66 : 56} L 68 28 C 68 20, 32 20, 32 28 L 32 ${isFemale ? 66 : 56} L 24 ${isFemale ? 66 : 56} Z" fill="${color}"/>`;
-        return '';
-    }
-
-    // Convert SVG to image/canvas for Three.js texture
-    function svgToTexture(svgStr, callback) {
-        const blob = new Blob([svgStr], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-        const img = new Image();
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 128;
-            canvas.height = 128;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, 128, 128);
-            URL.revokeObjectURL(url);
-            callback(canvas);
-        };
-        img.onerror = function() {
-            // fallback: generate a simple colored circle
-            const canvas = document.createElement('canvas');
-            canvas.width = 128;
-            canvas.height = 128;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#1e293b';
-            ctx.beginPath();
-            ctx.arc(64, 64, 56, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#f1f5f9';
-            ctx.font = '48px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('👤', 64, 68);
-            callback(canvas);
-        };
-        img.src = url;
-    }
-
-    // =============================================================
-    // ROLE & SUGGESTIONS DATA
-    // =============================================================
-    const ROLE_DATA = {
-        buyer: {
-            label: 'Buyer',
-            css: 'buyer',
-            desc: 'You are the buyer. Ask about price, quality, and terms.',
-            suggestions: [
-                "Could you tell me more about this item?",
-                "Is there any room for a discount?",
-                "What's included in the price?",
-                "Do you offer a warranty or guarantee?",
-                "What are the payment options?",
-                "Can you match a competitor's price?",
-                "Is this available in other colors/sizes?",
-                "What's your return policy?"
-            ]
-        },
-        seller: {
-            label: 'Seller',
-            css: 'seller',
-            desc: 'You are the seller. Present value, benefits, and close the deal.',
-            suggestions: [
-                "This product offers great value because...",
-                "I can offer you a special discount today.",
-                "Let me explain the key benefits.",
-                "We provide a full warranty on all items.",
-                "Our payment terms are very flexible.",
-                "This is a limited-time promotion.",
-                "We guarantee fast delivery.",
-                "Let me show you why this is worth the price."
-            ]
-        }
-    };
-
-    // =============================================================
-    // THREE.JS — 3D DEPARTMENT STORE SCENE
-    // =============================================================
-    let scene, camera, renderer, controls;
-    let storeGroup, avatarSprites = {};
-    let labelContainer = document.createElement('div');
-    labelContainer.style.position = 'absolute';
-    labelContainer.style.top = '0';
-    labelContainer.style.left = '0';
-    labelContainer.style.width = '100%';
-    labelContainer.style.height = '100%';
-    labelContainer.style.pointerEvents = 'none';
-    labelContainer.style.overflow = 'hidden';
-    labelContainer.style.zIndex = '5';
-    document.body.appendChild(labelContainer);
-
-    let labelElements = {};
-    let isOrbiting = false;
-    let orbitAngle = 0;
-    let targetCamPos = { x: 5, y: 3.5, z: 5 };
-    let targetLookAt = { x: 0, y: 1.2, z: 0 };
-
-    function initThree() {
-        const container = document.getElementById('three-container');
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x0b1120);
-        scene.fog = new THREE.FogExp2(0x0b1120, 0.028);
-
-        camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 40);
-        camera.position.set(targetCamPos.x, targetCamPos.y, targetCamPos.z);
-
-        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.0;
-        container.appendChild(renderer.domElement);
-
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.06;
-        controls.maxPolarAngle = Math.PI / 2 - 0.03;
-        controls.minDistance = 2.2;
-        controls.maxDistance = 14;
-        controls.target.set(0, 1.2, 0);
-        controls.update();
-
-        buildStore();
-        animateThree();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    }
-
-    function buildStore() {
-        storeGroup = new THREE.Group();
-        scene.add(storeGroup);
-
-        // ---- Floor ----
-        const floorGeo = new THREE.PlaneGeometry(18, 18);
-        const floorMat = new THREE.MeshStandardMaterial({
-            color: 0x1a2236,
-            roughness: 0.35,
-            metalness: 0.2,
-        });
-        const floor = new THREE.Mesh(floorGeo, floorMat);
-        floor.rotation.x = -Math.PI / 2;
-        floor.receiveShadow = true;
-        storeGroup.add(floor);
-
-        // Floor tile grid (subtle)
-        const gridHelper = new THREE.GridHelper(18, 24, 0x2a3a5a, 0x1a2a4a);
-        gridHelper.position.y = 0.01;
-        storeGroup.add(gridHelper);
-
-        // ---- Back wall ----
-        const wallMat = new THREE.MeshStandardMaterial({ color: 0x0d1528, roughness: 0.7 });
-        const backWall = new THREE.Mesh(new THREE.PlaneGeometry(18, 7), wallMat);
-        backWall.position.set(0, 3.5, -8.5);
-        storeGroup.add(backWall);
-
-        // ---- Side walls ----
-        for (let s of [-1, 1]) {
-            const side = new THREE.Mesh(new THREE.PlaneGeometry(18, 7), wallMat);
-            side.position.set(s * 8.5, 3.5, 0);
-            side.rotation.y = s * Math.PI / 2;
-            storeGroup.add(side);
-        }
-
-        // ---- Shelves (back wall) ----
-        const shelfMat = new THREE.MeshStandardMaterial({ color: 0x1e2a4a, metalness: 0.5, roughness: 0.4 });
-        for (let row = 0; row < 3; row++) {
-            const yPos = 1.2 + row * 1.6;
-            const shelf = new THREE.Mesh(new THREE.BoxGeometry(12, 0.08, 0.6), shelfMat);
-            shelf.position.set(0, yPos, -7.8);
-            shelf.castShadow = true;
-            storeGroup.add(shelf);
-
-            // Products on shelf
-            for (let p = -5; p <= 5; p += 1.6) {
-                const h = 0.25 + Math.random() * 0.4;
-                const w = 0.2 + Math.random() * 0.2;
-                const d = 0.2 + Math.random() * 0.2;
-                const prodMat = new THREE.MeshStandardMaterial({
-                    color: new THREE.Color().setHSL(0.55 + Math.random() * 0.35, 0.4, 0.4 + Math.random() * 0.3),
-                    roughness: 0.5,
-                });
-                const prod = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), prodMat);
-                prod.position.set(p, yPos + h / 2, -7.5 + Math.random() * 0.2);
-                prod.castShadow = true;
-                storeGroup.add(prod);
-            }
-        }
-
-        // ---- COUNTER / DESK (main feature) ----
-        const counterGroup = new THREE.Group();
-
-        // Top
-        const topMat = new THREE.MeshPhysicalMaterial({
-            color: 0x2a3a5a,
-            metalness: 0.1,
-            roughness: 0.15,
-            transparent: true,
-            opacity: 0.92,
-        });
-        const top = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.1, 1.8), topMat);
-        top.position.y = 1.2;
-        top.castShadow = true;
-        top.receiveShadow = true;
-        counterGroup.add(top);
-
-        // Base
-        const baseMat = new THREE.MeshStandardMaterial({ color: 0x1a2a4a, roughness: 0.6 });
-        const base = new THREE.Mesh(new THREE.BoxGeometry(3.8, 1.1, 1.4), baseMat);
-        base.position.y = 0.6;
-        base.castShadow = true;
-        counterGroup.add(base);
-
-        // LED strip under counter
-        const ledMat = new THREE.MeshBasicMaterial({ color: 0x22d3ee });
-        const led = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.02, 0.06), ledMat);
-        led.position.set(0, 0.05, 0.75);
-        counterGroup.add(led);
-        const led2 = led.clone();
-        led2.position.z = -0.75;
-        counterGroup.add(led2);
-
-        // Small display items on counter
-        const itemMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.3, metalness: 0.1 });
-        for (let i = -1; i <= 1; i += 0.8) {
-            const item = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.15, 0.15), itemMat);
-            item.position.set(i * 0.8, 1.28, 0.55);
-            item.castShadow = true;
-            counterGroup.add(item);
-        }
-
-        counterGroup.position.y = 0;
-        storeGroup.add(counterGroup);
-
-        // ---- Floor accent lights ----
-        const accentMat = new THREE.MeshBasicMaterial({ color: 0x1e3a5a, transparent: true, opacity: 0.15 });
-        for (let x of [-2.5, 2.5]) {
-            const dot = new THREE.Mesh(new THREE.CircleGeometry(0.5, 16), accentMat);
-            dot.rotation.x = -Math.PI / 2;
-            dot.position.set(x, 0.02, 0);
-            storeGroup.add(dot);
-        }
-
-        // ---- Ambient lighting ----
-        const amb = new THREE.AmbientLight(0x2a3a6a, 0.6);
-        scene.add(amb);
-
-        const mainLight = new THREE.SpotLight(0xffeedd, 2.2);
-        mainLight.position.set(0, 7, 0);
-        mainLight.angle = Math.PI / 2.8;
-        mainLight.penumbra = 0.7;
-        mainLight.castShadow = true;
-        mainLight.shadow.mapSize.width = 1024;
-        mainLight.shadow.mapSize.height = 1024;
-        scene.add(mainLight);
-
-        const fill = new THREE.DirectionalLight(0x4488ff, 0.8);
-        fill.position.set(2, 4, -4);
-        scene.add(fill);
-
-        const backLight = new THREE.DirectionalLight(0x6688cc, 0.5);
-        backLight.position.set(-2, 3, 6);
-        scene.add(backLight);
-
-        // Small point light at counter
-        const counterLight = new THREE.PointLight(0x22d3ee, 0.6, 4);
-        counterLight.position.set(0, 1.6, 0);
-        scene.add(counterLight);
-    }
-
-    // =============================================================
-    // AVATAR SPRITE MANAGEMENT IN 3D
-    // =============================================================
-    const avatarPositions = {
-        // Two sides of the counter
-        buyer: { x: -1.6, z: 1.6 },
-        seller: { x: 1.6, z: -1.6 },
-        // Additional seats for more participants
-        extra: [
-            { x: -2.6, z: 0.8 },
-            { x: 2.6, z: -0.8 },
-            { x: -2.6, z: -0.8 },
-            { x: 2.6, z: 0.8 },
-        ]
-    };
-
-    let avatarTextureCache = {};
-
-    function getAvatarPosition(role, index) {
-        if (role === 'buyer') return avatarPositions.buyer;
-        if (role === 'seller') return avatarPositions.seller;
-        const extra = avatarPositions.extra;
-        return extra[index % extra.length] || { x: 0, z: 0 };
-    }
-
-    function createAvatarSprite(playerId, playerData) {
-        // Remove old sprite if exists
-        if (avatarSprites[playerId]) {
-            scene.remove(avatarSprites[playerId]);
-            delete avatarSprites[playerId];
-        }
-        if (labelElements[playerId]) {
-            labelContainer.removeChild(labelElements[playerId]);
-            delete labelElements[playerId];
-        }
-
-        const cfg = playerData.avatarConfig || avatarState;
-        const svgStr = generateAvatarSVG(cfg);
-        const role = playerData.role || 'buyer';
-        const name = playerData.name || 'Guest';
-
-        svgToTexture(svgStr, (canvas) => {
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.needsUpdate = true;
-
-            const spriteMat = new THREE.SpriteMaterial({
-                map: texture,
-                transparent: true,
-                depthWrite: false,
-                sizeAttenuation: true,
-            });
-            const sprite = new THREE.Sprite(spriteMat);
-            sprite.scale.set(1.6, 1.6, 1);
-
-            // Position
-            const pos = getAvatarPosition(role, Object.keys(avatarSprites).length);
-            sprite.position.set(pos.x, 1.4, pos.z);
-            sprite.userData = { playerId, role, name };
-
-            scene.add(sprite);
-            avatarSprites[playerId] = sprite;
-
-            // Create HTML label
-            const label = document.createElement('div');
-            label.className = 'avatar-label-3d';
-            label.innerHTML = `
-                <div class="name">${escapeHtml(name)}</div>
-                <div class="role-tag ${role}">${role === 'buyer' ? '🛒 Buyer' : '📦 Seller'}</div>
-            `;
-            labelContainer.appendChild(label);
-            labelElements[playerId] = label;
-
-            // Also update existing labels positions
-            updateLabelPositions();
-        });
-    }
-
-    function escapeHtml(str) {
-        const d = document.createElement('div');
-        d.textContent = str;
-        return d.innerHTML;
-    }
-
-    function updateLabelPositions() {
-        // Project 3D positions to screen space for each label
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-
-        for (const [id, sprite] of Object.entries(avatarSprites)) {
-            const label = labelElements[id];
-            if (!label) continue;
-
-            const pos = sprite.position.clone();
-            pos.y += 1.1; // above sprite
-
-            pos.project(camera);
-            const x = (pos.x * 0.5 + 0.5) * width;
-            const y = (-pos.y * 0.5 + 0.5) * height;
-
-            // Only show if in front of camera
-            if (pos.z < 1) {
-                label.style.display = 'block';
-                label.style.left = x + 'px';
-                label.style.top = y + 'px';
-                label.style.opacity = '1';
-            } else {
-                label.style.display = 'none';
-            }
-        }
-    }
-
-    function renderAllAvatars(playersData) {
-        // Remove sprites for players that left
-        const currentIds = Object.keys(playersData);
-        for (const id of Object.keys(avatarSprites)) {
-            if (!currentIds.includes(id)) {
-                scene.remove(avatarSprites[id]);
-                delete avatarSprites[id];
-                if (labelElements[id]) {
-                    labelContainer.removeChild(labelElements[id]);
-                    delete labelElements[id];
-                }
-            }
-        }
-
-        // Add/update sprites for current players
-        for (const [id, data] of Object.entries(playersData)) {
-            if (!avatarSprites[id]) {
-                createAvatarSprite(id, data);
-            } else {
-                // Update existing sprite if config changed
-                // For simplicity, we just recreate if the config seems different
-                // We'll update the sprite by recreating it
-                const old = avatarSprites[id];
-                const oldCfg = old.userData;
-                if (oldCfg.name !== data.name || oldCfg.role !== data.role) {
-                    // Recreate
-                    scene.remove(old);
-                    delete avatarSprites[id];
-                    if (labelElements[id]) {
-                        labelContainer.removeChild(labelElements[id]);
-                        delete labelElements[id];
-                    }
-                    createAvatarSprite(id, data);
-                }
-            }
-        }
-
-        // Update player count
-        document.getElementById('meeting-player-count').textContent = currentIds.length;
-    }
-
-    // =============================================================
-    // THREE.JS ANIMATION LOOP
-    // =============================================================
-    function animateThree() {
-        requestAnimationFrame(animateThree);
-
-        // Orbit animation
-        if (isOrbiting) {
-            orbitAngle += 0.004;
-            const r = 6.5;
-            targetCamPos.x = Math.sin(orbitAngle) * r;
-            targetCamPos.z = Math.cos(orbitAngle) * r;
-            targetCamPos.y = 3.0 + Math.sin(orbitAngle * 0.6) * 0.4;
-        }
-
-        // Smooth camera
-        camera.position.x += (targetCamPos.x - camera.position.x) * 0.035;
-        camera.position.y += (targetCamPos.y - camera.position.y) * 0.035;
-        camera.position.z += (targetCamPos.z - camera.position.z) * 0.035;
-
-        controls.target.x += (targetLookAt.x - controls.target.x) * 0.035;
-        controls.target.y += (targetLookAt.y - controls.target.y) * 0.035;
-        controls.target.z += (targetLookAt.z - controls.target.z) * 0.035;
-
-        controls.update();
-        updateLabelPositions();
-        renderer.render(scene, camera);
-    }
-
-    function toggleOrbit() {
-        isOrbiting = !isOrbiting;
-        const btn = document.getElementById('orbit-btn');
-        if (isOrbiting) {
-            btn.classList.add('bg-cyan-500/10', 'border-cyan-500/20');
-            btn.classList.remove('border-white/5');
-        } else {
-            btn.classList.remove('bg-cyan-500/10', 'border-cyan-500/20');
-            btn.classList.add('border-white/5');
-        }
-    }
-
-    // =============================================================
-    // ROOM MANAGEMENT (Firebase)
-    // =============================================================
-    let currentRoom = null;
-    let playerId = null;
-    let myRole = null;
-    let roomPlayers = {};
-    let eventSource = null;
-    let myName = '';
-
-    function getOrCreatePlayerId() {
-        let id = sessionStorage.getItem('store_player_id');
-        if (!id) {
-            id = 'p-' + Date.now() + '-' + Math.random().toString(16).slice(2, 8);
-            sessionStorage.setItem('store_player_id', id);
-        }
-        return id;
-    }
-
-    async function joinRoom() {
-        const name = document.getElementById('input-name').value.trim();
-        const room = document.getElementById('input-room').value.trim();
-        const errEl = document.getElementById('join-error');
-        errEl.classList.add('hidden');
-
-        if (!name) { errEl.textContent = 'Please enter your name.';
-            errEl.classList.remove('hidden'); return; }
-        if (!room) { errEl.textContent = 'Please enter a room code.';
-            errEl.classList.remove('hidden'); return; }
-
-        const btn = document.getElementById('btn-join');
-        btn.disabled = true;
-        btn.textContent = 'Joining...';
-
-        currentRoom = room;
-        playerId = getOrCreatePlayerId();
-        myName = name;
-
-        try {
-            // Check if player exists
-            const existingRes = await fetch(playerUrl(room, playerId));
-            const existing = existingRes.ok ? await existingRes.json() : null;
-
-            if (existing && existing.role) {
-                myRole = existing.role;
-            } else {
-                // Assign role based on current player count
-                const allRes = await fetch(playersUrl(room));
-                const all = allRes.ok ? (await allRes.json() || {}) : {};
-                const count = Object.keys(all).length;
-                myRole = (count % 2 === 0) ? 'buyer' : 'seller';
-            }
-
-            // Read hair selection from the hidden select
-            const hairSelect = document.getElementById('hair-select');
-            if (hairSelect) avatarState.hair = hairSelect.value;
-
-            await writeMyData();
-
-            window.addEventListener('beforeunload', leaveBeacon);
-            enterMeetingView();
-            listenToRoom(room);
-        } catch (err) {
-            console.error(err);
-            errEl.textContent = 'Could not connect. Check your network.';
-            errEl.classList.remove('hidden');
-            btn.disabled = false;
-            btn.textContent = '🚀 Enter Store';
-        }
-    }
-
-    function writeMyData() {
-        return fetch(playerUrl(currentRoom, playerId), {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: myName,
-                gender: avatarState.gender,
-                avatarConfig: avatarState,
-                role: myRole,
-                joinedAt: Date.now()
-            })
-        });
-    }
-
-    function leaveBeacon() {
-        if (currentRoom && playerId) {
-            fetch(playerUrl(currentRoom, playerId), { method: 'DELETE', keepalive: true });
-        }
-    }
-
-    function enterMeetingView() {
-        document.getElementById('view-setup').style.display = 'none';
-        document.getElementById('view-meeting').classList.remove('hidden');
-
-        document.getElementById('meeting-room-code').textContent = currentRoom;
-
-        const info = ROLE_DATA[myRole];
-        const badge = document.getElementById('meeting-role-badge');
-        badge.textContent = info.label;
-        badge.className = `role-badge ${info.css}`;
-
-        // Show suggestions
-        const list = document.getElementById('suggestions-list');
-        list.innerHTML = info.suggestions.map(s =>
-            `<li class="suggestion-item"><span class="icon">💡</span> ${s}</li>`
-        ).join('');
-
-        // Initialize 3D if not already
-        if (!scene) initThree();
-
-        // Update avatar preview in setup (we're in meeting now)
-    }
-
-    function listenToRoom(room) {
-        if (eventSource) { eventSource.close(); }
-
-        eventSource = new EventSource(playersUrl(room));
-        eventSource.addEventListener('put', (e) => {
-            try { const { path, data } = JSON.parse(e.data);
-                applyUpdate(path, data); } catch (_) {}
-        });
-        eventSource.addEventListener('patch', (e) => {
-            try { const { path, data } = JSON.parse(e.data);
-                applyUpdate(path, data); } catch (_) {}
-        });
-        eventSource.onerror = () => { /* auto-reconnect */ };
-        eventSource.onopen = () => { setConnStatus(true, 'connected'); };
-    }
-
-    function applyUpdate(path, data) {
-        if (path === '/' || path === '') {
-            roomPlayers = data || {};
-        } else {
-            const key = path.replace(/^\//, '').split('/')[0];
-            if (data === null) {
-                delete roomPlayers[key];
-            } else if (path === `/${key}`) {
-                roomPlayers[key] = data;
-            } else {
-                roomPlayers[key] = roomPlayers[key] || {};
-                const sub = path.replace(`/${key}/`, '').split('/');
-                let obj = roomPlayers[key];
-                for (let i = 0; i < sub.length - 1; i++) {
-                    obj[sub[i]] = obj[sub[i]] || {};
-                    obj = obj[sub[i]];
-                }
-                obj[sub[sub.length - 1]] = data;
-            }
-        }
-        // Update 3D avatars
-        renderAllAvatars(roomPlayers);
-    }
-
-    function toggleSuggestions() {
-        const panel = document.getElementById('suggestions-panel');
-        const label = document.getElementById('suggest-toggle-label');
-        if (panel.classList.contains('hidden')) {
-            panel.classList.remove('hidden');
-            label.textContent = 'Hide Suggestions';
-        } else {
-            panel.classList.add('hidden');
-            label.textContent = 'Show Suggestions';
-        }
-    }
-
-    function leaveRoom() {
-        window.removeEventListener('beforeunload', leaveBeacon);
-        if (currentRoom && playerId) {
-            fetch(playerUrl(currentRoom, playerId), { method: 'DELETE' }).catch(() => {});
-        }
-        if (eventSource) { eventSource.close();
-            eventSource = null; }
-        sessionStorage.removeItem('store_player_id');
-
-        // Clean up sprites
-        for (const id of Object.keys(avatarSprites)) {
-            scene.remove(avatarSprites[id]);
-            delete avatarSprites[id];
-            if (labelElements[id]) {
-                labelContainer.removeChild(labelElements[id]);
-                delete labelElements[id];
-            }
-        }
-        roomPlayers = {};
-        currentRoom = null;
-        playerId = null;
-
-        document.getElementById('view-meeting').classList.add('hidden');
-        document.getElementById('view-setup').style.display = 'flex';
-        document.getElementById('btn-join').disabled = false;
-        document.getElementById('btn-join').textContent = '🚀 Enter Store';
-        document.getElementById('suggestions-panel').classList.add('hidden');
-        document.getElementById('suggest-toggle-label').textContent = 'Show Suggestions';
-        document.getElementById('meeting-player-count').textContent = '0';
-    }
-
-    // =============================================================
-    // INIT
-    // =============================================================
-    window.onload = function() {
-        // Setup avatar preview
-        renderSkinPickers();
-        renderShirtPickers();
-        renderPreview();
-
-        // Add hair select to the DOM (we need it in the setup)
-        const hairContainer = document.getElementById('avatar-preview').parentElement;
-        const hairDiv = document.createElement('div');
-        hairDiv.className = 'mt-2';
-        hairDiv.innerHTML = `
-            <label class="text-[10px] text-slate-500 block mb-0.5">Hair</label>
-            <select id="hair-select" onchange="window.onHairChange(this.value)" class="w-full bg-slate-800/80 border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200 outline-none focus:border-cyan-500/60">
-                <option value="short">Short</option>
-                <option value="curly">Curly</option>
-                <option value="long">Long</option>
-                <option value="bald">Bald</option>
-            </select>
-        `;
-        // Insert after the skin picker
-        const skinPicker = document.getElementById('skin-picker');
-        skinPicker.parentElement.after(hairDiv);
-
-        // Also add shirt picker if not present
-        const shirtDiv = document.createElement('div');
-        shirtDiv.className = 'mt-2';
-        shirtDiv.innerHTML = `
-            <label class="text-[10px] text-slate-500 block mb-0.5">Shirt</label>
-            <div id="shirt-picker" class="flex gap-1.5 flex-wrap"></div>
-        `;
-        document.getElementById('skin-picker').parentElement.after(shirtDiv);
-        renderShirtPickers();
-
-        // Set default gender
-        setAvatarGender('male');
-
-        // Enter key support
-        document.getElementById('input-name').addEventListener('keydown', (e) => { if (e.key === 'Enter') joinRoom(); });
-        document.getElementById('input-room').addEventListener('keydown', (e) => { if (e.key === 'Enter') joinRoom(); });
-    };
-
-    // Also need to handle the shirt picker re-render
-    const origRenderShirt = renderShirtPickers;
-    renderShirtPickers = function() {
-        const container = document.getElementById('shirt-picker');
-        if (!container) return;
-        container.innerHTML = SHIRTS.map(c =>
-            `<div class="color-dot ${avatarState.shirt === c ? 'active' : ''}" style="background:${c}" onclick="setShirt('${c}')"></div>`
-        ).join('');
-    };
-    // Override setShirt to re-render both
-    const origSetShirt = setShirt;
-    setShirt = function(c) {
-        avatarState.shirt = c;
-        renderShirtPickers();
-        renderPreview();
-    };
-
-    console.log('🛍️ Department Store Role-Play loaded.');
+    const banner = document.getElementById('completionBanner');
+    banner.style.display = (completedCount === total) ? 'block' : 'none';
+  }
 </script>
 
 </body>
