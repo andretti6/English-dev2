@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Life English Missions — Interactive Session</title>
+
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --text-white: #f0f6fc;
+      --accent-blue: #58a6ff;
+      --accent-purple: #bc8cff;
+      --accent-green: #238636;
+      --accent-green-border: #2ea043;
+      --accent-green-glow: rgba(46, 160, 67, 0.15);
+      --pill-bg: #21262d;
+      --pill-text: #79c0ff;
+      --challenge-bg: #261c14;
+      --challenge-border: #844212;
+      --challenge-text: #f0883e;
+      --role-worker-bg: #1e1b4b;
+      --role-worker-border: #4338ca;
+      --role-worker-text: #c7d2fe;
+      --radius: 12px;
+      --transition: all 0.25s ease-in-out;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app-container { max-width: 800px; width: 100%; margin: 0 auto; }
+
+    /* LOGIN / USER OVERLAY */
+    .login-screen {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      margin-top: 40px;
+    }
+
+    .login-screen h1 { color: var(--text-white); font-size: 22px; margin-bottom: 8px; }
+    .login-screen p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .input-group input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background-color: var(--bg-color);
+      color: var(--text-white);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input-group button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      background-color: var(--accent-blue);
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .input-group button:hover { opacity: 0.9; }
+
+    /* HEADER & PROGRESS */
+    header {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .user-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .user-tag { color: var(--accent-blue); font-weight: 700; }
+
+    .main-title { font-size: 24px; font-weight: 800; color: var(--text-white); margin-bottom: 4px; }
+    .subtitle { color: var(--accent-blue); font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+
+    .module-info {
+      font-size: 13px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .progress-bar-container {
+      width: 100%; height: 10px; background-color: var(--pill-bg); border-radius: 5px; overflow: hidden; margin-top: 12px;
+    }
+
+    .progress-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+      transition: var(--transition);
+    }
+
+    .completion-banner {
+      display: none;
+      background-color: var(--accent-green-glow);
+      border: 1px solid var(--accent-green-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .completion-banner h2 { color: #3fb950; font-size: 18px; margin-bottom: 4px; }
+
+    /* MISSIONS LIST */
+    .missions-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .mission-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .mission-card.unlocked {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mission-card.completed {
+      border-color: var(--accent-green-border);
+      background-color: #0d1912;
+    }
+
+    .mission-header {
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .mission-header:hover { background-color: rgba(255, 255, 255, 0.02); }
+
+    .mission-number { font-size: 12px; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; }
+    .mission-title { font-size: 18px; font-weight: 700; color: var(--text-white); margin: 2px 0; }
+    .mission-sub { font-size: 13px; color: var(--text-muted); }
+
+    .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+
+    .status-badge {
+      font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 20px; background-color: var(--pill-bg); color: var(--text-muted);
+    }
+
+    .mission-card.completed .status-badge { background-color: var(--accent-green); color: var(--text-white); }
+    .mission-card.locked-badge .status-badge { background-color: #21262d; color: #484f58; }
+
+    .toggle-btn { font-size: 12px; color: var(--accent-blue); font-weight: 600; }
+
+    /* EXPANDED CONTENT */
+    .mission-body {
+      display: none;
+      padding: 0 20px 20px 20px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .mission-card.open .mission-body { display: block; }
+
+    .section { margin-top: 20px; }
+    .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-blue); margin-bottom: 8px; }
+
+    .p-text { font-size: 14px; color: var(--text-main); margin-bottom: 8px; }
+
+    .pills-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .pill { background-color: var(--pill-bg); color: var(--pill-text); font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px; }
+
+    .expression-group { margin-top: 8px; }
+    .expression-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+    .expression-item {
+      font-size: 14px; font-style: italic; color: var(--text-white);
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 6px 12px; border-left: 2px solid var(--accent-blue); border-radius: 0 4px 4px 0; margin-bottom: 6px;
+    }
+
+    /* ACTION BRIEFING & ROLES */
+    .action-briefing-box {
+      background-color: var(--role-worker-bg);
+      border: 1px solid var(--role-worker-border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
+    .action-briefing-title { font-size: 12px; font-weight: 800; color: #a5b4fc; text-transform: uppercase; margin-bottom: 8px; }
+
+    .role-assigned-banner {
+      background-color: rgba(255,255,255,0.05);
+      border: 1px dashed var(--accent-purple);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-white);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .role-name { font-weight: 800; color: var(--accent-purple); text-transform: uppercase; }
+
+    .challenge-box {
+      background-color: var(--challenge-bg);
+      border: 1px solid var(--challenge-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+
+    .challenge-box .section-title { color: var(--challenge-text); margin-bottom: 4px; }
+    .challenge-box p { font-size: 13px; color: #f8c59f; }
+
+    .complete-action {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .complete-action input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent-green-border); cursor: pointer; }
+    .complete-action label { font-size: 14px; font-weight: 600; color: var(--text-white); cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- LOGIN SCREEN -->
+  <div class="login-screen" id="loginScreen">
+    <h1>🌎 Real-Life English Sessions</h1>
+    <p>Enter your name to join the session and receive your role assignment.</p>
+    <div class="input-group">
+      <input type="text" id="usernameInput" placeholder="Your name (e.g. Matheus)..." />
+      <button onclick="joinSession()">JOIN SESSION</button>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER (HIDDEN UNTIL JOINED) -->
+  <div id="mainApp" style="display: none;">
+    <header>
+      <div class="user-info-bar">
+        <div>Logged in as: <span class="user-tag" id="userDisplay"></span></div>
+        <div id="participantsCount">Participants: 0</div>
+      </div>
+
+      <div class="main-title">🌎 WORK EXCHANGE — REAL LIFE MISSIONS</div>
+      <div class="subtitle">Prepare. Communicate. Solve. Adapt.</div>
+      
+      <div class="module-info">
+        <div><strong>Module 1</strong> — Real-Life Scenarios</div>
+        <div id="progressText">0 / 9 Missions Completed</div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+    </header>
+
+    <div class="completion-banner" id="completionBanner">
+      <h2>🎉 MODULE COMPLETE!</h2>
+      <p>All real-life missions have been successfully cleared!</p>
+    </div>
+
+    <div class="missions-list" id="missionsContainer"></div>
+  </div>
+
+</div>
+
+<script>
+  // FIREBASE CONFIGURATION
+  const firebaseConfig = {
+    databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // APP STATE
+  let currentUser = "";
+  let userOrderIndex = 0;
+  let allParticipants = [];
+  let firebaseMissionsState = {};
+
+  const missionsData = [
+    {
+      id: "m1",
+      number: "MISSION 01",
+      title: "Airport Immigration ✈️",
+      subtitle: "Arriving in a new country",
+      workerRoleTitle: "Immigration Officer",
+      customerRoleTitle: "Traveler / Student",
+      situation: "You have arrived at immigration in a new country. The officer asks you details about your stay.",
+      missionGoal: "Answer questions about your trip clearly without getting nervous.",
+      words: ["passport", "visa", "work exchange", "accommodation", "employer", "return ticket", "purpose"],
+      expressions: [
+        { label: "Asking to repeat", text: "Could you repeat that, please?" },
+        { label: "Clarifying", text: "I'm here for a work exchange program." },
+        { label: "Presenting docs", text: "Here is my documentation." }
+      ],
+      workerPrompts: [
+        "Passport and landing card, please.",
+        "What is the main purpose of your visit?",
+        "Where will you be staying for the duration of your trip?"
+      ],
+      challengeText: "Ask for proof of return flight or ask a question using fast connected speech."
+    },
+    {
+      id: "m2",
+      number: "MISSION 02",
+      title: "Checking into Accommodation 🛎️",
+      subtitle: "Arrival at hotel or hostel",
+      workerRoleTitle: "Receptionist / Front Desk",
+      customerRoleTitle: "Guest / Traveler",
+      situation: "You arrive at your accommodation and need to check in and verify room details.",
+      missionGoal: "Provide your booking information, check Wi-Fi, and get your keys.",
+      words: ["reservation", "check-in", "key", "booking", "deposit", "Wi-Fi", "checkout"],
+      expressions: [
+        { label: "Check-in", text: "I have a reservation under my name." },
+        { label: "Questions", text: "What time is checkout tomorrow?" }
+      ],
+      workerPrompts: [
+        "Welcome! How can I help you today?",
+        "May I see your passport and booking confirmation?"
+      ],
+      challengeText: "Inform the guest that their credit card was declined or that their reservation is for next week."
+    },
+    {
+      id: "m3",
+      number: "MISSION 03",
+      title: "Buying Groceries 🛒",
+      subtitle: "Navigating the market",
+      workerRoleTitle: "Supermarket Assistant / Cashier",
+      customerRoleTitle: "Shopper",
+      situation: "You are shopping for food in a local market and need help finding ingredients.",
+      missionGoal: "Find all items on your list, ask for help, and pay at checkout.",
+      words: ["groceries", "aisle", "price", "cashier", "receipt", "bag", "fresh", "frozen"],
+      expressions: [
+        { label: "Locating", text: "Excuse me, where can I find...?" },
+        { label: "Payment", text: "Can I pay by card, or cash only?" }
+      ],
+      workerPrompts: [
+        "Can I help you find anything on the shelves?",
+        "Did you find everything okay today?"
+      ],
+      challengeText: "Inform the shopper that the item they want is completely out of stock and offer a weird alternative."
+    },
+    {
+      id: "m4",
+      number: "MISSION 04",
+      title: "Asking for Directions 🗺️",
+      subtitle: "Finding your way",
+      workerRoleTitle: "Local Resident",
+      customerRoleTitle: "Lost Traveler",
+      situation: "You are lost in the downtown area and need to find the main station.",
+      missionGoal: "Politely ask a local for directions and confirm the route.",
+      words: ["street", "avenue", "corner", "block", "left", "right", "straight", "station"],
+      expressions: [
+        { label: "Approach", text: "Excuse me, could you help me for a second?" },
+        { label: "Route", text: "How do I get to the central station from here?" }
+      ],
+      workerPrompts: [
+        "Sure, what are you looking for?",
+        "Go straight down this avenue and turn right at the third lights..."
+      ],
+      challengeText: "Give directions very quickly using local landmarks instead of street names."
+    },
+    {
+      id: "m5",
+      number: "MISSION 05",
+      title: "Ordering at a Cafe ☕",
+      subtitle: "Food and drink orders",
+      workerRoleTitle: "Barista / Waiter",
+      customerRoleTitle: "Customer",
+      situation: "You are at a crowded coffee shop trying to order food and drinks.",
+      missionGoal: "Order drinks with specific customizations and pay.",
+      words: ["menu", "coffee", "takeaway", "latte", "dairy-free", "receipt", "pastry"],
+      expressions: [
+        { label: "Ordering", text: "I'd like an iced latte with oat milk, please." },
+        { label: "Dietary", text: "Is this pastry gluten-free?" }
+      ],
+      workerPrompts: [
+        "Hi! What can I get started for you today?",
+        "For here or to go?"
+      ],
+      challengeText: "Tell the customer you ran out of oat milk and the espresso machine is currently broken."
+    },
+    {
+      id: "m6",
+      number: "MISSION 06",
+      title: "Renting a Car 🚗",
+      subtitle: "Transportation setup",
+      workerRoleTitle: "Rental Agent",
+      customerRoleTitle: "Traveler",
+      situation: "You need to rent a car for a weekend road trip.",
+      missionGoal: "Inquire about car options, insurance coverage, and rental fees.",
+      words: ["rental", "driver's license", "insurance", "fuel", "automatic", "deposit"],
+      expressions: [
+        { label: "Inquiry", text: "I'd like to rent a compact car for 3 days." },
+        { label: "Insurance", text: "Does the price include full insurance coverage?" }
+      ],
+      workerPrompts: [
+        "Welcome to City Rentals! Do you have a reservation?",
+        "Will you be adding an additional driver today?"
+      ],
+      challengeText: "Require an international driving permit or add a compulsory $200 security deposit."
+    },
+    {
+      id: "m7",
+      number: "MISSION 07",
+      title: "Reporting an Issue / Complaint 🧳",
+      subtitle: "Problem solving under pressure",
+      workerRoleTitle: "Customer Service Manager",
+      customerRoleTitle: "Aggrieved Customer",
+      situation: "Your hotel room shower has no hot water and the AC is broken.",
+      missionGoal: "Explain the problem firmly but politely and negotiate a room change or discount.",
+      words: ["complaint", "issue", "broken", "refund", "manager", "upgrade", "unacceptable"],
+      expressions: [
+        { label: "Complaint", text: "I'm afraid there is a problem with my room." },
+        { label: "Demand", text: "I would like to request a room change or a refund." }
+      ],
+      workerPrompts: [
+        "Good morning, how can I assist you?",
+        "I understand your frustration. Let me check what we can do."
+      ],
+      challengeText: "Refuse an immediate refund and offer a 10% voucher for a future stay instead."
+    },
+    {
+      id: "m8",
+      number: "MISSION 08",
+      title: "Visiting a Pharmacy 🩺",
+      subtitle: "Health and wellness",
+      workerRoleTitle: "Pharmacist",
+      customerRoleTitle: "Patient / Customer",
+      situation: "You have a severe headache and sore throat and need over-the-counter medicine.",
+      missionGoal: "Describe symptoms, understand dosage, and check for side effects.",
+      words: ["pharmacy", "symptoms", "painkiller", "dosage", "prescription", "pills"],
+      expressions: [
+        { label: "Symptoms", text: "I have a bad headache and a sore throat." },
+        { label: "Usage", text: "How many times a day should I take this?" }
+      ],
+      workerPrompts: [
+        "Hello! What symptoms are you experiencing?",
+        "Are you taking any other medications right now?"
+      ],
+      challengeText: "Explain that this specific medicine requires a doctor's prescription."
+    },
+    {
+      id: "m9",
+      number: "MISSION 09",
+      title: "Networking at a Social Event 🎉",
+      subtitle: "Making connections",
+      workerRoleTitle: "Party Host / Local Resident",
+      customerRoleTitle: "Newcomer / Guest",
+      situation: "You are at a local social gathering meeting people for the first time.",
+      missionGoal: "Make small talk, introduce yourself, talk about hobbies, and exchange contacts.",
+      words: ["hometown", "hobbies", "exchange", "work", "free time", "contact", "weekend"],
+      expressions: [
+        { label: "Small talk", text: "Hi! I don't think we've met yet. I'm..." },
+        { label: "Closing", text: "It was great talking to you! Let's swap contacts." }
+      ],
+      workerPrompts: [
+        "Hey there! Welcome to the party! How do you know the host?",
+        "What do you like to do in your free time around here?"
+      ],
+      challengeText: "Ask an unexpected cultural question or invite them to a weekend hiking trip."
+    }
+  ];
+
+  function joinSession() {
+    const nameInput = document.getElementById('usernameInput').value.trim();
+    if (!nameInput) return alert("Please enter your name!");
+
+    currentUser = nameInput;
+    document.getElementById('userDisplay').textContent = currentUser;
+
+    // Register user in Firebase
+    const userRef = db.ref('session/participants/' + currentUser);
+    userRef.set({ name: currentUser, joinedAt: Date.now() });
+
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+
+    initFirebaseListeners();
+  }
+
+  function initFirebaseListeners() {
+    // Listen to participants to determine sequence/order
+    db.ref('session/participants').on('value', snapshot => {
+      const data = snapshot.val() || {};
+      allParticipants = Object.keys(data).sort((a,b) => data[a].joinedAt - data[b].joinedAt);
+      
+      userOrderIndex = allParticipants.indexOf(currentUser);
+      document.getElementById('participantsCount').textContent = `Participants: ${allParticipants.length}`;
+      
+      renderMissions();
+    });
+
+    // Listen to completion states
+    db.ref('session/missions').on('value', snapshot => {
+      firebaseMissionsState = snapshot.val() || {};
+      renderMissions();
+    });
+  }
+
+  function renderMissions() {
+    const container = document.getElementById('missionsContainer');
+    container.innerHTML = '';
+
+    let completedCount = 0;
+
+    missionsData.forEach((m, index) => {
+      const isCompleted = !!firebaseMissionsState[m.id];
+      if (isCompleted) completedCount++;
+
+      // Unlock rule: Mission 0 is unlocked. Subsequent missions unlock only if previous is checked.
+      const isUnlocked = (index === 0) || (!!firebaseMissionsState[missionsData[index - 1].id]);
+
+      // Alternating Role Logic based on mission index and user index
+      const isWorker = ((index + userOrderIndex) % 2 === 0);
+      const myRoleTitle = isWorker ? m.workerRoleTitle : m.customerRoleTitle;
+
+      const card = document.createElement('div');
+      card.className = `mission-card ${isUnlocked ? 'unlocked' : ''} ${isCompleted ? 'completed' : ''}`;
+      card.id = `card-${m.id}`;
+
+      card.innerHTML = `
+        <div class="mission-header" onclick="${isUnlocked ? `toggleCard('${m.id}')` : ''}">
+          <div>
+            <div class="mission-number">${m.number}</div>
+            <div class="mission-title">${m.title}</div>
+            <div class="mission-sub">${m.subtitle}</div>
+          </div>
+          <div class="header-actions">
+            <span class="status-badge" id="badge-${m.id}">
+              ${isCompleted ? '✓ COMPLETED' : (isUnlocked ? 'NOT COMPLETED' : '🔒 LOCKED')}
+            </span>
+            ${isUnlocked ? `<span class="toggle-btn" id="toggle-${m.id}">[ OPEN MISSION ]</span>` : ''}
+          </div>
+        </div>
+
+        <div class="mission-body">
+          <div class="role-assigned-banner">
+            <div>YOUR ROLE THIS MISSION:</div>
+            <div class="role-name">🎭 ${myRoleTitle}</div>
+          </div>
+
+          ${isWorker ? `
+            <!-- WORKER / HOST VIEW -->
+            <div class="section">
+              <div class="action-briefing-box">
+                <div class="action-briefing-title">🎭 ACTION BRIEFING (Your Interventions)</div>
+                <p class="p-text" style="color:var(--role-worker-text);">
+                  You are the <strong>${m.workerRoleTitle}</strong>. Lead the conversation using these opening prompts:
+                </p>
+                <ul style="padding-left: 20px; font-size:13px; color:var(--role-worker-text);">
+                  ${m.workerPrompts.map(p => `<li>"${p}"</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="challenge-box">
+                <div class="section-title">⚡ YOUR CHALLENGE TASK</div>
+                <p>${m.challengeText}</p>
+              </div>
+            </div>
+          ` : `
+            <!-- CUSTOMER / TRAVELER VIEW -->
+            <div class="section">
+              <div class="section-title">Situation</div>
+              <p class="p-text">${m.situation}</p>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Your Mission</div>
+              <p class="p-text">${m.missionGoal}</p>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Words You Should Know</div>
+              <div class="pills-container">
+                ${m.words.map(w => `<span class="pill">${w}</span>`).join('')}
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">Useful Expressions</div>
+              ${m.expressions.map(e => `
+                <div class="expression-group">
+                  <div class="expression-label">${e.label}</div>
+                  <div class="expression-item">"${e.text}"</div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+
+          <div class="complete-action">
+            <input type="checkbox" id="chk-${m.id}" ${isCompleted ? 'checked' : ''} onchange="toggleCompletion('${m.id}', this.checked)">
+            <label for="chk-${m.id}">Mission completed (Unlocks next mission for everyone)</label>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(card);
+    });
+
+    updateProgress(completedCount);
+  }
+
+  function toggleCard(missionId) {
+    const card = document.getElementById(`card-${missionId}`);
+    const toggleBtn = document.getElementById(`toggle-${missionId}`);
+    
+    card.classList.toggle('open');
+    if (toggleBtn) {
+      toggleBtn.textContent = card.classList.contains('open') ? '[ CLOSE MISSION ]' : '[ OPEN MISSION ]';
+    }
+  }
+
+  function toggleCompletion(missionId, isChecked) {
+    db.ref('session/missions/' + missionId).set(isChecked);
+  }
+
+  function updateProgress(completedCount) {
+    const total = missionsData.length;
+    const percentage = Math.round((completedCount / total) * 100);
+
+    document.getElementById('progressText').textContent = `${completedCount} / ${total} Missions Completed`;
+    document.getElementById('progressBar').style.width = `${percentage}%`;
+
+    const banner = document.getElementById('completionBanner');
+    banner.style.display = (completedCount === total) ? 'block' : 'none';
+  }
+</script>
+
+</body>
+</html>
