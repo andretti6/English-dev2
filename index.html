@@ -3,508 +3,870 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>👩‍🏫 Teacher Panel · Car Rental</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <title>🚗 Car Rental · 3D Mission</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+    </script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
-            background: #f1f5f9;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #eef2ff;
+            min-height: 100vh;
+            color: #1e293b;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        .hidden-screen {
+            display: none !important;
         }
-        .room-btn {
-            transition: all 0.15s ease;
-            cursor: pointer;
+
+        /* ── 3D Glass & Depth Layers ── */
+        .glass-3d {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                0 20px 40px -15px rgba(79, 70, 229, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(.22, 1, .36, 1);
         }
-        .room-btn.active {
-            background: #4f46e5 !important;
-            color: white !important;
-            box-shadow: 0 0 0 2px #4f46e5, 0 0 12px rgba(79, 70, 229, 0.3);
+        .glass-3d-dark {
+            background: rgba(15, 23, 42, 0.80);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
-        .student-row {
-            transition: background 0.2s;
+
+        /* ── 3D Pushable Buttons ── */
+        .btn-3d {
+            transition: all 0.2s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: 0 6px 0 0 #3730a3, 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+            transform: translateY(0);
         }
-        .student-row:hover {
-            background: #f8fafc;
-        }
-        .badge-online {
-            background: #10b981;
-            color: white;
-        }
-        .badge-lobby {
-            background: #94a3b8;
-            color: white;
-        }
-        .badge-activity {
-            background: #f59e0b;
-            color: white;
-        }
-        .timer-btn {
-            transition: all 0.2s;
-        }
-        .timer-btn:hover {
+        .btn-3d:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 0 0 #3730a3, 0 14px 24px -5px rgba(79, 70, 229, 0.5);
         }
-        .theme-card {
-            border-left: 4px solid #4f46e5;
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 0 #3730a3, 0 4px 10px -2px rgba(79, 70, 229, 0.3);
         }
-        .status-message {
-            animation: fadeIn 0.3s ease;
+
+        .btn-3d-secondary {
+            transition: all 0.2s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: 0 6px 0 0 #cbd5e1, 0 10px 20px -5px rgba(0, 0, 0, 0.08);
+            transform: translateY(0);
         }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .btn-3d-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 0 #cbd5e1, 0 14px 24px -5px rgba(0, 0, 0, 0.12);
         }
+        .btn-3d-secondary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 0 #cbd5e1, 0 4px 10px -2px rgba(0, 0, 0, 0.06);
+        }
+
+        /* ── 3D Step Dots ── */
+        .step-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            transition: all .4s cubic-bezier(.22, 1, .36, 1);
+            background: rgba(255, 255, 255, 0.5);
+            color: #94a3b8;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .step-dot.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.25), 0 6px 12px rgba(79, 70, 229, 0.4);
+            transform: scale(1.1);
+        }
+        .step-dot.done {
+            background: #10b981;
+            color: #fff;
+            border-color: #34d399;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+        .step-line {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            transition: background .5s ease;
+        }
+        .step-line.done {
+            background: #10b981;
+        }
+        .step-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+        .step-label.active {
+            color: #4f46e5;
+        }
+
+        /* ── Role Cards (3D Pop) ── */
+        .role-card {
+            transition: all .3s cubic-bezier(.22, 1, .36, 1);
+            border-radius: 24px;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        .role-card.role-you {
+            transform: translateY(-4px) scale(1.02);
+            border-color: #4f46e5;
+            background: linear-gradient(145deg, #ffffff, #eef2ff);
+            box-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.25), 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        /* ── Choice Cards 3D ── */
+        .choice-card {
+            transition: all .25s ease;
+            border-radius: 18px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02) inset;
+            padding: 10px 14px;
+        }
+        .choice-card:focus-within {
+            border-color: #4f46e5;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        .choice-card select,
+        .choice-card input {
+            background: transparent;
+            border: none;
+            padding: 4px 0;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            outline: none;
+        }
+        .choice-card select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%234f46e5' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            padding-right: 24px;
+        }
+
+        /* ── Partner Field ── */
+        .partner-field {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            transition: all .3s ease;
+        }
+        .partner-field.has-value {
+            border-color: #818cf8;
+            background: rgba(79, 70, 229, 0.05);
+            border-style: solid;
+            color: #1e293b;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08) inset;
+        }
+
+        /* ── Options Modal Cards 3D ── */
+        .opt-card {
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+            border-radius: 20px;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border: 2px solid #e2e8f0;
+            padding: 18px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05);
+        }
+        .opt-card:hover {
+            transform: translateY(-5px);
+            border-color: #818cf8;
+            box-shadow: 0 15px 30px -10px rgba(79, 70, 229, 0.2);
+        }
+        .opt-card .tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        /* ── Animations ── */
+        @keyframes float3D {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
+        .float-3d {
+            animation: float3D 3.5s ease-in-out infinite;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .fade-up {
+            animation: fadeUp 0.4s cubic-bezier(.22, 1, .36, 1) forwards;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="max-w-6xl mx-auto p-4 md:p-6">
-
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-slate-800 flex items-center gap-2">
-                    <span>👩‍🏫</span> Teacher Panel
-                </h1>
-                <p class="text-sm text-slate-500">Control rooms, timer, and themes for the Car Rental mission</p>
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!--  SCREEN 1: SETUP (3D Card)                   -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div id="screen-setup" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md glass-3d rounded-[32px] p-8 md:p-10 fade-up">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-3xl flex items-center justify-center text-4xl shadow-xl shadow-indigo-500/30 mb-4 float-3d">
+                    🚗
+                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Rental Mission 3D</h1>
+                <p class="text-sm text-slate-500 mt-1">Rent a car abroad · immersive role‑play</p>
             </div>
-            <a href="." class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-sm font-medium hover:bg-slate-50 transition">
-                ← Back to Student View
-            </a>
-        </div>
-
-        <!-- Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-            <!-- Left: Themes & Timer -->
-            <div class="lg:col-span-1 space-y-5">
-
-                <!-- Seed Themes -->
-                <div class="glass rounded-2xl p-5 shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b pb-3 mb-4">
-                        <span>📅</span> Daily Themes
-                    </h2>
-                    <p class="text-xs text-slate-500 mb-3">Publish the two test themes (Day 1 &amp; Day 2) to Firebase.</p>
-                    <button onclick="seedThemes()" class="w-full py-2.5 bg-indigo-600 text-white rounded-xl font-semibold text-sm hover:bg-indigo-700 transition flex items-center justify-center gap-2">
-                        🚀 Publish Test Themes
-                    </button>
-                    <span id="seed-status" class="block text-xs text-emerald-600 font-medium mt-2 text-center"></span>
+            <form id="form-setup" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Your name</label>
+                    <input type="text" id="input-name" required placeholder="Type your full name" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition font-medium">
                 </div>
-
-                <!-- Timer Controls -->
-                <div class="glass rounded-2xl p-5 shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b pb-3 mb-4">
-                        <span>⏱️</span> Timer Control
-                    </h2>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="controlTimer('play')" class="timer-btn flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-xl font-medium text-sm hover:bg-emerald-700">▶ Play</button>
-                        <button onclick="controlTimer('pause')" class="timer-btn flex-1 px-4 py-2.5 bg-amber-600 text-white rounded-xl font-medium text-sm hover:bg-amber-700">⏸ Pause</button>
-                        <button onclick="controlTimer('reset')" class="timer-btn flex-1 px-4 py-2.5 bg-rose-600 text-white rounded-xl font-medium text-sm hover:bg-rose-700">🔄 Reset</button>
-                    </div>
-                    <div class="mt-3 text-center text-sm text-slate-600">
-                        Current time: <span id="teacher-timer-display" class="font-mono font-bold text-indigo-600">30:00</span>
-                    </div>
-                </div>
-
-                <!-- Rooms Management -->
-                <div class="glass rounded-2xl p-5 shadow-sm border border-slate-200">
-                    <div class="flex items-center justify-between border-b pb-3 mb-3">
-                        <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                            <span>🚪</span> Rooms
-                        </h2>
-                        <button onclick="addRoom()" class="px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg text-xs font-semibold transition">+ Add Room</button>
-                    </div>
-                    <div id="rooms-list" class="flex flex-wrap gap-2">
-                        <!-- populated by JS -->
-                    </div>
-                    <button onclick="clearAllStudents()" class="mt-3 w-full py-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-xl text-xs font-semibold hover:bg-rose-100 transition">
-                        🧹 Clear All Students
-                    </button>
-                </div>
-            </div>
-
-            <!-- Right: Students List -->
-            <div class="lg:col-span-2">
-                <div class="glass rounded-2xl p-5 shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-slate-800 text-sm flex items-center gap-2 border-b pb-3 mb-4">
-                        <span>👥</span> Students
-                        <span id="student-count" class="ml-auto text-xs bg-slate-200 px-2 py-0.5 rounded-full text-slate-600">0</span>
-                    </h2>
-                    <div id="teacher-students-list" class="space-y-2 max-h-[600px] overflow-y-auto pr-1">
-                        <!-- populated by JS -->
-                        <p class="text-sm text-slate-400 text-center py-8">No students connected yet.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-6 text-xs text-slate-400 text-center border-t pt-4">
-            Firebase Realtime Database · <span id="firebase-url" class="font-mono">english-meetings-f08e4</span>
+                <button type="submit" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold btn-3d flex items-center justify-center gap-2 text-base">
+                    <span>🚀</span> Enter 3D Lobby
+                </button>
+            </form>
+            <p class="text-center text-xs text-slate-400 mt-6 font-medium">Your teacher will assign you to a room</p>
         </div>
     </div>
 
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!--  SCREEN 2: LOBBY                             -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div id="screen-lobby" class="min-h-screen flex items-center justify-center p-4 hidden-screen">
+        <div class="w-full max-w-lg glass-3d rounded-[32px] p-10 text-center fade-up shadow-2xl">
+            <div class="w-20 h-20 mx-auto bg-indigo-50 rounded-3xl flex items-center justify-center text-4xl shadow-inner mb-4 float-3d">
+                🔄
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">Waiting for assignment…</h2>
+            <p class="text-sm text-slate-500 mt-1">Your teacher is placing you in a breakout room.</p>
+            <div class="mt-8 flex justify-center">
+                <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+            </div>
+            <div class="mt-6 text-xs text-slate-400 font-semibold uppercase tracking-wider">You'll be paired with a partner shortly</div>
+        </div>
+    </div>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!--  SCREEN 3: MISSION                           -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div id="screen-activity" class="min-h-screen p-4 md:p-6 hidden-screen">
+        <div class="max-w-5xl mx-auto">
+
+            <!-- ─── 3D Banner ─── -->
+            <div class="relative rounded-[32px] overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 p-6 md:p-8 shadow-2xl mb-6 border border-white/10">
+                <div class="absolute top-0 right-0 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                <div class="absolute bottom-0 left-0 w-60 h-60 bg-blue-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
+
+                <div class="relative z-10">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 shadow-lg">
+                            <span class="text-indigo-300 font-bold">⏱</span>
+                            <span id="timer-display" class="font-mono font-extrabold text-white text-lg tracking-wider">30:00</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 shadow-lg">
+                            <span class="text-xl">🚗</span>
+                            <span class="text-white font-bold text-xs uppercase tracking-wider">Car Rental Mission</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-start gap-4 bg-white/10 backdrop-blur-xl rounded-2xl p-5 md:p-6 border border-white/15 shadow-xl">
+                        <span class="text-4xl float-3d">🎯</span>
+                        <div>
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-300 block mb-1">Mission Directive</span>
+                            <p class="text-white text-sm md:text-base font-medium leading-relaxed" id="mission-display">
+                                You're at <strong>Global Rentals</strong> abroad. Work with your partner to pick the perfect car, agree on terms, and close the deal!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── 3D Step Indicator ─── -->
+            <div class="glass-3d rounded-2xl p-4 md:p-5 mb-6 flex items-center gap-4 flex-wrap shadow-lg">
+                <div class="flex items-center gap-2 flex-1 min-w-[220px]">
+                    <span class="step-dot active" id="step-dot-1">1</span>
+                    <span class="step-line" id="step-line-1"></span>
+                    <span class="step-dot" id="step-dot-2">2</span>
+                    <span class="step-line" id="step-line-2"></span>
+                    <span class="step-dot" id="step-dot-3">3</span>
+                </div>
+                <span class="step-label active" id="step-label">👂 Listen &amp; Understand</span>
+            </div>
+
+            <!-- ─── Main Grid ─── -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+                <!-- Left Column (3/5) -->
+                <div class="lg:col-span-3 space-y-6">
+
+                    <!-- Role Cards -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div id="info-person-a" class="role-card p-5 text-center">
+                            <div id="person-a-avatar" class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-md bg-indigo-100 mb-2">🧑‍💼</div>
+                            <span id="person-a-role-title" class="role-badge inline-block text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 shadow-sm">Car Agent</span>
+                            <p class="font-bold text-slate-900 text-sm mt-2" id="person-a-name">Waiting…</p>
+                            <p class="text-[11px] text-slate-500 font-medium mt-0.5" id="person-a-focus">Help the customer choose</p>
+                        </div>
+                        <div id="info-person-b" class="role-card p-5 text-center">
+                            <div id="person-b-avatar" class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-md bg-amber-100 mb-2">🧳</div>
+                            <span id="person-b-role-title" class="role-badge inline-block text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-amber-100 text-amber-700 shadow-sm">Customer</span>
+                            <p class="font-bold text-slate-900 text-sm mt-2" id="person-b-name">Waiting for partner…</p>
+                            <p class="text-[11px] text-slate-500 font-medium mt-0.5" id="person-b-focus">Share your needs &amp; decide</p>
+                        </div>
+                    </div>
+
+                    <!-- Audio Drawer -->
+                    <details class="glass-3d rounded-2xl overflow-hidden shadow-xl" open>
+                        <summary class="cursor-pointer px-6 py-4 flex items-center justify-between text-sm font-bold text-slate-800 hover:bg-slate-50/50 transition">
+                            <span class="flex items-center gap-2.5 text-base">
+                                <span class="text-xl">🎧</span> Today's Conversation Audio
+                            </span>
+                            <span class="audio-chevron text-slate-400 font-bold text-lg">⌄</span>
+                        </summary>
+                        <div class="p-5 pt-0" id="activity-audio-container">
+                            <iframe src="https://whyp.it/embeds/track/unX5t6r4ApS5?token=f57mg4Wwmfa7" width="100%" height="200" scrolling="no" frameborder="0" loading="lazy" class="rounded-2xl shadow-inner"></iframe>
+                        </div>
+                    </details>
+
+                    <!-- Pro Tip -->
+                    <div class="bg-indigo-50/80 rounded-2xl p-5 border border-indigo-200/60 shadow-md flex items-start gap-4">
+                        <span class="text-2xl">💡</span>
+                        <div>
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-700 block mb-0.5">Pro Tip</span>
+                            <p class="text-sm text-slate-600 font-medium leading-relaxed">Listen to the conversation first, then discuss with your partner to fill in the rental agreement details.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (2/5) -->
+                <div class="lg:col-span-2 space-y-5">
+
+                    <!-- Choices Box -->
+                    <div class="glass-3d rounded-3xl p-6 shadow-2xl">
+                        <h3 class="text-xs font-extrabold uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
+                            <span>📋</span> Rental Agreement Form
+                        </h3>
+
+                        <!-- My Fields -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-extrabold uppercase text-indigo-600" id="my-answers-label">✏️ You</span>
+                                <span class="text-[10px] font-bold text-slate-400">fill in your part</span>
+                            </div>
+                            <div id="my-fields-container" class="space-y-3"></div>
+                        </div>
+
+                        <div class="my-5 border-t border-slate-200/80"></div>
+
+                        <!-- Partner Fields -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-extrabold uppercase text-slate-500">👀 Partner</span>
+                                <span class="text-[11px] font-bold text-indigo-600" id="choices-partner-name">—</span>
+                            </div>
+                            <div id="partner-fields-container" class="space-y-3"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="btn-options" class="py-3.5 rounded-2xl font-bold text-sm text-white bg-indigo-600 btn-3d flex items-center justify-center gap-1.5">
+                            📋 Options
+                        </button>
+                        <button id="btn-help-friend" class="py-3.5 rounded-2xl font-bold text-sm bg-white text-indigo-700 border-2 border-indigo-200 btn-3d-secondary flex items-center justify-center gap-1.5">
+                            💡 Help partner
+                        </button>
+                    </div>
+
+                    <button id="btn-to-wrapup" class="w-full py-4 rounded-2xl font-bold text-sm text-white bg-slate-900 btn-3d flex items-center justify-center gap-2 shadow-xl">
+                        <span>📝</span> Review &amp; Wrap Up
+                    </button>
+                </div>
+            </div>
+
+            <!-- Presence Indicator -->
+            <div class="mt-6 flex items-center justify-center gap-2.5 text-xs font-semibold text-slate-500 glass-3d rounded-full px-6 py-3 mx-auto w-fit shadow-lg">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500"></span>
+                <span id="partner-presence">Waiting for partner to connect…</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!--  SCREEN 4: WRAP‑UP                           -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div id="screen-wrapup" class="min-h-screen p-4 md:p-6 hidden-screen flex items-center justify-center">
+        <div class="max-w-3xl w-full glass-3d rounded-[32px] p-6 md:p-10 shadow-2xl fade-up">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
+                    <span>🏁</span> Mission Wrap‑up
+                </h2>
+                <button id="btn-back-to-activity" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-bold transition shadow-sm">← Back</button>
+            </div>
+
+            <div class="mt-6 space-y-6">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 mb-2.5">📄 Final Agreement Summary</h3>
+                    <div id="created-summary" class="p-5 bg-slate-50/90 border border-slate-200 rounded-2xl text-sm space-y-2.5 text-slate-700 font-medium shadow-inner"></div>
+                </div>
+
+                <div class="p-5 bg-indigo-50/75 border border-indigo-200/80 rounded-2xl shadow-sm">
+                    <h3 class="text-sm font-extrabold text-indigo-900 mb-2">🗣️ Oral Reflection</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 font-medium">
+                        <li>Did you find the right car together? What was easy or challenging?</li>
+                        <li>What did you learn from your partner during the negotiation?</li>
+                    </ul>
+                </div>
+
+                <div class="border-t border-slate-200 pt-5">
+                    <h3 class="text-sm font-extrabold text-slate-900 mb-3">Rate <span id="friend-name-stars" class="text-indigo-600">your partner</span>'s skills</h3>
+                    <div id="skills-rating-container" class="space-y-3"></div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <input type="text" id="signature-input" placeholder="Sign your full name" class="flex-1 min-w-[180px] px-5 py-3.5 bg-white border-2 border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-indigo-600 shadow-sm">
+                    <button id="btn-sign" class="px-6 py-3.5 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition text-sm btn-3d">Sign Agreement</button>
+                </div>
+
+                <button onclick="window.print()" class="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold hover:bg-slate-50 transition flex items-center justify-center gap-2 text-sm text-slate-700 btn-3d-secondary shadow-sm">
+                    🖨 Print summary
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!--  MODAL                                       -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <div id="modal-container" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 hidden-screen z-50">
+        <div class="bg-white rounded-[32px] max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 md:p-8 fade-up border border-slate-100">
+            <h3 id="modal-title" class="text-xl font-extrabold text-slate-900 border-b pb-4 mb-2">Modal</h3>
+            <div id="modal-body" class="py-4 text-sm text-slate-600 space-y-3 font-medium"></div>
+            <button onclick="closeModal()" class="w-full py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold hover:bg-slate-200 transition btn-3d-secondary mt-4">Close Window</button>
+        </div>
+    </div>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!--  JAVASCRIPT                                  -->
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
     <script>
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // FIREBASE CONFIG
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        const firebaseConfig = {
-            databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/"
-        };
+        const firebaseConfig = { databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // TEST THEMES (same as student version)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        const TEST_THEMES = {
-            day_1: {
-                dateKey: new Date().toISOString().split('T')[0],
-                title: "Rent a Car Abroad",
-                theme: {
-                    icon: "🚗",
-                    bannerGradient: "from-slate-900 via-indigo-900 to-blue-900",
-                    roleA: { icon: "🧑‍💼", badge: "bg-indigo-100 text-indigo-700", border: "border-indigo-200",
-                        avatarBg: "bg-indigo-100/80" },
-                    roleB: { icon: "🧳", badge: "bg-amber-100 text-amber-700", border: "border-amber-200",
-                        avatarBg: "bg-amber-100/80" }
-                },
-                lobby: {
-                    text: "Today you'll practice renting a car abroad. Discuss options, insurance, and rental duration with your partner.",
-                    audioEmbed: '<iframe src="https://whyp.it/embeds/track/unX5t6r4ApS5?token=f57mg4Wwmfa7" width="100%" height="200" scrolling="no" frameborder="0" loading="lazy"></iframe>',
-                    vocabulary: [
-                        { word: "Rental agreement", definition: "A contract between you and the rental company." },
-                        { word: "Coverage", definition: "The amount of protection provided by insurance." }
-                    ],
-                    questions: [
-                        "What type of car would you rent for a family trip?",
-                        "How important is insurance when renting abroad?"
-                    ]
-                },
-                mission: "You're at Global Rentals abroad. Work with your partner to pick the perfect car, agree on terms, and close the deal!",
-                personA: { roleTitle: "Car Agent", focus: "Help the customer choose" },
-                personB: { roleTitle: "Customer", focus: "Share your needs & decide" },
-                choicesSection: {
-                    boxTitle: "Rental Agreement",
-                    fields: [
-                        { key: "carType", label: "Car type", type: "select", options: ["Compact", "SUV", "Luxury",
-                                "Convertible", "Minivan"
-                            ] },
-                        { key: "days", label: "Rental days", type: "text", placeholder: "e.g. 5" },
-                        { key: "insurance", label: "Insurance", type: "select", options: ["Basic", "Premium",
-                                "Full Coverage"
-                            ] }
-                    ]
-                },
-                optionsButton: {
-                    label: "📋 Options",
-                    modalTitle: "🚗 Car Options",
-                    optionsByRole: {
-                        A: [
-                            { icon: "🚙", title: "Compact SUV", description: "Great for city driving & parking.",
-                                advantage: "Fuel efficient", outcome: "~$45/day",
-                            consideration: "Less cargo space" },
-                            { icon: "🚘", title: "Luxury Sedan", description: "Comfortable, premium feel.",
-                                advantage: "Style & comfort", outcome: "~$95/day",
-                            consideration: "Higher cost" }
-                        ],
-                        B: [
-                            { icon: "🧳", title: "Family Minivan", description: "Spacious, perfect for groups.",
-                                advantage: "Lots of room", outcome: "~$70/day",
-                            consideration: "Harder to park" },
-                            { icon: "🏞️", title: "Convertible", description: "Fun, open-air experience.",
-                                advantage: "Memorable", outcome: "~$85/day",
-                                consideration: "Limited luggage space" }
-                        ]
-                    }
-                },
-                helpFriend: {
-                    buttonLabel: "💡 Help friend",
-                    modalTitle: "🤝 How to help your partner",
-                    steps: [
-                        "Ask about their travel plans — where are they going?",
-                        "Recommend a car that fits their budget and needs.",
-                        "Double‑check the rental terms together before signing."
-                    ]
-                },
-                skills: ["Clear communication", "Good listening", "Negotiation skills"]
+        const CAR_THEME = {
+            title: "Rent a Car Abroad",
+            mission: "You're at <strong>Global Rentals</strong> abroad. Work with your partner to pick the perfect car, agree on terms, and close the deal!",
+            theme: {
+                icon: "🚗",
+                roleA: { icon: "🧑‍💼", avatarBg: "bg-indigo-100" },
+                roleB: { icon: "🧳", avatarBg: "bg-amber-100" }
             },
-            day_2: {
-                dateKey: new Date(Date.now() + 86400000).toISOString().split('T')[0],
-                title: "Rent a Car Abroad (Day 2)",
-                theme: {
-                    icon: "🚗",
-                    bannerGradient: "from-slate-900 via-indigo-900 to-blue-900",
-                    roleA: { icon: "🧑‍💼", badge: "bg-indigo-100 text-indigo-700", border: "border-indigo-200",
-                        avatarBg: "bg-indigo-100/80" },
-                    roleB: { icon: "🧳", badge: "bg-amber-100 text-amber-700", border: "border-amber-200",
-                        avatarBg: "bg-amber-100/80" }
-                },
-                lobby: {
-                    text: "Another day, another rental! Practice negotiating better terms and handling unexpected situations.",
-                    audioEmbed: '<iframe src="https://whyp.it/embeds/track/unX5t6r4ApS5?token=f57mg4Wwmfa7" width="100%" height="200" scrolling="no" frameborder="0" loading="lazy"></iframe>',
-                    vocabulary: [
-                        { word: "Deposit", definition: "An amount paid in advance to secure the rental." },
-                        { word: "Mileage limit", definition: "The maximum distance you can drive without extra fees." }
+            personA: { roleTitle: "Car Agent", focus: "Help the customer choose" },
+            personB: { roleTitle: "Customer", focus: "Share your needs & decide" },
+            choicesSection: {
+                boxTitle: "Rental Agreement",
+                fields: [
+                    { key: "carType", label: "Car type", type: "select", options: ["Compact", "SUV", "Luxury", "Convertible", "Minivan"] },
+                    { key: "days", label: "Rental days", type: "text", placeholder: "e.g. 5" },
+                    { key: "insurance", label: "Insurance", type: "select", options: ["Basic", "Premium", "Full Coverage"] }
+                ]
+            },
+            optionsButton: {
+                label: "📋 Options",
+                modalTitle: "🚗 Car Options",
+                optionsByRole: {
+                    A: [
+                        { icon: "🚙", title: "Compact SUV", description: "Great for city driving & parking.", advantage: "Fuel efficient", outcome: "~$45/day", consideration: "Less cargo space" },
+                        { icon: "🚘", title: "Luxury Sedan", description: "Comfortable, premium feel, smooth ride.", advantage: "Style & comfort", outcome: "~$95/day", consideration: "Higher cost" }
                     ],
-                    questions: [
-                        "What would you do if the car you booked is not available?",
-                        "How do you handle disagreements about extra fees?"
+                    B: [
+                        { icon: "🧳", title: "Family Minivan", description: "Spacious, perfect for groups.", advantage: "Lots of room", outcome: "~$70/day", consideration: "Harder to park" },
+                        { icon: "🏞️", title: "Convertible", description: "Fun, open-air experience for road trips.", advantage: "Memorable", outcome: "~$85/day", consideration: "Limited luggage space" }
                     ]
-                },
-                mission: "You're back at Global Rentals. This time, negotiate a better deal and handle a small issue with the car's condition.",
-                personA: { roleTitle: "Car Agent", focus: "Help the customer choose" },
-                personB: { roleTitle: "Customer", focus: "Share your needs & decide" },
-                choicesSection: {
-                    boxTitle: "Rental Agreement",
-                    fields: [
-                        { key: "carType", label: "Car type", type: "select", options: ["Compact", "SUV", "Luxury",
-                                "Convertible", "Minivan"
-                            ] },
-                        { key: "days", label: "Rental days", type: "text", placeholder: "e.g. 5" },
-                        { key: "insurance", label: "Insurance", type: "select", options: ["Basic", "Premium",
-                                "Full Coverage"
-                            ] }
-                    ]
-                },
-                optionsButton: {
-                    label: "📋 Options",
-                    modalTitle: "🚗 Car Options",
-                    optionsByRole: {
-                        A: [
-                            { icon: "🚙", title: "Compact SUV", description: "Great for city driving & parking.",
-                                advantage: "Fuel efficient", outcome: "~$45/day",
-                            consideration: "Less cargo space" },
-                            { icon: "🚘", title: "Luxury Sedan", description: "Comfortable, premium feel.",
-                                advantage: "Style & comfort", outcome: "~$95/day",
-                            consideration: "Higher cost" }
-                        ],
-                        B: [
-                            { icon: "🧳", title: "Family Minivan", description: "Spacious, perfect for groups.",
-                                advantage: "Lots of room", outcome: "~$70/day",
-                            consideration: "Harder to park" },
-                            { icon: "🏞️", title: "Convertible", description: "Fun, open-air experience.",
-                                advantage: "Memorable", outcome: "~$85/day",
-                                consideration: "Limited luggage space" }
-                        ]
-                    }
-                },
-                helpFriend: {
-                    buttonLabel: "💡 Help friend",
-                    modalTitle: "🤝 How to help your partner",
-                    steps: [
-                        "Ask about their travel plans — where are they going?",
-                        "Recommend a car that fits their budget and needs.",
-                        "Double‑check the rental terms together before signing."
-                    ]
-                },
-                skills: ["Clear communication", "Good listening", "Negotiation skills"]
-            }
+                }
+            },
+            helpFriend: {
+                buttonLabel: "💡 Help friend",
+                modalTitle: "🤝 How to help your partner",
+                steps: [
+                    "Ask about their travel plans — where are they going?",
+                    "Recommend a car that fits their budget and needs.",
+                    "Double‑check the rental terms together before signing."
+                ]
+            },
+            skills: ["Clear communication", "Good listening", "Negotiation skills"]
         };
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // STATE
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        let roomsList = {};
-        let studentsData = {};
+        let currentUser = null;
+        let currentRoom = null;
+        let currentScenario = CAR_THEME;
+        let isInitializedFields = false;
+        let myRoleKey = 'A';
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // DOM REFS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        const studentsListEl = document.getElementById('teacher-students-list');
-        const roomsListEl = document.getElementById('rooms-list');
-        const studentCountEl = document.getElementById('student-count');
-        const timerDisplayEl = document.getElementById('teacher-timer-display');
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // INIT
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        function init() {
-            // Listen to rooms
-            db.ref('roomsList').on('value', snap => {
-                roomsList = snap.val() || {};
-                renderRooms();
-                renderStudents();
-            });
-
-            // Listen to students
-            db.ref('students').on('value', snap => {
-                studentsData = snap.val() || {};
-                renderStudents();
-            });
-
-            // Listen to timer
-            db.ref('timer').on('value', snap => {
-                const t = snap.val() || { seconds: 1800 };
-                updateTimerDisplay(t.seconds);
-            });
-
-            // Seed default rooms if empty
-            db.ref('roomsList').once('value', snap => {
-                if (!snap.val()) {
-                    const defaults = {};
-                    for (let i = 1; i <= 5; i++) defaults['room' + i] = 'Room ' + i;
-                    db.ref('roomsList').set(defaults);
-                    db.ref('roomsMeta/nextIndex').set(6);
-                }
-            });
-
-            // Display Firebase URL
-            document.getElementById('firebase-url').textContent = firebaseConfig.databaseURL.replace(/^https?:\/\//, '');
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER ROOMS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        function renderRooms() {
-            roomsListEl.innerHTML = Object.keys(roomsList).map(key =>
-                `<span class="px-3 py-1.5 bg-slate-100 rounded-full text-xs font-medium text-slate-700 border border-slate-200">${escapeHtml(roomsList[key])}</span>`
-            ).join('') || '<span class="text-xs text-slate-400">No rooms created.</span>';
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // RENDER STUDENTS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        function renderStudents() {
-            const entries = Object.entries(studentsData);
-            studentCountEl.textContent = entries.length;
-
-            if (!entries.length) {
-                studentsListEl.innerHTML = '<p class="text-sm text-slate-400 text-center py-8">No students connected yet.</p>';
-                return;
-            }
-
-            let html = '';
-            entries.forEach(([id, st]) => {
-                const roomKeys = Object.keys(roomsList);
-                const roomBtns = roomKeys.map(rk => `
-                    <button onclick="assignRoom('${id}', '${rk}')" 
-                            class="room-btn px-2.5 py-1 rounded-lg text-xs font-medium border ${st.room === rk ? 'active' : 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50'}">
-                        ${escapeHtml(roomsList[rk])}
-                    </button>
-                `).join('');
-
-                const statusBadge = st.room ? 'badge-activity' : 'badge-lobby';
-                const statusText = st.room ? `📍 ${escapeHtml(roomsList[st.room] || 'Room')}` : '🔄 Lobby';
-
-                html += `
-                    <div class="student-row p-3 bg-white/70 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                            <strong class="text-sm text-slate-800">${escapeHtml(st.name)}</strong>
-                            <span class="ml-2 text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${statusBadge}">${statusText}</span>
-                        </div>
-                        <div class="flex flex-wrap gap-1">
-                            ${roomBtns}
-                            <button onclick="removeStudent('${id}')" class="px-2 py-1 text-rose-500 hover:bg-rose-50 rounded-lg text-xs font-medium transition">✕</button>
-                        </div>
-                    </div>
-                `;
-            });
-            studentsListEl.innerHTML = html;
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // ACTIONS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        function assignRoom(studentId, roomKey) {
-            db.ref(`students/${studentId}`).update({ room: roomKey, status: 'in-activity' });
-        }
-
-        function removeStudent(studentId) {
-            if (confirm('Remove this student from the list?')) {
-                db.ref(`students/${studentId}`).remove();
-            }
-        }
-
-        function addRoom() {
-            db.ref('roomsMeta/nextIndex').once('value').then(snap => {
-                const n = snap.val() || 6;
-                db.ref('roomsList/room' + n).set('Room ' + n);
-                db.ref('roomsMeta/nextIndex').set(n + 1);
-            });
-        }
-
-        function clearAllStudents() {
-            if (confirm('⚠️ Remove ALL students from Firebase?')) {
-                db.ref('students').remove().then(() => alert('All students cleared.'));
-            }
-        }
-
-        function seedThemes() {
-            db.ref('dailyThemes').set(TEST_THEMES).then(() => {
-                document.getElementById('seed-status').textContent = '✅ Themes published successfully!';
-                document.getElementById('seed-status').className = 'block text-xs text-emerald-600 font-medium mt-2 text-center';
-            }).catch(err => {
-                document.getElementById('seed-status').textContent = '❌ Error: ' + err.message;
-                document.getElementById('seed-status').className = 'block text-xs text-rose-600 font-medium mt-2 text-center';
-            });
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // TIMER CONTROLS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        function controlTimer(action) {
-            db.ref('timer').transaction(current => {
-                let seconds = current ? current.seconds : 1800;
-                if (action === 'reset') seconds = 1800;
-                return { seconds, running: action === 'play' };
-            });
-        }
-
-        function updateTimerDisplay(seconds) {
-            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-            const s = String(seconds % 60).padStart(2, '0');
-            timerDisplayEl.textContent = `${m}:${s}`;
-        }
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // HELPERS
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         function escapeHtml(str) {
             const d = document.createElement('div');
             d.textContent = String(str ?? '');
             return d.innerHTML;
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // AUTO-DECREMENT TIMER (only for teacher)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        setInterval(() => {
-            db.ref('timer').once('value', snap => {
-                const t = snap.val();
-                if (t && t.running && t.seconds > 0) {
-                    db.ref('timer/seconds').set(t.seconds - 1);
+        function showScreen(id) {
+            document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden-screen'));
+            document.getElementById(id).classList.remove('hidden-screen');
+        }
+
+        document.getElementById('form-setup').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('input-name').value.trim();
+            if (!name) return;
+            currentUser = {
+                id: 'user_' + Math.random().toString(36).substr(2, 9),
+                name: name,
+                status: 'lobby',
+                room: null,
+                joinedAt: Date.now(),
+                answers: {}
+            };
+            db.ref(`students/${currentUser.id}`).set(currentUser);
+            showScreen('screen-lobby');
+            listenForRoomAssignment();
+        });
+
+        function listenForRoomAssignment() {
+            db.ref(`students/${currentUser.id}`).on('value', (snap) => {
+                const data = snap.val();
+                if (data && data.room) {
+                    currentRoom = data.room;
+                    showScreen('screen-activity');
+                    initActivityScreen();
                 }
             });
-        }, 1000);
+        }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        // START
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        init();
+        function initActivityScreen() {
+            const scenario = currentScenario;
+            renderScenarioStaticParts(scenario);
+            if (!isInitializedFields) {
+                renderChoicesFields(scenario);
+                isInitializedFields = true;
+            }
+            wireButtons(scenario);
 
-        // Expose functions globally for inline onclick
-        window.seedThemes = seedThemes;
-        window.controlTimer = controlTimer;
-        window.addRoom = addRoom;
-        window.clearAllStudents = clearAllStudents;
-        window.assignRoom = assignRoom;
-        window.removeStudent = removeStudent;
+            db.ref('timer').on('value', (snap) => {
+                const t = snap.val() || { seconds: 1800, running: false };
+                updateTimerDisplay(t.seconds);
+            });
+
+            db.ref('students').on('value', (snap) => {
+                const all = snap.val() || {};
+                const players = Object.values(all)
+                    .filter(s => s.room === currentRoom)
+                    .sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+                renderRoomPlayers(players, scenario);
+                updatePartnerRealtimeView(players);
+            });
+
+            document.getElementById('btn-to-wrapup').onclick = () => {
+                buildWrapupSummary(scenario);
+                renderSkillsSection(scenario);
+                showScreen('screen-wrapup');
+            };
+            document.getElementById('btn-back-to-activity').onclick = () => {
+                showScreen('screen-activity');
+            };
+        }
+
+        function renderScenarioStaticParts(scenario) {
+            const th = scenario.theme || {};
+            document.getElementById('mission-display').innerHTML = scenario.mission;
+
+            const rA = th.roleA || {};
+            const rB = th.roleB || {};
+            document.getElementById('person-a-avatar').innerText = rA.icon || '🧑‍💼';
+            document.getElementById('person-a-role-title').innerText = scenario.personA?.roleTitle || 'Car Agent';
+            document.getElementById('person-a-focus').innerText = scenario.personA?.focus || '';
+
+            document.getElementById('person-b-avatar').innerText = rB.icon || '🧳';
+            document.getElementById('person-b-role-title').innerText = scenario.personB?.roleTitle || 'Customer';
+            document.getElementById('person-b-focus').innerText = scenario.personB?.focus || '';
+
+            document.getElementById('activity-audio-container').innerHTML =
+                `<iframe src="https://whyp.it/embeds/track/unX5t6r4ApS5?token=f57mg4Wwmfa7" width="100%" height="200" scrolling="no" frameborder="0" loading="lazy" class="rounded-2xl shadow-inner"></iframe>`;
+        }
+
+        function renderChoicesFields(scenario) {
+            const fields = scenario.choicesSection?.fields || [];
+            const myC = document.getElementById('my-fields-container');
+            const partnerC = document.getElementById('partner-fields-container');
+
+            myC.innerHTML = fields.map((f, i) => {
+                if (f.type === 'select') {
+                    const opts = (f.options || []).map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('');
+                    return `<div class="choice-card">
+                        <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-0.5">${escapeHtml(f.label)}</label>
+                        <select id="my-choice-field-${i}" onchange="syncMyAnswer(${i})">
+                            <option value="">Choose…</option>
+                            ${opts}
+                        </select>
+                    </div>`;
+                }
+                return `<div class="choice-card">
+                    <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-0.5">${escapeHtml(f.label)}</label>
+                    <input type="text" id="my-choice-field-${i}" oninput="syncMyAnswer(${i})" placeholder="${escapeHtml(f.placeholder || '')}">
+                </div>`;
+            }).join('');
+
+            partnerC.innerHTML = fields.map((f, i) =>
+                `<div class="partner-field" id="partner-field-${i}">
+                    <span class="placeholder text-slate-400">⏳ waiting for partner…</span>
+                </div>`
+            ).join('');
+
+            if (currentUser?.name) {
+                document.getElementById('my-answers-label').innerHTML = `✏️ You <span class="font-normal text-slate-400">(${escapeHtml(currentUser.name)})</span>`;
+            }
+        }
+
+        function syncMyAnswer(index) {
+            const val = document.getElementById(`my-choice-field-${index}`).value;
+            db.ref(`students/${currentUser.id}/answers/field_${index}`).set(val);
+        }
+
+        function updatePartnerRealtimeView(players) {
+            const partner = players.find(p => p && p.id !== currentUser?.id);
+            const fields = currentScenario.choicesSection?.fields || [];
+            fields.forEach((f, i) => {
+                const el = document.getElementById(`partner-field-${i}`);
+                if (!el) return;
+                if (partner && partner.answers && partner.answers[`field_${i}`] !== undefined && partner.answers[`field_${i}`] !== '') {
+                    el.innerHTML = partner.answers[`field_${i}`];
+                    el.className = 'partner-field has-value';
+                } else {
+                    el.innerHTML = `<span class="placeholder text-slate-400">⏳ waiting for partner…</span>`;
+                    el.className = 'partner-field';
+                }
+            });
+
+            document.getElementById('choices-partner-name').innerText = partner ? partner.name : '—';
+            document.getElementById('friend-name-stars').innerText = partner ? partner.name : 'your partner';
+
+            const presence = document.getElementById('partner-presence');
+            if (partner) {
+                presence.innerHTML = `👤 <strong>${escapeHtml(partner.name)}</strong> is connected`;
+                presence.className = 'text-emerald-600 font-bold';
+            } else {
+                presence.innerHTML = '⏳ Waiting for partner to connect…';
+                presence.className = 'text-slate-500 font-medium';
+            }
+        }
+
+        function renderRoomPlayers(players, scenario) {
+            const pA = players[0] || null;
+            const pB = players[1] || null;
+
+            document.getElementById('person-a-name').innerHTML = pA ? escapeHtml(pA.name) + (pA.id === currentUser?.id ? ' <span class="text-indigo-600 font-extrabold text-[10px]">(You)</span>' : '') : 'Waiting…';
+            document.getElementById('person-b-name').innerHTML = pB ? escapeHtml(pB.name) + (pB.id === currentUser?.id ? ' <span class="text-indigo-600 font-extrabold text-[10px]">(You)</span>' : '') : 'Waiting for partner…';
+
+            const isA = pA && currentUser && pA.id === currentUser.id;
+            myRoleKey = isA ? 'A' : 'B';
+
+            document.getElementById('info-person-a').classList.toggle('role-you', isA);
+            document.getElementById('info-person-b').classList.toggle('role-you', !isA && !!(pB && currentUser && pB.id === currentUser.id));
+
+            const hasPartner = players.length >= 2;
+            const dot1 = document.getElementById('step-dot-1');
+            const dot2 = document.getElementById('step-dot-2');
+            const line1 = document.getElementById('step-line-1');
+            const label = document.getElementById('step-label');
+
+            if (hasPartner) {
+                dot1.className = 'step-dot done';
+                dot1.innerText = '✓';
+                line1.className = 'step-line done';
+                dot2.className = 'step-dot active';
+                dot2.innerText = '2';
+                label.innerText = '💬 Discuss & Fill In';
+                label.className = 'step-label active';
+            } else {
+                dot1.className = 'step-dot active';
+                dot1.innerText = '1';
+                line1.className = 'step-line';
+                dot2.className = 'step-dot';
+                dot2.innerText = '2';
+                label.innerText = '👂 Wait for partner…';
+                label.className = 'step-label';
+            }
+        }
+
+        function updateTimerDisplay(seconds) {
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${m}:${s}`;
+        }
+
+        function wireButtons(scenario) {
+            const optCfg = scenario.optionsButton || {};
+            document.getElementById('btn-options').innerText = optCfg.label || '📋 Options';
+            document.getElementById('btn-options').onclick = () => openOptionsModal(optCfg);
+
+            const helpCfg = scenario.helpFriend || {};
+            document.getElementById('btn-help-friend').innerText = helpCfg.buttonLabel || '💡 Help friend';
+            document.getElementById('btn-help-friend').onclick = () => {
+                const stepsHtml = `<div class="space-y-3">
+                    ${(helpCfg.steps || []).map((s, i) => `
+                        <div class="flex items-start gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm">
+                            <span class="font-extrabold text-indigo-600 text-base min-w-[24px]">${i+1}</span>
+                            <span class="font-medium text-slate-700">${escapeHtml(s)}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+                openModal(helpCfg.modalTitle || '🤝 Help your partner', stepsHtml);
+            };
+        }
+
+        function openOptionsModal(optCfg) {
+            const items = (optCfg.optionsByRole && optCfg.optionsByRole[myRoleKey]) || [];
+            const body = `
+                <div class="space-y-3.5">
+                    ${items.map(opt => `
+                        <div class="opt-card">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-3xl">${escapeHtml(opt.icon || '⭐')}</span>
+                                <strong class="text-indigo-900 text-base">${escapeHtml(opt.title)}</strong>
+                            </div>
+                            <p class="text-sm text-slate-600 mt-2 font-medium">${escapeHtml(opt.description || '')}</p>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="tag bg-emerald-100 text-emerald-800">👍 ${escapeHtml(opt.advantage || '')}</span>
+                                <span class="tag bg-indigo-100 text-indigo-800">📊 ${escapeHtml(opt.outcome || '')}</span>
+                                ${opt.consideration ? `<span class="tag bg-amber-100 text-amber-800">⚠️ ${escapeHtml(opt.consideration)}</span>` : ''}
+                            </div>
+                        </div>
+                    `).join('') || '<p class="text-sm text-slate-400">No options available.</p>'}
+                </div>
+            `;
+            openModal(optCfg.modalTitle || '🚗 Options', body);
+        }
+
+        function buildWrapupSummary(scenario) {
+            const fields = scenario.choicesSection?.fields || [];
+            const rows = fields.map((f, i) => {
+                const myEl = document.getElementById(`my-choice-field-${i}`);
+                const myVal = myEl?.value || 'N/A';
+                const partnerEl = document.getElementById(`partner-field-${i}`);
+                const partnerVal = partnerEl ? partnerEl.innerText.trim() : 'N/A';
+                return `<p><strong>${escapeHtml(f.label)}:</strong> You: <span class="text-indigo-600">${escapeHtml(myVal)}</span> &nbsp;|&nbsp; Partner: <span class="text-slate-900">${escapeHtml(partnerVal)}</span></p>`;
+            }).join('');
+            document.getElementById('created-summary').innerHTML = rows || '<p class="text-slate-400">No choices recorded yet.</p>';
+        }
+
+        function renderSkillsSection(scenario) {
+            const skills = scenario.skills || ['Clear communication', 'Good listening', 'Negotiation skills'];
+            const container = document.getElementById('skills-rating-container');
+            container.innerHTML = skills.map((label, idx) => `
+                <div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm">
+                    <span class="text-sm font-bold text-slate-700">${escapeHtml(label)}</span>
+                    <div class="star-group flex gap-1 text-2xl cursor-pointer" data-skill="${idx}">
+                        ${[1,2,3,4,5].map(v => `<span data-val="${v}" class="star opacity-30 transition hover:opacity-100">⭐</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.star-group').forEach(group => {
+                const stars = group.querySelectorAll('.star');
+                stars.forEach(star => {
+                    star.addEventListener('click', (e) => {
+                        const val = Number(e.target.dataset.val);
+                        stars.forEach((s, i) => {
+                            if (i < val) s.style.opacity = '1';
+                            else s.style.opacity = '0.3';
+                        });
+                    });
+                });
+            });
+        }
+
+        document.getElementById('btn-sign')?.addEventListener('click', () => {
+            const name = document.getElementById('signature-input').value.trim();
+            if (!name) { alert('Please type your name to sign.'); return; }
+            alert(`✅ Signed successfully by ${name}!`);
+        });
+
+        function openModal(title, html) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal-container').classList.remove('hidden-screen');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-container').classList.add('hidden-screen');
+        }
+        document.getElementById('modal-container')?.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeModal();
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('role') === 'teacher') {
+                document.body.innerHTML = `
+                    <div class="min-h-screen flex items-center justify-center p-4 bg-slate-100">
+                        <div class="max-w-md glass-3d rounded-[32px] p-8 text-center shadow-2xl">
+                            <span class="text-5xl block mb-4 float-3D">👩‍🏫</span>
+                            <h2 class="text-2xl font-bold text-slate-900">Teacher Panel</h2>
+                            <p class="text-sm text-slate-500 mt-2">This is the student-facing view. The teacher dashboard operates in the full environment.</p>
+                            <button onclick="window.location.href='.'" class="mt-6 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold btn-3d">← Back to Student View</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            showScreen('screen-setup');
+        });
+
+        window.syncMyAnswer = syncMyAnswer;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
     </script>
-
 </body>
 </html>
