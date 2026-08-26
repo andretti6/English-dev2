@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Learning Platform — Daily Themes</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <style>
+        .hidden-screen { display: none !important; }
+
+        @keyframes star-pop {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.4) rotate(15deg); filter: drop-shadow(0 0 8px #f59e0b); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .star-active {
+            animation: star-pop 0.3s ease-in-out;
+            opacity: 1 !important;
+            color: #f59e0b;
+        }
+
+        .room-btn { transition: 0.15s; }
+        .room-btn.room-active {
+            background: #4f46e5 !important;
+            color: white !important;
+            box-shadow: 0 0 0 2px #4f46e5, 0 0 12px rgba(79,70,229,0.4);
+        }
+
+        textarea.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+
+        /* ---- Game-style activity screen ---- */
+        @keyframes float-badge {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        .mission-icon { animation: float-badge 2.6s ease-in-out infinite; }
+
+        .role-card { transition: transform .15s ease, box-shadow .15s ease; }
+        .role-card:hover { transform: translateY(-2px); }
+        .role-card.role-you { box-shadow: 0 0 0 2px currentColor inset; }
+
+        .opt-card { transition: transform .15s ease, box-shadow .15s ease; }
+        .opt-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+
+        details.audio-drawer > summary { list-style: none; }
+        details.audio-drawer > summary::-webkit-details-marker { display: none; }
+        details.audio-drawer[open] .audio-chevron { transform: rotate(180deg); }
+        .audio-chevron { transition: transform .2s ease; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <!-- MAIN CONTAINER -->
+    <div class="max-w-4xl mx-auto p-4 md:p-6">
+
+        <!-- SCREEN 1: REGISTRATION / SETUP -->
+        <div id="screen-setup" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold text-slate-900 mb-6">Welcome to Daily English</h2>
+            <form id="form-setup" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Your Name</label>
+                    <input type="text" id="input-name" required placeholder="Type your full name" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition shadow-sm">Continue to Lobby</button>
+            </form>
+        </div>
+
+        <!-- SCREEN 2: SMART LOBBY (Daily Vocab & Reflection) -->
+        <div id="screen-lobby" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 hidden-screen space-y-6">
+            <div class="text-center space-y-2">
+                <span id="lobby-date-badge" class="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold uppercase tracking-wide">Today's Topic</span>
+                <h2 id="lobby-theme-title" class="text-2xl font-bold text-slate-900">Loading daily theme...</h2>
+            </div>
+
+            <!-- Daily Warm-up Text -->
+            <div id="lobby-text-card" class="p-4 bg-indigo-50 border border-indigo-100 rounded-xl text-slate-700 text-sm leading-relaxed">
+                Loading introduction...
+            </div>
+
+            <!-- Vocabulary Cards with Definitions -->
+            <div class="space-y-2">
+                <h3 class="font-semibold text-slate-900 text-xs uppercase tracking-wide text-slate-500">📖 Key Vocabulary</h3>
+                <div id="lobby-vocab-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- Reflection Questions -->
+            <div class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <h3 class="font-semibold text-slate-900 text-sm border-b pb-2">🤔 Questions for Reflection (Think while you wait):</h3>
+                <ul id="lobby-questions-list" class="list-disc list-inside space-y-2 text-sm text-slate-600"></ul>
+            </div>
+
+            <div class="flex items-center justify-center space-x-3 text-sm text-indigo-600 font-medium py-2 border-t pt-4">
+                <svg class="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Your teacher is assigning you to a breakout room. Please wait...</span>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: MAIN ROLE-PLAY ACTIVITY (GAME STYLE) -->
+        <div id="screen-activity" class="rounded-2xl shadow-sm border border-slate-200 hidden-screen overflow-hidden bg-white">
+
+            <!-- Themed banner: timer + scenario badge + mission -->
+            <div id="activity-banner" class="p-5 md:p-6 text-white bg-gradient-to-br from-indigo-600 to-violet-700">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 bg-black/20 backdrop-blur px-3 py-1.5 rounded-full font-mono font-bold text-sm">
+                        <span>⏱</span>
+                        <span id="timer-display">30:00</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-black/20 backdrop-blur px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide">
+                        <span id="scenario-icon">🎮</span>
+                        <span id="scenario-title-badge">Scenario</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 flex items-start gap-3 bg-black/15 backdrop-blur rounded-2xl p-4">
+                    <span class="text-2xl mission-icon">🎯</span>
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider opacity-80 block mb-0.5">Your Mission</span>
+                        <p class="text-sm font-medium leading-snug" id="mission-display">Loading scenario...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-5 md:p-6 space-y-5">
+
+                <!-- Role cards: You vs Partner -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div id="info-person-a" class="role-card rounded-2xl border-2 p-4 text-center space-y-1.5">
+                        <div id="person-a-avatar" class="w-12 h-12 mx-auto rounded-full flex items-center justify-center text-2xl bg-white/70">🧑</div>
+                        <span id="person-a-role-title" class="inline-block text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Role A</span>
+                        <p class="font-semibold text-slate-900 text-sm" id="person-a-name">Waiting...</p>
+                        <p class="text-[11px] text-slate-500" id="person-a-focus"></p>
+                    </div>
+
+                    <div id="info-person-b" class="role-card rounded-2xl border-2 p-4 text-center space-y-1.5">
+                        <div id="person-b-avatar" class="w-12 h-12 mx-auto rounded-full flex items-center justify-center text-2xl bg-white/70">🧑</div>
+                        <span id="person-b-role-title" class="inline-block text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Role B</span>
+                        <p class="font-semibold text-slate-900 text-sm" id="person-b-name">Waiting for partner...</p>
+                        <p class="text-[11px] text-slate-500" id="person-b-focus"></p>
+                    </div>
+                </div>
+
+                <!-- Audio, tucked away to keep the screen minimal -->
+                <details class="audio-drawer rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+                    <summary class="cursor-pointer px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-slate-500 flex items-center justify-between">
+                        <span>🎧 Today's Audio</span>
+                        <span class="audio-chevron">⌄</span>
+                    </summary>
+                    <div id="activity-audio-container" class="p-3 pt-0"></div>
+                </details>
+
+                <!-- Choices: reduced, game-card style -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wide text-slate-500" id="choices-box-title">Choices</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-indigo-50/60 p-3.5 rounded-2xl border-2 border-indigo-100 space-y-2.5">
+                            <span class="text-[11px] font-bold uppercase text-indigo-700 block" id="my-answers-label">✏️ You</span>
+                            <div id="my-fields-container" class="space-y-2.5"></div>
+                        </div>
+                        <div class="bg-slate-100/70 p-3.5 rounded-2xl border-2 border-slate-200 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold uppercase text-slate-500">👀 Partner</span>
+                                <span class="text-[11px] text-indigo-600 font-semibold" id="choices-partner-name">—</span>
+                            </div>
+                            <div id="partner-fields-container" class="space-y-2.5"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="btn-options" class="py-3 rounded-2xl font-bold text-sm text-white shadow-sm bg-indigo-600 hover:bg-indigo-700 transition">📋 Options</button>
+                    <button id="btn-help-friend" class="py-3 rounded-2xl font-bold text-sm border-2 border-slate-300 bg-white hover:bg-slate-50 transition">💡 Help friend</button>
+                </div>
+
+                <button id="btn-to-wrapup" class="w-full py-3 rounded-2xl font-bold text-white text-sm shadow bg-slate-900 hover:bg-slate-800 transition">Next Phase →</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: WRAP-UP -->
+        <div id="screen-wrapup" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 hidden-screen space-y-6">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h2 class="text-2xl font-bold text-slate-900">Screen 4 · Wrap-up</h2>
+                <button id="btn-back-to-activity" class="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold">← Back to Activity</button>
+            </div>
+
+            <div class="space-y-2">
+                <h3 class="text-sm font-bold text-slate-700">What we created together</h3>
+                <div id="created-summary" class="p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm space-y-1 text-slate-700"></div>
+            </div>
+
+            <div class="p-4 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-2">
+                <h3 class="text-sm font-bold text-indigo-900">Questions for Oral Reflection:</h3>
+                <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                    <li>Did your plan work out as expected? What was easy or difficult?</li>
+                    <li>What is the main lesson you learned from each other today?</li>
+                </ul>
+            </div>
+
+            <div class="space-y-4 border-t pt-4">
+                <h3 class="text-sm font-bold text-slate-800">Rate <span id="friend-name-stars" class="text-indigo-600">your partner</span>'s Communication Skills:</h3>
+                <div id="skills-rating-container" class="space-y-3"></div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+                <input type="text" id="signature-input" placeholder="Type your name to sign" class="flex-1 p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                <button id="btn-sign" onclick="alert('Signed successfully!')" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 text-sm">Sign</button>
+            </div>
+
+            <button onclick="window.print()" class="w-full py-3 bg-white border border-slate-300 rounded-xl font-medium hover:bg-slate-50 flex items-center justify-center gap-2 text-sm shadow-sm">🖨 Print homework</button>
+        </div>
+
+        <!-- TEACHER CONTROL PANEL -->
+        <div id="screen-teacher" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 hidden-screen space-y-6">
+            <h2 class="text-2xl font-bold text-slate-900 border-b pb-3">Teacher Control Panel — Daily Themes Setup</h2>
+
+            <!-- Setup Initial 2 Daily Themes in Firebase -->
+            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 space-y-3">
+                <h3 class="font-semibold text-sm text-indigo-900">📅 Seed Test Themes (Day 1 & Day 2)</h3>
+                <p class="text-xs text-slate-600">Click below to load the 2 test themes into Firebase so students automatically get today's theme based on the date.</p>
+                <button onclick="seedDailyThemes()" class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold hover:bg-indigo-700">🚀 Publish Test Themes to Firebase</button>
+                <span id="seed-status" class="text-xs text-emerald-600 font-medium ml-2"></span>
+            </div>
+
+            <!-- Central Timer Controls -->
+            <div class="bg-slate-50 p-4 rounded-xl border space-y-3">
+                <h3 class="font-semibold text-sm text-slate-700">Activity Timer Control (All Rooms)</h3>
+                <div class="flex gap-2">
+                    <button onclick="controlTimer('play')" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700">▶ Play</button>
+                    <button onclick="controlTimer('pause')" class="px-4 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700">⏸ Pause</button>
+                    <button onclick="controlTimer('reset')" class="px-4 py-2 bg-rose-600 text-white rounded-lg text-sm font-medium hover:bg-rose-700">🔄 Reset (30m)</button>
+                </div>
+            </div>
+
+            <!-- Student Management & Breakout Rooms -->
+            <div class="space-y-4 border-t pt-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-semibold text-sm text-slate-700">Assign Students to Rooms</h3>
+                    <div class="flex gap-2">
+                        <button id="btn-add-room" class="px-3 py-1.5 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg text-xs font-semibold">+ Add Room</button>
+                        <button onclick="clearAllStudents()" class="px-3 py-1.5 bg-rose-100 text-rose-700 hover:bg-rose-200 rounded-lg text-xs font-semibold border border-rose-200">🧹 Clear All Students</button>
+                    </div>
+                </div>
+                <div id="teacher-students-list" class="space-y-2 text-sm"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SUPPORT MODALS -->
+    <div id="modal-container" class="fixed inset-0 bg-black/40 flex items-center justify-center p-4 hidden-screen">
+        <div class="bg-white p-6 rounded-2xl max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
+            <h3 id="modal-title" class="font-bold text-lg text-slate-900 border-b pb-2">Modal Title</h3>
+            <div id="modal-body" class="text-sm text-slate-600 space-y-3"></div>
+            <button onclick="closeModal()" class="w-full py-2 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 2 TEST THEMES FOR TODAY AND TOMORROW (OR WEEKLY CYCLE)
+        const TEST_DAILY_THEMES = {
+            "day_1": {
+                dateKey: "2026-08-22", // Exemplo de hoje
+                title: "Financial Planning & Investments",
+                // Game-style visual identity for this scenario
+                theme: {
+                    icon: "💰",
+                    bannerGradient: "from-emerald-600 to-teal-700",
+                    roleA: { icon: "🧑‍💼", badge: "bg-emerald-100 text-emerald-800 border-emerald-300 text-emerald-700", border: "border-emerald-300", avatarBg: "bg-emerald-100" },
+                    roleB: { icon: "🙋", badge: "bg-amber-100 text-amber-800 border-amber-300 text-amber-700", border: "border-amber-300", avatarBg: "bg-amber-100" }
+                },
+                lobby: {
+                    text: "Today we explore how to manage money wisely, discuss assets, and make safe long-term decisions.",
+                    audioEmbed: '<iframe src="https://whyp.it/embeds/track/0riIJRm63We5?token=b1iPKwh9SamZ" width="100%" height="180" scrolling="no" frameborder="0" loading="lazy"></iframe>',
+                    vocabulary: [
+                        { word: "Asset", definition: "A useful or valuable thing, person, or quality." },
+                        { word: "Yield", definition: "The income return on an investment." }
+                    ],
+                    questions: ["What is your biggest financial goal this year?", "How do you usually save money?"]
+                },
+                mission: "You are at Northstar Brokers. Talk to your partner, understand their goals, and close the best investment deal together!",
+                personA: { roleTitle: "Financial Advisor", focus: "Suggest options & explain risk" },
+                personB: { roleTitle: "Client", focus: "Share goals & decide together" },
+                choicesSection: {
+                    boxTitle: "Investment Deal (Discuss & Register)",
+                    fields: [
+                        { key: "option", label: "Chosen Investment", type: "select", options: ["CDB / Treasury", "Stock Index Fund", "Real Estate Fund", "Mixed Portfolio"] },
+                        { key: "amount", label: "Amount ($)", type: "text", placeholder: "e.g. 50,000" }
+                    ]
+                },
+                optionsButton: {
+                    label: "📋 Investments", modalTitle: "Investment Options",
+                    // Each role sees their own set — at least 2 items per role, different from the other role's items
+                    optionsByRole: {
+                        A: [
+                            { icon: "🏦", title: "CDB / Treasury", description: "Fixed income, government/bank backed.", advantage: "Very safe", outcome: "~10% p.a.", consideration: "Low risk, low reward" },
+                            { icon: "📈", title: "Stock Index Fund", description: "Tracks the overall stock market.", advantage: "Higher growth potential", outcome: "~15-20% p.a. (variable)", consideration: "Moderate/high risk" }
+                        ],
+                        B: [
+                            { icon: "🛡️", title: "Conservative Profile", description: "Prioritizes safety over growth.", advantage: "Peace of mind", outcome: "Slow, steady gains", consideration: "May lose to inflation" },
+                            { icon: "🚀", title: "Growth Profile", description: "Prioritizes higher long-term returns.", advantage: "Bigger potential upside", outcome: "Faster wealth growth", consideration: "Accepts more ups and downs" }
+                        ]
+                    }
+                },
+                helpFriend: { buttonLabel: "💡 Help friend", modalTitle: "Help Checklist", steps: ["Ask about their goals clearly", "Propose one option that fits", "Confirm the amount together"] },
+                skills: ["Spoke clearly", "Active listening", "Negotiated well"]
+            },
+            "day_2": {
+                dateKey: "2026-08-23", // Exemplo de amanhã
+                title: "Travel Planning & Adventure",
+                theme: {
+                    icon: "✈️",
+                    bannerGradient: "from-sky-600 to-blue-700",
+                    roleA: { icon: "🧳", badge: "bg-sky-100 text-sky-800 border-sky-300 text-sky-700", border: "border-sky-300", avatarBg: "bg-sky-100" },
+                    roleB: { icon: "🏖️", badge: "bg-orange-100 text-orange-800 border-orange-300 text-orange-700", border: "border-orange-300", avatarBg: "bg-orange-100" }
+                },
+                lobby: {
+                    text: "Today we plan an exciting trip abroad! Let's discuss itineraries, budgets, and cultural experiences.",
+                    audioEmbed: '<iframe src="https://whyp.it/embeds/track/UE5aNI22OTWw?token=5fmsDh9nq1k7" width="100%" height="180" scrolling="no" frameborder="0" loading="lazy"></iframe>',
+                    vocabulary: [
+                        { word: "Itinerary", definition: "A planned route or journey of a trip." },
+                        { word: "Accomodation", definition: "A place where traveler can sleep and stay." }
+                    ],
+                    questions: ["What is your dream travel destination?", "Do you prefer planned tours or exploring freely?"]
+                },
+                mission: "You are at Northstar Travel Agency. Plan a 7-day international trip with your friend, agreeing on destination and budget!",
+                personA: { roleTitle: "Travel Agent", focus: "Suggest destinations & costs" },
+                personB: { roleTitle: "Vacationer", focus: "Share preferences & set budget" },
+                choicesSection: {
+                    boxTitle: "Trip Plan (Discuss & Register)",
+                    fields: [
+                        { key: "destination", label: "Destination", type: "select", options: ["Washington DC", "Paris", "Tokyo", "Rio de Janeiro"] },
+                        { key: "budget", label: "Budget ($)", type: "text", placeholder: "e.g. 3,000" }
+                    ]
+                },
+                optionsButton: {
+                    label: "📋 Destinations", modalTitle: "Trip Options",
+                    optionsByRole: {
+                        A: [
+                            { icon: "🏛️", title: "Washington DC Package", description: "Museums & history, city tour included.", advantage: "Rich culture", outcome: "Great learning experience", consideration: "Busy season, higher prices" },
+                            { icon: "🥐", title: "Paris Package", description: "Classic sights, food & art tour.", advantage: "Iconic experience", outcome: "Unforgettable memories", consideration: "Higher daily costs" }
+                        ],
+                        B: [
+                            { icon: "🛋️", title: "Relaxed & Comfort", description: "Slow pace, comfortable hotels.", advantage: "Low stress", outcome: "Well-rested trip", consideration: "Costs more per day" },
+                            { icon: "🎒", title: "Adventure & Budget", description: "Fast pace, hostels, local transport.", advantage: "Cheaper & exciting", outcome: "More stops, more stories", consideration: "More physically tiring" }
+                        ]
+                    }
+                },
+                helpFriend: { buttonLabel: "💡 Help friend", modalTitle: "Help Checklist", steps: ["Discuss the budget first", "Select the top spots together", "Agree on a travel style"] },
+                skills: ["Exciting vocabulary", "Good suggestions", "Friendly tone"]
+            }
+        };
+
+        let currentUser = null;
+        let currentRoom = null;
+        let currentScenario = null;
+        let isInitializedFields = false;
+        let myRoleKey = null; // 'A' or 'B'
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = String(str ?? '');
+            return div.innerHTML;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('role') === 'teacher') {
+                showScreen('screen-teacher');
+                initTeacherPanel();
+            } else {
+                showScreen('screen-setup');
+            }
+        });
+
+        function showScreen(id) {
+            document.querySelectorAll('.max-w-4xl > div').forEach(div => div.classList.add('hidden-screen'));
+            document.getElementById(id).classList.remove('hidden-screen');
+        }
+
+        // =============================================================
+        // SETUP & DAILY THEME RESOLUTION
+        // =============================================================
+        document.getElementById('form-setup').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('input-name').value.trim();
+            if (!name) return;
+            currentUser = {
+                id: 'user_' + Math.random().toString(36).substr(2, 9),
+                name: name,
+                status: 'lobby',
+                room: null,
+                joinedAt: Date.now(),
+                answers: {}
+            };
+            db.ref(`students/${currentUser.id}`).set(currentUser);
+            showScreen('screen-lobby');
+            loadDailyThemeForUser();
+            listenForRoomAssignment();
+        });
+
+        function loadDailyThemeForUser() {
+            // Pega a data atual no formato YYYY-MM-DD do navegador ou simula
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            db.ref('dailyThemes').once('value').then((snap) => {
+                const themes = snap.val() || TEST_DAILY_THEMES;
+                // Procura o tema correspondente à data de hoje, senão pega o primeiro disponível
+                let selectedTheme = null;
+                Object.values(themes).forEach(t => {
+                    if (t.dateKey === todayStr) selectedTheme = t;
+                });
+                if (!selectedTheme) {
+                    // Fallback para o primeiro tema se a data bater exata
+                    selectedTheme = Object.values(themes)[0] || TEST_DAILY_THEMES.day_1;
+                }
+
+                currentScenario = selectedTheme;
+                renderLobbyContent(selectedTheme, todayStr);
+            });
+        }
+
+        function renderLobbyContent(theme, dateStr) {
+            document.getElementById('lobby-date-badge').innerText = `Today's Topic (${dateStr})`;
+            document.getElementById('lobby-theme-title').innerText = theme.title;
+
+            const lobbyData = theme.lobby || {};
+            document.getElementById('lobby-text-card').innerHTML = `<p>${escapeHtml(lobbyData.text || '')}</p>`;
+
+            const vocabList = document.getElementById('lobby-vocab-list');
+            vocabList.innerHTML = (lobbyData.vocabulary || []).map(v => `
+                <div class="p-3 bg-slate-50 border rounded-xl text-xs space-y-1">
+                    <strong class="text-indigo-600 text-sm">${escapeHtml(v.word)}</strong>
+                    <p class="text-slate-600">${escapeHtml(v.definition)}</p>
+                </div>
+            `).join('');
+
+            const qList = document.getElementById('lobby-questions-list');
+            qList.innerHTML = (lobbyData.questions || []).map(q => `<li>${escapeHtml(q)}</li>`).join('');
+        }
+
+        function listenForRoomAssignment() {
+            db.ref(`students/${currentUser.id}`).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.room) {
+                    currentRoom = data.room;
+                    showScreen('screen-activity');
+                    initActivityScreen();
+                }
+            });
+        }
+
+        // =============================================================
+        // SCREEN 3: ACTIVITY (GAME STYLE)
+        // =============================================================
+        function initActivityScreen() {
+            if (!currentScenario) {
+                currentScenario = TEST_DAILY_THEMES.day_1;
+            }
+
+            renderScenarioStaticParts(currentScenario);
+            if (!isInitializedFields) {
+                renderChoicesFieldsContainers(currentScenario);
+                isInitializedFields = true;
+            }
+            wireOptionsAndHelpButtons(currentScenario);
+
+            db.ref('timer').on('value', (snapshot) => {
+                const timerData = snapshot.val() || { seconds: 1800, running: false };
+                updateTimerDisplay(timerData.seconds);
+            });
+
+            db.ref('students').on('value', (snapshot) => {
+                const allStudents = snapshot.val() || {};
+                const roomPlayers = Object.values(allStudents)
+                    .filter(s => s.room === currentRoom)
+                    .sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+
+                renderRoomPlayers(roomPlayers, currentScenario);
+                updatePartnerRealtimeView(roomPlayers);
+            });
+
+            document.getElementById('btn-to-wrapup').onclick = () => {
+                buildWrapupSummary(currentScenario);
+                renderSkillsSection(currentScenario);
+                showScreen('screen-wrapup');
+            };
+
+            document.getElementById('btn-back-to-activity').onclick = () => {
+                showScreen('screen-activity');
+            };
+        }
+
+        function renderScenarioStaticParts(scenario) {
+            const theme = scenario.theme || {};
+
+            // Banner
+            const banner = document.getElementById('activity-banner');
+            banner.className = 'p-5 md:p-6 text-white bg-gradient-to-br ' + (theme.bannerGradient || 'from-indigo-600 to-violet-700');
+            document.getElementById('scenario-icon').innerText = theme.icon || '🎮';
+            document.getElementById('scenario-title-badge').innerText = scenario.title || 'Scenario';
+            document.getElementById('mission-display').innerText = scenario.mission;
+
+            // Audio moved from the lobby into the main screen (collapsed by default)
+            document.getElementById('activity-audio-container').innerHTML = scenario.lobby?.audioEmbed || '';
+
+            // Role A card styling
+            const roleA = theme.roleA || {};
+            document.getElementById('person-a-avatar').innerText = roleA.icon || '🧑';
+            document.getElementById('person-a-avatar').className = 'w-12 h-12 mx-auto rounded-full flex items-center justify-center text-2xl ' + (roleA.avatarBg || 'bg-slate-100');
+            document.getElementById('info-person-a').className = 'role-card rounded-2xl border-2 p-4 text-center space-y-1.5 ' + (roleA.border || 'border-slate-200');
+            document.getElementById('person-a-role-title').className = 'inline-block text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ' + (roleA.badge || 'bg-slate-100 text-slate-700');
+            document.getElementById('person-a-role-title').innerText = scenario.personA?.roleTitle || 'Role A';
+            document.getElementById('person-a-focus').innerText = scenario.personA?.focus || '';
+
+            // Role B card styling
+            const roleB = theme.roleB || {};
+            document.getElementById('person-b-avatar').innerText = roleB.icon || '🧑';
+            document.getElementById('person-b-avatar').className = 'w-12 h-12 mx-auto rounded-full flex items-center justify-center text-2xl ' + (roleB.avatarBg || 'bg-slate-100');
+            document.getElementById('info-person-b').className = 'role-card rounded-2xl border-2 p-4 text-center space-y-1.5 ' + (roleB.border || 'border-slate-200');
+            document.getElementById('person-b-role-title').className = 'inline-block text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full ' + (roleB.badge || 'bg-slate-100 text-slate-700');
+            document.getElementById('person-b-role-title').innerText = scenario.personB?.roleTitle || 'Role B';
+            document.getElementById('person-b-focus').innerText = scenario.personB?.focus || '';
+
+            document.getElementById('choices-box-title').innerText = scenario.choicesSection?.boxTitle || 'Choices';
+        }
+
+        function renderChoicesFieldsContainers(scenario) {
+            const fields = scenario.choicesSection?.fields || [];
+            const myContainer = document.getElementById('my-fields-container');
+            const partnerContainer = document.getElementById('partner-fields-container');
+
+            myContainer.innerHTML = fields.map((f, i) => {
+                if (f.type === 'select') {
+                    const opts = (f.options || []).map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('');
+                    return `<div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">${escapeHtml(f.label || f.placeholder || '')}</label>
+                        <select id="my-choice-field-${i}" onchange="syncMyAnswer(${i})" class="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                            <option value="">Choose...</option>
+                            ${opts}
+                        </select>
+                    </div>`;
+                }
+                return `<div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">${escapeHtml(f.label || f.placeholder || '')}</label>
+                    <input type="text" id="my-choice-field-${i}" oninput="syncMyAnswer(${i})" placeholder="${escapeHtml(f.placeholder || '')}" class="w-full p-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>`;
+            }).join('');
+
+            partnerContainer.innerHTML = fields.map((f, i) =>
+                `<div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">${escapeHtml(f.label || f.placeholder || '')}</label>
+                    <input type="text" id="partner-choice-field-${i}" disabled placeholder="Waiting for partner..." class="w-full p-2.5 bg-slate-200/60 border border-slate-300 rounded-lg text-sm text-slate-700 font-medium cursor-not-allowed">
+                </div>`
+            ).join('');
+
+            if (currentUser && currentUser.name) {
+                document.getElementById('my-answers-label').innerText = `✏️ You (${currentUser.name})`;
+            }
+        }
+
+        function syncMyAnswer(index) {
+            const inputVal = document.getElementById(`my-choice-field-${index}`).value;
+            db.ref(`students/${currentUser.id}/answers/field_${index}`).set(inputVal);
+        }
+
+        function updatePartnerRealtimeView(roomPlayers) {
+            const partner = roomPlayers.find(p => p && p.id !== currentUser.id);
+            if (partner && partner.answers) {
+                Object.keys(partner.answers).forEach(key => {
+                    const idx = key.replace('field_', '');
+                    const partnerInput = document.getElementById(`partner-choice-field-${idx}`);
+                    if (partnerInput && partnerInput.value !== partner.answers[key]) {
+                        partnerInput.value = partner.answers[key] || '';
+                    }
+                });
+            }
+        }
+
+        function wireOptionsAndHelpButtons(scenario) {
+            const optionsBtn = document.getElementById('btn-options');
+            const optCfg = scenario.optionsButton || {};
+            optionsBtn.innerText = optCfg.label || '📋 Options';
+            optionsBtn.onclick = () => openOptionsModal(optCfg);
+
+            const helpBtn = document.getElementById('btn-help-friend');
+            const helpCfg = scenario.helpFriend || {};
+            helpBtn.innerText = helpCfg.buttonLabel || '💡 Help friend';
+            helpBtn.onclick = () => {
+                const stepsHtml = `<ul class="list-disc list-inside space-y-2">${
+                    (helpCfg.steps || []).map((s, i) => `<li><strong>Step ${i + 1}:</strong> ${escapeHtml(s)}</li>`).join('')
+                }</ul>`;
+                openModal(helpCfg.modalTitle || 'Help Checklist', stepsHtml);
+            };
+        }
+
+        function openOptionsModal(optCfg) {
+            const roleKey = myRoleKey || 'A';
+            const items = (optCfg.optionsByRole && optCfg.optionsByRole[roleKey]) || [];
+            const body = `
+                <div class="space-y-3">
+                    ${items.map(opt => `
+                        <div class="opt-card border-2 rounded-2xl p-3.5 bg-slate-50 space-y-1.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl">${escapeHtml(opt.icon || '⭐')}</span>
+                                <strong class="text-indigo-700 text-sm">${escapeHtml(opt.title)}</strong>
+                            </div>
+                            <p class="text-xs text-slate-600">${escapeHtml(opt.description || '')}</p>
+                            <div class="flex flex-wrap gap-1.5 pt-1">
+                                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-semibold">👍 ${escapeHtml(opt.advantage || '')}</span>
+                                <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full text-[10px] font-semibold">📊 ${escapeHtml(opt.outcome || '')}</span>
+                                ${opt.consideration ? `<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-semibold">⚠️ ${escapeHtml(opt.consideration)}</span>` : ''}
+                            </div>
+                        </div>
+                    `).join('') || '<p class="text-sm text-slate-400">No options available.</p>'}
+                </div>
+            `;
+            openModal(optCfg.modalTitle || 'Options', body);
+        }
+
+        function renderRoomPlayers(players, scenario) {
+            const personA = players[0] || null;
+            const personB = players[1] || null;
+
+            document.getElementById('person-a-name').innerHTML = personA ? escapeHtml(personA.name) + (personA.id === currentUser?.id ? ' (You)' : '') : 'Waiting...';
+            document.getElementById('person-b-name').innerHTML = personB ? escapeHtml(personB.name) + (personB.id === currentUser?.id ? ' (You)' : '') : 'Waiting for partner...';
+
+            const partner = [personA, personB].find(p => p && p.id !== currentUser?.id);
+            document.getElementById('choices-partner-name').innerText = partner ? partner.name : '—';
+            document.getElementById('friend-name-stars').innerText = partner ? partner.name : 'your partner';
+
+            const isA = personA && currentUser && personA.id === currentUser.id;
+            myRoleKey = isA ? 'A' : 'B';
+
+            // Highlight my own card
+            document.getElementById('info-person-a').classList.toggle('role-you', isA);
+            document.getElementById('info-person-b').classList.toggle('role-you', !isA && !!(personB && currentUser && personB.id === currentUser.id));
+        }
+
+        function updateTimerDisplay(seconds) {
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${m}:${s}`;
+        }
+
+        function buildWrapupSummary(scenario) {
+            const fields = scenario.choicesSection?.fields || [];
+            const rows = fields.map((f, i) => {
+                const elMy = document.getElementById(`my-choice-field-${i}`);
+                const elPartner = document.getElementById(`partner-choice-field-${i}`);
+                return `<p><strong>${escapeHtml(f.label || f.placeholder)}:</strong> You: ${escapeHtml(elMy?.value || 'N/A')} | Partner: ${escapeHtml(elPartner?.value || 'N/A')}</p>`;
+            }).join('');
+            document.getElementById('created-summary').innerHTML = rows;
+        }
+
+        function renderSkillsSection(scenario) {
+            const skills = scenario.skills || ['Spoke clearly', 'Active listening'];
+            const container = document.getElementById('skills-rating-container');
+            container.innerHTML = skills.map((label, idx) => `
+                <div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl">
+                    <span class="text-sm font-medium text-slate-700">${escapeHtml(label)}</span>
+                    <div class="star-group flex space-x-1 text-2xl cursor-pointer" data-skill="${idx}">
+                        ${[1,2,3,4,5].map(v => `<span data-val="${v}" class="star opacity-30 transition">⭐</span>`).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            container.querySelectorAll('.star-group').forEach(group => {
+                const stars = group.querySelectorAll('.star');
+                stars.forEach(star => {
+                    star.addEventListener('click', (e) => {
+                        const selectedVal = Number(e.target.dataset.val);
+                        stars.forEach((s, idx2) => {
+                            if (idx2 < selectedVal) s.classList.add('star-active');
+                            else s.classList.remove('star-active');
+                        });
+                    });
+                });
+            });
+        }
+
+        // =============================================================
+        // TEACHER PANEL
+        // =============================================================
+        function initTeacherPanel() {
+            seedDefaultRooms();
+            let roomsList = {}, studentsData = {};
+
+            db.ref('roomsList').on('value', snap => { roomsList = snap.val() || {}; renderTeacherStudents(studentsData, roomsList); });
+            db.ref('students').on('value', snap => { studentsData = snap.val() || {}; renderTeacherStudents(studentsData, roomsList); });
+
+            document.getElementById('btn-add-room').addEventListener('click', addRoom);
+        }
+
+        function seedDailyThemes() {
+            db.ref('dailyThemes').set(TEST_DAILY_THEMES).then(() => {
+                document.getElementById('seed-status').innerText = "✅ Test Themes Published Successfully!";
+            });
+        }
+
+        function seedDefaultRooms() {
+            db.ref('roomsList').once('value').then(snap => {
+                if (snap.val()) return;
+                const defaults = {};
+                for (let i = 1; i <= 5; i++) defaults['room' + i] = 'Room ' + i;
+                db.ref('roomsList').set(defaults);
+                db.ref('roomsMeta/nextIndex').set(6);
+            });
+        }
+
+        function addRoom() {
+            db.ref('roomsMeta/nextIndex').once('value').then(snap => {
+                const n = snap.val() || 6;
+                db.ref('roomsList/room' + n).set('Room ' + n);
+                db.ref('roomsMeta/nextIndex').set(n + 1);
+            });
+        }
+
+        function clearAllStudents() {
+            if (confirm("Remove all students from Firebase?")) {
+                db.ref('students').remove().then(() => alert("Cleared!"));
+            }
+        }
+
+        function renderTeacherStudents(students, roomsList) {
+            const list = document.getElementById('teacher-students-list');
+            const roomKeys = Object.keys(roomsList);
+            list.innerHTML = '';
+            Object.entries(students).forEach(([id, st]) => {
+                const roomButtons = roomKeys.map(rk => `
+                    <button onclick="assignRoom('${id}', '${rk}')" class="room-btn px-2 py-1 rounded text-xs font-medium border ${st.room === rk ? 'room-active' : 'bg-indigo-50 text-indigo-700'}">${escapeHtml(roomsList[rk])}</button>
+                `).join('');
+                const row = document.createElement('div');
+                row.className = 'p-3 bg-slate-50 border rounded-xl flex items-center justify-between flex-wrap gap-2';
+                row.innerHTML = `<div><strong>${escapeHtml(st.name)}</strong><span class="text-xs text-slate-500 block">Status: ${st.room || 'Lobby'}</span></div><div class="flex gap-1">${roomButtons}</div>`;
+                list.appendChild(row);
+            });
+            if (Object.keys(students).length === 0) list.innerHTML = '<p class="text-sm text-slate-400">No students connected.</p>';
+        }
+
+        function assignRoom(studentId, roomKey) {
+            db.ref(`students/${studentId}`).update({ room: roomKey, status: 'in-activity' });
+        }
+
+        function controlTimer(action) {
+            db.ref('timer').transaction(current => {
+                let seconds = current ? current.seconds : 1800;
+                if (action === 'reset') seconds = 1800;
+                return { seconds, running: action === 'play' };
+            });
+        }
+
+        setInterval(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('role') === 'teacher') {
+                db.ref('timer').once('value', snapshot => {
+                    const t = snapshot.val();
+                    if (t && t.running && t.seconds > 0) db.ref('timer/seconds').set(t.seconds - 1);
+                });
+            }
+        }, 1000);
+
+        function openModal(title, html) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal-container').classList.remove('hidden-screen');
+        }
+        function closeModal() { document.getElementById('modal-container').classList.add('hidden-screen'); }
+    </script>
+</body>
+</html>
