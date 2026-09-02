@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🚗 Car Rental · 3D Mission</title>
+    <title>🚀 Close a Big Deal · Role‑Play</title>
     <script src="https://cdn.tailwindcss.com">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
@@ -11,6 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
     </script>
     <style>
+        /* ── estilos 3D (mesmos) ── */
         * {
             box-sizing: border-box;
         }
@@ -23,30 +24,16 @@
         .hidden-screen {
             display: none !important;
         }
-
-        /* ── 3D Glass & Depth Layers ── */
         .glass-3d {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 
-                0 20px 40px -15px rgba(79, 70, 229, 0.15),
+            box-shadow: 0 20px 40px -15px rgba(79, 70, 229, 0.15),
                 0 0 0 1px rgba(255, 255, 255, 0.6) inset,
                 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             transition: all 0.3s cubic-bezier(.22, 1, .36, 1);
         }
-        .glass-3d-dark {
-            background: rgba(15, 23, 42, 0.80);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-        }
-
-        /* ── 3D Pushable Buttons ── */
         .btn-3d {
             transition: all 0.2s cubic-bezier(.22, 1, .36, 1);
             box-shadow: 0 6px 0 0 #3730a3, 0 10px 20px -5px rgba(79, 70, 229, 0.4);
@@ -60,7 +47,6 @@
             transform: translateY(4px);
             box-shadow: 0 2px 0 0 #3730a3, 0 4px 10px -2px rgba(79, 70, 229, 0.3);
         }
-
         .btn-3d-secondary {
             transition: all 0.2s cubic-bezier(.22, 1, .36, 1);
             box-shadow: 0 6px 0 0 #cbd5e1, 0 10px 20px -5px rgba(0, 0, 0, 0.08);
@@ -74,8 +60,293 @@
             transform: translateY(4px);
             box-shadow: 0 2px 0 0 #cbd5e1, 0 4px 10px -2px rgba(0, 0, 0, 0.06);
         }
-
-        /* ── 3D Step Dots ── */
+        .role-card {
+            transition: all .3s cubic-bezier(.22, 1, .36, 1);
+            border-radius: 24px;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+        .role-card.role-you {
+            transform: translateY(-4px) scale(1.02);
+            border-color: #4f46e5;
+            background: linear-gradient(145deg, #ffffff, #eef2ff);
+            box-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.25), 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .choice-card {
+            transition: all .25s ease;
+            border-radius: 18px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02) inset;
+            padding: 10px 14px;
+        }
+        .choice-card:focus-within {
+            border-color: #4f46e5;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        .choice-card select,
+        .choice-card input {
+            background: transparent;
+            border: none;
+            padding: 4px 0;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            outline: none;
+        }
+        .choice-card select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%234f46e5' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            padding-right: 24px;
+        }
+        .partner-field {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            transition: all .3s ease;
+        }
+        .partner-field.has-value {
+            border-color: #818cf8;
+            background: rgba(79, 70, 229, 0.05);
+            border-style: solid;
+            color: #1e293b;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08) inset;
+        }
+        .secret-card {
+            background: #fef9c3;
+            border: 2px solid #eab308;
+            border-radius: 18px;
+            padding: 16px 20px;
+            box-shadow: 0 8px 20px rgba(234, 179, 8, 0.15);
+            position: relative;
+        }
+        .secret-card::before {
+            content: "🔒 Secret";
+            position: absolute;
+            top: -10px;
+            right: 16px;
+            background: #eab308;
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 14px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .secret-card ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .secret-card li {
+            padding: 4px 0 4px 28px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%23eab308" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>') left center no-repeat;
+            background-size: 18px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .idea-board {
+            background: #f8fafc;
+            border: 2px dashed #94a3b8;
+            border-radius: 24px;
+            padding: 24px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .idea-board .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .filter-question {
+            background: #eef2ff;
+            border-left: 4px solid #4f46e5;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        .chat-icon,
+        .sticky-icon {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid #e2e8f0;
+            z-index: 40;
+        }
+        .chat-icon:hover,
+        .sticky-icon:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 32px rgba(79, 70, 229, 0.25);
+        }
+        .sticky-icon {
+            right: 90px;
+        }
+        .chat-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+        .modal-box {
+            background: white;
+            border-radius: 32px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .chat-messages {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .chat-msg {
+            padding: 8px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .chat-msg.you {
+            background: #4f46e5;
+            color: white;
+            align-self: flex-end;
+        }
+        .chat-msg.other {
+            background: #f1f5f9;
+            color: #1e293b;
+            align-self: flex-start;
+        }
+        .chat-msg.private {
+            border-left: 4px solid #eab308;
+        }
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .chat-input-row input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            min-width: 140px;
+        }
+        .chat-input-row input:focus {
+            border-color: #4f46e5;
+        }
+        .chat-input-row select {
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: white;
+        }
+        .sticky-text {
+            background: #fef9c3;
+            padding: 16px;
+            border-radius: 16px;
+            border: 2px solid #eab308;
+            min-height: 80px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #1e293b;
+            white-space: pre-wrap;
+        }
+        .sticky-text[contenteditable="true"]:focus {
+            outline: 2px solid #4f46e5;
+        }
+        .tag {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+        }
+        .opt-card {
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+            border-radius: 20px;
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            border: 2px solid #e2e8f0;
+            padding: 18px;
+            cursor: default;
+            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05);
+        }
         .step-dot {
             width: 36px;
             height: 36px;
@@ -124,139 +395,52 @@
         .step-label.active {
             color: #4f46e5;
         }
-
-        /* ── Role Cards (3D Pop) ── */
-        .role-card {
-            transition: all .3s cubic-bezier(.22, 1, .36, 1);
-            border-radius: 24px;
-            background: linear-gradient(145deg, #ffffff, #f8fafc);
-            border: 2px solid #e2e8f0;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-        }
-        .role-card.role-you {
-            transform: translateY(-4px) scale(1.02);
-            border-color: #4f46e5;
-            background: linear-gradient(145deg, #ffffff, #eef2ff);
-            box-shadow: 0 20px 35px -10px rgba(79, 70, 229, 0.25), 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-
-        /* ── Choice Cards 3D ── */
-        .choice-card {
-            transition: all .25s ease;
-            border-radius: 18px;
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02) inset;
-            padding: 10px 14px;
-        }
-        .choice-card:focus-within {
-            border-color: #4f46e5;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
-            transform: translateY(-2px);
-        }
-        .choice-card select,
-        .choice-card input {
-            background: transparent;
-            border: none;
-            padding: 4px 0;
-            width: 100%;
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e293b;
-            outline: none;
-        }
-        .choice-card select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 12 12'%3E%3Cpath fill='%234f46e5' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 4px center;
-            padding-right: 24px;
-        }
-
-        /* ── Partner Field ── */
-        .partner-field {
-            background: #f1f5f9;
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 12px 16px;
-            color: #475569;
-            font-size: 14px;
-            font-weight: 500;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            transition: all .3s ease;
-        }
-        .partner-field.has-value {
-            border-color: #818cf8;
-            background: rgba(79, 70, 229, 0.05);
-            border-style: solid;
-            color: #1e293b;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08) inset;
-        }
-
-        /* ── Options Modal Cards 3D ── */
-        .opt-card {
-            transition: all .25s cubic-bezier(.22, 1, .36, 1);
-            border-radius: 20px;
-            background: linear-gradient(145deg, #ffffff, #f8fafc);
-            border: 2px solid #e2e8f0;
-            padding: 18px;
-            cursor: pointer;
-            box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.05);
-        }
-        .opt-card:hover {
-            transform: translateY(-5px);
-            border-color: #818cf8;
-            box-shadow: 0 15px 30px -10px rgba(79, 70, 229, 0.2);
-        }
-        .opt-card .tag {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-        }
-
-        /* ── Animations ── */
         @keyframes float3D {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(1deg); }
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-8px) rotate(1deg);
+            }
         }
         .float-3d {
             animation: float3D 3.5s ease-in-out infinite;
         }
-
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         .fade-up {
             animation: fadeUp 0.4s cubic-bezier(.22, 1, .36, 1) forwards;
         }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!--  SCREEN 1: SETUP (3D Card)                   -->
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- ─── SCREEN 1: SETUP ─── -->
     <div id="screen-setup" class="min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-md glass-3d rounded-[32px] p-8 md:p-10 fade-up">
             <div class="text-center mb-6">
-                <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-3xl flex items-center justify-center text-4xl shadow-xl shadow-indigo-500/30 mb-4 float-3d">
-                    🚗
-                </div>
-                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Rental Mission 3D</h1>
-                <p class="text-sm text-slate-500 mt-1">Rent a car abroad · immersive role‑play</p>
+                <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-3xl flex items-center justify-center text-4xl shadow-xl shadow-indigo-500/30 mb-4 float-3d">🚀</div>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Close a Big Deal</h1>
+                <p class="text-sm text-slate-500 mt-1">Briefing · Co‑create · Negotiate · Win</p>
             </div>
             <form id="form-setup" class="space-y-4">
                 <div>
@@ -264,132 +448,184 @@
                     <input type="text" id="input-name" required placeholder="Type your full name" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 transition font-medium">
                 </div>
                 <button type="submit" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold btn-3d flex items-center justify-center gap-2 text-base">
-                    <span>🚀</span> Enter 3D Lobby
+                    <span>🚀</span> Enter Room
                 </button>
             </form>
-            <p class="text-center text-xs text-slate-400 mt-6 font-medium">Your teacher will assign you to a room</p>
+            <p class="text-center text-xs text-slate-400 mt-6 font-medium">Your teacher will pair you with others</p>
         </div>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!--  SCREEN 2: LOBBY                             -->
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- ─── SCREEN 2: LOBBY ─── -->
     <div id="screen-lobby" class="min-h-screen flex items-center justify-center p-4 hidden-screen">
         <div class="w-full max-w-lg glass-3d rounded-[32px] p-10 text-center fade-up shadow-2xl">
-            <div class="w-20 h-20 mx-auto bg-indigo-50 rounded-3xl flex items-center justify-center text-4xl shadow-inner mb-4 float-3d">
-                🔄
-            </div>
+            <div class="w-20 h-20 mx-auto bg-indigo-50 rounded-3xl flex items-center justify-center text-4xl shadow-inner mb-4 float-3d">🔄</div>
             <h2 class="text-2xl font-extrabold text-slate-900">Waiting for assignment…</h2>
-            <p class="text-sm text-slate-500 mt-1">Your teacher is placing you in a breakout room.</p>
-            <div class="mt-8 flex justify-center">
-                <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-            </div>
-            <div class="mt-6 text-xs text-slate-400 font-semibold uppercase tracking-wider">You'll be paired with a partner shortly</div>
+            <p class="text-sm text-slate-500 mt-1">Your teacher is placing you in a group.</p>
+            <div class="mt-8 flex justify-center"><div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div></div>
+            <div class="mt-6 text-xs text-slate-400 font-semibold uppercase tracking-wider">You'll start with a briefing, then co‑create and negotiate</div>
         </div>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!--  SCREEN 3: MISSION                           -->
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <div id="screen-activity" class="min-h-screen p-4 md:p-6 hidden-screen">
-        <div class="max-w-5xl mx-auto">
+    <!-- ─── SCREEN 2b: BRIEFING (contexto) ─── -->
+    <div id="screen-briefing" class="min-h-screen p-4 md:p-6 hidden-screen flex items-center justify-center">
+        <div class="max-w-3xl w-full glass-3d rounded-[32px] p-8 md:p-10 shadow-2xl fade-up">
+            <div class="text-center mb-6">
+                <span class="text-5xl block mb-3">📋</span>
+                <h2 class="text-2xl font-extrabold text-slate-900">Your Mission: Close a Big Deal</h2>
+                <p class="text-sm text-slate-500 mt-1">Read the context carefully – you'll co‑create and then negotiate.</p>
+            </div>
+            <div class="space-y-4 text-sm text-slate-700 leading-relaxed">
+                <p><strong>🏢 The company:</strong> <em>GreenDrive</em> is a startup that offers electric vehicle fleets for corporate clients. They have a new product line: the <strong>E‑Fleet 3000</strong>, which promises 30% lower operational costs and zero emissions.</p>
+                <p><strong>🎯 The client:</strong> <em>LogiCorp</em> is a logistics company with 200 delivery vans. They want to reduce their carbon footprint and save on fuel costs. They are considering a pilot order of 50 vehicles.</p>
+                <p><strong>💰 The challenge:</strong> You and your partner(s) are the sales team. Your job is to co‑create a proposal that meets LogiCorp's needs, then negotiate the final deal with the client (who will be played by one of you).</p>
+                <p><strong>📌 Your role:</strong> Each of you will receive a <strong>secret card</strong> with specific interests and constraints. Use them to make the negotiation realistic and win‑win.</p>
+            </div>
+            <div class="mt-8 flex justify-center">
+                <button id="btn-start-co-create" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold btn-3d flex items-center gap-2 shadow-lg hover:bg-indigo-700 transition">
+                    <span>✅</span> Got it – let's co‑create!
+                </button>
+            </div>
+            <div class="mt-6 text-center text-xs text-slate-400">You can always check this briefing later using the chat or sticky notes.</div>
+        </div>
+    </div>
 
-            <!-- ─── 3D Banner ─── -->
+    <!-- ─── SCREEN 3: CO‑CREATE ─── -->
+    <div id="screen-create" class="min-h-screen p-4 md:p-6 hidden-screen">
+        <div class="max-w-5xl mx-auto">
             <div class="relative rounded-[32px] overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 p-6 md:p-8 shadow-2xl mb-6 border border-white/10">
                 <div class="absolute top-0 right-0 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
                 <div class="absolute bottom-0 left-0 w-60 h-60 bg-blue-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
-
                 <div class="relative z-10">
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 shadow-lg">
-                            <span class="text-indigo-300 font-bold">⏱</span>
-                            <span id="timer-display" class="font-mono font-extrabold text-white text-lg tracking-wider">30:00</span>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 shadow-lg">
+                            <span class="text-xl">📝</span>
+                            <span class="text-white font-bold text-xs uppercase tracking-wider">Step 1: Co‑create the proposal</span>
                         </div>
                         <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 shadow-lg">
-                            <span class="text-xl">🚗</span>
-                            <span class="text-white font-bold text-xs uppercase tracking-wider">Car Rental Mission</span>
+                            <span class="text-indigo-300 font-bold">👥</span>
+                            <span id="player-count-create" class="text-white font-bold text-xs">0 players</span>
                         </div>
                     </div>
-
                     <div class="mt-6 flex items-start gap-4 bg-white/10 backdrop-blur-xl rounded-2xl p-5 md:p-6 border border-white/15 shadow-xl">
-                        <span class="text-4xl float-3d">🎯</span>
+                        <span class="text-4xl float-3d">📝</span>
                         <div>
-                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-300 block mb-1">Mission Directive</span>
-                            <p class="text-white text-sm md:text-base font-medium leading-relaxed" id="mission-display">
-                                You're at <strong>Global Rentals</strong> abroad. Work with your partner to pick the perfect car, agree on terms, and close the deal!
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-300 block mb-1">Co‑creation</span>
+                            <p class="text-white text-sm md:text-base font-medium leading-relaxed">
+                                Fill in your part of the proposal. Your partners will see your inputs, and you'll see theirs.
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ─── 3D Step Indicator ─── -->
+            <div class="glass-3d rounded-2xl p-4 md:p-5 mb-6 flex items-center gap-4 flex-wrap shadow-lg">
+                <span class="text-sm font-bold text-slate-700">✏️ Fill in your fields below — they will appear to your partners.</span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="glass-3d rounded-3xl p-6 shadow-2xl">
+                    <h3 class="text-xs font-extrabold uppercase tracking-widest text-indigo-600 mb-4 flex items-center gap-2">
+                        <span>✏️</span> Your inputs
+                    </h3>
+                    <div id="my-create-fields" class="space-y-4"></div>
+                </div>
+                <div class="glass-3d rounded-3xl p-6 shadow-2xl">
+                    <h3 class="text-xs font-extrabold uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
+                        <span>👀</span> Partners' inputs
+                    </h3>
+                    <div id="partners-create-fields" class="space-y-4">
+                        <p class="text-sm text-slate-400">Waiting for partners…</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-center">
+                <button id="btn-ready" class="px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold btn-3d flex items-center gap-2 shadow-lg hover:bg-emerald-700 transition">
+                    <span>✅</span> I'm ready — let's negotiate!
+                </button>
+            </div>
+            <div class="mt-4 flex justify-center text-xs font-semibold text-slate-500" id="ready-status">⏳ Waiting for everyone to be ready…</div>
+        </div>
+    </div>
+
+    <!-- ─── SCREEN 4: ROLE‑PLAY ─── -->
+    <div id="screen-activity" class="min-h-screen p-4 md:p-6 hidden-screen">
+        <div class="max-w-5xl mx-auto">
+            <div class="relative rounded-[32px] overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 p-6 md:p-8 shadow-2xl mb-6 border border-white/10">
+                <div class="absolute top-0 right-0 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                <div class="absolute bottom-0 left-0 w-60 h-60 bg-blue-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
+                <div class="relative z-10">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 shadow-lg">
+                            <span class="text-xl">🤝</span>
+                            <span class="text-white font-bold text-xs uppercase tracking-wider">Step 2: Negotiate & close</span>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/10 shadow-lg">
+                            <span class="text-indigo-300 font-bold">👥</span>
+                            <span id="player-count-activity" class="text-white font-bold text-xs">0 players</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex items-start gap-4 bg-white/10 backdrop-blur-xl rounded-2xl p-5 md:p-6 border border-white/15 shadow-xl">
+                        <span class="text-4xl float-3d">🎯</span>
+                        <div>
+                            <span class="text-[11px] font-extrabold uppercase tracking-widest text-indigo-300 block mb-1">Negotiation</span>
+                            <p class="text-white text-sm md:text-base font-medium leading-relaxed">
+                                Use the proposal you co‑created. Negotiate the final terms and <strong>close the big deal</strong>!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="glass-3d rounded-2xl p-4 md:p-5 mb-6 flex items-center gap-4 flex-wrap shadow-lg">
                 <div class="flex items-center gap-2 flex-1 min-w-[220px]">
-                    <span class="step-dot active" id="step-dot-1">1</span>
-                    <span class="step-line" id="step-line-1"></span>
-                    <span class="step-dot" id="step-dot-2">2</span>
+                    <span class="step-dot done" id="step-dot-1">✓</span>
+                    <span class="step-line done" id="step-line-1"></span>
+                    <span class="step-dot active" id="step-dot-2">2</span>
                     <span class="step-line" id="step-line-2"></span>
                     <span class="step-dot" id="step-dot-3">3</span>
                 </div>
-                <span class="step-label active" id="step-label">👂 Listen &amp; Understand</span>
+                <span class="step-label active" id="step-label">🤝 Role‑play</span>
             </div>
 
-            <!-- ─── Main Grid ─── -->
+            <div id="role-cards-container" class="grid grid-cols-3 gap-4 mb-6"></div>
+            <div id="secret-card-container" class="secret-card hidden mb-6">
+                <ul id="secret-card-list"></ul>
+            </div>
+
+            <!-- ÁUDIO (novo link) -->
+            <details class="glass-3d rounded-2xl overflow-hidden shadow-xl mb-6" open>
+                <summary class="cursor-pointer px-6 py-4 flex items-center justify-between text-sm font-bold text-slate-800 hover:bg-slate-50/50 transition">
+                    <span class="flex items-center gap-2.5 text-base"><span class="text-xl">🎧</span> Listen up</span>
+                    <span class="audio-chevron text-slate-400 font-bold text-lg">⌄</span>
+                </summary>
+                <div class="p-5 pt-0">
+                    <iframe src="https://whyp.it/embeds/track/ML3e58IdNV1v?token=eDgPV5RtQ3UQ" width="100%" height="200" scrolling="no" frameborder="0" loading="lazy" class="rounded-2xl shadow-inner"></iframe>
+                </div>
+            </details>
+
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-
-                <!-- Left Column (3/5) -->
                 <div class="lg:col-span-3 space-y-6">
-
-                    <!-- Role Cards -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div id="info-person-a" class="role-card p-5 text-center">
-                            <div id="person-a-avatar" class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-md bg-indigo-100 mb-2">🧑‍💼</div>
-                            <span id="person-a-role-title" class="role-badge inline-block text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 shadow-sm">Car Agent</span>
-                            <p class="font-bold text-slate-900 text-sm mt-2" id="person-a-name">Waiting…</p>
-                            <p class="text-[11px] text-slate-500 font-medium mt-0.5" id="person-a-focus">Help the customer choose</p>
-                        </div>
-                        <div id="info-person-b" class="role-card p-5 text-center">
-                            <div id="person-b-avatar" class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-md bg-amber-100 mb-2">🧳</div>
-                            <span id="person-b-role-title" class="role-badge inline-block text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-amber-100 text-amber-700 shadow-sm">Customer</span>
-                            <p class="font-bold text-slate-900 text-sm mt-2" id="person-b-name">Waiting for partner…</p>
-                            <p class="text-[11px] text-slate-500 font-medium mt-0.5" id="person-b-focus">Share your needs &amp; decide</p>
+                    <div class="glass-3d rounded-3xl p-6 shadow-2xl">
+                        <h3 class="text-xs font-extrabold uppercase tracking-widest text-slate-500 mb-4">📄 Your co‑created proposal</h3>
+                        <div id="proposal-summary" class="space-y-2 text-sm font-medium text-slate-700">
+                            <p class="text-slate-400">Waiting for proposal data…</p>
                         </div>
                     </div>
-
-                    <!-- Audio Drawer -->
-                    <details class="glass-3d rounded-2xl overflow-hidden shadow-xl" open>
-                        <summary class="cursor-pointer px-6 py-4 flex items-center justify-between text-sm font-bold text-slate-800 hover:bg-slate-50/50 transition">
-                            <span class="flex items-center gap-2.5 text-base">
-                                <span class="text-xl">🎧</span> Today's Conversation Audio
-                            </span>
-                            <span class="audio-chevron text-slate-400 font-bold text-lg">⌄</span>
-                        </summary>
-                        <div class="p-5 pt-0" id="activity-audio-container">
-                            <iframe src="https://whyp.it/embeds/track/unX5t6r4ApS5?token=f57mg4Wwmfa7" width="100%" height="200" scrolling="no" frameborder="0" loading="lazy" class="rounded-2xl shadow-inner"></iframe>
-                        </div>
-                    </details>
-
-                    <!-- Pro Tip -->
                     <div class="bg-indigo-50/80 rounded-2xl p-5 border border-indigo-200/60 shadow-md flex items-start gap-4">
                         <span class="text-2xl">💡</span>
                         <div>
                             <span class="text-xs font-extrabold uppercase tracking-wider text-indigo-700 block mb-0.5">Pro Tip</span>
-                            <p class="text-sm text-slate-600 font-medium leading-relaxed">Listen to the conversation first, then discuss with your partner to fill in the rental agreement details.</p>
+                            <p class="text-sm text-slate-600 font-medium leading-relaxed">Use the proposal details to negotiate. Be flexible and aim for a win‑win.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column (2/5) -->
                 <div class="lg:col-span-2 space-y-5">
-
-                    <!-- Choices Box -->
                     <div class="glass-3d rounded-3xl p-6 shadow-2xl">
                         <h3 class="text-xs font-extrabold uppercase tracking-widest text-slate-500 mb-4 flex items-center gap-2">
-                            <span>📋</span> Rental Agreement Form
+                            <span>📋</span> Final Agreement
                         </h3>
-
-                        <!-- My Fields -->
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-extrabold uppercase text-indigo-600" id="my-answers-label">✏️ You</span>
@@ -397,155 +633,228 @@
                             </div>
                             <div id="my-fields-container" class="space-y-3"></div>
                         </div>
-
                         <div class="my-5 border-t border-slate-200/80"></div>
-
-                        <!-- Partner Fields -->
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
-                                <span class="text-[11px] font-extrabold uppercase text-slate-500">👀 Partner</span>
-                                <span class="text-[11px] font-bold text-indigo-600" id="choices-partner-name">—</span>
+                                <span class="text-[11px] font-extrabold uppercase text-slate-500">👀 Partners</span>
                             </div>
-                            <div id="partner-fields-container" class="space-y-3"></div>
+                            <div id="partner-fields-container" class="space-y-4"></div>
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="grid grid-cols-2 gap-3">
-                        <button id="btn-options" class="py-3.5 rounded-2xl font-bold text-sm text-white bg-indigo-600 btn-3d flex items-center justify-center gap-1.5">
-                            📋 Options
-                        </button>
-                        <button id="btn-help-friend" class="py-3.5 rounded-2xl font-bold text-sm bg-white text-indigo-700 border-2 border-indigo-200 btn-3d-secondary flex items-center justify-center gap-1.5">
-                            💡 Help partner
-                        </button>
+                        <button id="btn-options" class="py-3.5 rounded-2xl font-bold text-sm text-white bg-indigo-600 btn-3d flex items-center justify-center gap-1.5">📋 Options</button>
+                        <button id="btn-help-friend" class="py-3.5 rounded-2xl font-bold text-sm bg-white text-indigo-700 border-2 border-indigo-200 btn-3d-secondary flex items-center justify-center gap-1.5">💡 Help partners</button>
                     </div>
 
-                    <button id="btn-to-wrapup" class="w-full py-4 rounded-2xl font-bold text-sm text-white bg-slate-900 btn-3d flex items-center justify-center gap-2 shadow-xl">
-                        <span>📝</span> Review &amp; Wrap Up
+                    <button id="btn-finish-negotiation" class="w-full py-4 rounded-2xl font-bold text-sm text-white bg-amber-600 btn-3d flex items-center justify-center gap-2 shadow-xl hover:bg-amber-700 transition">
+                        <span>🏁</span> Finish negotiation
                     </button>
+
+                    <div id="exit-status-container" class="flex flex-wrap items-center justify-between text-xs font-semibold text-slate-500 glass-3d rounded-full px-5 py-2.5 shadow-sm gap-2">
+                        <span id="my-exit-status" class="text-red-400">⏳ still negotiating</span>
+                        <span id="others-exit-status" class="text-slate-400">⏳ waiting for others</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Presence Indicator -->
             <div class="mt-6 flex items-center justify-center gap-2.5 text-xs font-semibold text-slate-500 glass-3d rounded-full px-6 py-3 mx-auto w-fit shadow-lg">
                 <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500"></span>
-                <span id="partner-presence">Waiting for partner to connect…</span>
+                <span id="partner-presence">Waiting for partners…</span>
             </div>
         </div>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!--  SCREEN 4: WRAP‑UP                           -->
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- ─── SCREEN 5: WRAP‑UP ─── -->
     <div id="screen-wrapup" class="min-h-screen p-4 md:p-6 hidden-screen flex items-center justify-center">
-        <div class="max-w-3xl w-full glass-3d rounded-[32px] p-6 md:p-10 shadow-2xl fade-up">
+        <div class="max-w-4xl w-full glass-3d rounded-[32px] p-6 md:p-10 shadow-2xl fade-up">
             <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                 <h2 class="text-2xl font-extrabold text-slate-900 flex items-center gap-2.5">
-                    <span>🏁</span> Mission Wrap‑up
+                    <span>🏁</span> Wrap‑up – Reflect & Learn
                 </h2>
-                <button id="btn-back-to-activity" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-bold transition shadow-sm">← Back</button>
+                <button id="btn-back-to-activity" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-bold transition shadow-sm">← Back to negotiation</button>
             </div>
 
-            <div class="mt-6 space-y-6">
+            <div class="mt-6 space-y-8">
                 <div>
-                    <h3 class="text-sm font-bold text-slate-800 mb-2.5">📄 Final Agreement Summary</h3>
+                    <h3 class="text-sm font-bold text-slate-800 mb-2.5">📄 Final agreement</h3>
                     <div id="created-summary" class="p-5 bg-slate-50/90 border border-slate-200 rounded-2xl text-sm space-y-2.5 text-slate-700 font-medium shadow-inner"></div>
                 </div>
-
-                <div class="p-5 bg-indigo-50/75 border border-indigo-200/80 rounded-2xl shadow-sm">
-                    <h3 class="text-sm font-extrabold text-indigo-900 mb-2">🗣️ Oral Reflection</h3>
-                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 font-medium">
-                        <li>Did you find the right car together? What was easy or challenging?</li>
-                        <li>What did you learn from your partner during the negotiation?</li>
-                    </ul>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 mb-2.5">💡 Reflection board</h3>
+                    <div class="idea-board">
+                        <span class="icon">🧠</span>
+                        <p class="text-center">Discuss out loud: what worked, what was challenging, what did you learn?</p>
+                    </div>
                 </div>
-
-                <div class="border-t border-slate-200 pt-5">
-                    <h3 class="text-sm font-extrabold text-slate-900 mb-3">Rate <span id="friend-name-stars" class="text-indigo-600">your partner</span>'s skills</h3>
-                    <div id="skills-rating-container" class="space-y-3"></div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 mb-2.5">🔍 3‑Question Filter</h3>
+                    <div class="space-y-3">
+                        <div class="filter-question"><span class="font-bold text-indigo-700">1.</span> Did we use capabilities from more than one person?</div>
+                        <div class="filter-question"><span class="font-bold text-indigo-700">2.</span> Can it be tested in 1 week?</div>
+                        <div class="filter-question"><span class="font-bold text-indigo-700">3.</span> Does it make a real difference for everyone?</div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2 italic">Discuss each question and reach a shared agreement.</p>
                 </div>
-
-                <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <input type="text" id="signature-input" placeholder="Sign your full name" class="flex-1 min-w-[180px] px-5 py-3.5 bg-white border-2 border-slate-200 rounded-2xl text-sm font-semibold focus:outline-none focus:border-indigo-600 shadow-sm">
-                    <button id="btn-sign" class="px-6 py-3.5 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition text-sm btn-3d">Sign Agreement</button>
-                </div>
-
-                <button onclick="window.print()" class="w-full py-4 bg-white border-2 border-slate-200 rounded-2xl font-bold hover:bg-slate-50 transition flex items-center justify-center gap-2 text-sm text-slate-700 btn-3d-secondary shadow-sm">
-                    🖨 Print summary
-                </button>
+                <button onclick="alert('✅ Session complete! Well done.')" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-bold btn-3d flex items-center justify-center gap-2">🏁 Finish Session</button>
             </div>
         </div>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!--  MODAL                                       -->
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <div id="modal-container" class="fixed inset-0 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 hidden-screen z-50">
-        <div class="bg-white rounded-[32px] max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 md:p-8 fade-up border border-slate-100">
-            <h3 id="modal-title" class="text-xl font-extrabold text-slate-900 border-b pb-4 mb-2">Modal</h3>
-            <div id="modal-body" class="py-4 text-sm text-slate-600 space-y-3 font-medium"></div>
-            <button onclick="closeModal()" class="w-full py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold hover:bg-slate-200 transition btn-3d-secondary mt-4">Close Window</button>
+    <!-- ─── CHAT MODAL ─── -->
+    <div id="chat-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>💬 Chat</h3>
+            <div id="chat-messages" class="chat-messages"></div>
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Type a message…" />
+                <select id="chat-recipient">
+                    <option value="public">🌐 Everyone</option>
+                    <option value="teacher">👩‍🏫 Teacher (private)</option>
+                </select>
+                <button id="chat-send" class="px-4 py-2 bg-indigo-600 text-white rounded-full font-bold text-sm">Send</button>
+            </div>
+            <button onclick="closeChat()" class="mt-4 w-full py-2 bg-slate-100 text-slate-700 rounded-xl font-bold hover:bg-slate-200 transition">Close</button>
         </div>
     </div>
 
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-    <!--  JAVASCRIPT                                  -->
-    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <!-- ─── STICKY MODAL ─── -->
+    <div id="sticky-modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>📌 Sticky Notes</h3>
+            <div class="sticky-text" id="sticky-content" contenteditable="false">
+                ✏️ Teacher: add vocabulary, feedback, or key points here.
+            </div>
+            <div class="mt-4 flex gap-3">
+                <button id="sticky-edit-toggle" class="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition">✏️ Edit</button>
+                <button onclick="closeSticky()" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl font-bold hover:bg-slate-300 transition">Close</button>
+            </div>
+            <p class="text-xs text-slate-400 mt-2">Content is saved automatically and visible to everyone.</p>
+        </div>
+    </div>
+
+    <!-- ─── FLOATING ICONS ─── -->
+    <div class="chat-icon" id="chat-toggle" title="Chat">
+        💬
+        <span class="chat-badge" id="chat-badge" style="display:none;">0</span>
+    </div>
+    <div class="sticky-icon" id="sticky-toggle" title="Sticky notes">
+        📌
+    </div>
+
+    <!-- ─── JAVASCRIPT ─── -->
     <script>
+        // ==================== FIREBASE ====================
         const firebaseConfig = { databaseURL: "https://english-meetings-f08e4-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
+        console.log('🔥 Initializing Firebase...');
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase initialized successfully.');
+        } catch (e) {
+            console.error('❌ Firebase initialization error:', e);
+            alert('Firebase could not be initialized. Please check your internet connection and try again.');
+        }
         const db = firebase.database();
 
-        const CAR_THEME = {
-            title: "Rent a Car Abroad",
-            mission: "You're at <strong>Global Rentals</strong> abroad. Work with your partner to pick the perfect car, agree on terms, and close the deal!",
+        // ==================== SCENARIO (ATUALIZADO) ====================
+        const SCENARIO = {
+            title: "Close a Big Deal",
+            mission: "First, co‑create the proposal. Then negotiate to close the big deal!",
             theme: {
-                icon: "🚗",
-                roleA: { icon: "🧑‍💼", avatarBg: "bg-indigo-100" },
-                roleB: { icon: "🧳", avatarBg: "bg-amber-100" }
-            },
-            personA: { roleTitle: "Car Agent", focus: "Help the customer choose" },
-            personB: { roleTitle: "Customer", focus: "Share your needs & decide" },
-            choicesSection: {
-                boxTitle: "Rental Agreement",
-                fields: [
-                    { key: "carType", label: "Car type", type: "select", options: ["Compact", "SUV", "Luxury", "Convertible", "Minivan"] },
-                    { key: "days", label: "Rental days", type: "text", placeholder: "e.g. 5" },
-                    { key: "insurance", label: "Insurance", type: "select", options: ["Basic", "Premium", "Full Coverage"] }
+                icon: "🚀",
+                roles: [
+                    { key: 'A', icon: '💼', bg: 'bg-indigo-100', label: 'Sales Rep' },
+                    { key: 'B', icon: '🧑‍💼', bg: 'bg-amber-100', label: 'Client' },
+                    { key: 'C', icon: '👩‍💼', bg: 'bg-emerald-100', label: 'Sales Manager' }
                 ]
             },
-            optionsButton: {
-                label: "📋 Options",
-                modalTitle: "🚗 Car Options",
-                optionsByRole: {
-                    A: [
-                        { icon: "🚙", title: "Compact SUV", description: "Great for city driving & parking.", advantage: "Fuel efficient", outcome: "~$45/day", consideration: "Less cargo space" },
-                        { icon: "🚘", title: "Luxury Sedan", description: "Comfortable, premium feel, smooth ride.", advantage: "Style & comfort", outcome: "~$95/day", consideration: "Higher cost" }
+            personDetails: {
+                A: {
+                    roleTitle: "Sales Representative",
+                    focus: "Sell the E‑Fleet 3000, negotiate price and terms",
+                    secret: [
+                        "You have a quota – you need this deal to meet your monthly target.",
+                        "You can offer a discount of up to 10% if the client commits today.",
+                        "Your real need: build a long‑term relationship for future orders."
                     ],
-                    B: [
-                        { icon: "🧳", title: "Family Minivan", description: "Spacious, perfect for groups.", advantage: "Lots of room", outcome: "~$70/day", consideration: "Harder to park" },
-                        { icon: "🏞️", title: "Convertible", description: "Fun, open-air experience for road trips.", advantage: "Memorable", outcome: "~$85/day", consideration: "Limited luggage space" }
+                    createFields: [
+                        { key: "product", label: "Product / Service offered", placeholder: "e.g. E‑Fleet 3000" },
+                        { key: "price", label: "Price per unit", placeholder: "e.g. $45,000" }
+                    ]
+                },
+                B: {
+                    roleTitle: "Client (LogiCorp)",
+                    focus: "Get the best value for your logistics company",
+                    secret: [
+                        "Your budget is capped at $40,000 per vehicle.",
+                        "You need delivery within 60 days to meet your sustainability goals.",
+                        "Your real need: trust that GreenDrive will provide reliable after‑sales support."
+                    ],
+                    createFields: [
+                        { key: "budget", label: "Budget per vehicle", placeholder: "e.g. $40,000" },
+                        { key: "deadline", label: "Delivery deadline", placeholder: "e.g. within 60 days" }
+                    ]
+                },
+                C: {
+                    roleTitle: "Sales Manager",
+                    focus: "Support the team, approve discounts and ensure profitability",
+                    secret: [
+                        "You have the authority to approve a 12% discount if the deal size is at least 50 vehicles.",
+                        "You want to maintain a minimum profit margin of 15%.",
+                        "Your real need: balance customer satisfaction with company profitability."
+                    ],
+                    createFields: [
+                        { key: "approval", label: "Approval criteria", placeholder: "e.g. minimum order 50 units" },
+                        { key: "discount", label: "Special discount available", placeholder: "e.g. 12% for bulk" }
                     ]
                 }
             },
-            helpFriend: {
-                buttonLabel: "💡 Help friend",
-                modalTitle: "🤝 How to help your partner",
-                steps: [
-                    "Ask about their travel plans — where are they going?",
-                    "Recommend a car that fits their budget and needs.",
-                    "Double‑check the rental terms together before signing."
-                ]
+            agreementFields: [
+                { key: "finalPrice", label: "Final price agreed", type: "text", placeholder: "e.g. $42,000" },
+                { key: "deliveryDate", label: "Delivery date", type: "text", placeholder: "e.g. 15/12/2025" },
+                { key: "paymentTerms", label: "Payment terms", type: "select", options: ["Upfront", "30 days", "60 days"] }
+            ],
+            // OPÇÕES ATUALIZADAS para o contexto de venda
+            optionsButton: {
+                label: "📋 Options",
+                modalTitle: "💼 Offer Options for LogiCorp",
+                optionsByRole: {
+                    A: [
+                        { icon: "🚛", title: "E‑Fleet 3000 Base", description: "Standard range, 200 km per charge, ideal for urban delivery.", advantage: "Affordable", outcome: "$42,000/unit", consideration: "Limited range" },
+                        { icon: "⚡", title: "E‑Fleet 3000 Pro", description: "Extended range (350 km), fast‑charging, better performance.", advantage: "More range", outcome: "$48,000/unit", consideration: "Higher price" },
+                        { icon: "📦", title: "Bulk discount (50+ units)", description: "Special pricing for large orders with extended warranty.", advantage: "Volume discount", outcome: "10% off", consideration: "Minimum order" },
+                        { icon: "🔧", title: "Maintenance package", description: "Full maintenance and software updates for 3 years.", advantage: "Peace of mind", outcome: "+$2,000/vehicle", consideration: "Add‑on cost" }
+                    ],
+                    C: [
+                        { icon: "🚛", title: "E‑Fleet 3000 Base", description: "Standard range, 200 km per charge, ideal for urban delivery.", advantage: "Affordable", outcome: "$42,000/unit", consideration: "Limited range" },
+                        { icon: "⚡", title: "E‑Fleet 3000 Pro", description: "Extended range (350 km), fast‑charging, better performance.", advantage: "More range", outcome: "$48,000/unit", consideration: "Higher price" },
+                        { icon: "📦", title: "Bulk discount (50+ units)", description: "Special pricing for large orders with extended warranty.", advantage: "Volume discount", outcome: "10% off", consideration: "Minimum order" },
+                        { icon: "🔧", title: "Maintenance package", description: "Full maintenance and software updates for 3 years.", advantage: "Peace of mind", outcome: "+$2,000/vehicle", consideration: "Add‑on cost" }
+                    ],
+                    B: [] // cliente vê opções vazias (ou poderia ver opções de personalização)
+                }
             },
-            skills: ["Clear communication", "Good listening", "Negotiation skills"]
+            helpFriend: {
+                buttonLabel: "💡 Help partners",
+                modalTitle: "🤝 How to help your partners",
+                steps: [
+                    "Ask about their priorities – price, quality, delivery?",
+                    "Suggest a compromise that benefits both sides.",
+                    "Summarize the key points of the proposal to keep everyone aligned."
+                ]
+            }
         };
 
+        // ==================== STATE ====================
         let currentUser = null;
         let currentRoom = null;
-        let currentScenario = CAR_THEME;
+        let myRoleKey = null;
         let isInitializedFields = false;
-        let myRoleKey = 'A';
+        let allPlayers = [];
+        let roomListener = null;
+        let phaseListener = null;
 
+        // ==================== UTILITY ====================
         function escapeHtml(str) {
             const d = document.createElement('div');
             d.textContent = String(str ?? '');
@@ -554,90 +863,232 @@
 
         function showScreen(id) {
             document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden-screen'));
-            document.getElementById(id).classList.remove('hidden-screen');
+            const target = document.getElementById(id);
+            if (target) target.classList.remove('hidden-screen');
+            else console.error('❌ Screen not found:', id);
         }
 
-        document.getElementById('form-setup').addEventListener('submit', (e) => {
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ==================== SETUP ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('form-setup');
+            if (form) form.addEventListener('submit', handleSetupSubmit);
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('role') === 'teacher') {
+                document.body.innerHTML = `
+                    <div class="min-h-screen flex items-center justify-center p-4 bg-slate-100">
+                        <div class="max-w-md glass-3d rounded-[32px] p-8 text-center shadow-2xl">
+                            <span class="text-5xl block mb-4 float-3D">👩‍🏫</span>
+                            <h2 class="text-2xl font-bold text-slate-900">Teacher Panel</h2>
+                            <p class="text-sm text-slate-500 mt-2">This is the student view. The teacher dashboard is in the full environment.</p>
+                            <button onclick="window.location.href='.'" class="mt-6 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold btn-3d">← Back</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            showScreen('screen-setup');
+        });
+
+        function handleSetupSubmit(e) {
             e.preventDefault();
             const name = document.getElementById('input-name').value.trim();
             if (!name) return;
+            if (typeof firebase === 'undefined' || !firebase.app) {
+                alert('Firebase not loaded. Please refresh and try again.');
+                return;
+            }
             currentUser = {
                 id: 'user_' + Math.random().toString(36).substr(2, 9),
                 name: name,
                 status: 'lobby',
                 room: null,
                 joinedAt: Date.now(),
-                answers: {}
+                answers: {},
+                createAnswers: {},
+                exitedRole: false,
+                ready: false
             };
-            db.ref(`students/${currentUser.id}`).set(currentUser);
-            showScreen('screen-lobby');
-            listenForRoomAssignment();
-        });
+            db.ref(`students/${currentUser.id}`).set(currentUser)
+                .then(() => {
+                    showScreen('screen-lobby');
+                    listenForRoomAssignment();
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Could not save user. Please try again.');
+                });
+        }
 
+        // ==================== ROOM ASSIGNMENT ====================
         function listenForRoomAssignment() {
             db.ref(`students/${currentUser.id}`).on('value', (snap) => {
                 const data = snap.val();
                 if (data && data.room) {
                     currentRoom = data.room;
-                    showScreen('screen-activity');
-                    initActivityScreen();
+                    db.ref(`students/${currentUser.id}`).off();
+                    // First show briefing
+                    showScreen('screen-briefing');
+                    document.getElementById('btn-start-co-create').addEventListener('click', () => {
+                        showScreen('screen-create');
+                        initCreateScreen();
+                    });
                 }
             });
         }
 
-        function initActivityScreen() {
-            const scenario = currentScenario;
-            renderScenarioStaticParts(scenario);
-            if (!isInitializedFields) {
-                renderChoicesFields(scenario);
-                isInitializedFields = true;
+        // ==================== CO‑CREATE SCREEN ====================
+        function initCreateScreen() {
+            const scenario = SCENARIO;
+            renderCreateFields(scenario);
+
+            if (roomListener) db.ref('students').off('value', roomListener);
+            roomListener = db.ref('students').on('value', (snap) => {
+                const all = snap.val() || {};
+                const playersInRoom = Object.values(all).filter(s => s.room === currentRoom);
+                allPlayers = playersInRoom;
+                updateCreateView(playersInRoom, scenario);
+                document.getElementById('player-count-create').innerText = playersInRoom.length + ' players';
+
+                const allReady = playersInRoom.every(p => p.ready === true);
+                if (allReady && playersInRoom.length >= 2) {
+                    db.ref(`rooms/${currentRoom}/phase`).set('roleplay');
+                    showScreen('screen-activity');
+                    initActivityScreen();
+                }
+            });
+
+            if (phaseListener) db.ref(`rooms/${currentRoom}/phase`).off('value', phaseListener);
+            phaseListener = db.ref(`rooms/${currentRoom}/phase`).on('value', (snap) => {
+                const phase = snap.val();
+                if (phase === 'roleplay') {
+                    showScreen('screen-activity');
+                    initActivityScreen();
+                }
+            });
+
+            document.getElementById('btn-ready').addEventListener('click', () => {
+                if (!currentUser) return;
+                db.ref(`students/${currentUser.id}/ready`).set(true);
+                document.getElementById('btn-ready').disabled = true;
+                document.getElementById('btn-ready').innerHTML = '✅ You\'re ready!';
+            });
+        }
+
+        function renderCreateFields(scenario) {
+            const myContainer = document.getElementById('my-create-fields');
+            const partnersContainer = document.getElementById('partners-create-fields');
+
+            const myDetails = scenario.personDetails[myRoleKey] || scenario.personDetails.A;
+            const fields = myDetails.createFields || [];
+
+            myContainer.innerHTML = fields.map((f, i) => `
+                <div class="choice-card">
+                    <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-0.5">${escapeHtml(f.label)}</label>
+                    <input type="text" id="create-field-${i}" oninput="syncCreateAnswer(${i})" placeholder="${escapeHtml(f.placeholder || '')}" class="w-full">
+                </div>
+            `).join('');
+
+            partnersContainer.innerHTML = '<p class="text-sm text-slate-400">Waiting for partners…</p>';
+        }
+
+        function syncCreateAnswer(index) {
+            const val = document.getElementById(`create-field-${index}`).value;
+            db.ref(`students/${currentUser.id}/createAnswers/field_${index}`).set(val);
+        }
+
+        function updateCreateView(players, scenario) {
+            const me = players.find(p => p.id === currentUser?.id);
+            const others = players.filter(p => p.id !== currentUser?.id);
+            const container = document.getElementById('partners-create-fields');
+
+            if (others.length === 0) {
+                container.innerHTML = '<p class="text-sm text-slate-400">Waiting for partners…</p>';
+                return;
             }
+
+            let html = '';
+            others.forEach((partner, idx) => {
+                const partnerDetails = scenario.personDetails[partner.role] || scenario.personDetails.A;
+                const fields = partnerDetails.createFields || [];
+                const header = `<div class="text-[11px] font-extrabold uppercase text-slate-500 mt-2 ${idx === 0 ? '' : 'mt-4'}">👤 ${escapeHtml(partner.name)}</div>`;
+                const fieldsHtml = fields.map((f, i) => {
+                    const val = (partner.createAnswers && partner.createAnswers[`field_${i}`]) || '—';
+                    return `<div class="partner-field has-value" style="margin-top:4px;"><strong>${escapeHtml(f.label)}:</strong> ${escapeHtml(val)}</div>`;
+                }).join('');
+                html += header + fieldsHtml;
+            });
+            container.innerHTML = html;
+
+            const allReady = players.every(p => p.ready === true);
+            const readyCount = players.filter(p => p.ready).length;
+            document.getElementById('ready-status').innerText = allReady && players.length >= 2 ?
+                '✅ Everyone is ready! Moving to negotiation…' :
+                `⏳ ${readyCount}/${players.length} ready`;
+        }
+
+        // ==================== ACTIVITY (ROLE‑PLAY) ====================
+        function initActivityScreen() {
+            const scenario = SCENARIO;
+            renderAgreementFields(scenario);
             wireButtons(scenario);
 
-            db.ref('timer').on('value', (snap) => {
-                const t = snap.val() || { seconds: 1800, running: false };
-                updateTimerDisplay(t.seconds);
-            });
-
-            db.ref('students').on('value', (snap) => {
+            if (roomListener) db.ref('students').off('value', roomListener);
+            roomListener = db.ref('students').on('value', (snap) => {
                 const all = snap.val() || {};
-                const players = Object.values(all)
-                    .filter(s => s.room === currentRoom)
-                    .sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
-                renderRoomPlayers(players, scenario);
-                updatePartnerRealtimeView(players);
+                const playersInRoom = Object.values(all).filter(s => s.room === currentRoom);
+                allPlayers = playersInRoom;
+                renderRoomPlayers(playersInRoom, scenario);
+                updatePartnerRealtimeView(playersInRoom);
+                updateExitStatus(playersInRoom);
+                updatePresence(playersInRoom);
+                document.getElementById('player-count-activity').innerText = playersInRoom.length + ' players';
+                updateProposalSummary(playersInRoom, scenario);
+
+                const allExited = playersInRoom.every(p => p.exitedRole === true);
+                if (allExited && playersInRoom.length >= 2) {
+                    db.ref(`rooms/${currentRoom}/phase`).set('wrapup');
+                    showScreen('screen-wrapup');
+                    buildWrapupSummary(scenario);
+                }
             });
 
-            document.getElementById('btn-to-wrapup').onclick = () => {
-                buildWrapupSummary(scenario);
-                renderSkillsSection(scenario);
-                showScreen('screen-wrapup');
-            };
-            document.getElementById('btn-back-to-activity').onclick = () => {
+            if (phaseListener) db.ref(`rooms/${currentRoom}/phase`).off('value', phaseListener);
+            phaseListener = db.ref(`rooms/${currentRoom}/phase`).on('value', (snap) => {
+                const phase = snap.val();
+                if (phase === 'wrapup') {
+                    showScreen('screen-wrapup');
+                    buildWrapupSummary(scenario);
+                } else if (phase === 'create') {
+                    showScreen('screen-create');
+                    initCreateScreen();
+                }
+            });
+
+            document.getElementById('btn-finish-negotiation').addEventListener('click', () => {
+                if (!currentUser) return;
+                db.ref(`students/${currentUser.id}/exitedRole`).set(true);
+                currentUser.exitedRole = true;
+                const btn = document.getElementById('btn-finish-negotiation');
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Waiting for partners…';
+            });
+
+            document.getElementById('btn-back-to-activity').addEventListener('click', () => {
                 showScreen('screen-activity');
-            };
+                db.ref(`rooms/${currentRoom}/phase`).set('roleplay');
+            });
         }
 
-        function renderScenarioStaticParts(scenario) {
-            const th = scenario.theme || {};
-            document.getElementById('mission-display').innerHTML = scenario.mission;
-
-            const rA = th.roleA || {};
-            const rB = th.roleB || {};
-            document.getElementById('person-a-avatar').innerText = rA.icon || '🧑‍💼';
-            document.getElementById('person-a-role-title').innerText = scenario.personA?.roleTitle || 'Car Agent';
-            document.getElementById('person-a-focus').innerText = scenario.personA?.focus || '';
-
-            document.getElementById('person-b-avatar').innerText = rB.icon || '🧳';
-            document.getElementById('person-b-role-title').innerText = scenario.personB?.roleTitle || 'Customer';
-            document.getElementById('person-b-focus').innerText = scenario.personB?.focus || '';
-
-            document.getElementById('activity-audio-container').innerHTML =
-                `<iframe src="https://whyp.it/embeds/track/unX5t6r4ApS5?token=f57mg4Wwmfa7" width="100%" height="200" scrolling="no" frameborder="0" loading="lazy" class="rounded-2xl shadow-inner"></iframe>`;
-        }
-
-        function renderChoicesFields(scenario) {
-            const fields = scenario.choicesSection?.fields || [];
+        function renderAgreementFields(scenario) {
+            const fields = scenario.agreementFields || [];
             const myC = document.getElementById('my-fields-container');
             const partnerC = document.getElementById('partner-fields-container');
 
@@ -646,7 +1097,7 @@
                     const opts = (f.options || []).map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('');
                     return `<div class="choice-card">
                         <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-0.5">${escapeHtml(f.label)}</label>
-                        <select id="my-choice-field-${i}" onchange="syncMyAnswer(${i})">
+                        <select id="agreement-field-${i}" onchange="syncAgreementAnswer(${i})">
                             <option value="">Choose…</option>
                             ${opts}
                         </select>
@@ -654,105 +1105,201 @@
                 }
                 return `<div class="choice-card">
                     <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-500 mb-0.5">${escapeHtml(f.label)}</label>
-                    <input type="text" id="my-choice-field-${i}" oninput="syncMyAnswer(${i})" placeholder="${escapeHtml(f.placeholder || '')}">
+                    <input type="text" id="agreement-field-${i}" oninput="syncAgreementAnswer(${i})" placeholder="${escapeHtml(f.placeholder || '')}">
                 </div>`;
             }).join('');
 
-            partnerC.innerHTML = fields.map((f, i) =>
-                `<div class="partner-field" id="partner-field-${i}">
-                    <span class="placeholder text-slate-400">⏳ waiting for partner…</span>
-                </div>`
-            ).join('');
-
+            partnerC.innerHTML = '';
             if (currentUser?.name) {
                 document.getElementById('my-answers-label').innerHTML = `✏️ You <span class="font-normal text-slate-400">(${escapeHtml(currentUser.name)})</span>`;
             }
         }
 
-        function syncMyAnswer(index) {
-            const val = document.getElementById(`my-choice-field-${index}`).value;
+        function syncAgreementAnswer(index) {
+            const val = document.getElementById(`agreement-field-${index}`).value;
             db.ref(`students/${currentUser.id}/answers/field_${index}`).set(val);
         }
 
-        function updatePartnerRealtimeView(players) {
-            const partner = players.find(p => p && p.id !== currentUser?.id);
-            const fields = currentScenario.choicesSection?.fields || [];
-            fields.forEach((f, i) => {
-                const el = document.getElementById(`partner-field-${i}`);
-                if (!el) return;
-                if (partner && partner.answers && partner.answers[`field_${i}`] !== undefined && partner.answers[`field_${i}`] !== '') {
-                    el.innerHTML = partner.answers[`field_${i}`];
-                    el.className = 'partner-field has-value';
+        function updateProposalSummary(players, scenario) {
+            const container = document.getElementById('proposal-summary');
+            const me = players.find(p => p.id === currentUser?.id);
+            const others = players.filter(p => p.id !== currentUser?.id);
+            let lines = [];
+
+            if (me && me.createAnswers) {
+                const myDetails = scenario.personDetails[me.role] || scenario.personDetails.A;
+                const fields = myDetails.createFields || [];
+                fields.forEach((f, i) => {
+                    const val = me.createAnswers[`field_${i}`] || '—';
+                    lines.push(`<p><strong>${escapeHtml(f.label)}:</strong> ${escapeHtml(val)}</p>`);
+                });
+            }
+            others.forEach((p) => {
+                const details = scenario.personDetails[p.role] || scenario.personDetails.A;
+                const fields = details.createFields || [];
+                fields.forEach((f, i) => {
+                    const val = (p.createAnswers && p.createAnswers[`field_${i}`]) || '—';
+                    lines.push(`<p><strong>${escapeHtml(p.name)} (${escapeHtml(f.label)}):</strong> ${escapeHtml(val)}</p>`);
+                });
+            });
+            container.innerHTML = lines.length ? lines.join('') : '<p class="text-slate-400">No proposal data yet.</p>';
+        }
+
+        function renderRoomPlayers(players, scenario) {
+            const container = document.getElementById('role-cards-container');
+            assignRolesIfNeeded(players);
+
+            const sorted = players.sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+            const roles = scenario.theme.roles;
+            const details = scenario.personDetails;
+
+            let html = '';
+            sorted.forEach((p) => {
+                const roleKey = p.role || 'A';
+                const roleDef = roles.find(r => r.key === roleKey) || roles[0];
+                const detail = details[roleKey] || details.A;
+                const isYou = (p.id === currentUser?.id);
+                const cardClass = `role-card ${isYou ? 'role-you' : ''}`;
+                html += `
+                    <div class="${cardClass} p-5 text-center">
+                        <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-3xl shadow-md ${roleDef.bg} mb-2">${roleDef.icon}</div>
+                        <span class="role-badge inline-block text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full ${roleDef.bg} text-slate-700 shadow-sm">${roleDef.label}</span>
+                        <p class="font-bold text-slate-900 text-sm mt-2">${escapeHtml(p.name)}${isYou ? ' <span class="text-indigo-600 font-extrabold text-[10px]">(You)</span>' : ''}</p>
+                        <p class="text-[11px] text-slate-500 font-medium mt-0.5">${detail.focus || ''}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+
+            const myPlayer = players.find(p => p.id === currentUser?.id);
+            if (myPlayer && myPlayer.role) {
+                const secretList = details[myPlayer.role]?.secret || [];
+                const secretContainer = document.getElementById('secret-card-container');
+                const listEl = document.getElementById('secret-card-list');
+                if (secretList.length > 0) {
+                    secretContainer.classList.remove('hidden');
+                    listEl.innerHTML = secretList.map(item => `<li>${escapeHtml(item)}</li>`).join('');
                 } else {
-                    el.innerHTML = `<span class="placeholder text-slate-400">⏳ waiting for partner…</span>`;
-                    el.className = 'partner-field';
+                    secretContainer.classList.add('hidden');
+                }
+            } else {
+                document.getElementById('secret-card-container').classList.add('hidden');
+            }
+        }
+
+        function assignRolesIfNeeded(players) {
+            const needAssign = players.some(p => !p.role);
+            if (!needAssign) return;
+            const total = players.length;
+            let availableRoles = ['A', 'B', 'C'].slice(0, total);
+            const shuffled = shuffleArray(availableRoles);
+            const sorted = players.sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+            let roleIndex = 0;
+            sorted.forEach((p) => {
+                if (!p.role) {
+                    const role = shuffled[roleIndex % shuffled.length];
+                    db.ref(`students/${p.id}/role`).set(role);
+                    if (p.id === currentUser?.id) myRoleKey = role;
+                    roleIndex++;
+                } else {
+                    if (p.id === currentUser?.id) myRoleKey = p.role;
                 }
             });
+        }
 
-            document.getElementById('choices-partner-name').innerText = partner ? partner.name : '—';
-            document.getElementById('friend-name-stars').innerText = partner ? partner.name : 'your partner';
+        function updatePartnerRealtimeView(players) {
+            const me = players.find(p => p.id === currentUser?.id);
+            const others = players.filter(p => p.id !== currentUser?.id);
+            const fields = SCENARIO.agreementFields || [];
+            const container = document.getElementById('partner-fields-container');
 
+            if (others.length === 0) {
+                container.innerHTML = `<div class="partner-field"><span class="placeholder text-slate-400">⏳ waiting for partners…</span></div>`;
+                return;
+            }
+
+            let html = '';
+            others.forEach((partner, idx) => {
+                const header = `<div class="text-[11px] font-extrabold uppercase text-slate-500 mt-2 ${idx === 0 ? '' : 'mt-4'}">👤 ${escapeHtml(partner.name)}</div>`;
+                const fieldsHtml = fields.map((f, i) => {
+                    const val = (partner.answers && partner.answers[`field_${i}`]) || '—';
+                    return `<div class="partner-field has-value" style="margin-top:4px;">${escapeHtml(val)}</div>`;
+                }).join('');
+                html += header + fieldsHtml;
+            });
+            container.innerHTML = html;
+        }
+
+        function updateExitStatus(players) {
+            const me = players.find(p => p.id === currentUser?.id);
+            const others = players.filter(p => p.id !== currentUser?.id);
+
+            const myStatus = document.getElementById('my-exit-status');
+            const othersStatus = document.getElementById('others-exit-status');
+
+            if (me && me.exitedRole) {
+                myStatus.innerHTML = '✅ finished';
+                myStatus.className = 'text-emerald-500 font-bold';
+            } else {
+                myStatus.innerHTML = '⏳ still negotiating';
+                myStatus.className = 'text-red-400';
+            }
+
+            const allOthersExited = others.every(p => p.exitedRole === true);
+            if (others.length === 0) {
+                othersStatus.innerHTML = '⏳ waiting for partners';
+                othersStatus.className = 'text-slate-400';
+            } else if (allOthersExited) {
+                othersStatus.innerHTML = '✅ all finished';
+                othersStatus.className = 'text-emerald-500 font-bold';
+            } else {
+                const exitedCount = others.filter(p => p.exitedRole).length;
+                othersStatus.innerHTML = `⏳ ${exitedCount}/${others.length} finished`;
+                othersStatus.className = 'text-slate-500';
+            }
+        }
+
+        function updatePresence(players) {
+            const others = players.filter(p => p.id !== currentUser?.id);
             const presence = document.getElementById('partner-presence');
-            if (partner) {
-                presence.innerHTML = `👤 <strong>${escapeHtml(partner.name)}</strong> is connected`;
+            if (others.length > 0) {
+                const names = others.map(p => escapeHtml(p.name)).join(', ');
+                presence.innerHTML = `👤 ${names} connected`;
                 presence.className = 'text-emerald-600 font-bold';
             } else {
-                presence.innerHTML = '⏳ Waiting for partner to connect…';
+                presence.innerHTML = '⏳ Waiting for partners…';
                 presence.className = 'text-slate-500 font-medium';
             }
         }
 
-        function renderRoomPlayers(players, scenario) {
-            const pA = players[0] || null;
-            const pB = players[1] || null;
+        // ==================== WRAP‑UP ====================
+        function buildWrapupSummary(scenario) {
+            const fields = scenario.agreementFields || [];
+            db.ref(`students`).once('value', (snap) => {
+                const all = snap.val() || {};
+                const players = Object.values(all).filter(s => s.room === currentRoom);
+                const me = players.find(p => p.id === currentUser?.id);
+                const others = players.filter(p => p.id !== currentUser?.id);
 
-            document.getElementById('person-a-name').innerHTML = pA ? escapeHtml(pA.name) + (pA.id === currentUser?.id ? ' <span class="text-indigo-600 font-extrabold text-[10px]">(You)</span>' : '') : 'Waiting…';
-            document.getElementById('person-b-name').innerHTML = pB ? escapeHtml(pB.name) + (pB.id === currentUser?.id ? ' <span class="text-indigo-600 font-extrabold text-[10px]">(You)</span>' : '') : 'Waiting for partner…';
-
-            const isA = pA && currentUser && pA.id === currentUser.id;
-            myRoleKey = isA ? 'A' : 'B';
-
-            document.getElementById('info-person-a').classList.toggle('role-you', isA);
-            document.getElementById('info-person-b').classList.toggle('role-you', !isA && !!(pB && currentUser && pB.id === currentUser.id));
-
-            const hasPartner = players.length >= 2;
-            const dot1 = document.getElementById('step-dot-1');
-            const dot2 = document.getElementById('step-dot-2');
-            const line1 = document.getElementById('step-line-1');
-            const label = document.getElementById('step-label');
-
-            if (hasPartner) {
-                dot1.className = 'step-dot done';
-                dot1.innerText = '✓';
-                line1.className = 'step-line done';
-                dot2.className = 'step-dot active';
-                dot2.innerText = '2';
-                label.innerText = '💬 Discuss & Fill In';
-                label.className = 'step-label active';
-            } else {
-                dot1.className = 'step-dot active';
-                dot1.innerText = '1';
-                line1.className = 'step-line';
-                dot2.className = 'step-dot';
-                dot2.innerText = '2';
-                label.innerText = '👂 Wait for partner…';
-                label.className = 'step-label';
-            }
+                let rows = '';
+                fields.forEach((f, i) => {
+                    const myVal = (me && me.answers && me.answers[`field_${i}`]) || '—';
+                    const othersVals = others.map(p => {
+                        const val = (p.answers && p.answers[`field_${i}`]) || '—';
+                        return `<span class="text-slate-900">${escapeHtml(p.name)}: ${escapeHtml(val)}</span>`;
+                    }).join(' &nbsp;|&nbsp; ');
+                    rows += `<p><strong>${escapeHtml(f.label)}:</strong> You: <span class="text-indigo-600">${escapeHtml(myVal)}</span> &nbsp;|&nbsp; ${othersVals}</p>`;
+                });
+                document.getElementById('created-summary').innerHTML = rows || '<p class="text-slate-400">No agreement data yet.</p>';
+            });
         }
 
-        function updateTimerDisplay(seconds) {
-            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-            const s = String(seconds % 60).padStart(2, '0');
-            document.getElementById('timer-display').innerText = `${m}:${s}`;
-        }
-
+        // ==================== BUTTONS ====================
         function wireButtons(scenario) {
             const optCfg = scenario.optionsButton || {};
-            document.getElementById('btn-options').innerText = optCfg.label || '📋 Options';
             document.getElementById('btn-options').onclick = () => openOptionsModal(optCfg);
 
             const helpCfg = scenario.helpFriend || {};
-            document.getElementById('btn-help-friend').innerText = helpCfg.buttonLabel || '💡 Help friend';
             document.getElementById('btn-help-friend').onclick = () => {
                 const stepsHtml = `<div class="space-y-3">
                     ${(helpCfg.steps || []).map((s, i) => `
@@ -762,7 +1309,7 @@
                         </div>
                     `).join('')}
                 </div>`;
-                openModal(helpCfg.modalTitle || '🤝 Help your partner', stepsHtml);
+                openModal(helpCfg.modalTitle || '🤝 Help your partners', stepsHtml);
             };
         }
 
@@ -786,87 +1333,123 @@
                     `).join('') || '<p class="text-sm text-slate-400">No options available.</p>'}
                 </div>
             `;
-            openModal(optCfg.modalTitle || '🚗 Options', body);
+            openModal(optCfg.modalTitle || '📋 Options', body);
         }
 
-        function buildWrapupSummary(scenario) {
-            const fields = scenario.choicesSection?.fields || [];
-            const rows = fields.map((f, i) => {
-                const myEl = document.getElementById(`my-choice-field-${i}`);
-                const myVal = myEl?.value || 'N/A';
-                const partnerEl = document.getElementById(`partner-field-${i}`);
-                const partnerVal = partnerEl ? partnerEl.innerText.trim() : 'N/A';
-                return `<p><strong>${escapeHtml(f.label)}:</strong> You: <span class="text-indigo-600">${escapeHtml(myVal)}</span> &nbsp;|&nbsp; Partner: <span class="text-slate-900">${escapeHtml(partnerVal)}</span></p>`;
-            }).join('');
-            document.getElementById('created-summary').innerHTML = rows || '<p class="text-slate-400">No choices recorded yet.</p>';
+        // ==================== CHAT ====================
+        let chatUnread = 0;
+
+        document.getElementById('chat-toggle').addEventListener('click', () => {
+            document.getElementById('chat-modal').classList.remove('hidden');
+            chatUnread = 0;
+            document.getElementById('chat-badge').style.display = 'none';
+        });
+
+        function closeChat() {
+            document.getElementById('chat-modal').classList.add('hidden');
         }
 
-        function renderSkillsSection(scenario) {
-            const skills = scenario.skills || ['Clear communication', 'Good listening', 'Negotiation skills'];
-            const container = document.getElementById('skills-rating-container');
-            container.innerHTML = skills.map((label, idx) => `
-                <div class="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm">
-                    <span class="text-sm font-bold text-slate-700">${escapeHtml(label)}</span>
-                    <div class="star-group flex gap-1 text-2xl cursor-pointer" data-skill="${idx}">
-                        ${[1,2,3,4,5].map(v => `<span data-val="${v}" class="star opacity-30 transition hover:opacity-100">⭐</span>`).join('')}
-                    </div>
-                </div>
-            `).join('');
+        document.getElementById('chat-send').addEventListener('click', sendChatMessage);
+        document.getElementById('chat-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
 
-            container.querySelectorAll('.star-group').forEach(group => {
-                const stars = group.querySelectorAll('.star');
-                stars.forEach(star => {
-                    star.addEventListener('click', (e) => {
-                        const val = Number(e.target.dataset.val);
-                        stars.forEach((s, i) => {
-                            if (i < val) s.style.opacity = '1';
-                            else s.style.opacity = '0.3';
-                        });
-                    });
-                });
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const recipient = document.getElementById('chat-recipient').value;
+            const text = input.value.trim();
+            if (!text || !currentUser) return;
+            const msg = { from: currentUser.name, fromId: currentUser.id, text, recipient, timestamp: Date.now(),
+                room: currentRoom };
+            db.ref(`chat/${currentRoom}`).push(msg);
+            input.value = '';
+        }
+
+        db.ref('chat').on('value', (snap) => {
+            const data = snap.val() || {};
+            const roomChat = data[currentRoom] || {};
+            const messages = Object.values(roomChat).sort((a, b) => a.timestamp - b.timestamp);
+            const container = document.getElementById('chat-messages');
+            const isOpen = !document.getElementById('chat-modal').classList.contains('hidden');
+
+            let html = '';
+            messages.forEach((msg) => {
+                const isMine = (msg.fromId === currentUser?.id);
+                const isPrivate = (msg.recipient === 'teacher');
+                const cls = `chat-msg ${isMine ? 'you' : 'other'} ${isPrivate ? 'private' : ''}`;
+                const label = isPrivate ? '🔒 Private ' : '';
+                html += `<div class="${cls}">${label}${escapeHtml(msg.from)}: ${escapeHtml(msg.text)}</div>`;
             });
-        }
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
 
-        document.getElementById('btn-sign')?.addEventListener('click', () => {
-            const name = document.getElementById('signature-input').value.trim();
-            if (!name) { alert('Please type your name to sign.'); return; }
-            alert(`✅ Signed successfully by ${name}!`);
-        });
-
-        function openModal(title, html) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-body').innerHTML = html;
-            document.getElementById('modal-container').classList.remove('hidden-screen');
-        }
-
-        function closeModal() {
-            document.getElementById('modal-container').classList.add('hidden-screen');
-        }
-        document.getElementById('modal-container')?.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeModal();
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('role') === 'teacher') {
-                document.body.innerHTML = `
-                    <div class="min-h-screen flex items-center justify-center p-4 bg-slate-100">
-                        <div class="max-w-md glass-3d rounded-[32px] p-8 text-center shadow-2xl">
-                            <span class="text-5xl block mb-4 float-3D">👩‍🏫</span>
-                            <h2 class="text-2xl font-bold text-slate-900">Teacher Panel</h2>
-                            <p class="text-sm text-slate-500 mt-2">This is the student-facing view. The teacher dashboard operates in the full environment.</p>
-                            <button onclick="window.location.href='.'" class="mt-6 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold btn-3d">← Back to Student View</button>
-                        </div>
-                    </div>
-                `;
-                return;
+            if (!isOpen) {
+                const unseen = messages.filter(m => m.fromId !== currentUser?.id).length;
+                chatUnread = unseen;
+                const badge = document.getElementById('chat-badge');
+                if (unseen > 0) { badge.style.display = 'flex';
+                    badge.innerText = unseen; } else badge.style.display = 'none';
             }
-            showScreen('screen-setup');
         });
 
-        window.syncMyAnswer = syncMyAnswer;
+        // ==================== STICKY NOTES ====================
+        document.getElementById('sticky-toggle').addEventListener('click', () => {
+            document.getElementById('sticky-modal').classList.remove('hidden');
+            db.ref(`sticky/${currentRoom}`).once('value', (snap) => {
+                const val = snap.val();
+                if (val) document.getElementById('sticky-content').innerText = val;
+            });
+        });
+
+        function closeSticky() {
+            document.getElementById('sticky-modal').classList.add('hidden');
+        }
+
+        document.getElementById('sticky-edit-toggle').addEventListener('click', () => {
+            const el = document.getElementById('sticky-content');
+            const isEditable = el.getAttribute('contenteditable') === 'true';
+            if (isEditable) {
+                el.setAttribute('contenteditable', 'false');
+                document.getElementById('sticky-edit-toggle').innerText = '✏️ Edit';
+                const text = el.innerText.trim();
+                if (text) db.ref(`sticky/${currentRoom}`).set(text);
+            } else {
+                el.setAttribute('contenteditable', 'true');
+                el.focus();
+                document.getElementById('sticky-edit-toggle').innerText = '💾 Save';
+            }
+        });
+
+        document.getElementById('sticky-content').addEventListener('blur', () => {
+            const el = document.getElementById('sticky-content');
+            if (el.getAttribute('contenteditable') === 'true') {
+                const text = el.innerText.trim();
+                if (text) db.ref(`sticky/${currentRoom}`).set(text);
+                el.setAttribute('contenteditable', 'false');
+                document.getElementById('sticky-edit-toggle').innerText = '✏️ Edit';
+            }
+        });
+
+        // ==================== MODAL ====================
+        function openModal(title, html) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-box">
+                    <h3>${escapeHtml(title)}</h3>
+                    <div class="py-4 text-sm text-slate-600 space-y-3 font-medium">${html}</div>
+                    <button onclick="this.closest('.modal-overlay').remove()" class="w-full py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold hover:bg-slate-200 transition btn-3d-secondary mt-4">Close</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // ==================== EXPOSE ====================
+        window.syncCreateAnswer = syncCreateAnswer;
+        window.syncAgreementAnswer = syncAgreementAnswer;
         window.openModal = openModal;
-        window.closeModal = closeModal;
+        window.closeChat = closeChat;
+        window.closeSticky = closeSticky;
     </script>
 </body>
 </html>
